@@ -1,9 +1,11 @@
-<script>
-import {defineComponent} from 'vue'
+<script setup>
 
-export default defineComponent({
-    name: "Calendar"
-})
+    import {onMounted} from "vue";
+
+    onMounted(()=>{
+        console.log('Calendar Mounted')
+    })
+
 </script>
 
 <template>

@@ -1,13 +1,11 @@
-<script>
-import {defineComponent} from 'vue'
+<script setup>
 
-export default defineComponent({
-    name: "Home",
+    import {onMounted} from "vue";
 
-    mounted() {
-        console.log('Home Mouted')
-    }
-})
+    onMounted(()=>{
+        console.log('Home Mounted')
+    })
+
 </script>
 
 <template>

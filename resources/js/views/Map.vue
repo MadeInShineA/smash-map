@@ -1,12 +1,11 @@
-<script>
-import {defineComponent} from 'vue'
+<script setup>
 
-export default defineComponent({
-    name: "Map",
-    mounted() {
+    import {onMounted} from "vue";
+
+    onMounted(()=>{
         console.log('Map Mounted')
-    }
-})
+    })
+
 </script>
 
 <template>
