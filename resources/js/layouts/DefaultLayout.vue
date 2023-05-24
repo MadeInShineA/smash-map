@@ -20,7 +20,8 @@ const items = ref([
         items: [
             {
                 label: 'Create',
-                icon: 'pi pi-fw pi-plus'
+                icon: 'pi pi-fw pi-plus',
+                to: '/create-event'
             },
             {
                 label: 'Browse',
@@ -46,7 +47,11 @@ onMounted(()=>{
 <template>
 
     <div class="card relative z-2">
-        <Menubar :model="items" />
+        <Menubar :model="items">
+            <template #start>
+                <img alt="logo" src="./images/logo-no-text-no-bg.png" height="40" class="mr-2" />
+            </template>
+        </Menubar>
         <router-view></router-view>
     </div>
 

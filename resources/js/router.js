@@ -4,6 +4,7 @@ import Home from "./views/Home.vue";
 import Map from "./views/Map.vue";
 import Calendar from "./views/Calendar.vue";
 import Events from "./views/Events.vue";
+import CreateEvent from "./views/CreateEvent.vue";
 import DefaultLayout from "./layouts/DefaultLayout.vue";
 
 const routes = [
@@ -26,6 +27,10 @@ const routes = [
             {
                 path:'events',
                 component: Events
+            },
+            {
+                path:'create-event',
+                component: CreateEvent
             }
         ]
 

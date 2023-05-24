@@ -1,0 +1,4 @@
+.router-link-active .p-menuitem-text{
+    color: #3B82F6 !important;
+    font-weight:bold;
+}

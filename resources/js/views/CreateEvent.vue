@@ -3,13 +3,13 @@
     import {onMounted} from "vue";
 
     onMounted(()=>{
-        console.log('App Mounted')
+        console.log('CreateEvent Mounted')
     })
 
 </script>
 
 <template>
-    <router-view></router-view>
+    <h1>Create Event</h1>
 </template>
 
 <style scoped>
