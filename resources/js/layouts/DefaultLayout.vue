@@ -12,6 +12,15 @@
             Go to Map
         </router-link>
     </div>
+    <div>
+        <router-link to="/calendar">
+            Go to Calendar
+        </router-link>
+    </div><div>
+        <router-link to="/events">
+            Go to Events
+        </router-link>
+    </div>
 
 </template>
 
