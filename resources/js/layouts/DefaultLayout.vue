@@ -9,6 +9,11 @@ const items = ref([
         to: '/home'
     },
     {
+        label: 'Map',
+        icon: 'pi pi-fw pi-map',
+        to: '/map'
+    },
+    {
         label: 'Calendar',
         icon: 'pi pi-fw pi-calendar',
         to: '/calendar'
@@ -28,11 +33,6 @@ const items = ref([
                 to: '/events'
             }
         ]
-    },
-    {
-        label: 'Map',
-        icon: 'pi pi-fw pi-map',
-        to: '/map'
     },
 
 ]);
@@ -72,7 +72,7 @@ const visible = ref(false);
     <div class="card relative z-2">
         <Menubar :model="items">
             <template #start>
-                <img alt="logo" src="./images/logo-no-text-no-bg.png" height="40" class="mr-2"/>
+                <img alt="logo" src="../../images/logo-no-text-no-bg.png" height="40" class="mr-2"/>
             </template>
             <template #end>
 <!--                <Button label="Show" icon="pi pi-external-link" @click="visible = true" />-->
