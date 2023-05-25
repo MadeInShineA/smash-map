@@ -1,7 +1,7 @@
 import'./bootstrap';
 
-import "primevue/resources/themes/lara-light-indigo/theme.css";
-import "primevue/resources/primevue.min.css";
+// import "primevue/resources/themes/lara-light-indigo/theme.css";
+// import "primevue/resources/themes/md-dark-indigo/theme.css";
 import "primeicons/primeicons.css";
 
 import {createApp} from 'vue'
@@ -17,9 +17,12 @@ import PrimeVue from 'primevue/config';
 app.use(PrimeVue)
 
 import TabMenu from 'primevue/tabmenu';
-app.component('TabMenu',TabMenu)
+app.component('TabMenu', TabMenu)
 
 import Menubar from 'primevue/menubar';
-app.component('Menubar',Menubar)
+app.component('Menubar', Menubar)
+
+import Button from "primevue/button";
+app.component('Button', Button)
 
 app.mount("#app")
