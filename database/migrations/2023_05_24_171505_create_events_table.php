@@ -19,7 +19,6 @@ return new class extends Migration
             $table->foreignId('creator_id')->nullable()->constrained('users')->nullOnDelete();
             $table->boolean('is_online')->default(false);
             $table->string('name');
-            $table->string('video_game')->default('ssbm');
             $table->string('timezone')->default('UTC');
             $table->dateTime('start_date');
             $table->dateTime('end_date');

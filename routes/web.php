@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+#TODO Ask Quentin if it is faster to query items in a store with the home made api or to redirect to the page with the items inside index (si index a été chargé 1x et query api si non).
 Route::get('', function () {
     return view('app');
 });

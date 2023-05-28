@@ -19,11 +19,15 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+            $table->string('discord');
+            $table->string('twitter');
+            $table->string('description');
             $table->string('color');
             $table->foreignId('address_id')->constrained('addresses')->restrictOnDelete();
             $table->foreignId('main_id')->constrained('characters')->restrictOnDelete();
             $table->foreignId('image_id')->nullable()->constrained('images')->nullOnDelete();
             $table->boolean('is_admin')->default(false);
+            $table->boolean('is_subscribed')->default(false);
         });
     }
 
