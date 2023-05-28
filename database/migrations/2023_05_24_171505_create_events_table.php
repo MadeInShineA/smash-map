@@ -11,19 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('events', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
             $table->timestamps();
-            $table->string('color');
             $table->foreignId('address_id')->constrained('addresses')->restrictOnDelete();
-            $table->foreignId('main_id')->constrained('characters')->restrictOnDelete();
             $table->foreignId('image_id')->nullable()->constrained('images')->nullOnDelete();
-            $table->boolean('is_admin')->default(false);
+            $table->foreignId('creator_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->boolean('is_online')->default(false);
+            $table->string('name');
+            $table->string('video_game')->default('ssbm');
+            $table->string('timezone')->default('UTC');
+            $table->dateTime('start_date');
+            $table->dateTime('end_date');
+            $table->string('link')->nullable();
+
+
+
         });
     }
 
@@ -32,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('tournaments');
     }
 };
