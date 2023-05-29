@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->morphs('parentable');
+            $table->string('type');
             $table->string('uuid');
+            $table->string('md5');
         });
     }
 
