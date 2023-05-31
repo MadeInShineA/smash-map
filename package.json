@@ -14,6 +14,7 @@
         "@vitejs/plugin-vue": "^4.2.3",
         "primeicons": "^6.0.1",
         "primevue": "^3.29.1",
+        "qalendar": "^2.5.0",
         "vue": "^3.2.36",
         "vue-loader": "^17.0.1",
         "vue-router": "^4.2.1",

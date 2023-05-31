@@ -25,4 +25,8 @@ app.component('Menubar', Menubar)
 import Button from "primevue/button";
 app.component('Button', Button)
 
+import {Qalendar} from "qalendar";
+app.use(Qalendar)
+
+
 app.mount("#app")
