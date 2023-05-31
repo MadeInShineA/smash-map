@@ -20,4 +20,5 @@ use Illuminate\Support\Facades\Route;
 //});
 
 Route::get('/events', [EventController::class, 'index']);
+Route::get('/calendar/events', [EventController::class, 'calendar_index']);
 
