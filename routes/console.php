@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Address;
+use App\Models\Character;
 use App\Models\Country;
 use App\Models\Event;
 use App\Models\Image;
@@ -47,11 +48,12 @@ Artisan::command('delete_events', function(){
         if ($event->end_date_time < $current_time){
             $images = $event->images;
             foreach ($images as $image) {
-                $event_directory_path = base_path(). '/events_images/event_' . $event->id;
-                if(file_exists($event_directory_path . '/' . $image->uuid))
-                    unlink($event_directory_path . '/' . $image->uuid);
+                $event_directory_path = base_path(). '/storage/app/events_images/event_' . $event->id . '/' . $image->type;
+                unlink($event_directory_path . '/' . $image->uuid);
                 $image->delete();
             }
+            var_dump('Images for:' . $event->name . ' deleted');
+            var_dump('Event: ' . $event->name . ' deleted');
             $event->delete();
         }
     }
@@ -60,6 +62,7 @@ Artisan::command('delete_events', function(){
 Artisan::command('import_events', function(){
 
     Artisan::call('delete_events');
+    Artisan::call('delete_addresses');
 
 
     $video_game_id = '1';
@@ -155,7 +158,7 @@ Artisan::command('import_events', function(){
             $link = 'https://www.start.gg' . $event->url;
 
             $event_object = Event::updateOrCreate(['start_gg_id' =>$start_gg_id], ['start_gg_updated_at' =>$start_gg_updated_at, 'is_online' =>$is_online, 'name' =>$name, 'video_game' =>$video_game, 'timezone' =>$timezone, 'start_date_time' =>$start_date, 'end_date_time' =>$end_date, 'link' =>$link]);
-
+            var_dump('Event: ' . $event->name . ' created');
             if(!$event_object->is_online){
                 $latitude = $event->lat;
                 $longitude = $event->lng;
@@ -167,13 +170,10 @@ Artisan::command('import_events', function(){
 
                 $address = $event_object->address;
 
-//                1	2023-05-29 20:18:44	2023-05-29 20:18:44	15	82 Church St, Wollongong NSW 2500, Australia	-34.43	150.89
-//
-//                84	2023-05-29 20:44:58	2023-05-29 20:44:58	15	82 Church St, Wollongong NSW 2500, Australia	-34.43	150.89
                 if(!$address){
 
                     //FIXME Doesn't work if we add the latitude and longitude => php float vs SQL float ?
-                    $address = Address::firstOrCreate(['name'=>$address_name, 'country_id' =>$country->id]);
+                    $address = Address::firstOrCreate(['name'=>$address_name, 'country_id' =>$country->id],['latitude' =>$latitude, 'longitude' =>$longitude]);
                     $event_object->address_id = $address->id;
                     $event_object->save();
                 }
@@ -184,7 +184,7 @@ Artisan::command('import_events', function(){
             $event_db_md5s = $event_object->images->pluck('md5')->toArray();
 
             #TODO Delete the unused images (inside event_db_md5s but not in event_md5s)
-            $event_md5s = [];
+//            $event_md5s = [];
 
 
             $images = $event->images;
@@ -208,14 +208,43 @@ Artisan::command('import_events', function(){
 
                 $image_md5 = md5($image);
 
-                $event_md5s[] = $image_md5;
+//                $event_md5s[] = $image_md5;
 
                 if (!in_array($image_md5, $event_db_md5s)) {
                     Storage::put($event_directory_path . '/' . $image_type . '/' . $uuid, $image);
                     Image::Create(['parentable_type' =>'App\Models\Event', 'parentable_id' =>$event_object->id, 'type' =>$image_type, 'uuid' => $uuid, 'md5' => $image_md5]);
                     }
                 }
+            var_dump('Images for:' . $event->name . ' created');
+
         }
     }
 
+});
+
+Artisan::command('import_characters_images',function(){
+
+    $characters = Character::all();
+
+    foreach ($characters as $character){
+        $curl_handle=curl_init();
+        curl_setopt($curl_handle, CURLOPT_URL,$character->image_link);
+        curl_setopt($curl_handle, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl_handle, CURLOPT_CONNECTTIMEOUT, 2);
+        curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl_handle, CURLOPT_USERAGENT, 'Melee Map');
+        $query = curl_exec($curl_handle);
+
+        curl_close($curl_handle);
+
+        $image = $query;
+        $uuid = Str::uuid()->toString() . '.png';
+        $image_md5 = md5($image);
+
+        Image::Create(['parentable_type' =>'App\Models\Character', 'parentable_id' =>$character->id, 'type' =>'character', 'uuid' => $uuid, 'md5' => $image_md5]);
+
+        $character_directory_path = '/characters_images/' . $character->name;
+        Storage::put($character_directory_path . '/' . $uuid, $image);
+        var_dump('Image for: ' . $character->name . ' created');
+    }
 });
