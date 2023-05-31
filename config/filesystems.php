@@ -12,7 +12,7 @@ return [
     | based disks are available to your application. Just store away!
     |
     */
-
+    #TODO Change local to public ?
     'default' => env('FILESYSTEM_DISK', 'local'),
 
     /*
