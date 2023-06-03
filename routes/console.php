@@ -47,6 +47,7 @@ Artisan::command('delete_events', function(){
     foreach ($events as $event){
         if ($event->end_date_time < $current_time){
             $images = $event->images;
+            //TODO Delete empty folders once done
             foreach ($images as $image) {
                 $event_directory_path = base_path(). '/storage/app/events_images/event_' . $event->id . '/' . $image->type;
                 unlink($event_directory_path . '/' . $image->uuid);

@@ -16,7 +16,8 @@ class EventController extends Controller
     }
 
     public function calendar_index(Request $request){
-        $events = Event::all();
+        $events = Event::continent('Europe')->get();
+//        $events = Event::all();
         return EventCalendarResource::collection($events);
     }
 }

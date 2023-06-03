@@ -33,4 +33,19 @@ class Event extends Model
     {
         return $this->morphMany(Image::class, 'parentable');
     }
+
+    public function getColorSchemeAttribute(){
+        if ($this->is_online){
+            return 'online';
+        }
+        return 'offline';
+    }
+
+    public function scopeContinent($query, String $continent)
+    {
+        return $query->whereHas('address.country.continent', function ($query) use ($continent) {
+            $query->where('name', $continent,true);
+        });
+    }
+
 }
