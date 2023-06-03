@@ -22,11 +22,7 @@ use Illuminate\Support\Facades\Storage;
 |
 */
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote');
-
-Artisan::command('delete_addresses', function (){
+Artisan::command('delete-addresses', function (){
     $addresses = Address::all();
     foreach ($addresses as $address) {
         $event_count = $address->events->count();
@@ -39,7 +35,7 @@ Artisan::command('delete_addresses', function (){
     }
 });
 
-Artisan::command('delete_events', function(){
+Artisan::command('delete-events', function(){
     $events = Event::all();
     $current_time = date('Y-m-d h:i:s');
 
@@ -47,12 +43,24 @@ Artisan::command('delete_events', function(){
     foreach ($events as $event){
         if ($event->end_date_time < $current_time){
             $images = $event->images;
-            //TODO Delete empty folders once done
+            $base_directory_path = base_path(). '/storage/app/events_images/event_' . $event->id;
             foreach ($images as $image) {
-                $event_directory_path = base_path(). '/storage/app/events_images/event_' . $event->id . '/' . $image->type;
-                unlink($event_directory_path . '/' . $image->uuid);
+                $image_directory_path = $base_directory_path . '/' . $image->type;
+                unlink($image_directory_path . '/' . $image->uuid);
+
                 $image->delete();
             }
+            #TODO Is there a better way to do it ?
+            if (file_exists($base_directory_path . '/banner')){
+                rmdir($base_directory_path . '/banner');
+            }
+            if (file_exists($base_directory_path . '/profile')){
+                rmdir($base_directory_path . '/profile');
+            }
+            if (file_exists($base_directory_path)){
+                rmdir($base_directory_path);
+            }
+
             var_dump('Images for:' . $event->name . ' deleted');
             var_dump('Event: ' . $event->name . ' deleted');
             $event->delete();
@@ -60,10 +68,10 @@ Artisan::command('delete_events', function(){
     }
 });
 
-Artisan::command('import_events', function(){
+Artisan::command('import-events', function(){
 
-    Artisan::call('delete_events');
-    Artisan::call('delete_addresses');
+    Artisan::call('delete-events');
+    Artisan::call('delete-addresses');
 
 
     $video_game_id = '1';
@@ -223,7 +231,7 @@ Artisan::command('import_events', function(){
 
 });
 
-Artisan::command('import_characters_images',function(){
+Artisan::command('import-characters-images',function(){
 
     $characters = Character::all();
 

@@ -12,11 +12,10 @@ class EventCalendarResource extends JsonResource
     {
         return [
             'title'             => $this->name,
-//            'time'              => $this->calendar_time,
             'start'             => $this->start_date_time,
             'end'               => $this->end_date_time,
             'colorScheme'       => $this->color_scheme,
-            'location'      => $this->address->name,
+            'location'      => $this->address?->name,
             'description'       =>'',
         ];
     }
