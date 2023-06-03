@@ -2,3 +2,7 @@
     color: #3B82F6 !important;
     font-weight:bold;
 }
+
+.p-card.p-component{
+    margin-top: 100px;
+}

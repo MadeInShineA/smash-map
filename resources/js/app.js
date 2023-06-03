@@ -1,7 +1,5 @@
 import'./bootstrap';
 
-// import "primevue/resources/themes/lara-light-indigo/theme.css";
-// import "primevue/resources/themes/md-dark-indigo/theme.css";
 import "primeicons/primeicons.css";
 
 import {createApp} from 'vue'
@@ -24,6 +22,12 @@ app.component('Menubar', Menubar)
 
 import Button from "primevue/button";
 app.component('Button', Button)
+
+import Card from 'primevue/card';
+app.component('Card', Card)
+
+import Chip from 'primevue/chip';
+app.component('Chip', Chip)
 
 import {Qalendar} from "qalendar";
 app.use(Qalendar)

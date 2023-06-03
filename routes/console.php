@@ -43,7 +43,7 @@ Artisan::command('delete-events', function(){
     foreach ($events as $event){
         if ($event->end_date_time < $current_time){
             $images = $event->images;
-            $base_directory_path = base_path(). '/storage/app/events_images/event_' . $event->id;
+            $base_directory_path = base_path(). '/storage/app/public/events-images/event-' . $event->id;
             foreach ($images as $image) {
                 $image_directory_path = $base_directory_path . '/' . $image->type;
                 unlink($image_directory_path . '/' . $image->uuid);
@@ -188,7 +188,7 @@ Artisan::command('import-events', function(){
                 }
             }
 
-            $event_directory_path = '/events_images/event_' . $event_object->id;
+            $event_directory_path = '/events-images/event-' . $event_object->id;
 
             $event_db_md5s = $event_object->images->pluck('md5')->toArray();
 
@@ -252,7 +252,7 @@ Artisan::command('import-characters-images',function(){
 
         Image::Create(['parentable_type' =>'App\Models\Character', 'parentable_id' =>$character->id, 'type' =>'character', 'uuid' => $uuid, 'md5' => $image_md5]);
 
-        $character_directory_path = '/characters_images/' . $character->name;
+        $character_directory_path = '/characters-images/' . $character->name;
         Storage::put($character_directory_path . '/' . $uuid, $image);
         var_dump('Image for: ' . $character->name . ' created');
     }

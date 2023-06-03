@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Event;
 
 use App\Http\Resources\Address\AddressResource;
+use App\Http\Resources\Image\ImageResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -12,6 +13,7 @@ class EventResource extends JsonResource
     {
         return [
             'address'           => new  AddressResource($this->address),
+            'images'            => ImageResource::collection($this->images),
             'is_online'         => $this->is_online,
             'name'              => $this->name,
             'video_game'        => $this->video_game,
