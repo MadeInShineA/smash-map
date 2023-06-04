@@ -20,6 +20,7 @@ class EventResource extends JsonResource
             'timezone'          => $this->timezone,
             'start_date_time'   => $this->start_date_time,
             'end_date_time'     => $this->end_date_time,
+            'attendees'         => $this->attendees,
             'link'              => $this->link
         ];
     }

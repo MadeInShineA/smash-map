@@ -36,15 +36,14 @@ let events = reactive([])
                     <img v-else src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png" alt="Event Image" class="event-image">
                 </div>
             </template>
-            <template #title class="event-title">
-                <a :href=event.link target="_blank">{{ event.name }}</a>
-            </template>
-            <template #subtitle>
-                <div v-if="!event.is_online" class="event-location"><Chip :label="event.address.name" icon="pi pi-map-marker"></Chip></div>
-                <div v-else class="event-location"><Chip label="Online" icon="pi pi-globe"></Chip></div>
+            <template #title>
+                <a class="event-title" :href=event.link target="_blank"><i class="pi pi-external-link"/> {{ event.name }}</a>
             </template>
             <template #content>
-                <p class="event-datetime">{{ event.start_date_time }} - {{ event.end_date_time }} {{ event.timezone }}</p>
+                <div v-if="!event.is_online" class="event-location"><Chip :label="event.address.name" icon="pi pi-map-marker"></Chip></div>
+                <div v-else class="event-location"><Chip label="Online" icon="pi pi-globe"></Chip></div>
+                <div v-if="event.attendees" class="event-attendees"><Chip :label=event.attendees icon="pi pi-users"></Chip></div>
+                <div class="event-datetime"><Chip :label="event.start_date_time + ' / ' + event.end_date_time + ' ' + event.timezone" icon="pi pi-clock"></Chip></div>
             </template>
         </Card>
     </div>
@@ -90,9 +89,15 @@ let events = reactive([])
 
 .event-title {
     margin-bottom: 10px;
+    text-decoration: none;
+    color: inherit;
 }
 
 .event-location {
+    margin-bottom: 10px;
+}
+
+.event-attendees{
     margin-bottom: 10px;
 }
 
