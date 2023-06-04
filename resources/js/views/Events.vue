@@ -4,9 +4,9 @@ import {onMounted, reactive} from "vue";
 
 let events = reactive([])
 
-    async function fetchEvents() {
+    async function fetchEvents(page) {
         try {
-            const response = await axios.get('/api/events');
+            const response = await axios.get('/api/events?page='+ page);
             const fetchedEvents = response.data.data;
 
             fetchedEvents.forEach(event => {
@@ -18,10 +18,7 @@ let events = reactive([])
         }
     }
 
-    fetchEvents()
-
-
-
+    fetchEvents(1)
 
     onMounted(()=>{
         console.log('Events Mounted')
@@ -31,7 +28,7 @@ let events = reactive([])
 </script>
 
 <template>
-    <div class="event-container">
+    <div class="event-container" v-if="events.length > 0">
         <Card v-for="event in events" :key="event.id" class="event-card">
             <template #header>
                 <div class="event-image-container">
@@ -40,7 +37,7 @@ let events = reactive([])
                 </div>
             </template>
             <template #title class="event-title">
-                {{ event.name }}
+                <a :href=event.link target="_blank">{{ event.name }}</a>
             </template>
             <template #subtitle>
                 <div v-if="!event.is_online" class="event-location"><Chip :label="event.address.name" icon="pi pi-map-marker"></Chip></div>
@@ -50,6 +47,9 @@ let events = reactive([])
                 <p class="event-datetime">{{ event.start_date_time }} - {{ event.end_date_time }} {{ event.timezone }}</p>
             </template>
         </Card>
+    </div>
+    <div v-else>
+        <h1>Loading</h1>
     </div>
 </template>
 
@@ -75,6 +75,7 @@ let events = reactive([])
 .event-image-container {
     display: flex;
     justify-content: center;
+    margin-top:20px;
     margin-bottom: 10px;
 }
 
@@ -95,7 +96,7 @@ let events = reactive([])
     margin-bottom: 0;
 }
 
-@media (max-width: 875px) {
+@media (max-width: 960px) {
     .event-container {
         grid-template-columns: repeat(2, 1fr);
     }

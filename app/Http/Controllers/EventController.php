@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 class EventController extends Controller
 {
     public function index(Request $request){
-        $events = Event::all();
+        $events = Event::paginate(9);
         return EventResource::collection($events);
     }
 

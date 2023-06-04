@@ -32,5 +32,4 @@ app.component('Chip', Chip)
 import {Qalendar} from "qalendar";
 app.use(Qalendar)
 
-
 app.mount("#app")

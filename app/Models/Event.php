@@ -31,7 +31,7 @@ class Event extends Model
 
     public function images(): MorphMany
     {
-        return $this->morphMany(Image::class, 'parentable');
+        return $this->morphMany(Image::class, 'parentable')->orderByRaw("FIELD(type , 'profile', 'banner') ASC");
     }
 
     public function getColorSchemeAttribute(){
