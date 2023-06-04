@@ -32,6 +32,9 @@ app.component('Chip', Chip)
 import ScrollTop from 'primevue/scrolltop';
 app.component('ScrollTop', ScrollTop)
 
+import Paginator from "primevue/paginator";
+app.component('Paginator', Paginator)
+
 import {Qalendar} from "qalendar";
 app.use(Qalendar)
 

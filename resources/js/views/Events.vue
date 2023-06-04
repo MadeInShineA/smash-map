@@ -2,25 +2,22 @@
 
 import {onMounted, reactive, ref} from "vue";
 
-let events = reactive([])
+let events = ref({})
 
 let loading = ref(true)
 
-    async function fetchEvents(page) {
+    const fetchEvents = async function (page=1) {
         try {
             const response = await axios.get('/api/events?page='+ page);
-            const fetchedEvents = response.data.data;
-
-            fetchedEvents.forEach(event => {
-                events.push(event);
-            });
+            events.value = response.data;
             loading.value = false;
+            document.body.scrollTop = document.documentElement.scrollTop = 0;
         } catch (error) {
             console.error(error);
         }
     }
 
-    fetchEvents(1)
+    fetchEvents()
 
     onMounted(()=>{
         console.log('Events Mounted')
@@ -30,25 +27,28 @@ let loading = ref(true)
 </script>
 
 <template>
-    <div class="event-container" v-if="!loading">
-        <Card v-for="event in events" :key="event.id" class="event-card">
-            <template #header>
-                <div class="event-image-container">
-                    <img v-if="event.images[0]" :src="event.images[0].url" alt="Event Image" class="event-image">
-                    <img v-else src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png" alt="Event Image" class="event-image">
-                </div>
-            </template>
-            <template #title>
-                <a class="event-title" :href=event.link target="_blank"><i class="pi pi-external-link"/> {{ event.name }}</a>
-            </template>
-            <template #content>
-                <div v-if="!event.is_online" class="event-location"><Chip :label="event.address.name" icon="pi pi-map-marker"></Chip></div>
-                <div v-else class="event-location"><Chip label="Online" icon="pi pi-globe"></Chip></div>
-                <div v-if="event.attendees" class="event-attendees"><Chip :label=event.attendees icon="pi pi-users"></Chip></div>
-                <div class="event-datetime"><Chip :label="event.start_date_time + ' / ' + event.end_date_time + ' ' + event.timezone" icon="pi pi-clock"></Chip></div>
-            </template>
-        </Card>
-    </div>
+    <template v-if="!loading">
+        <div class="event-container" v-if="!loading">
+            <Card v-for="event in events.data" :key="event.id" class="event-card">
+                <template #header>
+                    <div class="event-image-container">
+                        <img v-if="event.images[0]" :src="event.images[0].url" alt="Event Image" class="event-image">
+                        <img v-else src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png" alt="Event Image" class="event-image">
+                    </div>
+                </template>
+                <template #title>
+                    <a class="event-title" :href=event.link target="_blank"><i class="pi pi-external-link"/> {{ event.name }}</a>
+                </template>
+                <template #content>
+                    <div v-if="!event.is_online" class="event-location"><Chip :label="event.address.name" icon="pi pi-map-marker"></Chip></div>
+                    <div v-else class="event-location"><Chip label="Online" icon="pi pi-globe"></Chip></div>
+                    <div v-if="event.attendees" class="event-attendees"><Chip :label=event.attendees icon="pi pi-users"></Chip></div>
+                    <div class="event-datetime"><Chip :label="event.start_date_time + ' / ' + event.end_date_time + ' ' + event.timezone" icon="pi pi-clock"></Chip></div>
+                </template>
+            </Card>
+        </div>
+        <Paginator :rows="9" :totalRecords=events.meta.total></Paginator>
+    </template>
     <div v-else>
         <h1>Loading</h1>
     </div>
@@ -106,6 +106,7 @@ let loading = ref(true)
 .event-datetime {
     margin-bottom: 0;
 }
+
 
 @media (max-width: 960px) {
     .event-container {
