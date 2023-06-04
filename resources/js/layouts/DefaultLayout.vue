@@ -69,7 +69,7 @@ const visible = ref(false);
 
 <template>
 
-<!--    <div class="card relative z-2">-->
+    <div class="card relative z-2">
         <Menubar :model="items" class="header">
             <template #start>
                 <img alt="logo" src="../../images/logo-no-text-no-bg.png" height="40" class="mr-2"/>
@@ -87,15 +87,18 @@ const visible = ref(false);
                 <Button v-if="default_theme" @click="switch_theme" icon="pi pi-moon" severity="secondary" text rounded aria-label="Sun"/>
             </template>
         </Menubar>
-        <router-view></router-view>
-<!--    </div>-->
+        <div class="content">
+            <router-view></router-view>
+        </div>
+    </div>
 
 </template>
 
+TODO Fix the content of the pages being rendered under the navbar
 <style scoped>
 
 .header {
-    position:fixed; /* fixing the position takes it out of html flow - knows
+    position:sticky; /* fixing the position takes it out of html flow - knows
                    nothing about where to locate itself except by browser
                    coordinates */
     left:0;           /* top left corner should start at leftmost spot */

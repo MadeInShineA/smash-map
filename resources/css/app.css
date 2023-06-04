@@ -3,6 +3,10 @@
     font-weight:bold;
 }
 
-.p-card.p-component{
-    margin-top: 100px;
+body{
+    margin:0;
+}
+
+a {
+    color: inherit;
 }

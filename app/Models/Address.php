@@ -17,6 +17,7 @@ class Address extends Model
         'latitude',
         'longitude',
         'country_id',
+        'continent_id'
     ];
 
     public function events():HasMany

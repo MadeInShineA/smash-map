@@ -21,7 +21,8 @@ class Event extends Model
         'name',
         'start_date_time',
         'end_date_time',
-        'link'
+        'attendees',
+        'link',
     ];
 
     public function address():BelongsTo

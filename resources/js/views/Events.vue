@@ -53,8 +53,9 @@ let events = reactive([])
     </div>
 </template>
 
-<!--TODO Double check the style-->
+<!--TODO Double check the style and not forget responsive-->
 <style scoped>
+
 .event-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -64,12 +65,15 @@ let events = reactive([])
     margin-right: 20px;
 }
 
+
 .event-card {
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
     text-align: center;
+    margin-top:15px;
+    margin-bottom: 15px;
 }
 
 .event-image-container {

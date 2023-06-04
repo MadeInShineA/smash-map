@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('timezone')->default('UTC');
             $table->dateTime('start_date_time');
             $table->dateTime('end_date_time');
+            $table->integer('attendees')->nullable();
             $table->string('link')->nullable();
 
 

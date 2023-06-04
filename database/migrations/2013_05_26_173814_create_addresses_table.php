@@ -18,6 +18,7 @@ return new class extends Migration
             //TODO can be ignored if we don't use continents and can directly query inside contry (but is it faster like that ? 1 relation instead of 2)
 //            $table->foreignId('continent_id')->constrained('continents')->restrictOnDelete();
             $table->foreignId('country_id')->constrained('countries')->restrictOnDelete();
+            $table->foreignId('continent_id')->constrained('continents');
             $table->string('name');
             $table->float('latitude');
             $table->float('longitude');
