@@ -90,11 +90,11 @@ const visible = ref(false);
         <div class="content">
             <router-view></router-view>
         </div>
+        <ScrollTop class="scroll-top"></ScrollTop>
     </div>
 
 </template>
 
-TODO Fix the content of the pages being rendered under the navbar
 <style scoped>
 
 .header {
@@ -105,6 +105,10 @@ TODO Fix the content of the pages being rendered under the navbar
     top:0;            /* top left corner should start at topmost spot */
     width:100vw;      /* take up the full browser width */
     z-index:200;  /* high z index so other content scrolls underneath */
+}
+
+.scroll-top{
+    border-radius:60px;
 }
 
 </style>

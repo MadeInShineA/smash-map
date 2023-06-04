@@ -1,8 +1,10 @@
 <script setup>
 
-import {onMounted, reactive} from "vue";
+import {onMounted, reactive, ref} from "vue";
 
 let events = reactive([])
+
+let loading = ref(true)
 
     async function fetchEvents(page) {
         try {
@@ -12,7 +14,7 @@ let events = reactive([])
             fetchedEvents.forEach(event => {
                 events.push(event);
             });
-
+            loading.value = false;
         } catch (error) {
             console.error(error);
         }
@@ -28,7 +30,7 @@ let events = reactive([])
 </script>
 
 <template>
-    <div class="event-container" v-if="events.length > 0">
+    <div class="event-container" v-if="!loading">
         <Card v-for="event in events" :key="event.id" class="event-card">
             <template #header>
                 <div class="event-image-container">

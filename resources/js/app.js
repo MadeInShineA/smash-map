@@ -29,6 +29,9 @@ app.component('Card', Card)
 import Chip from 'primevue/chip';
 app.component('Chip', Chip)
 
+import ScrollTop from 'primevue/scrolltop';
+app.component('ScrollTop', ScrollTop)
+
 import {Qalendar} from "qalendar";
 app.use(Qalendar)
 
