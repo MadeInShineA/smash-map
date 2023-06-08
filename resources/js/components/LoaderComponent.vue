@@ -15,6 +15,7 @@
         justify-content: center;
         align-items: center; /* Add this line to vertically center the logo */
         height: 100%; /* Set the height to the full viewport height */
+        width: 100%;
     }
 
 </style>

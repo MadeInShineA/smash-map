@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 
 
 const items = ref([
@@ -37,14 +37,10 @@ const items = ref([
 
 ]);
 
-onMounted(() => {
-    console.log('Default Layout Mounted')
-})
-
 import {usePrimeVue} from 'primevue/config';
 
 const PrimeVue = usePrimeVue();
-let default_theme = ref(true)
+const default_theme = ref(true)
 
 function switch_theme() {
     default_theme.value = !default_theme.value
@@ -63,13 +59,22 @@ function switch_theme() {
         );
 }
 
+const menuBar = ref()
+
+const menuBarHeight = computed(()=>menuBar.value.clientHeight + 'px')
+
 const visible = ref(false);
+
+onMounted(() => {
+    console.log('Default Layout Mounted')
+    console.log(menuBar.value)
+})
 
 </script>
 
 <template>
-    <div id="menu-bar">
-        <Menubar :model="items" class="header">
+    <header ref="menuBar">
+        <Menubar :model="items">
             <template #start>
                 <img alt="logo" src="../../images/logo-no-text-no-bg.png" height="40" class="mr-2"/>
             </template>
@@ -86,11 +91,12 @@ const visible = ref(false);
                 <Button v-if="default_theme" @click="switch_theme" icon="pi pi-moon" severity="secondary" text rounded aria-label="Sun"/>
             </template>
         </Menubar>
-    </div>
-    <div id="content">
+    </header>
+    <main>
         <router-view></router-view>
-        <ScrollTop target="parent" class="scroll-top"></ScrollTop>
-    </div>
+<!--        <ScrollTop target="parent" class="scroll-top"></ScrollTop>-->
+    </main>
+
 </template>
 
 <style scoped>
@@ -98,6 +104,12 @@ const visible = ref(false);
 .scroll-top{
     margin-right: 10px;
     border-radius:60px;
+}
+
+
+main{
+    height: calc(100vh - v-bind(menuBarHeight));
+    overflow-y: auto;
 }
 
 </style>

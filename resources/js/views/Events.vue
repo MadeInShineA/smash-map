@@ -6,23 +6,22 @@ let events = ref({})
 
 let loading = ref(true)
 
-    const fetchEvents = async function (page=1) {
-        try {
-            loading.value = true;
-            const response = await axios.get('/api/events?page='+ page);
-            events.value = response.data;
-            loading.value = false;
-        } catch (error) {
-            console.error(error);
-        }
+const fetchEvents = async function (page=1) {
+    try {
+        loading.value = true;
+        const response = await axios.get('/api/events?page='+ page);
+        events.value = response.data;
+        loading.value = false;
+    } catch (error) {
+        console.error(error);
     }
+}
 
-    fetchEvents()
+fetchEvents()
 
-    onMounted(()=>{
-        console.log('Events Mounted')
-        console.log(events)
-    })
+onMounted(()=>{
+    console.log('Events Mounted')
+})
 
 </script>
 
@@ -108,7 +107,6 @@ let loading = ref(true)
 .event-datetime {
     margin-bottom: 0;
 }
-
 
 @media (max-width: 960px) {
     .event-container {
