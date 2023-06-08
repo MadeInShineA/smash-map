@@ -7,3 +7,15 @@ body{
     margin:0;
 }
 
+#app{
+    height: 100vh;
+}
+
+#menu-bar{
+    height: 10%;
+}
+
+#content{
+    height: 90%;
+}
+

@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@vitejs/plugin-vue": "^4.2.3",
+        "laravel-vue-pagination": "^4.1.0",
         "primeicons": "^6.0.1",
         "primevue": "^3.29.1",
         "qalendar": "^2.5.0",

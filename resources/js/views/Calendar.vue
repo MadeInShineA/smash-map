@@ -1,13 +1,17 @@
 <template >
     <Qalendar v-if="events.length > 0" :config="config" :events="events" />
-    <h1 v-else>Loading</h1>
+    <template v-else>
+        <LoaderComponent></LoaderComponent>
+    </template>
 </template>
 
 <script>
 import { Qalendar } from "qalendar";
+import LoaderComponent from "@/components/LoaderComponent.vue";
 
 export default {
     components: {
+        LoaderComponent,
         Qalendar,
     },
 

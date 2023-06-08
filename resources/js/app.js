@@ -8,6 +8,9 @@ import App from './App.vue'
 
 const app = createApp(App);
 
+import LoaderComponent from './components/LoaderComponent.vue';
+app.component('LoaderComponent', LoaderComponent)
+
 import {router} from'./router'
 app.use(router)
 
@@ -32,10 +35,10 @@ app.component('Chip', Chip)
 import ScrollTop from 'primevue/scrolltop';
 app.component('ScrollTop', ScrollTop)
 
-import Paginator from "primevue/paginator";
-app.component('Paginator', Paginator)
-
 import {Qalendar} from "qalendar";
 app.use(Qalendar)
+
+import { Bootstrap5Pagination } from 'laravel-vue-pagination';
+app.component('Bootstrap5Pagination', Bootstrap5Pagination)
 
 app.mount("#app")

@@ -6,7 +6,7 @@ import Calendar from "./views/Calendar.vue";
 import Events from "./views/Events.vue";
 import CreateEvent from "./views/CreateEvent.vue";
 import Login from "./views/Login.vue";
-import DefaultLayout from "./layouts/DefaultLayout.vue";
+import DefaultLayout from "./layouts/Layout.vue";
 
 const routes = [
     {

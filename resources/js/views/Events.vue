@@ -1,6 +1,6 @@
 <script setup>
 
-import {onMounted, reactive, ref} from "vue";
+import {onMounted, ref} from "vue";
 
 let events = ref({})
 
@@ -8,10 +8,11 @@ let loading = ref(true)
 
     const fetchEvents = async function (page=1) {
         try {
+            loading.value = true;
             const response = await axios.get('/api/events?page='+ page);
             events.value = response.data;
-            loading.value = false;
             document.body.scrollTop = document.documentElement.scrollTop = 0;
+            loading.value = false;
         } catch (error) {
             console.error(error);
         }
@@ -28,7 +29,7 @@ let loading = ref(true)
 
 <template>
     <template v-if="!loading">
-        <div class="event-container" v-if="!loading">
+        <div class="event-container">
             <Card v-for="event in events.data" :key="event.id" class="event-card">
                 <template #header>
                     <div class="event-image-container">
@@ -47,11 +48,13 @@ let loading = ref(true)
                 </template>
             </Card>
         </div>
-        <Paginator :rows="9" :totalRecords=events.meta.total></Paginator>
+            <div class="pagination-container">
+                <Bootstrap5Pagination :data="events" @pagination-change-page="fetchEvents"></Bootstrap5Pagination>
+            </div>
     </template>
-    <div v-else>
-        <h1>Loading</h1>
-    </div>
+    <template v-else>
+        <LoaderComponent></LoaderComponent>
+    </template>
 </template>
 
 <!--TODO Double check the style and not forget responsive-->
