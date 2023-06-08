@@ -11,7 +11,6 @@ let loading = ref(true)
             loading.value = true;
             const response = await axios.get('/api/events?page='+ page);
             events.value = response.data;
-            document.body.scrollTop = document.documentElement.scrollTop = 0;
             loading.value = false;
         } catch (error) {
             console.error(error);

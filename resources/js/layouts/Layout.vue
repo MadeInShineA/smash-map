@@ -89,23 +89,14 @@ const visible = ref(false);
     </div>
     <div id="content">
         <router-view></router-view>
+        <ScrollTop target="parent" class="scroll-top"></ScrollTop>
     </div>
-    <ScrollTop class="scroll-top"></ScrollTop>
 </template>
 
 <style scoped>
 
-.header {
-    position:sticky; /* fixing the position takes it out of html flow - knows
-                   nothing about where to locate itself except by browser
-                   coordinates */
-    left:0;           /* top left corner should start at leftmost spot */
-    top:0;            /* top left corner should start at topmost spot */
-    width:100vw;      /* take up the full browser width */
-    z-index:200;  /* high z index so other content scrolls underneath */
-}
-
 .scroll-top{
+    margin-right: 10px;
     border-radius:60px;
 }
 
