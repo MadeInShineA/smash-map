@@ -41,9 +41,9 @@ onMounted(()=>{
                     <a class="event-title" :href=event.link target="_blank"><i class="pi pi-external-link"/> {{ event.name }}</a>
                 </template>
                 <template #content>
+                    <div v-if="event.attendees" class="event-attendees"><Chip :label=event.attendees icon="pi pi-users"></Chip></div>
                     <div v-if="!event.is_online" class="event-location"><Chip :label="event.address.name" icon="pi pi-map-marker"></Chip></div>
                     <div v-else class="event-location"><Chip label="Online" icon="pi pi-globe"></Chip></div>
-                    <div v-if="event.attendees" class="event-attendees"><Chip :label=event.attendees icon="pi pi-users"></Chip></div>
                     <div class="event-datetime"><Chip :label="event.start_date_time + ' / ' + event.end_date_time + ' ' + event.timezone" icon="pi pi-clock"></Chip></div>
                 </template>
             </Card>
@@ -66,7 +66,7 @@ onMounted(()=>{
 
 .event-container {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     justify-items: center;
     grid-gap: 20px;
     margin-left: 20px;
@@ -102,6 +102,7 @@ onMounted(()=>{
     color: inherit;
 }
 
+
 .event-location {
     margin-bottom: 10px;
 }
@@ -127,6 +128,8 @@ onMounted(()=>{
     background-color: #dee2e6 ;
     border: none;
     color: black;
+    display: flex;
+    justify-content: center;
 }
 .paginate-buttons:hover {
     background-color: #d8d8d8;
@@ -154,6 +157,11 @@ onMounted(()=>{
     .event-container {
         grid-template-columns: 1fr;
     }
+    .paginate-buttons {
+        height: 30px;
+        width: 30px;
+    }
+
 }
 
 </style>

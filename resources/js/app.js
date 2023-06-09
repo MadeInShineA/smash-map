@@ -1,6 +1,8 @@
 import'./bootstrap';
 
 import "primeicons/primeicons.css";
+import "vue-awesome-paginate/dist/style.css";
+
 
 import {createApp} from 'vue'
 
@@ -32,17 +34,10 @@ app.component('Card', Card)
 import Chip from 'primevue/chip';
 app.component('Chip', Chip)
 
-import ScrollTop from 'primevue/scrolltop';
-app.component('ScrollTop', ScrollTop)
-
 import {Qalendar} from "qalendar";
 app.use(Qalendar)
 
-// import the package
 import VueAwesomePaginate from "vue-awesome-paginate";
 app.use(VueAwesomePaginate)
-
-// import the necessary css file
-import "vue-awesome-paginate/dist/style.css";
 
 app.mount("#app")
