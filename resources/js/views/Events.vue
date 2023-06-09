@@ -17,6 +17,8 @@ const fetchEvents = async function (page=1) {
     }
 }
 
+const currentPage = ref(1);
+
 fetchEvents()
 
 onMounted(()=>{
@@ -46,9 +48,13 @@ onMounted(()=>{
                 </template>
             </Card>
         </div>
-            <div class="pagination-container">
-                <Bootstrap5Pagination :data="events" @pagination-change-page="fetchEvents"></Bootstrap5Pagination>
-            </div>
+            <vue-awesome-paginate
+                :total-items="events.meta.total"
+                :items-per-page="events.meta.per_page"
+                :max-pages-shown="3"
+                v-model="currentPage"
+                :on-click="fetchEvents"
+            />
     </template>
     <template v-else>
         <LoaderComponent></LoaderComponent>
@@ -56,7 +62,7 @@ onMounted(()=>{
 </template>
 
 <!--TODO Double check the style and not forget responsive-->
-<style scoped>
+<style>
 
 .event-container {
     display: grid;
@@ -106,6 +112,36 @@ onMounted(()=>{
 
 .event-datetime {
     margin-bottom: 0;
+}
+
+.pagination-container {
+    column-gap: 10px;
+    display: flex!important;
+    justify-content: center;
+}
+.paginate-buttons {
+    height: 40px;
+    width: 40px;
+    border-radius: 20px;
+    cursor: pointer;
+    background-color: #dee2e6 ;
+    border: none;
+    color: black;
+}
+.paginate-buttons:hover {
+    background-color: #d8d8d8;
+}
+.active-page {
+    background-color: #3498db;
+    border: 1px solid #3498db;
+    color: white;
+}
+.active-page:hover {
+    background-color: #2988c8;
+}
+.back-button:active,
+.next-button:active {
+    background-color: #c4c4c4;
 }
 
 @media (max-width: 960px) {

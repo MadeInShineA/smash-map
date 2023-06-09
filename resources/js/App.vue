@@ -1,10 +1,10 @@
 <script setup>
 
-    import {onMounted} from "vue";
+import {onMounted} from "vue";
 
-    onMounted(()=>{
-        console.log('App Mounted')
-    })
+onMounted(()=>{
+    console.log('App Mounted')
+})
 
 </script>
 

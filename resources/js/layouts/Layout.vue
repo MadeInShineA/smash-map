@@ -40,30 +40,29 @@ const items = ref([
 import {usePrimeVue} from 'primevue/config';
 
 const PrimeVue = usePrimeVue();
-const default_theme = ref(true)
 
+const darkMode = ref(false);
 function switch_theme() {
-    default_theme.value = !default_theme.value
-    default_theme.value
+    darkMode.value = !darkMode.value
+    darkMode.value
         ? PrimeVue.changeTheme(
+            'bootstrap4-light-blue',
+            'bootstrap4-dark-blue',
+            'theme-link',
+            () => {}
+        )
+        : PrimeVue.changeTheme(
             'bootstrap4-dark-blue',
             'bootstrap4-light-blue',
             'theme-link',
             () => {}
         )
-        : PrimeVue.changeTheme(
-            'bootstrap4-light-blue',
-            'bootstrap4-dark-blue',
-            'theme-link',
-            () => {}
-        );
+
 }
 
 const menuBar = ref()
 
 const menuBarHeight = computed(()=>menuBar.value.clientHeight + 'px')
-
-const visible = ref(false);
 
 onMounted(() => {
     console.log('Default Layout Mounted')
@@ -79,16 +78,8 @@ onMounted(() => {
                 <img alt="logo" src="../../images/logo-no-text-no-bg.png" height="40" class="mr-2"/>
             </template>
             <template #end>
-                <!--                <Button label="Show" icon="pi pi-external-link" @click="visible = true" />-->
-
-                <!--                <Dialog v-model:visible="visible" modal header="Login" :style="{ width: '50vw' }" :breakpoints="{ '960px': '75vw', '641px': '100vw' }">-->
-                <!--                        <div class="flex flex-column gap-2">-->
-                <!--                            <label for="username">Username</label>-->
-                <!--                            <InputText id="username" aria-describedby="username-help" />-->
-                <!--                        </div>-->
-                <!--                </Dialog>-->
-                <Button v-if="!default_theme" @click="switch_theme" icon="pi pi-sun" severity="secondary" text rounded aria-label="Sun"/>
-                <Button v-if="default_theme" @click="switch_theme" icon="pi pi-moon" severity="secondary" text rounded aria-label="Sun"/>
+                <Button v-if="!darkMode" @click="switch_theme" icon="pi pi-sun" severity="secondary" text rounded aria-label="Sun"/>
+                <Button v-if="darkMode" @click="switch_theme" icon="pi pi-moon" severity="secondary" text rounded aria-label="Sun"/>
             </template>
         </Menubar>
     </header>
@@ -96,7 +87,6 @@ onMounted(() => {
         <router-view></router-view>
 <!--        <ScrollTop target="parent" class="scroll-top"></ScrollTop>-->
     </main>
-
 </template>
 
 <style scoped>

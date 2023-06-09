@@ -157,95 +157,104 @@ Artisan::command('import-events', function(){
             $melee_event = $event->events[0];
         }
 
-        $event_object = Event::where('start_gg_id', $start_gg_id)->first();
+        if($melee_event){
 
-        if($melee_event && (!$event_object || $event_object->start_gg_updated_at < $start_gg_updated_at)){
-            $is_online = $melee_event->isOnline;
-            $name = $event->name;
-            $video_game = 'Super Smash Bros. Melee';
-            $timezone = $event->timezone;
-
-            $start_date = new DateTime();
-            $start_date->format('Y-m-d h:i:s');
-
-            $start_date->setTimestamp($melee_event->startAt);
-
-            $end_date = new DateTime();
-            $end_date->format('Y-m-d h:i:s');
-            $end_date->setTimestamp($event->endAt);
-
-            $attendees = $melee_event->numEntrants;
-
-            $link = 'https://www.start.gg' . $event->url;
-
-            $event_object = Event::updateOrCreate(['start_gg_id' =>$start_gg_id], ['start_gg_updated_at' =>$start_gg_updated_at, 'is_online' =>$is_online, 'name' =>$name, 'video_game' =>$video_game, 'timezone' =>$timezone, 'start_date_time' =>$start_date, 'end_date_time' =>$end_date, 'attendees' =>$attendees, 'link' =>$link]);
-            var_dump('Event: ' . $event->name . ' created');
-            if(!$event_object->is_online){
-                $latitude = $event->lat;
-                $longitude = $event->lng;
-
-                $address_name = $event->venueAddress;
-                $country_code = $event->countryCode;
-
-                $country = Country::where('code',$country_code)->first();
-
-                # Handle the Oceania case
-                if($country){
-                    $continent = $country->continent;
-                }else{
-                    $continent = $event->venueAddress;
-                }
-
-                $address = $event_object->address;
-
-                if(!$address){
-
-                    //FIXME Doesn't work if we add the latitude and longitude => php float vs SQL float ?
-                    $address = Address::firstOrCreate(['name'=>$address_name, 'country_id' =>$country?->id, 'continent_id' =>$continent->id],['latitude' =>$latitude, 'longitude' =>$longitude]);
-                    $event_object->address_id = $address->id;
-                    $event_object->save();
-                }
+            $event_object = Event::where('start_gg_id', $start_gg_id)->first();
+            if($event_object){
+                $event_attendees = $melee_event->numEntrants;
+                $event_object->attendees = $event_attendees;
+                $event_object->save();
             }
+            if(!$event_object || $event_object->start_gg_updated_at < $start_gg_updated_at){
+                $is_online = $melee_event->isOnline;
+                $name = $event->name;
+                $video_game = 'Super Smash Bros. Melee';
+                $timezone = $event->timezone;
 
-            $event_directory_path = '/events-images/event-' . $event_object->id;
+                $start_date = new DateTime();
+                $start_date->format('Y-m-d h:i:s');
 
-            $event_db_md5s = $event_object->images->pluck('md5')->toArray();
+                $start_date->setTimestamp($melee_event->startAt);
 
-            #TODO Delete the unused images (inside event_db_md5s but not in event_md5s)
+                $end_date = new DateTime();
+                $end_date->format('Y-m-d h:i:s');
+                $end_date->setTimestamp($event->endAt);
+
+                $attendees = $melee_event->numEntrants;
+
+                $link = 'https://www.start.gg' . $event->url;
+
+                $event_object = Event::updateOrCreate(['start_gg_id' =>$start_gg_id], ['start_gg_updated_at' =>$start_gg_updated_at, 'is_online' =>$is_online, 'name' =>$name, 'video_game' =>$video_game, 'timezone' =>$timezone, 'start_date_time' =>$start_date, 'end_date_time' =>$end_date, 'attendees' =>$attendees, 'link' =>$link]);
+                var_dump('Event: ' . $event->name . ' created');
+                if(!$event_object->is_online){
+                    $latitude = $event->lat;
+                    $longitude = $event->lng;
+
+                    $address_name = $event->venueAddress;
+                    $country_code = $event->countryCode;
+
+                    $country = Country::where('code',$country_code)->first();
+
+                    # Handle the Oceania case
+                    if($country){
+                        $continent = $country->continent;
+                    }else{
+                        $continent = $event->venueAddress;
+                    }
+
+                    $address = $event_object->address;
+
+                    if(!$address){
+
+                        //FIXME Doesn't work if we add the latitude and longitude => php float vs SQL float ?
+                        $address = Address::firstOrCreate(['name'=>$address_name, 'country_id' =>$country?->id, 'continent_id' =>$continent->id],['latitude' =>$latitude, 'longitude' =>$longitude]);
+                        $event_object->address_id = $address->id;
+                        $event_object->save();
+                    }
+                }
+
+                $event_directory_path = '/events-images/event-' . $event_object->id;
+
+                $event_db_md5s = $event_object->images->pluck('md5')->toArray();
+
+                #TODO Delete the unused images (inside event_db_md5s but not in event_md5s)
 //            $event_md5s = [];
 
 
-            $images = $event->images;
+                $images = $event->images;
 
-            foreach ($images as $image) {
+                foreach ($images as $image) {
 
-                $uuid = Str::uuid()->toString() . '.jpg';
+                    $uuid = Str::uuid()->toString() . '.jpg';
 
-                $image_type = $image->type;
-                $curl_handle=curl_init();
-                curl_setopt($curl_handle, CURLOPT_URL,$image->url);
-                curl_setopt($curl_handle, CURLOPT_SSL_VERIFYPEER, false);
-                curl_setopt($curl_handle, CURLOPT_CONNECTTIMEOUT, 2);
-                curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($curl_handle, CURLOPT_USERAGENT, 'Melee Map');
-                $query = curl_exec($curl_handle);
+                    $image_type = $image->type;
+                    $curl_handle=curl_init();
+                    curl_setopt($curl_handle, CURLOPT_URL,$image->url);
+                    curl_setopt($curl_handle, CURLOPT_SSL_VERIFYPEER, false);
+                    curl_setopt($curl_handle, CURLOPT_CONNECTTIMEOUT, 2);
+                    curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
+                    curl_setopt($curl_handle, CURLOPT_USERAGENT, 'Melee Map');
+                    $query = curl_exec($curl_handle);
 
-                curl_close($curl_handle);
+                    curl_close($curl_handle);
 
-                $image = $query;
+                    $image = $query;
 
-                $image_md5 = md5($image);
+                    $image_md5 = md5($image);
 
 //                $event_md5s[] = $image_md5;
 
-                if (!in_array($image_md5, $event_db_md5s)) {
-                    Storage::put($event_directory_path . '/' . $image_type . '/' . $uuid, $image);
-                    Image::Create(['parentable_type' =>'App\Models\Event', 'parentable_id' =>$event_object->id, 'type' =>$image_type, 'uuid' => $uuid, 'md5' => $image_md5]);
+                    if (!in_array($image_md5, $event_db_md5s)) {
+                        Storage::put($event_directory_path . '/' . $image_type . '/' . $uuid, $image);
+                        Image::Create(['parentable_type' =>'App\Models\Event', 'parentable_id' =>$event_object->id, 'type' =>$image_type, 'uuid' => $uuid, 'md5' => $image_md5]);
                     }
                 }
-            var_dump('Images for:' . $event->name . ' created');
+                var_dump('Images for:' . $event->name . ' created');
+
+            }
 
         }
+
     }
 
 });

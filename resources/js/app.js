@@ -38,7 +38,11 @@ app.component('ScrollTop', ScrollTop)
 import {Qalendar} from "qalendar";
 app.use(Qalendar)
 
-import { Bootstrap5Pagination } from 'laravel-vue-pagination';
-app.component('Bootstrap5Pagination', Bootstrap5Pagination)
+// import the package
+import VueAwesomePaginate from "vue-awesome-paginate";
+app.use(VueAwesomePaginate)
+
+// import the necessary css file
+import "vue-awesome-paginate/dist/style.css";
 
 app.mount("#app")
