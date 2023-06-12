@@ -14,7 +14,7 @@ const routes = [
         component:DefaultLayout,
         children:[
             {
-                path:'home',
+                path:'',
                 component:Home
             },
             {
@@ -39,7 +39,7 @@ const routes = [
             },
             {
                 path: ':catchAll(.*)',
-                redirect: '/home'
+                redirect: '/'
             }
 
         ]

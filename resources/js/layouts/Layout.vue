@@ -66,7 +66,6 @@ const menuBarHeight = computed(()=>menuBar.value.clientHeight + 'px')
 
 onMounted(() => {
     console.log('Default Layout Mounted')
-    console.log(menuBar.value)
 })
 
 </script>

@@ -16,6 +16,7 @@ class EventController extends Controller
 
         try {
             $timeZone = $this->getVisitorTimezone($request);
+
         }catch (Exception $exception){
             $timeZone = 'UTC';
         }
