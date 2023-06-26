@@ -35,15 +35,14 @@ class Event extends Model
     {
         return $this->morphMany(Image::class, 'parentable')->orderByRaw("FIELD(type , 'profile', 'banner') ASC");
     }
-
     public function getTimezoneStartDateTimeAttribute()
     {
-        return Carbon::parse($this->start_date_time)->timezone('Europe/Lisbon');
+        return Carbon::parse($this->start_date_time, $this->timezone)->timezone($this->address?->country?->timezone)->format('Y-m-d H:i:s');
     }
 
     public function getTimezoneEndDateTimeAttribute()
     {
-        return Carbon::parse($this->end_date_time, $this->timezone)->timezone($this->address?->country?->timezone);
+        return Carbon::parse($this->end_date_time, $this->timezone)->timezone($this->address?->country?->timezone)->format('Y-m-d H:i:s');
     }
 
     public function getTimezoneLabelAttribute(){
@@ -52,13 +51,6 @@ class Event extends Model
         }
         return $this->timezone;
     }
-    public function getColorSchemeAttribute(){
-        if ($this->is_online){
-            return 'online';
-        }
-        return 'offline';
-    }
-
     public function scopeContinent($query, String $continent)
     {
         return $query->whereHas('address.country.continent', function ($query) use ($continent) {

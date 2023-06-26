@@ -37,7 +37,7 @@ Artisan::command('delete-addresses', function (){
 
 Artisan::command('delete-events', function(){
     $events = Event::all();
-    $current_time = date('Y-m-d h:i:s');
+    $current_time = date('Y-m-d H:i:s');
 
 
     foreach ($events as $event){
@@ -150,7 +150,7 @@ Artisan::command('import-events', function(){
         $start_gg_id = $event->id;
         $start_gg_updated_at = new DateTime();
         $start_gg_updated_at->setTimestamp($event->updatedAt);
-        $start_gg_updated_at = $start_gg_updated_at->format('Y-m-d h:i:s');
+        $start_gg_updated_at = $start_gg_updated_at->format('Y-m-d H:i:s');
 
         $melee_event = null;
         if ($event->events){
@@ -161,7 +161,7 @@ Artisan::command('import-events', function(){
 
             $event_object = Event::where('start_gg_id', $start_gg_id)->first();
             if($event_object){
-                $event_attendees = $melee_event->numEntrants;
+                $event_attendees = $melee_event->numEntrantsqq;
                 $event_object->attendees = $event_attendees;
                 $event_object->save();
             }
@@ -172,12 +172,12 @@ Artisan::command('import-events', function(){
                 $timezone = $event->timezone;
 
                 $start_date = new DateTime();
-                $start_date->format('Y-m-d h:i:s');
+                $start_date->format('Y-m-d H:i:s');
 
                 $start_date->setTimestamp($melee_event->startAt);
 
                 $end_date = new DateTime();
-                $end_date->format('Y-m-d h:i:s');
+                $end_date->format('Y-m-d H:i:s');
                 $end_date->setTimestamp($event->endAt);
 
                 $attendees = $melee_event->numEntrants;

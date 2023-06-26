@@ -4,19 +4,19 @@ import {onMounted, ref} from "vue";
 
 const loading = ref(true)
 
-const timezone = ref('UTC')
+// const timezone = ref('UTC')
 
-const getTimezone = async function(){
-    try{
-        const response = await axios.get('/api/timezone')
-        timezone.value=response.data
-    } catch(error){
-        timezone.value = 'UTC'
-    }
-
-}
-
-getTimezone()
+// const getTimezone = async function(){
+//     try{
+//         const response = await axios.get('/api/timezone')
+//         timezone.value=response.data
+//     } catch(error){
+//         timezone.value = 'UTC'
+//     }
+//
+// }
+//
+// getTimezone()
 
 const events = ref({})
 
@@ -58,7 +58,7 @@ onMounted(()=>{
                     <div v-if="event.attendees" class="event-attendees"><Chip :label=event.attendees icon="pi pi-users"></Chip></div>
                     <div v-if="!event.is_online" class="event-location"><Chip :label="event.address.name" icon="pi pi-map-marker"></Chip></div>
                     <div v-else class="event-location"><Chip label="Online" icon="pi pi-globe"></Chip></div>
-                    <div class="event-datetime"><Chip :label="event.timezone_start_date_time + ' / ' + event.timezone_end_date_time + ' ' + timezone" icon="pi pi-clock"></Chip></div>
+                    <div class="event-datetime"><Chip :label="event.timezone_start_date_time + ' / ' + event.timezone_end_date_time + ' ' + event.timezone" icon="pi pi-clock"></Chip></div>
                 </template>
             </Card>
         </div>
