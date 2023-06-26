@@ -55,14 +55,14 @@ onMounted(()=>{
                     <a class="event-title" :href=event.link target="_blank"><i class="pi pi-external-link"/> {{ event.name }}</a>
                 </template>
                 <template #content>
-                    <div v-if="event.attendees" class="event-attendees"><Chip :label=event.attendees icon="pi pi-users"></Chip></div>
+                    <div class="event-attendees"><Chip :label=event.attendees.toString() icon="pi pi-users"></Chip></div>
                     <div v-if="!event.is_online" class="event-location"><Chip :label="event.address.name" icon="pi pi-map-marker"></Chip></div>
                     <div v-else class="event-location"><Chip label="Online" icon="pi pi-globe"></Chip></div>
                     <div class="event-datetime"><Chip :label="event.timezone_start_date_time + ' / ' + event.timezone_end_date_time + ' ' + event.timezone" icon="pi pi-clock"></Chip></div>
                 </template>
             </Card>
         </div>
-            <vue-awesome-paginate
+            <VueAwesomePaginate
                 :total-items="events.meta.total"
                 :items-per-page="events.meta.per_page"
                 :max-pages-shown="3"
@@ -110,23 +110,32 @@ onMounted(()=>{
     max-height: 200px;
 }
 
+//TODO Fix the ellipses
+
 .event-title {
     margin-bottom: 10px;
     text-decoration: none;
     color: inherit;
+    display: block;
+    height: 3em;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 
 .event-location {
     margin-bottom: 10px;
+    height: 4em;
 }
 
 .event-attendees{
     margin-bottom: 10px;
+    height: 2em;
 }
 
 .event-datetime {
     margin-bottom: 0;
+    height:60px;
 }
 
 .pagination-container {
