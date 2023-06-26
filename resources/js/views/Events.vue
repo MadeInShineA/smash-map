@@ -142,8 +142,7 @@ onMounted(()=>{
     background-color: #dee2e6 ;
     border: none;
     color: black;
-    display: flex;
-    justify-content: center;
+    padding: 0;
 }
 .paginate-buttons:hover {
     background-color: #d8d8d8;
