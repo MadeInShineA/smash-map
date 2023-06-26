@@ -110,7 +110,7 @@ onMounted(()=>{
     max-height: 200px;
 }
 
-//TODO Fix the ellipses
+/*TODO Fix the ellipsis */
 
 .event-title {
     margin-bottom: 10px;
