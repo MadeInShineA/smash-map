@@ -107,11 +107,10 @@ onMounted(()=>{
 
 .event-image {
     max-width: 100%;
-    max-height: 200px;
+    height: 200px;
 }
 
 /*TODO Fix the ellipsis */
-
 .event-title {
     margin-bottom: 10px;
     text-decoration: none;
@@ -125,7 +124,7 @@ onMounted(()=>{
 
 .event-location {
     margin-bottom: 10px;
-    height: 4em;
+    height: 5em;
 }
 
 .event-attendees{
@@ -135,7 +134,7 @@ onMounted(()=>{
 
 .event-datetime {
     margin-bottom: 0;
-    height:60px;
+    height: 5em;
 }
 
 .pagination-container {

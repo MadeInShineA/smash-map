@@ -70,8 +70,8 @@ Artisan::command('delete-events', function(){
 
 Artisan::command('import-events', function(){
 
-    Artisan::call('delete-events');
-    Artisan::call('delete-addresses');
+//    Artisan::call('delete-events');
+//    Artisan::call('delete-addresses');
 
 
     $video_game_id = '1';
@@ -161,7 +161,7 @@ Artisan::command('import-events', function(){
 
             $event_object = Event::where('start_gg_id', $start_gg_id)->first();
             if($event_object){
-                $event_attendees = $melee_event->numEntrantsqq;
+                $event_attendees = $melee_event->numEntrants;
                 $event_object->attendees = $event_attendees;
                 $event_object->save();
             }
@@ -218,6 +218,7 @@ Artisan::command('import-events', function(){
                 $event_db_md5s = $event_object->images->pluck('md5')->toArray();
 
                 #TODO Delete the unused images (inside event_db_md5s but not in event_md5s)
+
 //            $event_md5s = [];
 
 
@@ -241,6 +242,7 @@ Artisan::command('import-events', function(){
                     $image = $query;
 
                     $image_md5 = md5($image);
+                #TODO Delete the unused images (inside event_db_md5s but not in event_md5s)
 
 //                $event_md5s[] = $image_md5;
 

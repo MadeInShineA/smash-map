@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -35,13 +36,20 @@ class Event extends Model
     {
         return $this->morphMany(Image::class, 'parentable')->orderByRaw("FIELD(type , 'profile', 'banner') ASC");
     }
-    public function getTimezoneStartDateTimeAttribute()
+    public function getTimezoneStartDateTimeAttribute() :string
     {
         return Carbon::parse($this->start_date_time, $this->timezone)->timezone($this->address?->country?->timezone)->format('Y-m-d H:i:s');
     }
 
-    public function getTimezoneEndDateTimeAttribute()
+    public function getTimezoneEndDateTimeAttribute(): string
     {
+        $start_date = Carbon::parse($this->start_date_time, $this->timezone)->timezone($this->address?->country?->timezone)->format('Y-m-d');
+
+        $end_date = Carbon::parse($this->end_date_time, $this->timezone)->timezone($this->address?->country?->timezone)->format('Y-m-d');
+
+        if($start_date === $end_date){
+            return Carbon::parse($this->end_date_time, $this->timezone)->timezone($this->address?->country?->timezone)->format('H:i:s');
+        }
         return Carbon::parse($this->end_date_time, $this->timezone)->timezone($this->address?->country?->timezone)->format('Y-m-d H:i:s');
     }
 
