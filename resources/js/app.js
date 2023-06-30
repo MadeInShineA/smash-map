@@ -34,6 +34,9 @@ app.component('Card', Card)
 import Chip from 'primevue/chip';
 app.component('Chip', Chip)
 
+import Dropdown from "primevue/dropdown";
+app.component('Dropdown', Dropdown)
+
 import {Qalendar} from "qalendar";
 app.use(Qalendar)
 

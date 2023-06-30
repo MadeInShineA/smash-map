@@ -4,6 +4,8 @@ import {onMounted, ref} from "vue";
 
 const loading = ref(true)
 
+// TODO Update the timezone based on the user's IP
+
 // const timezone = ref('UTC')
 
 // const getTimezone = async function(){
@@ -39,10 +41,25 @@ onMounted(()=>{
     console.log('Events Mounted')
 })
 
+const selectedOrdering = ref();
+
+const orderByOptions = ref([
+     {
+        name: 'Attendees ascending',
+        value: 'attendeesASC'
+    },
+    {
+        name: 'Attendees descending',
+        value: 'attendeesDESC'
+    },
+])
+
+
 </script>
 
 <template>
     <template v-if="!loading">
+        <Dropdown v-model="selectedOrdering" :options="orderByOptions" optionLabel="name"  showClear placeholder="Default ordering"/>
         <div class="event-container">
             <Card v-for="event in events.data" :key="event.id" class="event-card">
                 <template #header>
@@ -62,13 +79,13 @@ onMounted(()=>{
                 </template>
             </Card>
         </div>
-            <VueAwesomePaginate
-                :total-items="events.meta.total"
-                :items-per-page="events.meta.per_page"
-                :max-pages-shown="3"
-                v-model="currentPage"
-                :on-click="fetchEvents"
-            />
+        <VueAwesomePaginate
+        :total-items="events.meta.total"
+        :items-per-page="events.meta.per_page"
+        :max-pages-shown="3"
+        v-model="currentPage"
+        :on-click="fetchEvents"
+        />
     </template>
     <template v-else>
         <LoaderComponent></LoaderComponent>
