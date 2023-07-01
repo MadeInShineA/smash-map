@@ -68,10 +68,10 @@ class Event extends Model
         });
     }
 
-    public function scopeContinent($query, String $continent)
+    public function scopeContinents($query, array $continents)
     {
-        return $query->whereHas('address.country.continent', function ($query) use ($continent) {
-            $query->where('code', $continent,true);
+        return $query->whereHas('address.country.continent', function ($query) use ($continents) {
+            $query->whereIn('code', $continents);
         });
     }
 

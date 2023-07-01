@@ -37,6 +37,9 @@ app.component('Chip', Chip)
 import Dropdown from "primevue/dropdown";
 app.component('Dropdown', Dropdown)
 
+import MultiSelect from "primevue/multiselect";
+app.component('MultiSelect', MultiSelect)
+
 import AutoComplete from "primevue/autocomplete";
 app.component('AutoComplete', AutoComplete)
 

@@ -26,31 +26,33 @@ onMounted(()=>{
     console.log('Events Mounted')
 })
 
-const selectedOrdering = ref();
+const selectedOrdering = ref({name: 'Order by ID', value: 'default'});
 
 const orderByOptions = ref([
+    {name: 'Order by ID', value: 'default'},
     {name: 'Attendees ascending', value: 'attendeesASC'},
     {name: 'Attendees descending', value: 'attendeesDESC'},
     {name: 'Date ascending', value: 'dateASC'},
     {name: 'Date descending', value: 'dateDESC'}
 ])
 
-const selectedEventType = ref();
+const selectedEventType = ref({name: 'All event types', value: 'default'});
 
 const eventTypeOptions = ref([
+    {name: 'All event types', value: 'default'},
     {name: 'Online', value: 'online'},
     {name: 'Offline', value: 'offline'}
 ]);
 
-const selectedEventContinent = ref();
+const selectedEventContinents = ref([]);
 const eventContinentOptions = ref( [
-    { value: 'AF', name: 'Africa' },
-    { value: 'AN', name: 'Antarctica' },
-    { value: 'AS', name: 'Asia' },
-    { value: 'EU', name: 'Europe' },
-    { value: 'NA', name: 'North America' },
-    { value: 'OC', name: 'Oceania' },
-    { value: 'SA', name: 'South America' }
+    { name: 'Africa', value: 'AF' },
+    { name: 'Antarctica', value: 'AN' },
+    { name: 'Asia', value: 'AS' },
+    { name: 'Europe', value: 'EU' },
+    { name: 'North America', value: 'NA' },
+    { name: 'Oceania', value: 'OC' },
+    { name: 'South America', value: 'SA' }
 ])
 
 const eventCountryContent = ref()
@@ -101,8 +103,8 @@ const fetchCountries = async function(){
         eventCountryMatching.value = false
         selectedEventCountry.value = 'default'
 
-        const continent = selectedEventContinent.value?.value ?? 'default';
-        const response  = await axios.get('/api/countries-filter?continent=' + continent);
+        const continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value : 'default'
+        const response  = await axios.get('/api/countries-filter?continent=' + continents);
         eventCountryOptions.value = response.data.data
     }catch (error){
         console.error(error)
@@ -114,14 +116,23 @@ const fetchEvents = async function (page=1) {
     try {
         currentPage.value = page
         loading.value = true
-        const type = selectedEventType.value?.value ?? 'default';
-        const ordering = selectedOrdering.value?.value ?? 'default';
-        const continent = selectedEventContinent.value?.value ?? 'default';
+        const type = selectedEventType.value.value
+        const ordering = selectedOrdering.value.value
+        const continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value.map(obj => obj.value).join(',') : 'default'
         let country = selectedEventCountry.value
         if (country && country.value){
             country = country.value
         }
-        const response = await axios.get('/api/events?page=' + page + '&continent=' + continent + '&country=' + country + '&type='+ type + '&ordering=' + ordering);
+
+        const params = {
+            page: page,
+            type: type,
+            ordering: ordering,
+            continents: continents,
+            country: country
+        }
+        const response = await axios.get('/api/events', {params});
+
         events.value = response.data;
         loading.value = false;
     } catch (error) {
@@ -130,6 +141,7 @@ const fetchEvents = async function (page=1) {
 }
 
 const loadData = async function(){
+
     loading.value = true;
     await fetchCountries()
     await fetchEvents()
@@ -144,13 +156,14 @@ loadData()
 <template>
     <div id="event-filters">
         <div class="event-filter">
-            <Dropdown v-model="selectedOrdering" @change="fetchEvents()" :options="orderByOptions" optionLabel="name" showClear placeholder="Default ordering"/>
+            <Dropdown v-model="selectedOrdering" @change="fetchEvents()" :options="orderByOptions" optionLabel="name" placeholder="Order by ID"/>
         </div>
         <div class="event-filter">
-            <Dropdown v-model="selectedEventType" @change="fetchEvents()" :options="eventTypeOptions" optionLabel="name" showClear placeholder="All event types"/>
+            <Dropdown v-model="selectedEventType" @change="fetchEvents()" :options="eventTypeOptions" optionLabel="name" placeholder="All event types"/>
         </div>
+
         <div class="event-filter">
-            <Dropdown v-model="selectedEventContinent" @change="loadData()" :options="eventContinentOptions" optionLabel="name" showClear placeholder="All continents"/>
+            <MultiSelect v-model="selectedEventContinents" @change="fetchEvents()" :options="eventContinentOptions" filter :maxSelectedLabels="2" optionLabel="name" placeholder="Select Continents"/>
         </div>
         <div class="event-filter">
             <AutoComplete v-model="eventCountryContent" :suggestions="filteredCountries" optionLabel="name" @complete="updateCountryOptions" @focusout="setEventCountryContent" @item-select="selectEventCountryFilter($event.value)" empty-search-message=" " empty-selection-message=" " placeholder="Country" />
