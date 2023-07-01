@@ -102,8 +102,7 @@ const fetchCountries = async function(){
         eventCountryContent.value = null
         eventCountryMatching.value = false
         selectedEventCountry.value = 'default'
-
-        const continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value : 'default'
+        const continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value.map(obj => obj.value).join(',') : 'default'
         const response  = await axios.get('/api/countries-filter?continent=' + continents);
         eventCountryOptions.value = response.data.data
     }catch (error){
@@ -163,7 +162,7 @@ loadData()
         </div>
 
         <div class="event-filter">
-            <MultiSelect v-model="selectedEventContinents" @change="fetchEvents()" :options="eventContinentOptions" filter :maxSelectedLabels="2" optionLabel="name" placeholder="Select Continents"/>
+            <MultiSelect v-model="selectedEventContinents" @change="loadData()" :options="eventContinentOptions" filter display="chip" :maxSelectedLabels="2" optionLabel="name" placeholder="Select Continents"/>
         </div>
         <div class="event-filter">
             <AutoComplete v-model="eventCountryContent" :suggestions="filteredCountries" optionLabel="name" @complete="updateCountryOptions" @focusout="setEventCountryContent" @item-select="selectEventCountryFilter($event.value)" empty-search-message=" " empty-selection-message=" " placeholder="Country" />
