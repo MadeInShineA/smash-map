@@ -20,22 +20,7 @@ const loading = ref(true)
 //
 // getTimezone()
 
-const events = ref({})
-
-const fetchEvents = async function (page=1, type='default', ordering='default') {
-    try {
-        loading.value = true;
-        const response = await axios.get('/api/events?page=' + page + '&type='+ type + '&ordering=' + ordering);
-        events.value = response.data;
-        loading.value = false;
-    } catch (error) {
-        console.error(error);
-    }
-}
-
 const currentPage = ref(1);
-
-fetchEvents()
 
 onMounted(()=>{
     console.log('Events Mounted')
@@ -44,85 +29,168 @@ onMounted(()=>{
 const selectedOrdering = ref();
 
 const orderByOptions = ref([
-     {
-        name: 'Attendees ascending',
-        value: 'attendeesASC'
-    },
-    {
-        name: 'Attendees descending',
-        value: 'attendeesDESC'
-    },
-    {
-        name: 'Date ascending',
-        value: 'dateASC'
-    },
-    {
-        name: 'Date descending',
-        value: 'dateDESC'
-    }
+    {name: 'Attendees ascending', value: 'attendeesASC'},
+    {name: 'Attendees descending', value: 'attendeesDESC'},
+    {name: 'Date ascending', value: 'dateASC'},
+    {name: 'Date descending', value: 'dateDESC'}
 ])
 
 const selectedEventType = ref();
 
-const eventTypesOptions = ref([
-    {
-        name: 'Online',
-        value: 'online'
-    },
-    {
-        name: 'Offline',
-        value: 'offline'
-    }
+const eventTypeOptions = ref([
+    {name: 'Online', value: 'online'},
+    {name: 'Offline', value: 'offline'}
 ]);
 
-const applyFilters = function (){
-    const type = selectedEventType.value ?? 'default'
-    const ordering = selectedOrdering.value ?? 'default'
+const selectedEventContinent = ref();
+const eventContinentOptions = ref( [
+    { value: 'AF', name: 'Africa' },
+    { value: 'AN', name: 'Antarctica' },
+    { value: 'AS', name: 'Asia' },
+    { value: 'EU', name: 'Europe' },
+    { value: 'NA', name: 'North America' },
+    { value: 'OC', name: 'Oceania' },
+    { value: 'SA', name: 'South America' }
+])
 
-    fetchEvents(1, type.value, ordering.value)
+const eventCountryContent = ref()
+const eventCountryMatching = ref(true)
+const selectedEventCountry = ref('default');
+const filteredCountries = ref();
+
+const updateCountryOptions = (event) => {
+    if (!event.query.trim().length) {
+        filteredCountries.value = [...eventCountryOptions.value];
+    } else {
+        filteredCountries.value = eventCountryOptions.value.filter((country) => {
+            return country.name.toLowerCase().startsWith(event.query.toLowerCase());
+        });
+    }
+    if(filteredCountries.value[0]){
+        selectedEventCountry.value = filteredCountries.value[0]
+        eventCountryMatching.value = true
+    }else{
+        selectedEventCountry.value = null
+        eventCountryMatching.value = false
+    }
+    fetchEvents()
 }
 
+const selectEventCountryFilter = function(country){
+    selectedEventCountry.value = country
+    eventCountryMatching.value = true
+    setEventCountryContent()
+    fetchEvents()
+}
+
+const setEventCountryContent = function(){
+    if (eventCountryMatching.value && eventCountryContent.value !== ''){
+        eventCountryContent.value = selectedEventCountry.value
+    }else{
+        eventCountryContent.value =''
+        selectedEventCountry.value = 'default'
+        fetchEvents()
+    }
+}
+
+const eventCountryOptions = ref([]);
+
+const fetchCountries = async function(){
+    try {
+        eventCountryContent.value = null
+        eventCountryMatching.value = false
+        selectedEventCountry.value = 'default'
+
+        const continent = selectedEventContinent.value?.value ?? 'default';
+        const response  = await axios.get('/api/countries-filter?continent=' + continent);
+        eventCountryOptions.value = response.data.data
+    }catch (error){
+        console.error(error)
+    }
+}
+
+const events = ref({})
+const fetchEvents = async function (page=1) {
+    try {
+        currentPage.value = page
+        loading.value = true
+        const type = selectedEventType.value?.value ?? 'default';
+        const ordering = selectedOrdering.value?.value ?? 'default';
+        const continent = selectedEventContinent.value?.value ?? 'default';
+        let country = selectedEventCountry.value
+        if (country && country.value){
+            country = country.value
+        }
+        const response = await axios.get('/api/events?page=' + page + '&continent=' + continent + '&country=' + country + '&type='+ type + '&ordering=' + ordering);
+        events.value = response.data;
+        loading.value = false;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+const loadData = async function(){
+    loading.value = true;
+    await fetchCountries()
+    await fetchEvents()
+
+    loading.value = false
+}
+
+loadData()
 
 </script>
 
 <template>
     <div id="event-filters">
         <div class="event-filter">
-            <Dropdown v-model="selectedOrdering" @change="applyFilters" :options="orderByOptions" optionLabel="name"  showClear placeholder="Default ordering"/>
+            <Dropdown v-model="selectedOrdering" @change="fetchEvents()" :options="orderByOptions" optionLabel="name" showClear placeholder="Default ordering"/>
         </div>
         <div class="event-filter">
-            <Dropdown v-model="selectedEventType" @change="applyFilters" :options="eventTypesOptions" optionLabel="name"  showClear placeholder="All event types"/>
+            <Dropdown v-model="selectedEventType" @change="fetchEvents()" :options="eventTypeOptions" optionLabel="name" showClear placeholder="All event types"/>
+        </div>
+        <div class="event-filter">
+            <Dropdown v-model="selectedEventContinent" @change="loadData()" :options="eventContinentOptions" optionLabel="name" showClear placeholder="All continents"/>
+        </div>
+        <div class="event-filter">
+            <AutoComplete v-model="eventCountryContent" :suggestions="filteredCountries" optionLabel="name" @complete="updateCountryOptions" @focusout="setEventCountryContent" @item-select="selectEventCountryFilter($event.value)" empty-search-message=" " empty-selection-message=" " placeholder="Country" />
         </div>
     </div>
     <template v-if="!loading">
-        <div class="event-container">
-            <Card v-for="event in events.data" :key="event.id" class="event-card">
-                <template #header>
-                    <div class="event-image-container">
-                        <img v-if="event.images[0]" :src="event.images[0].url" alt="Event Image" class="event-image">
-                        <img v-else src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png" alt="Event Image" class="event-image">
-                    </div>
-                </template>
-                <template #title>
-                    <a class="event-title" :href=event.link target="_blank"><i class="pi pi-external-link"/> {{ event.name }}</a>
-                </template>
-                <template #content>
-                    <div class="event-attendees"><Chip :label=event.attendees.toString() icon="pi pi-users"></Chip></div>
-                    <div v-if="!event.is_online" class="event-location"><Chip :label="event.address.name" icon="pi pi-map-marker"></Chip></div>
-                    <div v-else class="event-location"><Chip label="Online" icon="pi pi-globe"></Chip></div>
-                    <div class="event-datetime"><Chip :label="event.timezone_start_date_time + ' / ' + event.timezone_end_date_time + ' ' + event.timezone" icon="pi pi-clock"></Chip></div>
-                </template>
-            </Card>
-        </div>
-        <VueAwesomePaginate
-        :total-items="events.meta.total"
-        :items-per-page="events.meta.per_page"
-        :max-pages-shown="3"
-        v-model="currentPage"
-        :on-click="fetchEvents"
-        />
+        <template v-if="events.data.length > 0">
+            <div class="event-container">
+                <Card v-for="event in events.data" :key="event.id" class="event-card">
+                    <template #header>
+                        <div class="event-image-container">
+                            <img v-if="event.images[0]" :src="event.images[0].url" alt="Event Image" class="event-image">
+                            <img v-else src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png" alt="Event Image" class="event-image">
+                        </div>
+                    </template>
+                    <template #title>
+                        <a class="event-title" :href=event.link target="_blank"><i class="pi pi-external-link"/> {{ event.name }}</a>
+                    </template>
+                    <template #content>
+                        <div class="event-attendees"><Chip :label=event.attendees.toString() icon="pi pi-users"></Chip></div>
+                        <div v-if="!event.is_online" class="event-location"><Chip :label="event.address.name" icon="pi pi-map-marker"></Chip></div>
+                        <div v-else class="event-location"><Chip label="Online" icon="pi pi-globe"></Chip></div>
+                        <div class="event-datetime"><Chip :label="event.timezone_start_date_time + ' / ' + event.timezone_end_date_time + ' ' + event.timezone" icon="pi pi-clock"></Chip></div>
+                    </template>
+                </Card>
+            </div>
+            <VueAwesomePaginate
+                :total-items="events.meta.total"
+                :items-per-page="events.meta.per_page"
+                :max-pages-shown="3"
+                v-model="currentPage"
+                :on-click="fetchEvents"
+            />
+        </template>
+        <template v-else>
+            <h1>No events</h1>
+        </template>
+
     </template>
-    <template v-else>
+    <template v-if="loading">
         <LoaderComponent></LoaderComponent>
     </template>
 </template>
@@ -178,7 +246,7 @@ const applyFilters = function (){
 }
 
 .p-card-title{
-    height: 3em;
+    height: 2em;
 }
 
 /*TODO Fix the ellipsis */
@@ -187,7 +255,7 @@ const applyFilters = function (){
     text-decoration: none;
     color: inherit;
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;

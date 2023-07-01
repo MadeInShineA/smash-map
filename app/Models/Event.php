@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use PhpParser\Node\Scalar\String_;
 
 class Event extends Model
 {
@@ -59,10 +60,18 @@ class Event extends Model
         }
         return $this->timezone;
     }
+
+    public function scopeCountry($query, String $country)
+    {
+        return $query->whereHas('address.country', function ($query) use ($country) {
+            $query->where('code', $country,true);
+        });
+    }
+
     public function scopeContinent($query, String $continent)
     {
         return $query->whereHas('address.country.continent', function ($query) use ($continent) {
-            $query->where('name', $continent,true);
+            $query->where('code', $continent,true);
         });
     }
 

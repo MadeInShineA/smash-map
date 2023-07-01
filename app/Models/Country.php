@@ -21,4 +21,11 @@ class Country extends Model
     {
         return $this->belongsTo(Continent::class);
     }
+
+    public function scopeContinent($query, String $continent)
+    {
+        return $query->whereHas('continent', function ($query) use ($continent) {
+            $query->where('code', $continent);
+        });
+    }
 }

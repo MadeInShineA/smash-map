@@ -28,6 +28,20 @@ class EventController extends Controller
 
         try {
             $events = Event::query();
+            $continent = $request->input('continent');
+            switch ($continent){
+                case 'default':
+                    break;
+                default:
+                    $events->continent($continent);
+            }
+            $country = $request->input('country');
+            switch ($country){
+                case 'default':
+                    break;
+                default:
+                    $events->country($country);
+            }
             $type = $request->input('type');
             switch ($type){
                 case 'default':
