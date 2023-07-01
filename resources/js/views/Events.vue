@@ -22,10 +22,10 @@ const loading = ref(true)
 
 const events = ref({})
 
-const fetchEvents = async function (page=1) {
+const fetchEvents = async function (page=1, type='default', ordering='default') {
     try {
         loading.value = true;
-        const response = await axios.get('/api/events?page='+ page);
+        const response = await axios.get('/api/events?page=' + page + '&type='+ type + '&ordering=' + ordering);
         events.value = response.data;
         loading.value = false;
     } catch (error) {
@@ -52,14 +52,49 @@ const orderByOptions = ref([
         name: 'Attendees descending',
         value: 'attendeesDESC'
     },
+    {
+        name: 'Date ascending',
+        value: 'dateASC'
+    },
+    {
+        name: 'Date descending',
+        value: 'dateDESC'
+    }
 ])
+
+const selectedEventType = ref();
+
+const eventTypesOptions = ref([
+    {
+        name: 'Online',
+        value: 'online'
+    },
+    {
+        name: 'Offline',
+        value: 'offline'
+    }
+]);
+
+const applyFilters = function (){
+    const type = selectedEventType.value ?? 'default'
+    const ordering = selectedOrdering.value ?? 'default'
+
+    fetchEvents(1, type.value, ordering.value)
+}
 
 
 </script>
 
 <template>
+    <div id="event-filters">
+        <div class="event-filter">
+            <Dropdown v-model="selectedOrdering" @change="applyFilters" :options="orderByOptions" optionLabel="name"  showClear placeholder="Default ordering"/>
+        </div>
+        <div class="event-filter">
+            <Dropdown v-model="selectedEventType" @change="applyFilters" :options="eventTypesOptions" optionLabel="name"  showClear placeholder="All event types"/>
+        </div>
+    </div>
     <template v-if="!loading">
-        <Dropdown v-model="selectedOrdering" :options="orderByOptions" optionLabel="name"  showClear placeholder="Default ordering"/>
         <div class="event-container">
             <Card v-for="event in events.data" :key="event.id" class="event-card">
                 <template #header>
@@ -92,8 +127,23 @@ const orderByOptions = ref([
     </template>
 </template>
 
-<!--TODO Double check the style and not forget responsive-->
+<!-- TODO Double check the style and not forget responsive -->
 <style>
+
+/*TODO responsive filters style */
+#event-filters{
+    display:flex;
+}
+
+.event-filter{
+    margin:20px;
+}
+
+/* Hide the No selected item text on the dropdowns */
+
+.p-hidden-accessible{
+    display:none;
+}
 
 .event-container {
     display: grid;
@@ -127,13 +177,18 @@ const orderByOptions = ref([
     height: 200px;
 }
 
+.p-card-title{
+    height: 3em;
+}
+
 /*TODO Fix the ellipsis */
 .event-title {
     margin-bottom: 10px;
     text-decoration: none;
     color: inherit;
-    display: block;
-    height: 3em;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
 }
@@ -185,13 +240,19 @@ const orderByOptions = ref([
     background-color: #c4c4c4;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 1100px) {
+    .event-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 850px) {
     .event-container {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 700px) {
     .event-container {
         grid-template-columns: 1fr;
     }
@@ -199,7 +260,6 @@ const orderByOptions = ref([
         height: 30px;
         width: 30px;
     }
-
 }
 
 </style>

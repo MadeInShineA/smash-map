@@ -27,7 +27,35 @@ class EventController extends Controller
 //        }
 
         try {
-            $events = Event::paginate(12);
+            $events = Event::query();
+            $type = $request->input('type');
+            switch ($type){
+                case 'default':
+                    break;
+                case 'online':
+                    $events->where('is_online', true);
+                    break;
+                case 'offline':
+                    $events->where('is_online', false);
+            }
+            $ordering = $request->input('ordering');
+            switch ($ordering){
+                case 'default':
+                    break;
+                case 'attendeesASC':
+                    $events->orderBy('attendees', 'asc');
+                    break;
+                case 'attendeesDESC':
+                    $events->orderBy('attendees', 'desc');
+                    break;
+                case 'dateASC':
+                    $events->orderBy('start_date_time', 'asc');
+                    break;
+                case 'dateDESC':
+                    $events->orderBy('start_date_time', 'desc');
+                    break;
+            }
+            $events = $events->paginate(12);
             return EventResource::collection($events);
         }catch (Exception $exception){
             return $this->sendError($exception, ['An error occurred while retrieving the events'], 500);
