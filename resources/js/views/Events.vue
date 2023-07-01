@@ -201,6 +201,8 @@ loadData()
 /*TODO responsive filters style */
 #event-filters{
     display:flex;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 .event-filter{
