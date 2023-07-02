@@ -24,7 +24,7 @@ onMounted(()=>{
 
 
 const orderByOptions = ref([
-    {name: 'Order by ID', value: 'default'},
+    {name: 'Sort by ID ascending', value: 'default'},
     {name: 'Attendees ascending', value: 'attendeesASC'},
     {name: 'Attendees descending', value: 'attendeesDESC'},
     {name: 'Date ascending', value: 'dateASC'},
@@ -48,8 +48,8 @@ const eventContinentOptions = ref( [
 ])
 
 const currentPage = ref(1);
-const selectedOrderBy = ref({name: 'Order by ID', value: 'default'});
-const selectedEventType = ref({name: 'All event types', value: 'default'});
+const selectedOrderBy = ref({name: 'Default sort', value: 'default'});
+const selectedEventType = ref({name: 'Default type', value: 'default'});
 const selectedEventContinents = ref([]);
 const selectedEventCountries = ref([]);
 
@@ -108,7 +108,7 @@ watch(currentPage, function (page){
 <template>
     <div id="event-filters">
         <div class="event-filter">
-            <Dropdown v-model="selectedOrderBy" :options="orderByOptions" optionLabel="name" placeholder="Order by ID"/>
+            <Dropdown v-model="selectedOrderBy" :options="orderByOptions" optionLabel="name" placeholder="Sort by ID ascending"/>
         </div>
         <div class="event-filter">
             <Dropdown v-model="selectedEventType" :options="eventTypeOptions" optionLabel="name" placeholder="All event types"/>
@@ -142,7 +142,7 @@ watch(currentPage, function (page){
                 <Card v-for="event in events.data" :key="event.id" class="event-card">
                     <template #header>
                         <div class="event-image-container">
-                            <img v-if="event.images[0]" :src="event.images[0].url" alt="Event Image" class="event-image">
+                            <img v-if="event.images[0]" :src="event.images[0].url" alt="Event Image" class="event-image" @error="$event.target.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png'">
                             <img v-else src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png" alt="Event Image" class="event-image">
                         </div>
                     </template>
@@ -150,7 +150,7 @@ watch(currentPage, function (page){
                         <a class="event-title" :href=event.link target="_blank"><i class="pi pi-external-link"/> {{ event.name }}</a>
                     </template>
                     <template #content>
-                        <div class="event-attendees"><Chip :label=event.attendees.toString() icon="pi pi-users"></Chip></div>
+                        <div class="event-attendees"><Chip :label="event.attendees || event.attendees === 0 ? event.attendees.toString() : 'Private'" icon="pi pi-users"></Chip></div>
                         <div v-if="!event.is_online" class="event-location"><Chip :label="event.address.name" icon="pi pi-map-marker"></Chip></div>
                         <div v-else class="event-location"><Chip label="Online" icon="pi pi-globe"></Chip></div>
                         <div class="event-datetime"><Chip :label="event.timezone_start_date_time + ' / ' + event.timezone_end_date_time + ' ' + event.timezone" icon="pi pi-clock"></Chip></div>

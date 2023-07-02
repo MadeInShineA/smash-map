@@ -68,8 +68,7 @@ Artisan::command('delete-events', function(){
     }
 });
 
-Artisan::command('import-events', function(){
-
+Artisan::command('import-100-events {page?}', function($page=1){
 //    Artisan::call('delete-events');
 //    Artisan::call('delete-addresses');
 
@@ -78,12 +77,11 @@ Artisan::command('import-events', function(){
     $apiToken = env('START_GG_API_KEY');
 
     $endpointUrl = 'https://api.start.gg/gql/alpha';
-
-    $query = 'query TournamentsByVideogame($videogameId: ID!) {
+    $query = 'query TournamentsByVideogame($videogameId: ID!, $page: Int!) {
       tournaments(query: {
         sortBy: "startAt asc"
         perPage: 100
-        page: 1
+        page: $page
         filter: {
           upcoming: true
           videogameIds: [$videogameId]
@@ -123,7 +121,7 @@ Artisan::command('import-events', function(){
 
     $data = [
       'query' => $query,
-      'variables' => ['videogameId' => $video_game_id],
+      'variables' => ['videogameId' => $video_game_id, 'page'=>$page],
     ];
 
     $ch = curl_init();
@@ -261,6 +259,12 @@ Artisan::command('import-events', function(){
 
 });
 
+Artisan::command('import-500-events', function (){
+    foreach (range(1, 5) as $page){
+            Artisan::call('import-100-events', ['page' => $page]);
+    }
+});
+
 Artisan::command('import-characters-images',function(){
     $characters = Character::all();
 
@@ -293,6 +297,7 @@ Artisan::command('import-countries-images', function (){
     foreach ($countries as $country){
 
         $url = 'https://flagsapi.com/' . $country->code .'/flat/64.png';
+//        $url = 'http://www.geognos.com/api/en/countries/flag/' . $country->code . '.png';
         $curl_handle=curl_init();
         curl_setopt($curl_handle, CURLOPT_URL,$url);
         curl_setopt($curl_handle, CURLOPT_SSL_VERIFYPEER, false);
