@@ -28,49 +28,72 @@ class EventController extends Controller
 
         try {
             $events = Event::query();
-            $continents = $request->input('continents');
-            switch ($continents){
-                case 'default':
-                    break;
-                default:
-                    $continents = explode(',', $continents);
-                    $events->continents($continents);
+
+            if($request->has('name')){
+                $name = $request->input('name');
+                switch ($name){
+                    case 'default':
+                        break;
+                    default:
+                        $events->whereRaw("UPPER(name) LIKE '%" . strtoupper($name) . "%'");;
+                }
             }
-            $countries = $request->input('countries');
-            switch ($countries){
-                case 'default':
-                    break;
-                default:
-                    $countries = explode(',', $countries);
-                    $events->countries($countries);
+
+            if ($request->has('continents')){
+                $continents = $request->input('continents');
+                switch ($continents){
+                    case 'default':
+                        break;
+                    default:
+                        $continents = explode(',', $continents);
+                        $events->continents($continents);
+                }
             }
-            $type = $request->input('type');
-            switch ($type){
-                case 'default':
-                    break;
-                case 'online':
-                    $events->where('is_online', true);
-                    break;
-                case 'offline':
-                    $events->where('is_online', false);
+
+            if($request->has('countries')){
+                $countries = $request->input('countries');
+                switch ($countries){
+                    case 'default':
+                        break;
+                    default:
+                        $countries = explode(',', $countries);
+                        $events->countries($countries);
+                }
             }
-            $ordering = $request->input('ordering');
-            switch ($ordering){
-                case 'default':
-                    break;
-                case 'attendeesASC':
-                    $events->orderBy('attendees', 'asc');
-                    break;
-                case 'attendeesDESC':
-                    $events->orderBy('attendees', 'desc');
-                    break;
-                case 'dateASC':
-                    $events->orderBy('start_date_time', 'asc');
-                    break;
-                case 'dateDESC':
-                    $events->orderBy('start_date_time', 'desc');
-                    break;
+
+            if ($request->has('type')){
+                $type = $request->input('type');
+                switch ($type){
+                    case 'default':
+                        break;
+                    case 'online':
+                        $events->where('is_online', true);
+                        break;
+                    case 'offline':
+                        $events->where('is_online', false);
+                }
             }
+
+            if ($request->has('ordering')){
+                $ordering = $request->input('ordering');
+                switch ($ordering){
+                    case 'default':
+                        break;
+                    case 'attendeesASC':
+                        $events->orderBy('attendees', 'asc');
+                        break;
+                    case 'attendeesDESC':
+                        $events->orderBy('attendees', 'desc');
+                        break;
+                    case 'dateASC':
+                        $events->orderBy('start_date_time', 'asc');
+                        break;
+                    case 'dateDESC':
+                        $events->orderBy('start_date_time', 'desc');
+                        break;
+                }
+            }
+
             $events = $events->paginate(12);
             return EventResource::collection($events);
         }catch (Exception $exception){

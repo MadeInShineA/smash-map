@@ -2,8 +2,6 @@
 
 import {onMounted, ref} from "vue";
 
-const loading = ref(true)
-
 // TODO Update the timezone based on the user's IP
 
 // const timezone = ref('UTC')
@@ -56,79 +54,62 @@ const eventContinentOptions = ref( [
 ])
 
 const selectedEventCountries = ref([]);
-const eventCountryOptions = ref([]);
 
-const fetchCountries = async function(){
-    try {
-        const continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value.map(obj => obj.value).join(',') : 'default'
-        const response  = await axios.get('/api/countries-filter?continent=' + continents);
-        eventCountryOptions.value = response.data.data
 
-        // Erase the countries from selectedEventCountries if they aren't supposed to be selectable anymore
-        selectedEventCountries.value = selectedEventCountries.value.filter((obj1) => eventCountryOptions.value.some((obj2) => obj2.value === obj1.value));
-    }catch (error){
-        console.error(error)
-    }
-}
+import { useAxios } from '@vueuse/integrations/useAxios'
+import { watchDebounced } from '@vueuse/core'
+import { watch } from 'vue'
+const selectedEventName = ref('')
 
-const events = ref({})
-const fetchEvents = async function (page=1) {
-    try {
-        currentPage.value = page
-        loading.value = true
-        const type = selectedEventType.value.value
-        const ordering = selectedOrdering.value.value
+watch(selectedEventType, (type) => {
+    if (type.value !== 'online') return
+    selectedEventCountries.value = []
+    selectedEventContinents.value = []
+}, { immediate: true })
 
-        if(type === 'online'){
-            selectedEventCountries.value= []
-            selectedEventContinents.value = []
+const {data: eventCountryOptions, isFinished: countriesFetched, execute: fetchCountries} = useAxios('/api/countries-filter')
+watch(selectedEventContinents, function(continents){
+    continents = continents.length > 0 ? continents.map(obj => obj.value).join(',') : 'default'
+    fetchCountries(
+        {
+            params: {continents},
+
+            //TODO Directly add the data to eventCountryOptions
+            // transformResponse: function(response){
+            //     return response['data']
+            // },
+
         }
-        const continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value.map(obj => obj.value).join(',') : 'default'
-        const countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.map(obj => obj.value).join(',') : 'default'
+    )
+} ,{immediate: true})
 
-        const params = {
-            page: page,
-            type: type,
-            ordering: ordering,
-            continents: continents,
-            countries: countries
-        }
-        const response = await axios.get('/api/events', {params});
+watch(eventCountryOptions, (availableCountries) => {
+    selectedEventCountries.value = selectedEventCountries.value.filter(country => availableCountries.data.includes(country))
+})
 
-        events.value = response.data;
-        loading.value = false;
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-const loadData = async function(){
-
-    loading.value = true;
-    await fetchCountries()
-    await fetchEvents()
-
-    loading.value = false
-}
-
-loadData()
+const { data: events, isFinished: eventsFetched, execute: fetchEvents } = useAxios('/api/events')
+watchDebounced([selectedEventName, selectedEventType, selectedOrdering, selectedEventContinents, selectedEventCountries], function([name, { value: type }, { value: ordering }, continents, countries]){
+    continents = continents.length > 0 ? continents.map(obj => obj.value).join(',') : 'default'
+    countries = countries.length > 0 ? countries.map(obj => obj.value).join(',') : 'default'
+    fetchEvents({ params: { page: 1, type, ordering, continents, countries, name }})
+}, { immediate: true, debounce: 200, maxWait: 1000 })
 
 </script>
 
 <template>
     <div id="event-filters">
         <div class="event-filter">
-            <Dropdown v-model="selectedOrdering" @change="fetchEvents()" :options="orderByOptions" optionLabel="name" placeholder="Order by ID"/>
+            <Dropdown v-model="selectedOrdering" :options="orderByOptions" optionLabel="name" placeholder="Order by ID"/>
         </div>
         <div class="event-filter">
-            <Dropdown v-model="selectedEventType" @change="fetchEvents()" :options="eventTypeOptions" optionLabel="name" placeholder="All event types"/>
+            <Dropdown v-model="selectedEventType" :options="eventTypeOptions" optionLabel="name" placeholder="All event types"/>
         </div>
 
         <div class="event-filter">
-            <MultiSelect v-model="selectedEventContinents" @change="loadData()" :options="eventContinentOptions" filter display="chip" :disabled="selectedEventType.value === 'online'" :maxSelectedLabels="2" optionLabel="name" placeholder="Select Continents"/>
+            <MultiSelect v-model="selectedEventContinents" :options="eventContinentOptions" filter display="chip" :disabled="selectedEventType.value === 'online'" :maxSelectedLabels="2" optionLabel="name" placeholder="Select Continents"/>
         </div>
         <div class="event-filter">
-            <MultiSelect v-model="selectedEventCountries" @change="fetchEvents()" :options="eventCountryOptions" filter display="chip" :disabled="selectedEventType.value === 'online'" :maxSelectedLabels="2" optionLabel="name" placeholder="Select Countries">
+            <MultiSelect v-if="countriesFetched" v-model="selectedEventCountries" :options="eventCountryOptions.data" filter display="chip" :disabled="selectedEventType.value === 'online'" :maxSelectedLabels="2" optionLabel="name" placeholder="Select Countries">
                 <template #option="slotProps">
                     <div class="country-flag">
                         <img :alt="slotProps.option.name" :src="slotProps.option.image.url" class="country-flag-image" />
@@ -136,9 +117,17 @@ loadData()
                     </div>
                 </template>
             </MultiSelect>
+            <MultiSelect v-else disabled loading filter placeholder="Select Countries"></MultiSelect>
+
+        </div>
+        <div class="event-filter">
+            <span class="p-input-icon-left">
+                <i class="pi pi-search"/>
+                <InputText v-model="selectedEventName" placeholder="Event name"></InputText>
+            </span>
         </div>
     </div>
-    <template v-if="!loading">
+    <template v-if="countriesFetched && eventsFetched">
         <template v-if="events.data.length > 0">
             <div class="event-container">
                 <Card v-for="event in events.data" :key="event.id" class="event-card">
@@ -168,11 +157,11 @@ loadData()
             />
         </template>
         <template v-else>
-            <h1>No events</h1>
+            <h1 id="no-events">No events correspond to your filters</h1>
         </template>
 
     </template>
-    <template v-if="loading">
+    <template v-if="!countriesFetched || !eventsFetched">
         <LoaderComponent></LoaderComponent>
     </template>
 </template>
@@ -268,6 +257,10 @@ loadData()
 .event-datetime {
     margin-bottom: 0;
     height: 5em;
+}
+
+#no-events{
+    text-align:center;
 }
 
 .pagination-container {

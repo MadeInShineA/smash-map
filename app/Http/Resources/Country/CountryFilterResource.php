@@ -12,7 +12,7 @@ class CountryFilterResource extends JsonResource
     {
         return [
             'name'  => $this->name,
-            'value' => $this->hex,
+            'value' => $this->code,
             'image' => new ImageResource($this->image)
         ];
     }

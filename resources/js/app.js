@@ -2,6 +2,7 @@ import'./bootstrap';
 
 import "primeicons/primeicons.css";
 import "vue-awesome-paginate/dist/style.css";
+import 'primevue/resources/primevue.css'
 
 
 import {createApp} from 'vue'
@@ -40,8 +41,8 @@ app.component('Dropdown', Dropdown)
 import MultiSelect from "primevue/multiselect";
 app.component('MultiSelect', MultiSelect)
 
-import AutoComplete from "primevue/autocomplete";
-app.component('AutoComplete', AutoComplete)
+import InputText from "primevue/inputtext";
+app.component('InputText', InputText)
 
 import {Qalendar} from "qalendar";
 app.use(Qalendar)

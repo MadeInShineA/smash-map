@@ -12,6 +12,8 @@
     },
     "dependencies": {
         "@vitejs/plugin-vue": "^4.2.3",
+        "@vueuse/core": "^10.2.1",
+        "@vueuse/integrations": "^10.2.1",
         "primeicons": "^6.0.1",
         "primevue": "^3.29.1",
         "qalendar": "^2.5.0",

@@ -15,14 +15,18 @@ class CountryController extends Controller
     public function countries_filter (Request $request):JsonResponse
     {
         $countries = Country::query();
-        $continents = $request->input('continent');
-        switch ($continents){
-            case 'default':
-                break;
-            default:
-                $continents = explode(',', $continents);
-                $countries->continents($continents);
+
+        if ($request->has('continents')){
+            $continents = $request->input('continents');
+            switch ($continents){
+                case 'default':
+                    break;
+                default:
+                    $continents = explode(',', $continents);
+                    $countries->continents($continents);
+            }
         }
+
         return $this->sendResponse(CountryFilterResource::collection($countries->get()), 'Countries retrieved with success');
     }
 }

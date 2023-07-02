@@ -64,7 +64,7 @@ class Event extends Model
     public function scopeCountries($query, array $countries)
     {
         return $query->whereHas('address.country', function ($query) use ($countries) {
-            $query->whereIn('hex', $countries);
+            $query->whereIn('code', $countries);
         });
     }
 
