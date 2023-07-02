@@ -248,7 +248,7 @@ Artisan::command('import-events', function(){
 
                     if (!in_array($image_md5, $event_db_md5s)) {
                         Storage::put($event_directory_path . '/' . $image_type . '/' . $uuid, $image);
-                        Image::Create(['parentable_type' =>'App\Models\Event', 'parentable_id' =>$event_object->id, 'type' =>$image_type, 'uuid' => $uuid, 'md5' => $image_md5]);
+                        Image::Create(['parentable_type' =>Event::class, 'parentable_id' =>$event_object->id, 'type' =>$image_type, 'uuid' => $uuid, 'md5' => $image_md5]);
                     }
                 }
                 var_dump('Images for:' . $event->name . ' created');
@@ -262,7 +262,6 @@ Artisan::command('import-events', function(){
 });
 
 Artisan::command('import-characters-images',function(){
-
     $characters = Character::all();
 
     foreach ($characters as $character){
@@ -280,10 +279,37 @@ Artisan::command('import-characters-images',function(){
         $uuid = Str::uuid()->toString() . '.png';
         $image_md5 = md5($image);
 
-        Image::Create(['parentable_type' =>'App\Models\Character', 'parentable_id' =>$character->id, 'type' =>'character', 'uuid' => $uuid, 'md5' => $image_md5]);
+        Image::Create(['parentable_type' =>Character::class, 'parentable_id' =>$character->id, 'type' =>'character', 'uuid' => $uuid, 'md5' => $image_md5]);
 
         $character_directory_path = '/characters-images/' . $character->name;
         Storage::put($character_directory_path . '/' . $uuid, $image);
         var_dump('Image for: ' . $character->name . ' created');
     }
+});
+
+Artisan::command('import-countries-images', function (){
+    $countries = Country::all();
+
+    foreach ($countries as $country){
+        $url = 'https://flagsapi.com/' . $country->code .'/flat/64.png';
+        $curl_handle=curl_init();
+        curl_setopt($curl_handle, CURLOPT_URL,$url);
+        curl_setopt($curl_handle, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl_handle, CURLOPT_CONNECTTIMEOUT, 2);
+        curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl_handle, CURLOPT_USERAGENT, 'Melee Map');
+        $query = curl_exec($curl_handle);
+
+        $image = $query;
+        $uuid = Str::uuid()->toString() . '.png';
+        $image_md5 = md5($image);
+        curl_close($curl_handle);
+
+        Image::Create(['parentable_type' =>Country::class, 'parentable_id' =>$country->id, 'type' =>'country', 'uuid' => $uuid, 'md5' => $image_md5]);
+
+        $character_directory_path = '/countries-images/' . $country->name;
+        Storage::put($character_directory_path . '/' . $uuid, $image);
+        var_dump('Image for: ' . $country->name . ' created');
+    }
+
 });

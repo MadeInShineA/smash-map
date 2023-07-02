@@ -61,10 +61,10 @@ class Event extends Model
         return $this->timezone;
     }
 
-    public function scopeCountry($query, String $country)
+    public function scopeCountries($query, array $countries)
     {
-        return $query->whereHas('address.country', function ($query) use ($country) {
-            $query->where('code', $country,true);
+        return $query->whereHas('address.country', function ($query) use ($countries) {
+            $query->whereIn('hex', $countries);
         });
     }
 

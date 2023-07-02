@@ -55,56 +55,17 @@ const eventContinentOptions = ref( [
     { name: 'South America', value: 'SA' }
 ])
 
-const eventCountryContent = ref()
-const eventCountryMatching = ref(true)
-const selectedEventCountry = ref('default');
-const filteredCountries = ref();
-
-const updateCountryOptions = (event) => {
-    if (!event.query.trim().length) {
-        filteredCountries.value = [...eventCountryOptions.value];
-    } else {
-        filteredCountries.value = eventCountryOptions.value.filter((country) => {
-            return country.name.toLowerCase().startsWith(event.query.toLowerCase());
-        });
-    }
-    if(filteredCountries.value[0]){
-        selectedEventCountry.value = filteredCountries.value[0]
-        eventCountryMatching.value = true
-    }else{
-        selectedEventCountry.value = null
-        eventCountryMatching.value = false
-    }
-    fetchEvents()
-}
-
-const selectEventCountryFilter = function(country){
-    selectedEventCountry.value = country
-    eventCountryMatching.value = true
-    setEventCountryContent()
-    fetchEvents()
-}
-
-const setEventCountryContent = function(){
-    if (eventCountryMatching.value && eventCountryContent.value !== ''){
-        eventCountryContent.value = selectedEventCountry.value
-    }else{
-        eventCountryContent.value =''
-        selectedEventCountry.value = 'default'
-        fetchEvents()
-    }
-}
-
+const selectedEventCountries = ref([]);
 const eventCountryOptions = ref([]);
 
 const fetchCountries = async function(){
     try {
-        eventCountryContent.value = null
-        eventCountryMatching.value = false
-        selectedEventCountry.value = 'default'
         const continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value.map(obj => obj.value).join(',') : 'default'
         const response  = await axios.get('/api/countries-filter?continent=' + continents);
         eventCountryOptions.value = response.data.data
+
+        // Erase the countries from selectedEventCountries if they aren't supposed to be selectable anymore
+        selectedEventCountries.value = selectedEventCountries.value.filter((obj1) => eventCountryOptions.value.some((obj2) => obj2.value === obj1.value));
     }catch (error){
         console.error(error)
     }
@@ -117,18 +78,20 @@ const fetchEvents = async function (page=1) {
         loading.value = true
         const type = selectedEventType.value.value
         const ordering = selectedOrdering.value.value
-        const continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value.map(obj => obj.value).join(',') : 'default'
-        let country = selectedEventCountry.value
-        if (country && country.value){
-            country = country.value
+
+        if(type === 'online'){
+            selectedEventCountries.value= []
+            selectedEventContinents.value = []
         }
+        const continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value.map(obj => obj.value).join(',') : 'default'
+        const countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.map(obj => obj.value).join(',') : 'default'
 
         const params = {
             page: page,
             type: type,
             ordering: ordering,
             continents: continents,
-            country: country
+            countries: countries
         }
         const response = await axios.get('/api/events', {params});
 
@@ -162,10 +125,17 @@ loadData()
         </div>
 
         <div class="event-filter">
-            <MultiSelect v-model="selectedEventContinents" @change="loadData()" :options="eventContinentOptions" filter display="chip" :maxSelectedLabels="2" optionLabel="name" placeholder="Select Continents"/>
+            <MultiSelect v-model="selectedEventContinents" @change="loadData()" :options="eventContinentOptions" filter display="chip" :disabled="selectedEventType.value === 'online'" :maxSelectedLabels="2" optionLabel="name" placeholder="Select Continents"/>
         </div>
         <div class="event-filter">
-            <AutoComplete v-model="eventCountryContent" :suggestions="filteredCountries" optionLabel="name" @complete="updateCountryOptions" @focusout="setEventCountryContent" @item-select="selectEventCountryFilter($event.value)" empty-search-message=" " empty-selection-message=" " placeholder="Country" />
+            <MultiSelect v-model="selectedEventCountries" @change="fetchEvents()" :options="eventCountryOptions" filter display="chip" :disabled="selectedEventType.value === 'online'" :maxSelectedLabels="2" optionLabel="name" placeholder="Select Countries">
+                <template #option="slotProps">
+                    <div class="country-flag">
+                        <img :alt="slotProps.option.name" :src="slotProps.option.image.url" class="country-flag-image" />
+                        <div>{{ slotProps.option.name }}</div>
+                    </div>
+                </template>
+            </MultiSelect>
         </div>
     </div>
     <template v-if="!loading">
@@ -225,6 +195,15 @@ loadData()
 
 .p-hidden-accessible{
     display:none;
+}
+
+.country-flag{
+    display: flex;
+}
+
+.country-flag-image{
+    width: 18px;
+    margin-right: 5px;
 }
 
 .event-container {

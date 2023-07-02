@@ -36,12 +36,13 @@ class EventController extends Controller
                     $continents = explode(',', $continents);
                     $events->continents($continents);
             }
-            $country = $request->input('country');
-            switch ($country){
+            $countries = $request->input('countries');
+            switch ($countries){
                 case 'default':
                     break;
                 default:
-                    $events->country($country);
+                    $countries = explode(',', $countries);
+                    $events->countries($countries);
             }
             $type = $request->input('type');
             switch ($type){

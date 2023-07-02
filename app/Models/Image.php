@@ -29,14 +29,18 @@ class Image extends Model
     }
 
     public function getUrlAttribute(){
-        if($this->parentable_type === 'App\Models\Event'){
+        if($this->parentable_type === Event::class){
             $directory = 'events-images';
             $subdirectory = 'event-' . $this->parentable->id;
-        }elseif($this->parentable_type === 'App\Models\Character'){
+            return URL::to('/') . '/storage/'. $directory . '/'. $subdirectory . '/' . $this->type . '/' . $this->uuid;
+        }elseif($this->parentable_type === Character::class){
             $directory = 'characters-images';
             $subdirectory = $this->parentable->name;
+        }elseif ($this->parentable_type === Country::class){
+            $directory = 'countries-images';
+            $subdirectory = $this->parentable->name;
         }
-        return URL::to('/') . '/storage/'. $directory . '/'. $subdirectory . '/' . $this->type . '/' . $this->uuid;
+        return URL::to('/') . '/storage/'. $directory . '/'. $subdirectory . '/' . $this->uuid;
 
     }
 }
