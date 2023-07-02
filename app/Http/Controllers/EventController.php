@@ -35,7 +35,7 @@ class EventController extends Controller
                     case 'default':
                         break;
                     default:
-                        $events->whereRaw("UPPER(name) LIKE '%" . strtoupper($name) . "%'");;
+                        $events->whereRaw("UPPER(name) LIKE ?", ['%' . strtoupper($name) . '%']);;
                 }
             }
 
@@ -74,8 +74,8 @@ class EventController extends Controller
                 }
             }
 
-            if ($request->has('ordering')){
-                $ordering = $request->input('ordering');
+            if ($request->has('orderBy')){
+                $ordering = $request->input('orderBy');
                 switch ($ordering){
                     case 'default':
                         break;

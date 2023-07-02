@@ -291,6 +291,7 @@ Artisan::command('import-countries-images', function (){
     $countries = Country::all();
 
     foreach ($countries as $country){
+
         $url = 'https://flagsapi.com/' . $country->code .'/flat/64.png';
         $curl_handle=curl_init();
         curl_setopt($curl_handle, CURLOPT_URL,$url);

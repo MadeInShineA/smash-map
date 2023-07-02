@@ -18,13 +18,10 @@ import {onMounted, ref} from "vue";
 //
 // getTimezone()
 
-const currentPage = ref(1);
-
 onMounted(()=>{
     console.log('Events Mounted')
 })
 
-const selectedOrdering = ref({name: 'Order by ID', value: 'default'});
 
 const orderByOptions = ref([
     {name: 'Order by ID', value: 'default'},
@@ -34,15 +31,12 @@ const orderByOptions = ref([
     {name: 'Date descending', value: 'dateDESC'}
 ])
 
-const selectedEventType = ref({name: 'All event types', value: 'default'});
-
 const eventTypeOptions = ref([
     {name: 'All event types', value: 'default'},
     {name: 'Online', value: 'online'},
     {name: 'Offline', value: 'offline'}
 ]);
 
-const selectedEventContinents = ref([]);
 const eventContinentOptions = ref( [
     { name: 'Africa', value: 'AF' },
     { name: 'Antarctica', value: 'AN' },
@@ -53,15 +47,18 @@ const eventContinentOptions = ref( [
     { name: 'South America', value: 'SA' }
 ])
 
+const currentPage = ref(1);
+const selectedOrderBy = ref({name: 'Order by ID', value: 'default'});
+const selectedEventType = ref({name: 'All event types', value: 'default'});
+const selectedEventContinents = ref([]);
 const selectedEventCountries = ref([]);
-
 
 import { useAxios } from '@vueuse/integrations/useAxios'
 import { watchDebounced } from '@vueuse/core'
 import { watch } from 'vue'
 const selectedEventName = ref('')
 
-watch(selectedEventType, (type) => {
+watch(selectedEventType, function(type){
     if (type.value !== 'online') return
     selectedEventCountries.value = []
     selectedEventContinents.value = []
@@ -83,23 +80,35 @@ watch(selectedEventContinents, function(continents){
     )
 } ,{immediate: true})
 
-watch(eventCountryOptions, (availableCountries) => {
+watch(eventCountryOptions, function(availableCountries){
+    //TODO Directly add the data to availableCountries
     selectedEventCountries.value = selectedEventCountries.value.filter(country => availableCountries.data.includes(country))
 })
 
 const { data: events, isFinished: eventsFetched, execute: fetchEvents } = useAxios('/api/events')
-watchDebounced([selectedEventName, selectedEventType, selectedOrdering, selectedEventContinents, selectedEventCountries], function([name, { value: type }, { value: ordering }, continents, countries]){
+watchDebounced([selectedEventName, selectedEventType, selectedOrderBy, selectedEventContinents, selectedEventCountries], function([name, { value: type }, { value: orderBy }, continents, countries]){
     continents = continents.length > 0 ? continents.map(obj => obj.value).join(',') : 'default'
     countries = countries.length > 0 ? countries.map(obj => obj.value).join(',') : 'default'
-    fetchEvents({ params: { page: 1, type, ordering, continents, countries, name }})
+    fetchEvents({ params: { page: 1, type, orderBy, continents, countries, name }})
 }, { immediate: true, debounce: 200, maxWait: 1000 })
+
+
+watch(currentPage, function (page){
+    const type = selectedEventType.value.value
+    const orderBy = selectedOrderBy.value.value
+    const continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value.map(obj => obj.value).join(',') : 'default'
+    const countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.map(obj => obj.value).join(',') : 'default'
+    const name = selectedEventName.value
+
+    fetchEvents({ params: { page, type, orderBy, continents, countries, name }})
+})
 
 </script>
 
 <template>
     <div id="event-filters">
         <div class="event-filter">
-            <Dropdown v-model="selectedOrdering" :options="orderByOptions" optionLabel="name" placeholder="Order by ID"/>
+            <Dropdown v-model="selectedOrderBy" :options="orderByOptions" optionLabel="name" placeholder="Order by ID"/>
         </div>
         <div class="event-filter">
             <Dropdown v-model="selectedEventType" :options="eventTypeOptions" optionLabel="name" placeholder="All event types"/>
@@ -109,6 +118,7 @@ watchDebounced([selectedEventName, selectedEventType, selectedOrdering, selected
             <MultiSelect v-model="selectedEventContinents" :options="eventContinentOptions" filter display="chip" :disabled="selectedEventType.value === 'online'" :maxSelectedLabels="2" optionLabel="name" placeholder="Select Continents"/>
         </div>
         <div class="event-filter">
+<!--            TODO Directly add the data to eventCountryOptions-->
             <MultiSelect v-if="countriesFetched" v-model="selectedEventCountries" :options="eventCountryOptions.data" filter display="chip" :disabled="selectedEventType.value === 'online'" :maxSelectedLabels="2" optionLabel="name" placeholder="Select Countries">
                 <template #option="slotProps">
                     <div class="country-flag">
@@ -117,8 +127,7 @@ watchDebounced([selectedEventName, selectedEventType, selectedOrdering, selected
                     </div>
                 </template>
             </MultiSelect>
-            <MultiSelect v-else disabled loading filter placeholder="Select Countries"></MultiSelect>
-
+            <MultiSelect v-else disabled loading filter placeholder="Select Countries"/>
         </div>
         <div class="event-filter">
             <span class="p-input-icon-left">
@@ -148,18 +157,11 @@ watchDebounced([selectedEventName, selectedEventType, selectedOrdering, selected
                     </template>
                 </Card>
             </div>
-            <VueAwesomePaginate
-                :total-items="events.meta.total"
-                :items-per-page="events.meta.per_page"
-                :max-pages-shown="3"
-                v-model="currentPage"
-                :on-click="fetchEvents"
-            />
+            <Paginator  v-if="events.meta.total > events.meta.per_page" :first="currentPage * (events.meta.per_page) -1" :rows="events.meta.per_page" :total-records="events.meta.total" @page="currentPage = $event.page + 1"/>
         </template>
         <template v-else>
             <h1 id="no-events">No events correspond to your filters</h1>
         </template>
-
     </template>
     <template v-if="!countriesFetched || !eventsFetched">
         <LoaderComponent></LoaderComponent>
@@ -259,39 +261,12 @@ watchDebounced([selectedEventName, selectedEventType, selectedOrdering, selected
     height: 5em;
 }
 
-#no-events{
-    text-align:center;
+.p-paginator{
+   background: none;
 }
 
-.pagination-container {
-    column-gap: 10px;
-    display: flex!important;
-    justify-content: center;
-}
-.paginate-buttons {
-    height: 40px;
-    width: 40px;
-    border-radius: 20px;
-    cursor: pointer;
-    background-color: #dee2e6 ;
-    border: none;
-    color: black;
-    padding: 0;
-}
-.paginate-buttons:hover {
-    background-color: #d8d8d8;
-}
-.active-page {
-    background-color: #3498db;
-    border: 1px solid #3498db;
-    color: white;
-}
-.active-page:hover {
-    background-color: #2988c8;
-}
-.back-button:active,
-.next-button:active {
-    background-color: #c4c4c4;
+#no-events{
+    text-align:center;
 }
 
 @media (max-width: 1100px) {
@@ -309,10 +284,6 @@ watchDebounced([selectedEventName, selectedEventType, selectedOrdering, selected
 @media (max-width: 700px) {
     .event-container {
         grid-template-columns: 1fr;
-    }
-    .paginate-buttons {
-        height: 30px;
-        width: 30px;
     }
 }
 
