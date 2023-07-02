@@ -24,7 +24,7 @@ onMounted(()=>{
 
 
 const orderByOptions = ref([
-    {name: 'Sort by ID ascending', value: 'default'},
+    {name: 'Sort by ID', value: 'default'},
     {name: 'Attendees ascending', value: 'attendeesASC'},
     {name: 'Attendees descending', value: 'attendeesDESC'},
     {name: 'Date ascending', value: 'dateASC'},
@@ -47,12 +47,13 @@ const eventContinentOptions = ref( [
     { name: 'South America', value: 'SA' }
 ])
 
+// TODO Correct the double load request + loading disappearing when the debounce is higher
 const currentPage = ref(1);
 const selectedOrderBy = ref({name: 'Default sort', value: 'default'});
 const selectedEventType = ref({name: 'Default type', value: 'default'});
 const selectedEventContinents = ref([]);
 const selectedEventCountries = ref([]);
-
+const loading=ref(true)
 import { useAxios } from '@vueuse/integrations/useAxios'
 import { watchDebounced } from '@vueuse/core'
 import { watch } from 'vue'
@@ -108,7 +109,7 @@ watch(currentPage, function (page){
 <template>
     <div id="event-filters">
         <div class="event-filter">
-            <Dropdown v-model="selectedOrderBy" :options="orderByOptions" optionLabel="name" placeholder="Sort by ID ascending"/>
+            <Dropdown v-model="selectedOrderBy" :options="orderByOptions" optionLabel="name" placeholder="Sort by ID"/>
         </div>
         <div class="event-filter">
             <Dropdown v-model="selectedEventType" :options="eventTypeOptions" optionLabel="name" placeholder="All event types"/>
