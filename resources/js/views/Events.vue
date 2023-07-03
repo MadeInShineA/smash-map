@@ -91,7 +91,7 @@ watchDebounced([selectedEventName, selectedEventType, selectedOrderBy, selectedE
     continents = continents.length > 0 ? continents.map(obj => obj.value).join(',') : 'default'
     countries = countries.length > 0 ? countries.map(obj => obj.value).join(',') : 'default'
     fetchEvents({ params: { page: 1, type, orderBy, continents, countries, name }})
-}, { immediate: true, debounce: 200, maxWait: 1000 })
+}, { immediate: true, debounce: 400, maxWait: 1000 })
 
 
 watch(currentPage, function (page){
