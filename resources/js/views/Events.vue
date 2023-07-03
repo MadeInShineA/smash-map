@@ -116,7 +116,7 @@ watch(currentPage, function (page){
         </div>
 
         <div class="event-filter">
-            <MultiSelect v-model="selectedEventContinents" :options="eventContinentOptions" filter display="chip" :disabled="selectedEventType.value === 'online'" :maxSelectedLabels="2" optionLabel="name" placeholder="Select Continents"/>
+            <MultiSelect v-model="selectedEventContinents" :options="eventContinentOptions" display="chip" :disabled="selectedEventType.value === 'online'" :maxSelectedLabels="2" optionLabel="name" placeholder="Select Continents"/>
         </div>
         <div class="event-filter">
 <!--            TODO Directly add the data to eventCountryOptions-->
@@ -143,7 +143,7 @@ watch(currentPage, function (page){
                 <Card v-for="event in events.data" :key="event.id" class="event-card">
                     <template #header>
                         <div class="event-image-container">
-                            <img v-if="event.images[0]" :src="event.images[0].url" alt="Event Image" class="event-image" @error="$event.target.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png'">
+                            <img v-if="event.images[0]" :src="event.images[0].url" alt="Event Image" class="event-image">
                             <img v-else src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png" alt="Event Image" class="event-image">
                         </div>
                     </template>
