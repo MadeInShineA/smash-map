@@ -31,6 +31,16 @@ const orderByOptions = ref([
     {name: 'Date descending', value: 'dateDESC'}
 ])
 
+const eventGameOptions = ref([
+    {name: '64', value: '3'},
+    {name: 'Melee', value: '1'},
+    {name: 'Brawl', value: '5'},
+    {name: 'Project M', value: '2'},
+    {name: 'Project +', value: '33602'},
+    {name: '3DS / WiiU', value: '3'},
+    {name: 'Ultimate', value: '1386'},
+])
+
 const eventTypeOptions = ref([
     {name: 'All event types', value: 'default'},
     {name: 'Online', value: 'online'},
@@ -50,6 +60,7 @@ const eventContinentOptions = ref( [
 // TODO Correct the double load request + loading disappearing when the debounce is higher
 const currentPage = ref(1);
 const selectedOrderBy = ref({name: 'Default sort', value: 'default'});
+const selectedEventGames = ref([]);
 const selectedEventType = ref({name: 'Default type', value: 'default'});
 const selectedEventContinents = ref([]);
 const selectedEventCountries = ref([]);
@@ -57,6 +68,7 @@ const loading=ref(true)
 import { useAxios } from '@vueuse/integrations/useAxios'
 import { watchDebounced } from '@vueuse/core'
 import { watch } from 'vue'
+
 const selectedEventName = ref('')
 
 watch(selectedEventType, function(type){
@@ -87,21 +99,23 @@ watch(eventCountryOptions, function(availableCountries){
 })
 
 const { data: events, isFinished: eventsFetched, execute: fetchEvents } = useAxios('/api/events')
-watchDebounced([selectedEventName, selectedEventType, selectedOrderBy, selectedEventContinents, selectedEventCountries], function([name, { value: type }, { value: orderBy }, continents, countries]){
+watchDebounced([selectedEventGames, selectedEventName, selectedEventType, selectedOrderBy, selectedEventContinents, selectedEventCountries], function([games, name, { value: type }, { value: orderBy }, continents, countries]){
+    games = games.length > 0 ? games.map(obj => obj.value).join(',') : 'default'
     continents = continents.length > 0 ? continents.map(obj => obj.value).join(',') : 'default'
     countries = countries.length > 0 ? countries.map(obj => obj.value).join(',') : 'default'
-    fetchEvents({ params: { page: 1, type, orderBy, continents, countries, name }})
+    fetchEvents({ params: { page: 1, games, type, orderBy, continents, countries, name }})
 }, { immediate: true, debounce: 400, maxWait: 1000 })
 
 
 watch(currentPage, function (page){
     const type = selectedEventType.value.value
+    const games = selectedEventGames.length > 0 ? selectedEventGames.map(obj => obj.value).join(',') : 'default'
     const orderBy = selectedOrderBy.value.value
     const continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value.map(obj => obj.value).join(',') : 'default'
     const countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.map(obj => obj.value).join(',') : 'default'
     const name = selectedEventName.value
 
-    fetchEvents({ params: { page, type, orderBy, continents, countries, name }})
+    fetchEvents({ params: { page, games, type, orderBy, continents, countries, name }})
 })
 
 </script>
@@ -110,6 +124,9 @@ watch(currentPage, function (page){
     <div id="event-filters">
         <div class="event-filter">
             <Dropdown v-model="selectedOrderBy" :options="orderByOptions" optionLabel="name" placeholder="Sort by ID"/>
+        </div>
+        <div class="event-filter">
+            <MultiSelect v-model="selectedEventGames" :options="eventGameOptions" display="chip" :maxSelectedLabels="2" optionLabel="name" placeholder="Select Games"/>
         </div>
         <div class="event-filter">
             <Dropdown v-model="selectedEventType" :options="eventTypeOptions" optionLabel="name" placeholder="All event types"/>
@@ -151,7 +168,7 @@ watch(currentPage, function (page){
                         <a class="event-title" :href=event.link target="_blank"><i class="pi pi-external-link"/> {{ event.name }}</a>
                     </template>
                     <template #content>
-                        <div class="event-attendees"><Chip :label="event.attendees || event.attendees === 0 ? event.attendees.toString() : 'Private'" icon="pi pi-users"></Chip></div>
+                        <div class="event-game-attendees"><Tag :value="event.game.name" rounded :style="{background: event.game.color, marginRight: '5px'}"></Tag><Chip :label="event.attendees || event.attendees === 0 ? event.attendees.toString() : 'Private'" icon="pi pi-users"></Chip></div>
                         <div v-if="!event.is_online" class="event-location"><Chip :label="event.address.name" icon="pi pi-map-marker"></Chip></div>
                         <div v-else class="event-location"><Chip label="Online" icon="pi pi-globe"></Chip></div>
                         <div class="event-datetime"><Chip :label="event.timezone_start_date_time + ' / ' + event.timezone_end_date_time + ' ' + event.timezone" icon="pi pi-clock"></Chip></div>
@@ -252,7 +269,15 @@ watch(currentPage, function (page){
     height: 5em;
 }
 
-.event-attendees{
+.event-location .p-chip-text{
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.event-game-attendees{
     margin-bottom: 10px;
     height: 2em;
 }

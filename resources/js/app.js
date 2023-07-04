@@ -47,6 +47,9 @@ app.component('InputText', InputText)
 import Paginator from "primevue/paginator";
 app.component('Paginator', Paginator)
 
+import Tag from "primevue/tag";
+app.component('Tag', Tag)
+
 import {Qalendar} from "qalendar";
 app.use(Qalendar)
 

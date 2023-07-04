@@ -15,5 +15,6 @@ class DatabaseSeeder extends Seeder
         $this->call(CharacterSeeder::class);
         $this->call(ContinentSeeder::class);
         $this->call(CountrySeeder::class);
+        $this->call(GameSeeder::class);
     }
 }

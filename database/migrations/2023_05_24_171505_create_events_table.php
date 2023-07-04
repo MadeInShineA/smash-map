@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('events', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->foreignId('game_id')->constrained('games');
             $table->foreignId('address_id')->nullable()->constrained('addresses');
             $table->integer('start_gg_id');
             $table->dateTime('start_gg_updated_at');
             $table->foreignId('creator_id')->nullable()->constrained('users')->nullOnDelete();
             $table->boolean('is_online')->default(false);
             $table->string('name');
-            $table->string('video_game')->default('Super Smash Bros. Melee');
             $table->string('timezone')->default('UTC');
             $table->dateTime('start_date_time');
             $table->dateTime('end_date_time');

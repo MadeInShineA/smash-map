@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\GameEnum;
 use App\Models\Address;
 use App\Models\Character;
 use App\Models\Country;
@@ -68,12 +69,39 @@ Artisan::command('delete-events', function(){
     }
 });
 
-Artisan::command('import-100-events {page?}', function($page=1){
-//    Artisan::call('delete-events');
-//    Artisan::call('delete-addresses');
+Artisan::command('import-100-events {game} {page?}', function(string $game, int $page=1){
+    if ($page === 1){
+        Artisan::call('delete-events');
+        Artisan::call('delete-addresses');
+    }
 
+    switch ($game){
+        case '64':
+            $game_id = GameEnum::SMASH64;
+            break;
+        case 'melee':
+            $game_id = GameEnum::MELEE;
+            break;
+        case 'brawl':
+            $game_id = GameEnum::BRAWL;
+            break;
+        case 'project_+':
+            $game_id = GameEnum::PROJECT_PLUS;
+            break;
+        case 'project_m':
+            $game_id = GameEnum::PROJECT_M;
+            break;
+        case 'smash4':
+            $game_id = GameEnum::SMASH4;
+            break;
+        case 'ultimate':
+            $game_id = GameEnum::ULTIMATE;
+            break;
+        default:
+            var_dump('Unknown game');
+            die();
+    }
 
-    $video_game_id = '1';
     $apiToken = env('START_GG_API_KEY');
 
     $endpointUrl = 'https://api.start.gg/gql/alpha';
@@ -121,7 +149,7 @@ Artisan::command('import-100-events {page?}', function($page=1){
 
     $data = [
       'query' => $query,
-      'variables' => ['videogameId' => $video_game_id, 'page'=>$page],
+      'variables' => ['videogameId' => $game_id, 'page'=>$page],
     ];
 
     $ch = curl_init();
@@ -166,7 +194,6 @@ Artisan::command('import-100-events {page?}', function($page=1){
             if(!$event_object || $event_object->start_gg_updated_at < $start_gg_updated_at){
                 $is_online = $melee_event->isOnline;
                 $name = $event->name;
-                $video_game = 'Super Smash Bros. Melee';
                 $timezone = $event->timezone;
 
                 $start_date = new DateTime();
@@ -182,7 +209,7 @@ Artisan::command('import-100-events {page?}', function($page=1){
 
                 $link = 'https://www.start.gg' . $event->url;
 
-                $event_object = Event::updateOrCreate(['start_gg_id' =>$start_gg_id], ['start_gg_updated_at' =>$start_gg_updated_at, 'is_online' =>$is_online, 'name' =>$name, 'video_game' =>$video_game, 'timezone' =>$timezone, 'start_date_time' =>$start_date, 'end_date_time' =>$end_date, 'attendees' =>$attendees, 'link' =>$link]);
+                $event_object = Event::updateOrCreate(['start_gg_id' =>$start_gg_id], ['start_gg_updated_at' =>$start_gg_updated_at, 'is_online' =>$is_online, 'name' =>$name, 'game_id' =>$game_id, 'timezone' =>$timezone, 'start_date_time' =>$start_date, 'end_date_time' =>$end_date, 'attendees' =>$attendees, 'link' =>$link]);
                 var_dump('Event: ' . $event->name . ' created');
                 if(!$event_object->is_online){
                     $latitude = $event->lat;

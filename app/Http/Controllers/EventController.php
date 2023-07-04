@@ -29,6 +29,17 @@ class EventController extends Controller
         try {
             $events = Event::query();
 
+            if($request->has('games')){
+                $games = $request->input('games');
+                switch ($games){
+                    case 'default':
+                        break;
+                    default:
+                        $games = explode(',', $games);
+                        $events->whereIn('game_id', $games);
+                }
+            }
+
             if($request->has('name')){
                 $name = $request->input('name');
                 switch ($name){

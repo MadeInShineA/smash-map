@@ -12,6 +12,7 @@ class EventResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'game'                      => $this->game,
             'address'                   => new  AddressResource($this->address),
             'images'                    => ImageResource::collection($this->images),
             'is_online'                 => $this->is_online,

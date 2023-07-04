@@ -17,6 +17,7 @@ class Event extends Model
     protected $fillable = [
         'start_gg_id',
         'start_gg_updated_at',
+        'game_id',
         'address_id',
         'image_id',
         'creator_id',
@@ -27,6 +28,11 @@ class Event extends Model
         'attendees',
         'link',
     ];
+
+    public function game():BelongsTo
+    {
+        return $this->belongsTo(Game::class);
+    }
 
     public function address():BelongsTo
     {
