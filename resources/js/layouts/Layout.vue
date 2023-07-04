@@ -46,14 +46,14 @@ function switch_theme() {
     darkMode.value = !darkMode.value
     darkMode.value
         ? PrimeVue.changeTheme(
-            'bootstrap4-light-blue',
-            'bootstrap4-dark-blue',
+            'mdc-light-indigo',
+            'mdc-dark-indigo',
             'theme-link',
             () => {}
         )
         : PrimeVue.changeTheme(
-            'bootstrap4-dark-blue',
-            'bootstrap4-light-blue',
+            'mdc-dark-indigo',
+            'mdc-light-indigo',
             'theme-link',
             () => {}
         )
