@@ -100,10 +100,16 @@ watch(eventCountryOptions, function(availableCountries){
 
 const { data: events, isFinished: eventsFetched, execute: fetchEvents } = useAxios('/api/events')
 watchDebounced([selectedEventGames, selectedEventName, selectedEventType, selectedOrderBy, selectedEventContinents, selectedEventCountries], function([games, name, { value: type }, { value: orderBy }, continents, countries]){
-    games = games.length > 0 ? games.map(obj => obj.value).join(',') : 'default'
-    continents = continents.length > 0 ? continents.map(obj => obj.value).join(',') : 'default'
-    countries = countries.length > 0 ? countries.map(obj => obj.value).join(',') : 'default'
-    fetchEvents({ params: { page: 1, games, type, orderBy, continents, countries, name }})
+    if (currentPage.value === 1){
+        games = games.length > 0 ? games.map(obj => obj.value).join(',') : 'default'
+        continents = continents.length > 0 ? continents.map(obj => obj.value).join(',') : 'default'
+        countries = countries.length > 0 ? countries.map(obj => obj.value).join(',') : 'default'
+        name = name !== '' ? name : 'default'
+        fetchEvents({ params: { page: 1, games, type, orderBy, continents, countries, name }})
+    }
+    else {
+        currentPage.value = 1
+    }
 }, { immediate: true, debounce: 400, maxWait: 1000 })
 
 //TODO Fix the currentPage reset on filter change
@@ -113,7 +119,7 @@ watch(currentPage, function (page){
     const orderBy = selectedOrderBy.value.value
     const continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value.map(obj => obj.value).join(',') : 'default'
     const countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.map(obj => obj.value).join(',') : 'default'
-    const name = selectedEventName.value
+    const name = selectedEventName.value !== '' ? selectedEventName.value : 'default'
 
     fetchEvents({ params: { page, games, type, orderBy, continents, countries, name }})
 })
