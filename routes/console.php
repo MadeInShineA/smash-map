@@ -70,10 +70,6 @@ Artisan::command('delete-events', function(){
 });
 
 Artisan::command('import-100-events {game} {page?}', function(string $game, int $page=1){
-    if ($page === 1){
-        Artisan::call('delete-events');
-        Artisan::call('delete-addresses');
-    }
 
     switch ($game){
         case '64':
@@ -286,10 +282,44 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
 
 });
 
-Artisan::command('import-500-events', function (){
+Artisan::command('import-100-events-all-games', function (){
+    var_dump('Starting the 64 import');
+    Artisan::call('import-100-events', ['game' => '64']);
+    var_dump('Starting the melee import');
+    Artisan::call('import-100-events', ['game' => 'melee']);
+    var_dump('Starting the melee brawl');
+    Artisan::call('import-100-events', ['game' => 'brawl']);
+    var_dump('Starting the project + import');
+    Artisan::call('import-100-events', ['game' => 'project_+']);
+    var_dump('Starting the project m import');
+    Artisan::call('import-100-events', ['game' => 'project_m']);
+    var_dump('Starting the smash4 import');
+    Artisan::call('import-100-events', ['game' => 'smash4']);
+    var_dump('Starting the ultimate import');
+    Artisan::call('import-100-events', ['game' => 'ultimate']);
+});
+
+Artisan::command('import-500-events {game}', function (string $game){
     foreach (range(1, 5) as $page){
-            Artisan::call('import-100-events', ['page' => $page]);
+            Artisan::call('import-100-events', ['game' => $game, 'page' => $page]);
     }
+});
+
+Artisan::command('import-500-events-all-games', function (){
+    var_dump('Starting the 64 import');
+    Artisan::call('import-500-events', ['game' => '64']);
+    var_dump('Starting the melee import');
+    Artisan::call('import-500-events', ['game' => 'melee']);
+    var_dump('Starting the melee brawl');
+    Artisan::call('import-500-events', ['game' => 'brawl']);
+    var_dump('Starting the project + import');
+    Artisan::call('import-500-events', ['game' => 'project_+']);
+    var_dump('Starting the project m import');
+    Artisan::call('import-500-events', ['game' => 'project_m']);
+    var_dump('Starting the smash4 import');
+    Artisan::call('import-500-events', ['game' => 'smash4']);
+    var_dump('Starting the ultimate import');
+    Artisan::call('import-500-events', ['game' => 'ultimate']);
 });
 
 Artisan::command('import-characters-images',function(){

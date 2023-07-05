@@ -32,7 +32,7 @@ const orderByOptions = ref([
 ])
 
 const eventGameOptions = ref([
-    {name: '64', value: '3'},
+    {name: '64', value: '4'},
     {name: 'Melee', value: '1'},
     {name: 'Brawl', value: '5'},
     {name: 'Project M', value: '2'},
@@ -106,10 +106,10 @@ watchDebounced([selectedEventGames, selectedEventName, selectedEventType, select
     fetchEvents({ params: { page: 1, games, type, orderBy, continents, countries, name }})
 }, { immediate: true, debounce: 400, maxWait: 1000 })
 
-
+//TODO Fix the currentPage reset on filter change
 watch(currentPage, function (page){
     const type = selectedEventType.value.value
-    const games = selectedEventGames.length > 0 ? selectedEventGames.map(obj => obj.value).join(',') : 'default'
+    const games = selectedEventGames.value.length > 0 ? selectedEventGames.value.map(obj => obj.value).join(',') : 'default'
     const orderBy = selectedOrderBy.value.value
     const continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value.map(obj => obj.value).join(',') : 'default'
     const countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.map(obj => obj.value).join(',') : 'default'
@@ -197,7 +197,7 @@ watch(currentPage, function (page){
 }
 
 .event-filter{
-    margin:20px;
+    margin:20px 10px;
 }
 
 /* Hide the No selected item text on the dropdowns */
