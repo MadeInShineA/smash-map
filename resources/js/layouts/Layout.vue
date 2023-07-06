@@ -42,7 +42,6 @@ import {usePrimeVue} from 'primevue/config';
 const PrimeVue = usePrimeVue();
 
 const darkMode = ref(true);
-
 function switch_theme() {
     darkMode.value = !darkMode.value
     darkMode.value
