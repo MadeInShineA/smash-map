@@ -88,13 +88,16 @@ watch(selectedEventContinents, function(continents){
     )
 } ,{immediate: false})
 
-watch(eventCountryOptions, function(availableCountries){
+watch(eventCountryOptions, function(availableCountries, oldValue){
     //TODO Directly add the data to availableCountries
-    selectedEventCountries.value = selectedEventCountries.value.filter(country => availableCountries.data.includes(country))
+    if (oldValue){
+        selectedEventCountries.value = selectedEventCountries.value.filter(country => availableCountries.data.includes(country))
+    }
 })
 
 const { data: events, isFinished: eventsFetched, execute: fetchEvents } = useAxios('/api/events')
 watchDebounced([selectedEventGames, selectedEventName, selectedEventType, selectedOrderBy, selectedEventContinents, selectedEventCountries], function([games, name, { value: type }, { value: orderBy }, continents, countries]){
+    console.log('coucou')
     if (currentPage.value === 1){
         games = games.length > 0 ? games.map(obj => obj.value).join(',') : 'default'
         continents = continents.length > 0 ? continents.map(obj => obj.value).join(',') : 'default'
@@ -105,7 +108,7 @@ watchDebounced([selectedEventGames, selectedEventName, selectedEventType, select
     else {
         currentPage.value = 1
     }
-}, { immediate: true, debounce: 400, maxWait: 1000 })
+}, { immediate: false, debounce: 400, maxWait: 1000 })
 
 //TODO Fix the currentPage reset on filter change
 watch(currentPage, function (page){
