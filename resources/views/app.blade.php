@@ -3,7 +3,7 @@
 <head>
     <title>Smash Map</title>
     <link rel="icon" type="image/x-icon" href="{{@asset('images/logo-no-text-white-globe.png')}}">
-    <link id="theme-link" rel="stylesheet" href="{{@asset('themes/mdc-light-indigo/theme.css')}}">
+    <link id="theme-link" rel="stylesheet" href="{{@asset('themes/mdc-dark-indigo/theme.css')}}">
     @vite('resources/css/app.css')
 </head>
 <body>
