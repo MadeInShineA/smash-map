@@ -74,7 +74,7 @@ onMounted(() => {
     <header ref="menuBar">
         <Menubar :model="items">
             <template #start>
-                <img alt="logo" src="../../images/logo-no-text-no-bg.png" height="40" class="mr-2"/>
+                <router-link to="home"><img alt="logo" src="../../images/logo-no-text-no-bg.png" height="40" class="mr-2"/></router-link>
             </template>
             <template #end>
                 <Button v-if="!darkMode" @click="switch_theme" icon="pi pi-sun" severity="secondary" text rounded aria-label="Sun"/>

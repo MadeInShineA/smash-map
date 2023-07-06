@@ -18,11 +18,6 @@ import {onMounted, ref} from "vue";
 //
 // getTimezone()
 
-onMounted(()=>{
-    console.log('Events Mounted')
-})
-
-
 const orderByOptions = ref([
     {name: 'Sort by ID', value: 'default'},
     {name: 'Attendees ascending', value: 'attendeesASC'},
@@ -64,7 +59,7 @@ const selectedEventGames = ref([]);
 const selectedEventType = ref({name: 'Default type', value: 'default'});
 const selectedEventContinents = ref([]);
 const selectedEventCountries = ref([]);
-const loading=ref(true)
+
 import { useAxios } from '@vueuse/integrations/useAxios'
 import { watchDebounced } from '@vueuse/core'
 import { watch } from 'vue'
@@ -91,7 +86,7 @@ watch(selectedEventContinents, function(continents){
 
         }
     )
-} ,{immediate: true})
+} ,{immediate: false})
 
 watch(eventCountryOptions, function(availableCountries){
     //TODO Directly add the data to availableCountries
@@ -122,6 +117,10 @@ watch(currentPage, function (page){
     const name = selectedEventName.value !== '' ? selectedEventName.value : 'default'
 
     fetchEvents({ params: { page, games, type, orderBy, continents, countries, name }})
+}, {immediate: false})
+
+onMounted(()=>{
+    console.log('Events Mounted')
 })
 
 </script>
