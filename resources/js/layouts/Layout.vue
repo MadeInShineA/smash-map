@@ -41,9 +41,12 @@ import {usePrimeVue} from 'primevue/config';
 
 const PrimeVue = usePrimeVue();
 
-const darkMode = ref(true);
-function switch_theme() {
-    darkMode.value = !darkMode.value
+import { useDark } from '@vueuse/core'
+const darkMode = useDark()
+function switch_theme(changeMode) {
+    if (changeMode){
+        darkMode.value = !darkMode.value
+    }
     darkMode.value
         ? PrimeVue.changeTheme(
             'mdc-light-indigo',
@@ -59,6 +62,8 @@ function switch_theme() {
         )
 
 }
+
+switch_theme(false)
 
 const menuBar = ref()
 
@@ -77,8 +82,8 @@ onMounted(() => {
                 <router-link to="home"><img alt="logo" src="../../images/logo-no-text-no-bg.png" height="40" class="mr-2"/></router-link>
             </template>
             <template #end>
-                <Button v-if="!darkMode" @click="switch_theme" icon="pi pi-sun" severity="secondary" text rounded aria-label="Sun"/>
-                <Button v-if="darkMode" @click="switch_theme" icon="pi pi-moon" severity="secondary" text rounded aria-label="Sun"/>
+                <Button v-if="!darkMode" @click="switch_theme(true)" icon="pi pi-sun" severity="secondary" text rounded aria-label="Sun"/>
+                <Button v-if="darkMode" @click="switch_theme(true)" icon="pi pi-moon" severity="secondary" text rounded aria-label="Sun"/>
             </template>
         </Menubar>
     </header>
