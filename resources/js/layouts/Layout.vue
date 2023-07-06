@@ -6,7 +6,7 @@ const items = ref([
     {
         label: 'Home',
         icon: 'pi pi-fw pi-home',
-        to: '/home'
+        to: '/'
     },
     {
         label: 'Map',
@@ -76,10 +76,10 @@ onMounted(() => {
 </script>
 
 <template>
-    <header ref="menuBar">
+    <header ref="menuBar" id="header">
         <Menubar :model="items">
             <template #start>
-                <router-link to="home"><img alt="logo" src="../../images/logo-no-text-no-bg.png" height="40" class="mr-2"/></router-link>
+                <router-link to="/"><img alt="logo" src="../../images/logo-no-text-no-bg.png" height="40" class="mr-2"/></router-link>
             </template>
             <template #end>
                 <Button v-if="!darkMode" id="sun-icon" @click="switch_theme(true)" icon="pi pi-sun" severity="secondary" text rounded aria-label="Sun"/>
@@ -94,7 +94,12 @@ onMounted(() => {
 
 </template>
 
-<style scoped>
+<style>
+
+#header .router-link-active-exact .p-menuitem-text{
+    color: #3B82F6;
+    font-weight:bold;
+}
 
 .scroll-top{
     margin-right: 10px;
