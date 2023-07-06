@@ -82,27 +82,34 @@ onMounted(() => {
                 <router-link to="home"><img alt="logo" src="../../images/logo-no-text-no-bg.png" height="40" class="mr-2"/></router-link>
             </template>
             <template #end>
-                <Button v-if="!darkMode" @click="switch_theme(true)" icon="pi pi-sun" severity="secondary" text rounded aria-label="Sun"/>
-                <Button v-if="darkMode" @click="switch_theme(true)" icon="pi pi-moon" severity="secondary" text rounded aria-label="Sun"/>
+                <Button v-if="!darkMode" id="sun-icon" @click="switch_theme(true)" icon="pi pi-sun" severity="secondary" text rounded aria-label="Sun"/>
+                <Button v-if="darkMode" id="moon-icon" @click="switch_theme(true)" icon="pi pi-moon" severity="secondary" text rounded aria-label="Sun"/>
             </template>
         </Menubar>
     </header>
     <main>
         <router-view></router-view>
+        <ScrollTop class="scroll-top" target="parent"/>
     </main>
+
 </template>
 
 <style scoped>
 
 .scroll-top{
     margin-right: 10px;
-    border-radius:60px;
 }
-
 
 main{
     height: calc(100vh - v-bind(menuBarHeight));
     overflow-y: auto;
 }
 
+#sun-icon{
+    color: orange;
+}
+
+#moon-icon{
+    color: white;
+}
 </style>

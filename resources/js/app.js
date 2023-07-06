@@ -26,6 +26,9 @@ app.component('TabMenu', TabMenu)
 import Menubar from 'primevue/menubar';
 app.component('Menubar', Menubar)
 
+import ScrollTop from "primevue/scrolltop";
+app.component('ScrollTop', ScrollTop)
+
 import Button from "primevue/button";
 app.component('Button', Button)
 
