@@ -174,34 +174,34 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
         $start_gg_updated_at->setTimestamp($event->updatedAt);
         $start_gg_updated_at = $start_gg_updated_at->format('Y-m-d H:i:s');
 
-        $melee_event = null;
+        $game_event = null;
         if ($event->events){
-            $melee_event = $event->events[0];
+            $game_event = $event->events[0];
         }
 
-        if($melee_event){
+        if($game_event){
 
             $event_object = Event::where('start_gg_id', $start_gg_id)->first();
             if($event_object){
-                $event_attendees = $melee_event->numEntrants;
+                $event_attendees = $game_event->numEntrants;
                 $event_object->attendees = $event_attendees;
                 $event_object->save();
             }
             if(!$event_object || $event_object->start_gg_updated_at < $start_gg_updated_at){
-                $is_online = $melee_event->isOnline;
+                $is_online = $game_event->isOnline;
                 $name = $event->name;
                 $timezone = $event->timezone;
 
                 $start_date = new DateTime();
                 $start_date->format('Y-m-d H:i:s');
 
-                $start_date->setTimestamp($melee_event->startAt);
+                $start_date->setTimestamp($game_event->startAt);
 
                 $end_date = new DateTime();
                 $end_date->format('Y-m-d H:i:s');
                 $end_date->setTimestamp($event->endAt);
 
-                $attendees = $melee_event->numEntrants;
+                $attendees = $game_event->numEntrants;
 
                 $link = 'https://www.start.gg' . $event->url;
 

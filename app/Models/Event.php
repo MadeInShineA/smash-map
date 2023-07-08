@@ -3,12 +3,10 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use PhpParser\Node\Scalar\String_;
 
 class Event extends Model
 {
@@ -45,7 +43,7 @@ class Event extends Model
     }
     public function getTimezoneStartDateTimeAttribute() :string
     {
-        return Carbon::parse($this->start_date_time, $this->timezone)->timezone($this->address?->country?->timezone)->format('Y-m-d H:i:s');
+        return Carbon::parse($this->start_date_time, $this->timezone)->timezone($this->address?->country?->timezone)->format('d-m-Y H:i:s');
     }
 
     public function getTimezoneEndDateTimeAttribute(): string
@@ -57,7 +55,7 @@ class Event extends Model
         if($start_date === $end_date){
             return Carbon::parse($this->end_date_time, $this->timezone)->timezone($this->address?->country?->timezone)->format('H:i:s');
         }
-        return Carbon::parse($this->end_date_time, $this->timezone)->timezone($this->address?->country?->timezone)->format('Y-m-d H:i:s');
+        return Carbon::parse($this->end_date_time, $this->timezone)->timezone($this->address?->country?->timezone)->format('d-m-Y H:i:s');
     }
 
     public function getTimezoneLabelAttribute(){

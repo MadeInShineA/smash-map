@@ -47,6 +47,9 @@ app.component('MultiSelect', MultiSelect)
 import InputText from "primevue/inputtext";
 app.component('InputText', InputText)
 
+import Calendar from "primevue/calendar";
+app.component('Calendar', Calendar)
+
 import Paginator from "primevue/paginator";
 app.component('Paginator', Paginator)
 

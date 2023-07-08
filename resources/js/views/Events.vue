@@ -57,6 +57,7 @@ const currentPage = ref(1);
 const selectedOrderBy = ref({name: 'Default sort', value: 'default'});
 const selectedEventGames = ref([]);
 const selectedEventType = ref({name: 'Default type', value: 'default'});
+const selectedEventDates = ref([])
 const selectedEventContinents = ref([]);
 const selectedEventCountries = ref([]);
 
@@ -96,14 +97,41 @@ watch(eventCountryOptions, function(availableCountries, oldValue){
 })
 
 const { data: events, isFinished: eventsFetched, execute: fetchEvents } = useAxios('/api/events')
-watchDebounced([selectedEventGames, selectedEventName, selectedEventType, selectedOrderBy, selectedEventContinents, selectedEventCountries], function([games, name, { value: type }, { value: orderBy }, continents, countries]){
-    console.log('coucou')
+watchDebounced([selectedEventGames, selectedEventType, selectedEventDates, selectedEventContinents, selectedEventCountries, selectedEventName, selectedOrderBy], function([games, { value: type }, dates, continents, countries, name, { value: orderBy }]){
     if (currentPage.value === 1){
+        let startDate
+        let endDate
+        if(dates){
+            startDate = dates[0]
+            if (startDate){
+                const startYear = startDate.getFullYear()
+                const startMonth = startDate.getMonth() < 10 ? '0'+ (startDate.getMonth() + 1) : startDate.getMonth() + 1
+                const startDay = startDate.getDate() < 10 ? '0' + startDate.getDate() : startDate.getDate()
+
+                startDate = startYear + '-' + startMonth + '-' + startDay
+            }else{
+                startDate = 'default'
+            }
+
+            endDate = dates[1]
+            if (endDate){
+                const endYear = endDate.getFullYear()
+                const endMonth = endDate.getMonth() < 10 ? '0'+ (endDate.getMonth() + 1) : endDate.getMonth() + 1
+                const endDay = endDate.getDate() < 10 ? '0' + endDate.getDate() : endDate.getDate()
+
+                endDate = endYear + '-' + endMonth + '-' + endDay
+            }else{
+                endDate = startDate
+            }
+        }else{
+            startDate = 'default'
+            endDate = 'default'
+        }
         games = games.length > 0 ? games.map(obj => obj.value).join(',') : 'default'
         continents = continents.length > 0 ? continents.map(obj => obj.value).join(',') : 'default'
         countries = countries.length > 0 ? countries.map(obj => obj.value).join(',') : 'default'
         name = name !== '' ? name : 'default'
-        fetchEvents({ params: { page: 1, games, type, orderBy, continents, countries, name }})
+        fetchEvents({ params: { page: 1, games, type, orderBy, continents, countries, name, startDate, endDate }})
     }
     else {
         currentPage.value = 1
@@ -112,6 +140,34 @@ watchDebounced([selectedEventGames, selectedEventName, selectedEventType, select
 
 //TODO Fix the currentPage reset on filter change
 watch(currentPage, function (page){
+    let startDate
+    let endDate
+    if(selectedEventDates.value){
+        startDate = selectedEventDates.value[0]
+        if (startDate){
+            const startYear = startDate.getFullYear()
+            const startMonth = startDate.getMonth() < 10 ? '0'+ (startDate.getMonth() + 1) : startDate.getMonth() + 1
+            const startDay = startDate.getDate() < 10 ? '0' + startDate.getDate() : startDate.getDate()
+
+            startDate = startYear + '-' + startMonth + '-' + startDay
+        }else{
+            startDate = 'default'
+        }
+
+        endDate = selectedEventDates.value[1]
+        if (endDate){
+            const endYear = endDate.getFullYear()
+            const endMonth = endDate.getMonth() < 10 ? '0'+ (endDate.getMonth() + 1) : endDate.getMonth() + 1
+            const endDay = endDate.getDate() < 10 ? '0' + endDate.getDate() : endDate.getDate()
+
+            endDate = endYear + '-' + endMonth + '-' + endDay
+        }else{
+            endDate = startDate
+        }
+    }else{
+        startDate = 'default'
+        endDate = 'default'
+    }
     const type = selectedEventType.value.value
     const games = selectedEventGames.value.length > 0 ? selectedEventGames.value.map(obj => obj.value).join(',') : 'default'
     const orderBy = selectedOrderBy.value.value
@@ -119,7 +175,7 @@ watch(currentPage, function (page){
     const countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.map(obj => obj.value).join(',') : 'default'
     const name = selectedEventName.value !== '' ? selectedEventName.value : 'default'
 
-    fetchEvents({ params: { page, games, type, orderBy, continents, countries, name }})
+    fetchEvents({ params: { page, games, type, orderBy, continents, countries, name, startDate, endDate}})
 }, {immediate: false})
 
 onMounted(()=>{
@@ -131,13 +187,13 @@ onMounted(()=>{
 <template>
     <div id="event-filters">
         <div class="event-filter">
-            <Dropdown v-model="selectedOrderBy" :options="orderByOptions" optionLabel="name" placeholder="Sort by ID"/>
-        </div>
-        <div class="event-filter">
             <MultiSelect v-model="selectedEventGames" :options="eventGameOptions" display="chip" :maxSelectedLabels="2" optionLabel="name" placeholder="Select Games"/>
         </div>
         <div class="event-filter">
             <Dropdown v-model="selectedEventType" :options="eventTypeOptions" optionLabel="name" placeholder="All event types"/>
+        </div>
+        <div class="event-filter">
+            <Calendar v-model=selectedEventDates :minDate="new Date()" placeholder="Event date range (UTC)" selectionMode="range" :manualInput="false" showButtonBar dateFormat="dd/mm/yy"></Calendar>
         </div>
 
         <div class="event-filter">
@@ -160,6 +216,9 @@ onMounted(()=>{
                 <i class="pi pi-search"/>
                 <InputText v-model="selectedEventName" placeholder="Event name"></InputText>
             </span>
+        </div>
+        <div class="event-filter">
+            <Dropdown v-model="selectedOrderBy" :options="orderByOptions" optionLabel="name" placeholder="Sort by ID"/>
         </div>
     </div>
     <template v-if="countriesFetched && eventsFetched">

@@ -9,6 +9,7 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\DB;
 
 class EventController extends Controller
 {
@@ -28,6 +29,15 @@ class EventController extends Controller
 
         try {
             $events = Event::query();
+
+            if ($request->has('startDate') && $request->has('endDate')){
+                $startDate = $request->input('startDate');
+                $endDate = $request->input('endDate');
+
+                if ($startDate !== 'default' && $endDate !== 'default'){
+                    $events->whereDate('end_date_time', '>=', $startDate)->whereDate('end_date_time', '<=', $endDate);
+                }
+            }
 
             if($request->has('games')){
                 $games = $request->input('games');
