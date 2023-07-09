@@ -68,10 +68,12 @@ import { watch } from 'vue'
 const selectedEventName = ref('')
 
 watch(selectedEventType, function(type){
-    if (type.value !== 'online') return
-    selectedEventCountries.value = []
-    selectedEventContinents.value = []
-}, { immediate: true })
+    if (type.value === 'online'){
+        selectedEventCountries.value = []
+        selectedEventContinents.value = []
+    }
+
+}, { immediate: false })
 
 const {data: eventCountryOptions, isFinished: countriesFetched, execute: fetchCountries} = useAxios('/api/countries-filter')
 watch(selectedEventContinents, function(continents){
@@ -92,7 +94,7 @@ watch(selectedEventContinents, function(continents){
 watch(eventCountryOptions, function(availableCountries, oldValue){
     //TODO Directly add the data to availableCountries
     if (oldValue){
-        selectedEventCountries.value = selectedEventCountries.value.filter(country => availableCountries.data.includes(country))
+        selectedEventCountries.value = selectedEventCountries.value.filter(function(selectedCountry) {availableCountries.data.some((country) => country.value === selectedCountry.value)});
     }
 })
 
@@ -181,9 +183,9 @@ onMounted(()=>{
         </div>
         <Button class="filters-button" @click="sideBarVisible = true" icon="pi pi-filter" text rounded outlined plain label="Filters"/>
     </div>
-    <Sidebar v-model:visible="sideBarVisible">
-        <div id="event-filters-sidebar">
-            <h2>Filters</h2>
+    <Sidebar v-model:visible="sideBarVisible" position="top" id="event-filters-sidebar">
+        <h2>Filters</h2>
+        <div class="event-filters">
             <div class="event-filter">
                 <MultiSelect v-model="selectedEventGames" :options="eventGameOptions" display="chip" :maxSelectedLabels="2" optionLabel="name" placeholder="Select Games"/>
             </div>
@@ -209,10 +211,10 @@ onMounted(()=>{
                 <MultiSelect v-else disabled loading filter placeholder="Select Countries"/>
             </div>
             <div class="event-filter">
-            <span class="p-input-icon-left">
-                <i class="pi pi-search"/>
-                <InputText v-model="selectedEventName" placeholder="Event name"></InputText>
-            </span>
+        <span class="p-input-icon-left">
+            <i class="pi pi-search"/>
+            <InputText v-model="selectedEventName" placeholder="Event name"></InputText>
+        </span>
             </div>
         </div>
     </Sidebar>
@@ -248,12 +250,12 @@ onMounted(()=>{
     </template>
 </template>
 
-<!-- TODO Double check the style and not forget responsive -->
 <style>
 
 .event-filters{
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
 }
 
 .filters-button{
@@ -263,6 +265,7 @@ onMounted(()=>{
 
 #event-filters-sidebar{
     text-align: center;
+    height: min-content;
 }
 
 .event-filter{
@@ -365,19 +368,19 @@ onMounted(()=>{
 }
 
 @media (max-width: 1100px) {
-    .event-container {
+    #event-container {
         grid-template-columns: repeat(3, 1fr);
     }
 }
 
 @media (max-width: 850px) {
-    .event-container {
+    #event-container {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (max-width: 700px) {
-    .event-container {
+    #event-container {
         grid-template-columns: 1fr;
     }
 }
