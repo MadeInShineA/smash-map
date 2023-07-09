@@ -43,16 +43,15 @@ const eventTypeOptions = ref([
 ]);
 
 const eventContinentOptions = ref( [
-    { name: 'Africa', value: 'AF' },
-    { name: 'Antarctica', value: 'AN' },
-    { name: 'Asia', value: 'AS' },
-    { name: 'Europe', value: 'EU' },
-    { name: 'North America', value: 'NA' },
-    { name: 'Oceania', value: 'OC' },
-    { name: 'South America', value: 'SA' }
+    { name: 'Africa', code: 'AF' },
+    { name: 'Antarctica', code: 'AN' },
+    { name: 'Asia', code: 'AS' },
+    { name: 'Europe', code: 'EU' },
+    { name: 'North America', code: 'NA' },
+    { name: 'Oceania', code: 'OC' },
+    { name: 'South America', code: 'SA' }
 ])
 
-// TODO Correct the double load request + loading disappearing when the debounce is higher
 const currentPage = ref(1);
 const selectedOrderBy = ref({name: 'Default sort', value: 'default'});
 const selectedEventGames = ref([]);
@@ -60,82 +59,57 @@ const selectedEventType = ref({name: 'Default type', value: 'default'});
 const selectedEventDates = ref([])
 const selectedEventContinents = ref([]);
 const selectedEventCountries = ref([]);
-
-import { useAxios } from '@vueuse/integrations/useAxios'
-import {useDateFormat, watchDebounced} from '@vueuse/core'
-import { watch } from 'vue'
-
 const selectedEventName = ref('')
 
-watch(selectedEventType, function(type){
-    if (type.value === 'online'){
-        selectedEventCountries.value = []
-        selectedEventContinents.value = []
-    }
 
-}, { immediate: false })
-
-const {data: eventCountryOptions, isFinished: countriesFetched, execute: fetchCountries} = useAxios('/api/countries-filter')
-watch(selectedEventContinents, function(continents){
-    continents = continents.length > 0 ? continents.map(obj => obj.value).join(',') : 'default'
-    fetchCountries(
-        {
-            params: {continents},
-
-            //TODO Directly add the data to eventCountryOptions
-            // transformResponse: function(response){
-            //     return response['data']
-            // },
-
-        }
-    )
-} ,{immediate: false})
-
-watch(eventCountryOptions, function(availableCountries, oldValue){
-    //TODO Directly add the data to availableCountries
-    if (oldValue){
-        selectedEventCountries.value = selectedEventCountries.value.filter(function(selectedCountry) {availableCountries.data.some((country) => country.value === selectedCountry.value)});
-    }
-})
+import { useAxios } from '@vueuse/integrations/useAxios'
+import {useDateFormat, watchDebounced, watchPausable} from '@vueuse/core'
+import { watch } from 'vue'
 
 const { data: events, isFinished: eventsFetched, execute: fetchEvents } = useAxios('/api/events')
-watchDebounced([selectedEventGames, selectedEventType, selectedEventDates, selectedEventContinents, selectedEventCountries, selectedEventName, selectedOrderBy], function([games, { value: type }, dates, continents, countries, name, { value: orderBy }]){
-    if (currentPage.value === 1){
-        let startDate
-        let endDate
-        if(dates){
-            startDate = dates[0]
-            if (startDate){
-                startDate = useDateFormat(startDate,'YYYY-MM-DD')
-                startDate = startDate.value
-            }else{
-                startDate = 'default'
-            }
 
-            endDate = dates[1]
-            if (endDate){
-                endDate = useDateFormat(endDate,'YYYY-MM-DD')
-                endDate = endDate.value
-            }else{
-                endDate = startDate
-            }
+const {data: eventCountryOptions, isFinished: countriesFetched, execute: fetchCountries} = useAxios('/api/countries-filter')
+
+const {pause: pauseCurrentPageWatch, resume: resumeCurrentPageWatch } = watchPausable([currentPage], function([page]){
+    let startDate
+    let endDate
+
+    if(selectedEventDates.value){
+        startDate = selectedEventDates.value[0]
+        if (startDate){
+            startDate = useDateFormat(startDate,'YYYY-MM-DD')
+            startDate = startDate.value
         }else{
             startDate = 'default'
-            endDate = 'default'
         }
-        games = games.length > 0 ? games.map(obj => obj.value).join(',') : 'default'
-        continents = continents.length > 0 ? continents.map(obj => obj.value).join(',') : 'default'
-        countries = countries.length > 0 ? countries.map(obj => obj.value).join(',') : 'default'
-        name = name !== '' ? name : 'default'
-        fetchEvents({ params: { page: 1, games, type, orderBy, continents, countries, name, startDate, endDate }})
-    }
-    else {
-        currentPage.value = 1
-    }
-}, { immediate: false, debounce: 400, maxWait: 1000 })
 
-//TODO Fix the currentPage reset on filter change
-watch(currentPage, function (page){
+        endDate = selectedEventDates.value[1]
+        if (endDate){
+            endDate = useDateFormat(endDate,'YYYY-MM-DD')
+            endDate = endDate.value
+        }else{
+            endDate = startDate
+        }
+    }else{
+        startDate = 'default'
+        endDate = 'default'
+    }
+
+    const games = selectedEventGames.value.length > 0 ? selectedEventGames.value.map(obj => obj.value).join(',') : 'default'
+    const type = selectedEventType.value.value
+    const orderBy = selectedOrderBy.value.value
+    const continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value.map(continent => continent.code).join(',') : 'default'
+    const countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.map(country => country.code).join(',') : 'default'
+    const name = selectedEventName.value !== '' ? selectedEventName.value : 'default'
+
+    fetchEvents({ params: { page, games, type, orderBy, continents, countries, name, startDate, endDate}})
+})
+
+
+const {pause: pauseContinentsWatch, resume: resumeContinentsWatch } = watchPausable([selectedEventContinents], function([continents]){
+    continents = continents.length > 0 ? continents.map(continent => continent.code).join(',') : 'default'
+    fetchCountries({params: {continents}})
+
     let startDate
     let endDate
     if(selectedEventDates.value){
@@ -158,15 +132,151 @@ watch(currentPage, function (page){
         startDate = 'default'
         endDate = 'default'
     }
-    const type = selectedEventType.value.value
+
+    pauseCurrentPageWatch()
+    currentPage.value = 1
+    resumeCurrentPageWatch()
     const games = selectedEventGames.value.length > 0 ? selectedEventGames.value.map(obj => obj.value).join(',') : 'default'
+    const type = selectedEventType.value.value
     const orderBy = selectedOrderBy.value.value
-    const continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value.map(obj => obj.value).join(',') : 'default'
-    const countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.map(obj => obj.value).join(',') : 'default'
+    const countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.map(country => country.code).join(',') : 'default'
     const name = selectedEventName.value !== '' ? selectedEventName.value : 'default'
 
-    fetchEvents({ params: { page, games, type, orderBy, continents, countries, name, startDate, endDate}})
+    fetchEvents({ params: { page: 1, games, type, orderBy, continents, countries, name, startDate, endDate}})
+
+
 }, {immediate: false})
+
+const {pause: pauseCountriesWatch, resume: resumeCountriesWatch} = watchPausable([selectedEventCountries], function([countries]){
+    countries = countries.length > 0 ? countries.map(country => country.code).join(',') : 'default'
+
+    let startDate
+    let endDate
+    if(selectedEventDates.value){
+        startDate = selectedEventDates.value[0]
+        if (startDate){
+            startDate = useDateFormat(startDate,'YYYY-MM-DD')
+            startDate = startDate.value
+        }else{
+            startDate = 'default'
+        }
+
+        endDate = selectedEventDates.value[1]
+        if (endDate){
+            endDate = useDateFormat(endDate,'YYYY-MM-DD')
+            endDate = endDate.value
+        }else{
+            endDate = startDate
+        }
+    }else{
+        startDate = 'default'
+        endDate = 'default'
+    }
+
+    pauseCurrentPageWatch()
+    currentPage.value = 1
+    resumeCurrentPageWatch()
+
+    const games = selectedEventGames.value.length > 0 ? selectedEventGames.value.map(obj => obj.value).join(',') : 'default'
+    const type = selectedEventType.value.value
+    const orderBy = selectedOrderBy.value.value
+    const continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value.map(continent => continent.code).join(',') : 'default'
+    const name = selectedEventName.value !== '' ? selectedEventName.value : 'default'
+
+    fetchEvents({ params: { page: 1, games, type, orderBy, continents, countries, name, startDate, endDate}})
+}, {immediate: false})
+
+
+watch([selectedOrderBy, selectedEventGames, selectedEventType, selectedEventDates], function([{value: orderBy} , games, {value: type}, dates]){
+    if (type === 'online'){
+
+        pauseContinentsWatch()
+        selectedEventContinents.value = []
+        resumeContinentsWatch()
+
+        eventCountryOptions.value = []
+    }
+
+    let startDate
+    let endDate
+    if(selectedEventDates.value){
+        startDate = dates[0]
+        if (startDate){
+            startDate = useDateFormat(startDate,'YYYY-MM-DD')
+            startDate = startDate.value
+        }else{
+            startDate = 'default'
+        }
+
+        endDate = dates[1]
+        if (endDate){
+            endDate = useDateFormat(endDate,'YYYY-MM-DD')
+            endDate = endDate.value
+        }else{
+            endDate = startDate
+        }
+    }else{
+        startDate = 'default'
+        endDate = 'default'
+    }
+
+    pauseCurrentPageWatch()
+    currentPage.value = 1
+    resumeCurrentPageWatch()
+
+    games = games.length > 0 ? games.map(obj => obj.value).join(',') : 'default'
+    const continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value.map(continent => continent.code).join(',') : 'default'
+    const countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.map(country => country.code).join(',') : 'default'
+    const name = selectedEventName.value !== '' ? selectedEventName.value : 'default'
+
+    fetchEvents({ params: { page: 1, games, type, orderBy, continents, countries, name, startDate, endDate}})
+}, {immediate: false})
+
+watch(eventCountryOptions, function(availableCountries, oldValue){
+    //TODO Directly add the data to availableCountries
+    if (oldValue){
+        const availableCountryCodes = availableCountries.data.map(country => country.code)
+        pauseCountriesWatch()
+        selectedEventCountries.value = selectedEventCountries.value.filter(country => availableCountryCodes.includes(country.code))
+        resumeCountriesWatch()
+    }
+}, {immediate: false})
+
+watchDebounced([selectedEventName], function([name]){
+    name = name !== '' ? name : 'default'
+
+    let startDate
+    let endDate
+    if(selectedEventDates.value){
+        startDate = selectedEventDates.value[0]
+        if (startDate){
+            startDate = useDateFormat(startDate,'YYYY-MM-DD')
+            startDate = startDate.value
+        }else{
+            startDate = 'default'
+        }
+
+        endDate = selectedEventDates.value[1]
+        if (endDate){
+            endDate = useDateFormat(endDate,'YYYY-MM-DD')
+            endDate = endDate.value
+        }else{
+            endDate = startDate
+        }
+    }else{
+        startDate = 'default'
+        endDate = 'default'
+    }
+
+    const page = currentPage.value
+    const games = selectedEventGames.value.length > 0 ? selectedEventGames.value.map(obj => obj.value).join(',') : 'default'
+    const type = selectedEventType.value.value
+    const orderBy = selectedOrderBy.value.value
+    const continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value.map(continent => continent.code).join(',') : 'default'
+    const countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.map(country => country.code).join(',') : 'default'
+    fetchEvents({ params: { page, games, type, orderBy, continents, countries, name, startDate, endDate}})
+
+}, { immediate: false, debounce: 400, maxWait: 1000 })
 
 const sideBarVisible = ref(false)
 
