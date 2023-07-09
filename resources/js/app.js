@@ -50,6 +50,9 @@ app.component('InputText', InputText)
 import Calendar from "primevue/calendar";
 app.component('Calendar', Calendar)
 
+import Sidebar from "primevue/sidebar";
+app.component('Sidebar', Sidebar)
+
 import Paginator from "primevue/paginator";
 app.component('Paginator', Paginator)
 

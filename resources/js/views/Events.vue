@@ -166,6 +166,8 @@ watch(currentPage, function (page){
     fetchEvents({ params: { page, games, type, orderBy, continents, countries, name, startDate, endDate}})
 }, {immediate: false})
 
+const sideBarVisible = ref(false)
+
 onMounted(()=>{
     console.log('Events Mounted')
 })
@@ -173,42 +175,47 @@ onMounted(()=>{
 </script>
 
 <template>
-    <div id="event-filters">
+    <div class="event-filters">
         <div class="event-filter">
-            <MultiSelect v-model="selectedEventGames" :options="eventGameOptions" display="chip" :maxSelectedLabels="2" optionLabel="name" placeholder="Select Games"/>
+            <Dropdown v-model="selectedOrderBy" :options="orderByOptions" optionLabel="name" placeholder="Sort by ID"/>
         </div>
-        <div class="event-filter">
-            <Dropdown v-model="selectedEventType" :options="eventTypeOptions" optionLabel="name" placeholder="All event types"/>
-        </div>
-        <div class="event-filter">
-            <Calendar v-model=selectedEventDates :minDate="new Date()" placeholder="Event date range (UTC)" selectionMode="range" :manualInput="false" showButtonBar dateFormat="dd/mm/yy"></Calendar>
-        </div>
-
-        <div class="event-filter">
-            <MultiSelect v-model="selectedEventContinents" :options="eventContinentOptions" display="chip" :disabled="selectedEventType.value === 'online'" :maxSelectedLabels="2" optionLabel="name" placeholder="Select Continents"/>
-        </div>
-        <div class="event-filter">
-<!--            TODO Directly add the data to eventCountryOptions-->
-            <MultiSelect v-if="countriesFetched" v-model="selectedEventCountries" :options="eventCountryOptions.data" filter display="chip" :disabled="selectedEventType.value === 'online'" :maxSelectedLabels="2" optionLabel="name" placeholder="Select Countries">
-                <template #option="slotProps">
-                    <div class="country-flag">
-                        <img :alt="slotProps.option.name" :src="slotProps.option.image.url" class="country-flag-image" />
-                        <div>{{ slotProps.option.name }}</div>
-                    </div>
-                </template>
-            </MultiSelect>
-            <MultiSelect v-else disabled loading filter placeholder="Select Countries"/>
-        </div>
-        <div class="event-filter">
+        <Button class="filters-button" @click="sideBarVisible = true" icon="pi pi-filter" text rounded outlined plain label="Filters"/>
+    </div>
+    <Sidebar v-model:visible="sideBarVisible">
+        <div class="event-filters-sidebar">
+            <h2>Filters</h2>
+            <div class="event-filter">
+                <MultiSelect v-model="selectedEventGames" :options="eventGameOptions" display="chip" :maxSelectedLabels="2" optionLabel="name" placeholder="Select Games"/>
+            </div>
+            <div class="event-filter">
+                <Dropdown v-model="selectedEventType" :options="eventTypeOptions" optionLabel="name" placeholder="All event types"/>
+            </div>
+            <div class="event-filter">
+                <Calendar v-model=selectedEventDates :minDate="new Date()" placeholder="Event date range (UTC)" selectionMode="range" :manualInput="false" showButtonBar dateFormat="dd/mm/yy"></Calendar>
+            </div>
+            <div class="event-filter">
+                <MultiSelect v-model="selectedEventContinents" :options="eventContinentOptions" display="chip" :disabled="selectedEventType.value === 'online'" :maxSelectedLabels="2" optionLabel="name" placeholder="Select Continents"/>
+            </div>
+            <div class="event-filter">
+                <!--            TODO Directly add the data to eventCountryOptions-->
+                <MultiSelect v-if="countriesFetched" v-model="selectedEventCountries" :options="eventCountryOptions.data" filter display="chip" :disabled="selectedEventType.value === 'online'" :maxSelectedLabels="2" optionLabel="name" placeholder="Select Countries">
+                    <template #option="slotProps">
+                        <div class="country-flag">
+                            <img :alt="slotProps.option.name" :src="slotProps.option.image.url" class="country-flag-image" />
+                            <div>{{ slotProps.option.name }}</div>
+                        </div>
+                    </template>
+                </MultiSelect>
+                <MultiSelect v-else disabled loading filter placeholder="Select Countries"/>
+            </div>
+            <div class="event-filter">
             <span class="p-input-icon-left">
                 <i class="pi pi-search"/>
                 <InputText v-model="selectedEventName" placeholder="Event name"></InputText>
             </span>
+            </div>
         </div>
-        <div class="event-filter">
-            <Dropdown v-model="selectedOrderBy" :options="orderByOptions" optionLabel="name" placeholder="Sort by ID"/>
-        </div>
-    </div>
+    </Sidebar>
     <template v-if="countriesFetched && eventsFetched">
         <template v-if="events.data.length > 0">
             <div class="event-container">
@@ -244,11 +251,18 @@ onMounted(()=>{
 <!-- TODO Double check the style and not forget responsive -->
 <style>
 
-/*TODO responsive filters style */
-#event-filters{
-    display:flex;
+.event-filters{
+    display: flex;
     justify-content: center;
-    flex-wrap: wrap;
+}
+
+.filters-button{
+    height: min-content;
+    align-self: center;
+}
+
+.event-filters-sidebar{
+    text-align: center;
 }
 
 .event-filter{

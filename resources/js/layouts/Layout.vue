@@ -89,7 +89,7 @@ onMounted(() => {
     </header>
     <main>
         <router-view></router-view>
-        <ScrollTop class="scroll-top" target="parent"/>
+        <ScrollTop class="scroll-top" target="parent" text rounded />
     </main>
 
 </template>
