@@ -62,7 +62,7 @@ const selectedEventContinents = ref([]);
 const selectedEventCountries = ref([]);
 
 import { useAxios } from '@vueuse/integrations/useAxios'
-import { watchDebounced } from '@vueuse/core'
+import {useDateFormat, watchDebounced} from '@vueuse/core'
 import { watch } from 'vue'
 
 const selectedEventName = ref('')
@@ -104,22 +104,16 @@ watchDebounced([selectedEventGames, selectedEventType, selectedEventDates, selec
         if(dates){
             startDate = dates[0]
             if (startDate){
-                const startYear = startDate.getFullYear()
-                const startMonth = startDate.getMonth() < 10 ? '0'+ (startDate.getMonth() + 1) : startDate.getMonth() + 1
-                const startDay = startDate.getDate() < 10 ? '0' + startDate.getDate() : startDate.getDate()
-
-                startDate = startYear + '-' + startMonth + '-' + startDay
+                startDate = useDateFormat(startDate,'YYYY-MM-DD')
+                startDate = startDate.value
             }else{
                 startDate = 'default'
             }
 
             endDate = dates[1]
             if (endDate){
-                const endYear = endDate.getFullYear()
-                const endMonth = endDate.getMonth() < 10 ? '0'+ (endDate.getMonth() + 1) : endDate.getMonth() + 1
-                const endDay = endDate.getDate() < 10 ? '0' + endDate.getDate() : endDate.getDate()
-
-                endDate = endYear + '-' + endMonth + '-' + endDay
+                endDate = useDateFormat(endDate,'YYYY-MM-DD')
+                endDate = endDate.value
             }else{
                 endDate = startDate
             }
@@ -145,22 +139,16 @@ watch(currentPage, function (page){
     if(selectedEventDates.value){
         startDate = selectedEventDates.value[0]
         if (startDate){
-            const startYear = startDate.getFullYear()
-            const startMonth = startDate.getMonth() < 10 ? '0'+ (startDate.getMonth() + 1) : startDate.getMonth() + 1
-            const startDay = startDate.getDate() < 10 ? '0' + startDate.getDate() : startDate.getDate()
-
-            startDate = startYear + '-' + startMonth + '-' + startDay
+            startDate = useDateFormat(startDate,'YYYY-MM-DD')
+            startDate = startDate.value
         }else{
             startDate = 'default'
         }
 
         endDate = selectedEventDates.value[1]
         if (endDate){
-            const endYear = endDate.getFullYear()
-            const endMonth = endDate.getMonth() < 10 ? '0'+ (endDate.getMonth() + 1) : endDate.getMonth() + 1
-            const endDay = endDate.getDate() < 10 ? '0' + endDate.getDate() : endDate.getDate()
-
-            endDate = endYear + '-' + endMonth + '-' + endDay
+            endDate = useDateFormat(endDate,'YYYY-MM-DD')
+            endDate = endDate.value
         }else{
             endDate = startDate
         }
