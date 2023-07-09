@@ -133,6 +133,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
             numEntrants
             startAt
             isOnline
+            type
       }
     }
   }
@@ -176,7 +177,18 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
 
         $game_event = null;
         if ($event->events){
-            $game_event = $event->events[0];
+            $single_events = array_values(array_filter($event->events, function($event) {
+                return $event->type === 1;
+                }));
+
+            if ($single_events){
+                $game_event = array_reduce($single_events, function ($carry, $event){
+                    if ($event->numEntrants > $carry->numEntrants) {
+                        return $event;
+                    }
+                    return $carry;
+                }, $single_events[0]);
+            }
         }
 
         if($game_event){
