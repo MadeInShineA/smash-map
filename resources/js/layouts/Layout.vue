@@ -89,7 +89,7 @@ onMounted(() => {
     </header>
     <main>
         <router-view></router-view>
-        <ScrollTop class="scroll-top" target="parent" text rounded />
+        <ScrollTop id="scroll-top" target="parent" text rounded />
     </main>
 
 </template>
@@ -101,8 +101,21 @@ onMounted(() => {
     font-weight:bold;
 }
 
-.scroll-top{
+#scroll-top{
     margin-right: 10px;
+    background-color: #E0E0E0
+}
+
+#scroll-top svg {
+    color: black;
+}
+
+.dark #scroll-top{
+    background-color: #393939
+}
+
+.dark #scroll-top svg {
+    color: white;
 }
 
 main{

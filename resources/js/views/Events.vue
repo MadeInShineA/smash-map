@@ -182,7 +182,7 @@ onMounted(()=>{
         <Button class="filters-button" @click="sideBarVisible = true" icon="pi pi-filter" text rounded outlined plain label="Filters"/>
     </div>
     <Sidebar v-model:visible="sideBarVisible">
-        <div class="event-filters-sidebar">
+        <div id="event-filters-sidebar">
             <h2>Filters</h2>
             <div class="event-filter">
                 <MultiSelect v-model="selectedEventGames" :options="eventGameOptions" display="chip" :maxSelectedLabels="2" optionLabel="name" placeholder="Select Games"/>
@@ -218,7 +218,7 @@ onMounted(()=>{
     </Sidebar>
     <template v-if="countriesFetched && eventsFetched">
         <template v-if="events.data.length > 0">
-            <div class="event-container">
+            <div id="event-container">
                 <Card v-for="event in events.data" :key="event.id" class="event-card">
                     <template #header>
                         <div class="event-image-container">
@@ -261,7 +261,7 @@ onMounted(()=>{
     align-self: center;
 }
 
-.event-filters-sidebar{
+#event-filters-sidebar{
     text-align: center;
 }
 
@@ -284,7 +284,7 @@ onMounted(()=>{
     margin-right: 5px;
 }
 
-.event-container {
+#event-container {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     justify-items: center;
