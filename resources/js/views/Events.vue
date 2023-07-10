@@ -284,7 +284,7 @@ watchDebounced([selectedEventName], function([name]){
     const countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.map(country => country.code).join(',') : 'default'
     fetchEvents({ params: { page, games, type, orderBy, continents, countries, name, startDate, endDate}})
 
-}, { immediate: false, debounce: 600, maxWait: 1000 })
+}, { immediate: false, debounce: 1000, maxWait: 2000 })
 
 const sideBarVisible = ref(false)
 

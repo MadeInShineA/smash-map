@@ -193,7 +193,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
 
         if($game_event){
 
-            $event_object = Event::where('start_gg_id', $start_gg_id)->first();
+            $event_object = Event::where('start_gg_id', $start_gg_id)->where('game_id', $game_id)->first();
             if($event_object){
                 $event_attendees = $game_event->numEntrants;
                 $event_object->attendees = $event_attendees;
@@ -218,11 +218,10 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                 }
 
                 $attendees = $game_event->numEntrants;
-                var_dump($attendees);
 
                 $link = 'https://www.start.gg' . $event->url;
 
-                $event_object = Event::updateOrCreate(['start_gg_id' =>$start_gg_id], ['start_gg_updated_at' =>$start_gg_updated_at, 'is_online' =>$is_online, 'name' =>$name, 'game_id' =>$game_id, 'timezone' =>$timezone, 'start_date_time' =>$start_date, 'end_date_time' =>$end_date, 'attendees' =>$attendees, 'link' =>$link]);
+                $event_object = Event::updateOrCreate(['start_gg_id' =>$start_gg_id, 'game_id'=>$game_id], ['start_gg_updated_at' =>$start_gg_updated_at, 'is_online' =>$is_online, 'name' =>$name, 'timezone' =>$timezone, 'start_date_time' =>$start_date, 'end_date_time' =>$end_date, 'attendees' =>$attendees, 'link' =>$link]);
                 var_dump('Event: ' . $event->name . ' created');
                 if(!$event_object->is_online){
                     $latitude = $event->lat;
