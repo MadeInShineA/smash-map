@@ -1,6 +1,8 @@
 <script setup>
 import {computed, onMounted, ref} from "vue";
-
+import Menubar from "primevue/menubar";
+import ScrollTop from "primevue/scrolltop";
+import Button from "primevue/button";
 
 const items = ref([
     {

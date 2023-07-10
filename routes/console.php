@@ -213,7 +213,12 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                 $end_date->format('Y-m-d H:i:s');
                 $end_date->setTimestamp($event->endAt);
 
+                if ($start_date > $end_date){
+                    continue;
+                }
+
                 $attendees = $game_event->numEntrants;
+                var_dump($attendees);
 
                 $link = 'https://www.start.gg' . $event->url;
 
@@ -282,10 +287,9 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                     if (!in_array($image_md5, $event_db_md5s)) {
                         Storage::put($event_directory_path . '/' . $image_type . '/' . $uuid, $image);
                         Image::Create(['parentable_type' =>Event::class, 'parentable_id' =>$event_object->id, 'type' =>$image_type, 'uuid' => $uuid, 'md5' => $image_md5]);
+                        var_dump('Images for:' . $event->name . ' created');
                     }
                 }
-                var_dump('Images for:' . $event->name . ' created');
-
             }
 
         }
