@@ -1,8 +1,8 @@
 <script setup>
 import {computed, onMounted, ref} from "vue";
 import Menubar from "primevue/menubar";
-import ScrollTop from "primevue/scrolltop";
 import Button from "primevue/button";
+import Dialog from 'primevue/dialog';
 
 const items = ref([
     {
@@ -36,6 +36,15 @@ const items = ref([
             }
         ]
     },
+    {
+        label: 'Login',
+        icon: 'pi pi-user'
+    },
+    {
+        label: 'Register',
+        icon: 'pi pi-save'
+    },
+
 
 ]);
 
@@ -71,6 +80,10 @@ const menuBar = ref()
 
 const menuBarHeight = computed(()=>menuBar.value.clientHeight + 'px')
 
+const showLoginModal = ref(false)
+
+const showRegisterModal = ref(false)
+
 onMounted(() => {
     console.log('Default Layout Mounted')
 })
@@ -84,14 +97,25 @@ onMounted(() => {
                 <router-link to="/"><img alt="logo" src="../../images/logo-no-text-no-bg.png" height="40" class="mr-2"/></router-link>
             </template>
             <template #end>
+                <Button @click="showLoginModal = true" icon="pi pi-user" text plain label="Login"/>
+                <Button @click="showRegisterModal = true" icon="pi pi-save" text plain label="Register"/>
                 <Button v-if="!darkMode" id="sun-icon" @click="switch_theme(true)" icon="pi pi-sun" severity="secondary" text rounded aria-label="Sun"/>
                 <Button v-if="darkMode" id="moon-icon" @click="switch_theme(true)" icon="pi pi-moon" severity="secondary" text rounded aria-label="Sun"/>
             </template>
         </Menubar>
     </header>
     <main>
+        <Dialog v-model:visible="showLoginModal" modal header="Login" :style="{ width: '50vw' }">
+            <p>
+                Login modal
+            </p>
+        </Dialog>
+        <Dialog v-model:visible="showRegisterModal" modal header="Register" :style="{ width: '50vw' }">
+            <p>
+                Register modal
+            </p>
+        </Dialog>
         <router-view></router-view>
-<!--        <ScrollTop id="scroll-top" target="parent" text rounded />-->
     </main>
 
 </template>
