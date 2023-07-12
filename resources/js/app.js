@@ -9,6 +9,7 @@ import LoaderComponent from './components/LoaderComponent.vue';
 import {router} from'./router'
 import PrimeVue from 'primevue/config';
 import {Qalendar} from "qalendar";
+// import VueGoogleMaps from '@fawmi/vue-google-maps'
 
 const app = createApp(App);
 
@@ -136,6 +137,12 @@ app.use(PrimeVue, {locale: {
         }
     }
 })
+
+// app.use(VueGoogleMaps, {
+//     load: {
+//         key: 'YOUR_API_KEY_COMES_HERE',
+//     },
+// })
 
 app.use(Qalendar)
 

@@ -12,6 +12,7 @@
         "vite": "^4.0.0"
     },
     "dependencies": {
+        "@fawmi/vue-google-maps": "^0.9.79",
         "@vitejs/plugin-vue": "^4.2.3",
         "@vueuse/core": "^10.2.1",
         "@vueuse/integrations": "^10.2.1",

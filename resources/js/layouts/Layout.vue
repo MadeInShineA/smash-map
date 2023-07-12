@@ -3,6 +3,8 @@ import {computed, onMounted, ref} from "vue";
 import Menubar from "primevue/menubar";
 import Button from "primevue/button";
 import Dialog from 'primevue/dialog';
+import InputText from 'primevue/inputtext'
+import Password from 'primevue/password'
 
 const items = ref([
     {
@@ -36,16 +38,6 @@ const items = ref([
             }
         ]
     },
-    {
-        label: 'Login',
-        icon: 'pi pi-user'
-    },
-    {
-        label: 'Register',
-        icon: 'pi pi-save'
-    },
-
-
 ]);
 
 import {usePrimeVue} from 'primevue/config';
@@ -80,6 +72,20 @@ const menuBar = ref()
 
 const menuBarHeight = computed(()=>menuBar.value.clientHeight + 'px')
 
+const loginUsername = ref('')
+
+const loginPassword = ref('')
+
+const login = function (){
+    console.log('login')
+}
+
+const registerUsername = ref('')
+
+const registerEmail = ref('')
+
+const registerPassword = ref('')
+
 const showLoginModal = ref(false)
 
 const showRegisterModal = ref(false)
@@ -105,15 +111,42 @@ onMounted(() => {
         </Menubar>
     </header>
     <main>
-        <Dialog v-model:visible="showLoginModal" modal header="Login" :style="{ width: '50vw' }">
-            <p>
-                Login modal
-            </p>
+        <Dialog class="user-modal" v-model:visible="showLoginModal"  :draggable="false" modal header="Login">
+
+            <div class="modal-inputs">
+                <div class="p-float-label modal-input">
+                    <InputText id="login-username" v-model="loginUsername" required />
+                    <label for="login-username">Username</label>
+                </div>
+                <div class="p-float-label modal-input">
+                    <Password id="login-password" v-model="loginPassword" :feedback="false"  />
+                    <label for="login-password">Password</label>
+                </div>
+            </div>
+            <template #footer>
+                <Button label="Cancel" icon="pi pi-times" @click="showLoginModal = false" text plain/>
+                <Button label="Login" icon="pi pi-check" @click="login" text plain/>
+            </template>
         </Dialog>
-        <Dialog v-model:visible="showRegisterModal" modal header="Register" :style="{ width: '50vw' }">
-            <p>
-                Register modal
-            </p>
+        <Dialog class="user-modal" v-model:visible="showRegisterModal" :draggable="false" modal header="Register">
+            <div class="modal-inputs">
+                <div class="p-float-label modal-input">
+                    <InputText id="register-username" v-model="registerUsername" required />
+                    <label for="register-username">Username</label>
+                </div>
+                <div class="p-float-label modal-input">
+                    <InputText id="register-email" v-model="registerEmail" />
+                    <label for="register-email">Email</label>
+                </div>
+                <div class="p-float-label modal-input">
+                    <Password id="register-password" v-model="registerPassword" toggleMask />
+                    <label for="register-password">Password</label>
+                </div>
+            </div>
+            <template #footer>
+                <Button label="Cancel" icon="pi pi-times" @click="showRegisterModal = false" text plain/>
+                <Button label="Register" icon="pi pi-check" @click="showRegisterModal = false" text plain/>
+            </template>
         </Dialog>
         <router-view></router-view>
     </main>
@@ -127,26 +160,38 @@ onMounted(() => {
     font-weight:bold;
 }
 
-#scroll-top{
+/*
+    #scroll-top{
     margin-right: 10px;
     background-color: #E0E0E0
-}
+    }
 
-#scroll-top svg {
-    color: black;
-}
+    #scroll-top svg {
+        color: black;
+    }
 
-.dark #scroll-top{
-    background-color: #393939
-}
+    .dark #scroll-top{
+        background-color: #393939
+    }
 
-.dark #scroll-top svg {
+    .dark #scroll-top svg {
     color: white;
-}
+    }
+ */
 
 main{
     height: calc(100vh - v-bind(menuBarHeight));
     overflow-y: auto;
+}
+.user-modal{
+    width: max-content;
+    display: flex;
+    justify-content: center;
+}
+
+
+.modal-input{
+    margin: 20px;
 }
 
 #sun-icon{
@@ -156,4 +201,5 @@ main{
 #moon-icon{
     color: white;
 }
+
 </style>
