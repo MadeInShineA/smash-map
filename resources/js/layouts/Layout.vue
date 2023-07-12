@@ -72,12 +72,31 @@ const menuBar = ref()
 
 const menuBarHeight = computed(()=>menuBar.value.clientHeight + 'px')
 
-const loginUsername = ref('')
+const loginUser = ref({
+    username: '',
+    password: ''
+})
 
-const loginPassword = ref('')
+const loginValidationErrors = ref({
+    username: [],
+    password: []
+})
 
-const login = function (){
-    console.log('login')
+const login = async function () {
+
+    const header = {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+    }
+
+    try {
+        const response = await axios.post('/api/login', loginUser.value, header)
+    } catch (error) {
+        loginValidationErrors.value = error.response.data.errors
+    }
+
 }
 
 const registerUsername = ref('')
@@ -115,13 +134,24 @@ onMounted(() => {
 
             <div class="modal-inputs">
                 <div class="p-float-label modal-input">
-                    <InputText id="login-username" v-model="loginUsername" required />
+                    <InputText id="login-username" v-model="loginUser.username" @focus="loginValidationErrors.username = []"/>
                     <label for="login-username">Username</label>
                 </div>
+                <TransitionGroup name="errors">
+                    <template v-for="loginUsernameError in loginValidationErrors.username" :key="loginUsernameError" class="validation-errors">
+                            <div class="validation-error">{{loginUsernameError}}</div>
+                    </template>
+                </TransitionGroup>
+
                 <div class="p-float-label modal-input">
-                    <Password id="login-password" v-model="loginPassword" :feedback="false"  />
+                    <Password id="login-password" v-model="loginUser.password" :feedback="false" @focus="loginValidationErrors.password = []"/>
                     <label for="login-password">Password</label>
                 </div>
+                <TransitionGroup name="errors">
+                    <template v-for="loginPasswordError in loginValidationErrors.password" :key="loginPasswordError" class="validation-errors">
+                        <div class="validation-error">{{loginPasswordError}}</div>
+                    </template>
+                </TransitionGroup>
             </div>
             <template #footer>
                 <Button label="Cancel" icon="pi pi-times" @click="showLoginModal = false" text plain/>
@@ -189,9 +219,24 @@ main{
     justify-content: center;
 }
 
-
 .modal-input{
-    margin: 20px;
+    margin-left: 20px;
+    margin-bottom: 10px;
+    margin-top: 10px
+}
+
+.validation-error{
+    margin-left: 20px;
+    font-size: 12px;
+    color: red;
+}
+
+.errors-enter-active,
+.errors-leave-active {
+    transition: opacity 0.5s ease;}
+.errors-enter-from,
+.errors-leave-to {
+    opacity: 0;
 }
 
 #sun-icon{
