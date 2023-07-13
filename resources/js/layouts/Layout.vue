@@ -79,10 +79,13 @@ const loginUser = ref({
 
 const loginValidationErrors = ref({
     username: [],
-    password: []
+    password: [],
+    login:[]
 })
 
 const login = async function () {
+
+    loginValidationErrors.value.login = []
 
     const header = {
         headers: {
@@ -144,12 +147,17 @@ onMounted(() => {
                 </TransitionGroup>
 
                 <div class="p-float-label modal-input">
-                    <Password id="login-password" v-model="loginUser.password" :feedback="false" @focus="loginValidationErrors.password = []"/>
+                    <Password id="login-password" v-model="loginUser.password" :feedback="false" @focus="loginValidationErrors.password = []" toggleMask/>
                     <label for="login-password">Password</label>
                 </div>
                 <TransitionGroup name="errors">
                     <template v-for="loginPasswordError in loginValidationErrors.password" :key="loginPasswordError" class="validation-errors">
                         <div class="validation-error">{{loginPasswordError}}</div>
+                    </template>
+                </TransitionGroup>
+                <TransitionGroup name="errors">
+                    <template v-for="loginError in loginValidationErrors.login" :key="loginError" class="validation-errors">
+                        <div class="validation-error">{{loginError}}</div>
                     </template>
                 </TransitionGroup>
             </div>
