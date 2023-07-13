@@ -5,6 +5,7 @@ import Button from "primevue/button";
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
+import Swal from 'sweetalert2'
 
 const items = ref([
     {
@@ -96,6 +97,20 @@ const login = async function () {
 
     try {
         const response = await axios.post('/api/login', loginUser.value, header)
+        loginUser.value.username = ''
+        loginUser.value.password = ''
+        showLoginModal.value = false
+        const alertBackground = darkMode.value ? '#1C1B22' : '#FFFFFF'
+        const alertColor = darkMode.value ? '#FFFFFF' : '#1C1B22'
+        Swal.fire({
+            title: 'Logged in!',
+            text: 'Your are successfully logged in!',
+            icon: 'success',
+            background: alertBackground,
+            color: alertColor,
+            timer: 2000,
+            showConfirmButton: false
+        })
     } catch (error) {
         loginValidationErrors.value = error.response.data.errors
     }
