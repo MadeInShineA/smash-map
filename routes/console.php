@@ -271,7 +271,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                     curl_setopt($curl_handle, CURLOPT_SSL_VERIFYPEER, false);
                     curl_setopt($curl_handle, CURLOPT_CONNECTTIMEOUT, 2);
                     curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
-                    curl_setopt($curl_handle, CURLOPT_USERAGENT, 'Melee Map');
+                    curl_setopt($curl_handle, CURLOPT_USERAGENT, 'Smash Map');
                     $query = curl_exec($curl_handle);
 
                     curl_close($curl_handle);
@@ -346,7 +346,7 @@ Artisan::command('import-characters-images',function(){
         curl_setopt($curl_handle, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl_handle, CURLOPT_CONNECTTIMEOUT, 2);
         curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl_handle, CURLOPT_USERAGENT, 'Melee Map');
+        curl_setopt($curl_handle, CURLOPT_USERAGENT, 'Smash Map');
         $query = curl_exec($curl_handle);
 
         curl_close($curl_handle);
@@ -375,7 +375,7 @@ Artisan::command('import-countries-images', function (){
         curl_setopt($curl_handle, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl_handle, CURLOPT_CONNECTTIMEOUT, 2);
         curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl_handle, CURLOPT_USERAGENT, 'Melee Map');
+        curl_setopt($curl_handle, CURLOPT_USERAGENT, 'Smash Map');
         $query = curl_exec($curl_handle);
 
         $image = $query;

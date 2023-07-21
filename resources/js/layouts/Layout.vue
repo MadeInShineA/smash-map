@@ -1,11 +1,20 @@
 <script setup>
-import {computed, onMounted, ref} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import Menubar from "primevue/menubar";
 import Button from "primevue/button";
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 import Swal from 'sweetalert2'
+import { useWindowSize } from '@vueuse/core'
+
+const { width, height } = useWindowSize()
+const responsiveMenuDisplayed = ref(false)
+
+watch(width, function (width){
+    responsiveMenuDisplayed.value = width <= 960
+}, {immediate: true})
+
 
 const items = ref([
     {
@@ -135,7 +144,16 @@ onMounted(() => {
 
 <template>
     <header ref="menuBar" id="header">
-        <Menubar :model="items">
+        <Menubar v-if="responsiveMenuDisplayed" id="responsive-menu" :model="items">
+            <template #start>
+                <router-link to="/"><img alt="logo" src="../../images/logo-no-text-no-bg.png" height="40" class="mr-2"/></router-link>
+                <Button @click="showLoginModal = true" icon="pi pi-user" text plain label="Login"/>
+                <Button @click="showRegisterModal = true" icon="pi pi-save" text plain label="Register"/>
+                <Button v-if="!darkMode" id="sun-icon" @click="switch_theme(true)" icon="pi pi-sun" severity="secondary" text rounded aria-label="Sun"/>
+                <Button v-if="darkMode" id="moon-icon" @click="switch_theme(true)" icon="pi pi-moon" severity="secondary" text rounded aria-label="Sun"/>
+            </template>
+        </Menubar>
+        <Menubar v-else :model="items">
             <template #start>
                 <router-link to="/"><img alt="logo" src="../../images/logo-no-text-no-bg.png" height="40" class="mr-2"/></router-link>
             </template>
@@ -236,6 +254,29 @@ main{
     height: calc(100vh - v-bind(menuBarHeight));
     overflow-y: auto;
 }
+
+@keyframes scalein {
+    0% {
+        opacity: 0;
+        transform: scaleY(0.8);
+        transition: transform .12s cubic-bezier(0, 0, 0.2, 1), opacity .12s cubic-bezier(0, 0, 0.2, 1);
+    }
+    100% {
+        opacity: 1;
+        transform: scaleY(1);
+    }
+}
+
+#responsive-menu{
+    justify-content: space-between;
+}
+
+.p-menubar-mobile-active .p-menubar-root-list{
+    animation-name: scalein;
+    animation-duration: 0.5s;
+}
+
+
 .user-modal{
     width: max-content;
     display: flex;
