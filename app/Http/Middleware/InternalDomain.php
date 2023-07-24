@@ -16,11 +16,11 @@ class InternalDomain
     public function handle(Request $request, Closure $next): Response
     {
 
-        $requestHost = $request->getHost();
-
-        if ($requestHost == env('SMASH_MAP_URL')) {
-            return $next($request);
-        }
-        return response()->json(['message' => 'Forbidden - 403E - ' . $requestHost], 403);
-        }
+//        $requestHost = $request->getHost();
+//
+//        if ($requestHost == env('SMASH_MAP_URL')) {
+//            return $next($request);
+//        }
+//        return response()->json(['message' => 'Forbidden - 403E - ' . $requestHost], 403);
+    }
 }
