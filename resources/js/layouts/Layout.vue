@@ -7,6 +7,7 @@ import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 import { useWindowSize } from '@vueuse/core'
 import LoginDialog from "@/components/LoginDialog.vue";
+import Avatar from "primevue/avatar";
 
 const { width, height } = useWindowSize()
 const responsiveMenuDisplayed = ref(false)
@@ -121,7 +122,7 @@ onMounted(() => {
                     <Button @click="showRegisterModal = true" icon="pi pi-save" text plain label="Register"/>
                 </template>
                 <template v-else>
-                    <Button text plain :label="user.username"/>
+                    <Avatar :label="user.username[0]" class="mr-2" style="background-color:#2196F3; color: #ffffff" shape="circle"  />
                 </template>
                 <Button v-if="!darkMode" id="sun-icon" @click="switch_theme(true)" icon="pi pi-sun" severity="secondary" text rounded aria-label="Sun"/>
                 <Button v-if="darkMode" id="moon-icon" @click="switch_theme(true)" icon="pi pi-moon" severity="secondary" text rounded aria-label="Sun"/>
@@ -137,7 +138,7 @@ onMounted(() => {
                     <Button @click="showRegisterModal = true" icon="pi pi-save" text plain label="Register"/>
                 </template>
                 <template v-else>
-                    <Button text plain :label="user.username"/>
+                    <Avatar :label="user.username[0]" class="mr-2" style="background-color:#2196F3; color: #ffffff" shape="circle"  />
                 </template>
                 <Button v-if="!darkMode" id="sun-icon" @click="switch_theme(true)" icon="pi pi-sun" severity="secondary" text rounded aria-label="Sun"/>
                 <Button v-if="darkMode" id="moon-icon" @click="switch_theme(true)" icon="pi pi-moon" severity="secondary" text rounded aria-label="Sun"/>
