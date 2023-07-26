@@ -122,7 +122,7 @@ onMounted(() => {
                     <Button @click="showRegisterModal = true" icon="pi pi-save" text plain label="Register"/>
                 </template>
                 <template v-else>
-                    <Avatar :label="user.username[0]" class="mr-2" style="background-color:#2196F3; color: #ffffff" shape="circle"  />
+                    <Avatar image="https://avatars.githubusercontent.com/u/108631757?v=4" class="mr-2" style="background-color:#2196F3; color: #ffffff" shape="circle"  />
                 </template>
                 <Button v-if="!darkMode" id="sun-icon" @click="switch_theme(true)" icon="pi pi-sun" severity="secondary" text rounded aria-label="Sun"/>
                 <Button v-if="darkMode" id="moon-icon" @click="switch_theme(true)" icon="pi pi-moon" severity="secondary" text rounded aria-label="Sun"/>

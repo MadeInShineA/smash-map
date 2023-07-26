@@ -7,7 +7,7 @@ use App\Http\Requests\LoginRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class User extends Controller
+class UserController extends Controller
 {
     public function login(LoginRequest $request){
         if (!Auth::attempt($request->json()->all())) {

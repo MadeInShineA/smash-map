@@ -43,6 +43,10 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected $appends = [
+        'profile_picture'
+    ];
+
     /**
      * The attributes that should be cast.
      *
@@ -61,5 +65,10 @@ class User extends Authenticatable
     public function images(): MorphMany
     {
         return $this->morphMany(Image::class, 'parentable');
+    }
+
+    public function getProfilePictureAttribute()
+    {
+        return $this->morphMany(Image::class, 'parentable')->where('type', 'profile')->first()?->url_attribute();
     }
 }

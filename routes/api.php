@@ -3,6 +3,7 @@
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,7 +22,7 @@ use Illuminate\Support\Facades\Route;
 //    return $request->user();
 //});
 
-Route::post('/login', [\App\Http\Controllers\User::class, 'login']);
+Route::post('/login', [UserController::class, 'login']);
 //Route::get('/timezone', [Controller::class, 'getVisitorTimezone']);
 Route::get('/events', [EventController::class, 'index']);
 Route::get('/countries-filter', [CountryController::class, 'countries_filter']);
