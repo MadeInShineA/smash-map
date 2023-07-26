@@ -10,6 +10,8 @@ import {router} from'./router'
 import PrimeVue from 'primevue/config';
 import {Qalendar} from "qalendar";
 import { createPinia } from 'pinia'
+import BadgeDirective from 'primevue/badgedirective';
+
 // import VueGoogleMaps from '@fawmi/vue-google-maps'
 
 const app = createApp(App);
@@ -149,5 +151,7 @@ app.use(Qalendar)
 
 const pinia = createPinia()
 app.use(pinia)
+
+app.directive('badge', BadgeDirective);
 
 app.mount("#app")
