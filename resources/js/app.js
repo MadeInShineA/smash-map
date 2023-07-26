@@ -9,6 +9,7 @@ import LoaderComponent from './components/LoaderComponent.vue';
 import {router} from'./router'
 import PrimeVue from 'primevue/config';
 import {Qalendar} from "qalendar";
+import { createPinia } from 'pinia'
 // import VueGoogleMaps from '@fawmi/vue-google-maps'
 
 const app = createApp(App);
@@ -145,5 +146,8 @@ app.use(PrimeVue, {locale: {
 // })
 
 app.use(Qalendar)
+
+const pinia = createPinia()
+app.use(pinia)
 
 app.mount("#app")

@@ -93,6 +93,11 @@ const loginValidationErrors = ref({
     login:[]
 })
 
+const user = ref({})
+if (window.localStorage.getItem('userData') !== null) {
+    user.value = JSON.parse(window.localStorage.getItem('userData'));
+}
+
 const login = async function () {
     loginValidationErrors.value.login = []
 
@@ -107,6 +112,10 @@ const login = async function () {
         axios.get('/sanctum/csrf-cookie').then(async () => {
             try {
                 const response = await axios.post('/api/login', loginUser.value, header)
+                user.value = response.data.data.user;
+                localStorage.setItem('accessToken', response.data.data.token)
+                localStorage.setItem('userData', JSON.stringify(user.value));
+                localStorage.setItem('tokenTime', new Date().toString());
                 loginUser.value.username = ''
                 loginUser.value.password = ''
                 showLoginModal.value = false
@@ -149,8 +158,13 @@ onMounted(() => {
         <Menubar v-if="responsiveMenuDisplayed" id="responsive-menu" :model="items">
             <template #start>
                 <router-link to="/"><img alt="logo" src="../../images/logo-no-text-no-bg.png" height="40" class="mr-2"/></router-link>
-                <Button @click="showLoginModal = true" icon="pi pi-user" text plain label="Login"/>
-                <Button @click="showRegisterModal = true" icon="pi pi-save" text plain label="Register"/>
+                <template v-if="!user">
+                    <Button @click="showLoginModal = true" icon="pi pi-user" text plain label="Login"/>
+                    <Button @click="showRegisterModal = true" icon="pi pi-save" text plain label="Register"/>
+                </template>
+                <template v-else>
+                    <Button text plain :label="user.username"/>
+                </template>
                 <Button v-if="!darkMode" id="sun-icon" @click="switch_theme(true)" icon="pi pi-sun" severity="secondary" text rounded aria-label="Sun"/>
                 <Button v-if="darkMode" id="moon-icon" @click="switch_theme(true)" icon="pi pi-moon" severity="secondary" text rounded aria-label="Sun"/>
             </template>
@@ -160,8 +174,13 @@ onMounted(() => {
                 <router-link to="/"><img alt="logo" src="../../images/logo-no-text-no-bg.png" height="40" class="mr-2"/></router-link>
             </template>
             <template #end>
-                <Button @click="showLoginModal = true" icon="pi pi-user" text plain label="Login"/>
-                <Button @click="showRegisterModal = true" icon="pi pi-save" text plain label="Register"/>
+                <template v-if="!user">
+                    <Button @click="showLoginModal = true" icon="pi pi-user" text plain label="Login"/>
+                    <Button @click="showRegisterModal = true" icon="pi pi-save" text plain label="Register"/>
+                </template>
+                <template v-else>
+                    <Button text plain :label="user.username"/>
+                </template>
                 <Button v-if="!darkMode" id="sun-icon" @click="switch_theme(true)" icon="pi pi-sun" severity="secondary" text rounded aria-label="Sun"/>
                 <Button v-if="darkMode" id="moon-icon" @click="switch_theme(true)" icon="pi pi-moon" severity="secondary" text rounded aria-label="Sun"/>
             </template>
