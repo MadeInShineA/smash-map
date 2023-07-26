@@ -5,8 +5,8 @@ import Button from "primevue/button";
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
-import Swal from 'sweetalert2'
 import { useWindowSize } from '@vueuse/core'
+import LoginDialog from "@/components/LoginDialog.vue";
 
 const { width, height } = useWindowSize()
 const responsiveMenuDisplayed = ref(false)
@@ -81,60 +81,9 @@ switch_theme(false)
 const menuBar = ref()
 
 const menuBarHeight = computed(()=>menuBar.value.clientHeight + 'px')
-
-const loginUser = ref({
-    username: '',
-    password: ''
-})
-
-const loginValidationErrors = ref({
-    username: [],
-    password: [],
-    login:[]
-})
-
-const user = ref({})
+const user = ref(null)
 if (window.localStorage.getItem('userData') !== null) {
     user.value = JSON.parse(window.localStorage.getItem('userData'));
-}
-
-const login = async function () {
-    loginValidationErrors.value.login = []
-
-    const header = {
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-        },
-    }
-
-
-        axios.get('/sanctum/csrf-cookie').then(async () => {
-            try {
-                const response = await axios.post('/api/login', loginUser.value, header)
-                user.value = response.data.data.user;
-                localStorage.setItem('accessToken', response.data.data.token)
-                localStorage.setItem('userData', JSON.stringify(user.value));
-                localStorage.setItem('tokenTime', new Date().toString());
-                loginUser.value.username = ''
-                loginUser.value.password = ''
-                showLoginModal.value = false
-                const alertBackground = darkMode.value ? '#1C1B22' : '#FFFFFF'
-                const alertColor = darkMode.value ? '#FFFFFF' : '#1C1B22'
-                Swal.fire({
-                    title: 'Logged in!',
-                    text: 'Your are successfully logged in!',
-                    icon: 'success',
-                    background: alertBackground,
-                    color: alertColor,
-                    timer: 2000,
-                    showConfirmButton: false
-                })
-            } catch (error) {
-                loginValidationErrors.value = error.response.data.errors
-            }
-        })
-
 }
 
 const registerUsername = ref('')
@@ -145,7 +94,16 @@ const registerPassword = ref('')
 
 const showLoginModal = ref(false)
 
+const switchShowLoginModal = function (){
+    showLoginModal.value = !showLoginModal.value
+}
+
+const setUser = function(){
+    user.value = JSON.parse(window.localStorage.getItem('userData'));
+}
+
 const showRegisterModal = ref(false)
+
 
 onMounted(() => {
     console.log('Default Layout Mounted')
@@ -187,39 +145,7 @@ onMounted(() => {
         </Menubar>
     </header>
     <main>
-        <Dialog class="user-modal" v-model:visible="showLoginModal"  :draggable="false" modal header="Login">
-
-            <div class="modal-inputs">
-                <div class="p-float-label modal-input">
-                    <InputText id="login-username" v-model="loginUser.username" @focus="loginValidationErrors.username = []"/>
-                    <label for="login-username">Username</label>
-                </div>
-                <TransitionGroup name="errors">
-                    <template v-for="loginUsernameError in loginValidationErrors.username" :key="loginUsernameError" class="validation-errors">
-                            <div class="validation-error">{{loginUsernameError}}</div>
-                    </template>
-                </TransitionGroup>
-
-                <div class="p-float-label modal-input">
-                    <Password id="login-password" v-model="loginUser.password" :feedback="false" @focus="loginValidationErrors.password = []" toggleMask/>
-                    <label for="login-password">Password</label>
-                </div>
-                <TransitionGroup name="errors">
-                    <template v-for="loginPasswordError in loginValidationErrors.password" :key="loginPasswordError" class="validation-errors">
-                        <div class="validation-error">{{loginPasswordError}}</div>
-                    </template>
-                </TransitionGroup>
-                <TransitionGroup name="errors">
-                    <template v-for="loginError in loginValidationErrors.login" :key="loginError" class="validation-errors">
-                        <div class="validation-error">{{loginError}}</div>
-                    </template>
-                </TransitionGroup>
-            </div>
-            <template #footer>
-                <Button label="Cancel" icon="pi pi-times" @click="showLoginModal = false" text plain/>
-                <Button label="Login" icon="pi pi-check" @click="login" text plain/>
-            </template>
-        </Dialog>
+        <LoginDialog :darkMode="darkMode" :showLoginModal="showLoginModal" @switchShowLoginModal="switchShowLoginModal" @setUser="setUser" ></LoginDialog>
         <Dialog class="user-modal" v-model:visible="showRegisterModal" :draggable="false" modal header="Register">
             <div class="modal-inputs">
                 <div class="p-float-label modal-input">
