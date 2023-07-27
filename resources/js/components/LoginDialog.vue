@@ -39,8 +39,8 @@ const login = async function () {
     axios.get('/sanctum/csrf-cookie').then(async () => {
         try {
             const response = await axios.post('/api/login', loginUser.value, header)
-            localStorage.setItem('accessToken', response.data.data.token)
             localStorage.setItem('userData', JSON.stringify(response.data.data.user));
+            // localStorage.setItem('accessToken', response.data.data.token)
             localStorage.setItem('tokenTime', new Date().toString());
             loginUser.value.username = ''
             loginUser.value.password = ''

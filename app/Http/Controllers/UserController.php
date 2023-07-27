@@ -17,5 +17,12 @@ class UserController extends Controller
                 ],
                 401);
         }
-        return $this->sendResponse(['user' => auth()->user(), 'token' => auth()->user()->createToken('User Token')->plainTextToken], 'You are connected');}
+//        return $this->sendResponse(['user' => auth()->user(), 'token' => auth()->user()->createToken('User Token')->plainTextToken], 'You are connected');
+        return $this->sendResponse(['user' => auth()->user()], 'You are connected');
+    }
+
+    public function logout(Request $request){
+        Auth::logout();
+        return $this->sendResponse([], 'You are disconnected');
+    }
 }

@@ -28,3 +28,6 @@ Route::get('/events', [EventController::class, 'index']);
 Route::get('/countries-filter', [CountryController::class, 'countries_filter']);
 Route::get('/calendar/events', [EventController::class, 'calendar_index']);
 
+Route::middleware(['auth:sanctum'])->group(function (){
+    Route::post('/logout', [UserController::class, 'logout']);
+});

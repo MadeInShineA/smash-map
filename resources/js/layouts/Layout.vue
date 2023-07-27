@@ -8,6 +8,7 @@ import Password from 'primevue/password'
 import { useWindowSize } from '@vueuse/core'
 import LoginDialog from "@/components/LoginDialog.vue";
 import Avatar from "primevue/avatar";
+import Menu from "primevue/menu";
 
 
 const { width, height } = useWindowSize()
@@ -18,7 +19,7 @@ watch(width, function (width){
 }, {immediate: true})
 
 
-const items = ref([
+const menuItems = ref([
     {
         label: 'Home',
         icon: 'pi pi-fw pi-home',
@@ -57,6 +58,8 @@ import {usePrimeVue} from 'primevue/config';
 const PrimeVue = usePrimeVue();
 
 import { useDark } from '@vueuse/core'
+import axios from "axios";
+import Swal from "sweetalert2";
 const darkMode = useDark()
 function switch_theme(changeMode) {
     if (changeMode){
@@ -106,6 +109,36 @@ const setUser = function(){
 
 const showRegisterModal = ref(false)
 
+const profileMenu = ref();
+
+const toggleProfileMenu = function(event) {
+    profileMenu.value.toggle(event);
+}
+
+const profileItems = ref([{
+    label: 'Account',
+    items: [
+        {label: 'Profile', icon: 'pi pi-fw pi-user'},
+        {label: 'Settings', icon: 'pi pi-fw pi-cog'},
+        {label: 'Log Out', icon: 'pi pi-sign-out', command: async function () {
+                console.log(axios.post('/api/logout'));
+                localStorage.removeItem('userData');
+                user.value = null;
+                const alertBackground = darkMode.value ? '#1C1B22' : '#FFFFFF'
+                const alertColor = darkMode.value ? '#FFFFFF' : '#1C1B22'
+                await Swal.fire({
+                    title: 'Logged out!',
+                    text: 'Your are successfully logged out!',
+                    icon: 'success',
+                    background: alertBackground,
+                    color: alertColor,
+                    timer: 2000,
+                    showConfirmButton: false
+                })
+            }},
+    ]
+}])
+
 
 onMounted(() => {
     console.log('Default Layout Mounted')
@@ -115,7 +148,7 @@ onMounted(() => {
 
 <template>
     <header ref="menuBar" id="header">
-        <Menubar v-if="responsiveMenuDisplayed" id="responsive-menu" :model="items">
+        <Menubar v-if="responsiveMenuDisplayed" id="responsive-menu" :model="menuItems">
             <template #start>
                 <router-link to="/"><img alt="logo" src="../../images/logo-no-text-no-bg.png" height="40" class="mr-2"/></router-link>
                 <template v-if="!user">
@@ -123,13 +156,16 @@ onMounted(() => {
                     <Button @click="showRegisterModal = true" icon="pi pi-save" text plain label="Register"/>
                 </template>
                 <template v-else>
-                    <Avatar image="https://avatars.githubusercontent.com/u/108631757?v=4" v-badge.danger="4" class="mr-2" style="background-color:#2196F3; color: #ffffff" shape="circle"  />
+                    <Button id="profile-avatar-button" plain text rounded @click="toggleProfileMenu">
+                        <Avatar :image="user.profile_picture" :label="user.username[0]" shape="circle"  />
+                    </Button>
+                    <Menu :model="profileItems" :popup="true" ref="profileMenu"></Menu>
                 </template>
                 <Button v-if="!darkMode" id="sun-icon" @click="switch_theme(true)" icon="pi pi-sun" severity="secondary" text rounded aria-label="Sun"/>
                 <Button v-if="darkMode" id="moon-icon" @click="switch_theme(true)" icon="pi pi-moon" severity="secondary" text rounded aria-label="Sun"/>
             </template>
         </Menubar>
-        <Menubar v-else :model="items">
+        <Menubar v-else :model="menuItems">
             <template #start>
                 <router-link to="/"><img alt="logo" src="../../images/logo-no-text-no-bg.png" height="40" class="mr-2"/></router-link>
             </template>
@@ -139,35 +175,38 @@ onMounted(() => {
                     <Button @click="showRegisterModal = true" icon="pi pi-save" text plain label="Register"/>
                 </template>
                 <template v-else>
-                    <Avatar :label="user.username[0]" class="mr-2" style="background-color:#2196F3; color: #ffffff" shape="circle"  />
+                    <Button id="profile-avatar-button" plain text rounded @click="toggleProfileMenu">
+                        <Avatar :image="user.profile_picture" :label="user.username[0]" shape="circle"  />
+                    </Button>
+                    <Menu :model="profileItems" :popup="true" ref="profileMenu"></Menu>
                 </template>
-                <Button v-if="!darkMode" id="sun-icon" @click="switch_theme(true)" icon="pi pi-sun" severity="secondary" text rounded aria-label="Sun"/>
-                <Button v-if="darkMode" id="moon-icon" @click="switch_theme(true)" icon="pi pi-moon" severity="secondary" text rounded aria-label="Sun"/>
+                <Button v-if="!darkMode" id="sun-icon" @click="switch_theme(true)" icon="pi pi-sun" severity="secondary" plain text rounded aria-label="Sun"/>
+                <Button v-if="darkMode" id="moon-icon" @click="switch_theme(true)" icon="pi pi-moon" severity="secondary" plain text rounded aria-label="Sun"/>
             </template>
         </Menubar>
     </header>
     <main>
         <LoginDialog :darkMode="darkMode" :showLoginModal="showLoginModal" @switchShowLoginModal="switchShowLoginModal" @setUser="setUser" ></LoginDialog>
-        <Dialog class="user-modal" v-model:visible="showRegisterModal" :draggable="false" modal header="Register">
-            <div class="modal-inputs">
-                <div class="p-float-label modal-input">
-                    <InputText id="register-username" v-model="registerUsername" required />
-                    <label for="register-username">Username</label>
-                </div>
-                <div class="p-float-label modal-input">
-                    <InputText id="register-email" v-model="registerEmail" />
-                    <label for="register-email">Email</label>
-                </div>
-                <div class="p-float-label modal-input">
-                    <Password id="register-password" v-model="registerPassword" toggleMask />
-                    <label for="register-password">Password</label>
-                </div>
-            </div>
-            <template #footer>
-                <Button label="Cancel" icon="pi pi-times" @click="showRegisterModal = false" text plain/>
-                <Button label="Register" icon="pi pi-check" @click="showRegisterModal = false" text plain/>
-            </template>
-        </Dialog>
+<!--        <Dialog class="user-modal" v-model:visible="showRegisterModal" :draggable="false" modal header="Register">-->
+<!--            <div class="modal-inputs">-->
+<!--                <div class="p-float-label modal-input">-->
+<!--                    <InputText id="register-username" v-model="registerUsername" required />-->
+<!--                    <label for="register-username">Username</label>-->
+<!--                </div>-->
+<!--                <div class="p-float-label modal-input">-->
+<!--                    <InputText id="register-email" v-model="registerEmail" />-->
+<!--                    <label for="register-email">Email</label>-->
+<!--                </div>-->
+<!--                <div class="p-float-label modal-input">-->
+<!--                    <Password id="register-password" v-model="registerPassword" toggleMask />-->
+<!--                    <label for="register-password">Password</label>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <template #footer>-->
+<!--                <Button label="Cancel" icon="pi pi-times" @click="showRegisterModal = false" text plain/>-->
+<!--                <Button label="Register" icon="pi pi-check" @click="showRegisterModal = false" text plain/>-->
+<!--            </template>-->
+<!--        </Dialog>-->
         <router-view></router-view>
     </main>
 
@@ -216,6 +255,16 @@ main{
     }
 }
 
+.p-menubar-start {
+    display: flex;
+    align-items: center; /* Center items vertically */
+}
+
+.p-menubar-end {
+    display: flex;
+    align-items: center; /* Center items vertically */
+}
+
 #responsive-menu{
     justify-content: space-between;
 }
@@ -250,6 +299,18 @@ main{
 .errors-enter-from,
 .errors-leave-to {
     opacity: 0;
+}
+
+#profile-avatar-button{
+    padding: 0;
+    min-width: min-content;
+    margin-right:10px;
+}
+
+#responsive-menu #profile-avatar-button{
+    padding: 0;
+    min-width: min-content;
+    margin-left:10px;
 }
 
 #sun-icon{
