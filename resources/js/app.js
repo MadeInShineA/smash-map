@@ -12,8 +12,6 @@ import {Qalendar} from "qalendar";
 import { createPinia } from 'pinia'
 import BadgeDirective from 'primevue/badgedirective';
 
-// import VueGoogleMaps from '@fawmi/vue-google-maps'
-
 const app = createApp(App);
 
 app.component('LoaderComponent', LoaderComponent)
@@ -140,12 +138,6 @@ app.use(PrimeVue, {locale: {
         }
     }
 })
-
-// app.use(VueGoogleMaps, {
-//     load: {
-//         key: 'YOUR_API_KEY_COMES_HERE',
-//     },
-// })
 
 app.use(Qalendar)
 

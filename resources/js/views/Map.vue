@@ -3,6 +3,7 @@
 import {onMounted, ref} from "vue";
 import FilterSidebar from "@/components/FilterSidebar.vue";
 import Button from "primevue/button";
+// import { GoogleMap, Marker } from "vue3-google-map";
 
     onMounted(()=>{
         console.log('Map Mounted')
@@ -16,12 +17,6 @@ const switchSideBarVisible = function (){
 </script>
 
 <template>
-<!--    <GMapMap-->
-<!--        :zoom="7"-->
-<!--        map-type-id="terrain"-->
-<!--        style="width: 500px; height: 300px"-->
-<!--        >-->
-<!--    </GMapMap>-->
     <h1>Map</h1>
     <Button class="filters-button" @click="sideBarVisible = true" icon="pi pi-filter" text rounded outlined plain label="Filters"/>
     <FilterSidebar :sideBarVisible="sideBarVisible" @switchSideBarVisible="switchSideBarVisible"></FilterSidebar>

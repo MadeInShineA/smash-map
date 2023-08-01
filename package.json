@@ -12,7 +12,6 @@
         "vite": "^4.0.0"
     },
     "dependencies": {
-        "@fawmi/vue-google-maps": "^0.9.79",
         "@vitejs/plugin-vue": "^4.2.3",
         "@vueuse/core": "^10.2.1",
         "@vueuse/integrations": "^10.2.1",
@@ -22,7 +21,6 @@
         "qalendar": "^2.5.0",
         "sweetalert2": "^11.7.16",
         "vue": "^3.2.36",
-        "vue-awesome-paginate": "^1.1.46",
         "vue-loader": "^17.0.1",
         "vue-router": "^4.2.1",
         "watch": "^0.13.0"
