@@ -14,7 +14,17 @@ import Card from "primevue/card";
 import Paginator from "primevue/paginator";
 import Chip from "primevue/chip";
 import Tag from "primevue/tag";
+import {useFiltersStore} from "../stores/FiltersStore.js";
+import {useEventsStore} from "../stores/EventsStore.js";
+import FilterSidebar from "@/components/FilterSidebar.vue";
 
+const filtersStore = useFiltersStore()
+const eventsStore = useEventsStore()
+
+const sideBarVisible = ref(false)
+const switchSideBarVisible = function (){
+    sideBarVisible.value = !sideBarVisible.value
+}
 // TODO Update the timezone based on the user's IP
 
 // const timezone = ref('UTC')
@@ -39,255 +49,6 @@ const orderByOptions = ref([
     {name: 'Date descending', value: 'dateDESC'}
 ])
 
-const eventGameOptions = ref([
-    {name: '64', value: '4'},
-    {name: 'Melee', value: '1'},
-    {name: 'Brawl', value: '5'},
-    {name: 'Project M', value: '2'},
-    {name: 'Project +', value: '33602'},
-    {name: '3DS / WiiU', value: '3'},
-    {name: 'Ultimate', value: '1386'},
-])
-
-const eventTypeOptions = ref([
-    {name: 'All event types', value: 'default'},
-    {name: 'Online', value: 'online'},
-    {name: 'Offline', value: 'offline'}
-]);
-
-const eventContinentOptions = ref( [
-    { name: 'Africa', code: 'AF' },
-    { name: 'Antarctica', code: 'AN' },
-    { name: 'Asia', code: 'AS' },
-    { name: 'Europe', code: 'EU' },
-    { name: 'North America', code: 'NA' },
-    { name: 'Oceania', code: 'OC' },
-    { name: 'South America', code: 'SA' }
-])
-
-const currentPage = ref(1);
-const selectedOrderBy = ref({name: 'Default sort', value: 'default'});
-const selectedEventGames = ref([]);
-const selectedEventType = ref({name: 'Default type', value: 'default'});
-const selectedEventDates = ref([])
-const selectedEventContinents = ref([]);
-const selectedEventCountries = ref([]);
-const selectedEventName = ref('')
-
-const { data: events, isFinished: eventsFetched, execute: fetchEvents } = useAxios('/api/events')
-
-const {data: eventCountryOptions, isFinished: countriesFetched, execute: fetchCountries} = useAxios('/api/countries-filter')
-
-const {pause: pauseCurrentPageWatch, resume: resumeCurrentPageWatch } = watchPausable([currentPage], function([page]){
-    let startDate
-    let endDate
-
-    if(selectedEventDates.value){
-        startDate = selectedEventDates.value[0]
-        if (startDate){
-            startDate = useDateFormat(startDate,'YYYY-MM-DD')
-            startDate = startDate.value
-        }else{
-            startDate = 'default'
-        }
-
-        endDate = selectedEventDates.value[1]
-        if (endDate){
-            endDate = useDateFormat(endDate,'YYYY-MM-DD')
-            endDate = endDate.value
-        }else{
-            endDate = startDate
-        }
-    }else{
-        startDate = 'default'
-        endDate = 'default'
-    }
-
-    const games = selectedEventGames.value.length > 0 ? selectedEventGames.value.map(obj => obj.value).join(',') : 'default'
-    const type = selectedEventType.value.value
-    const orderBy = selectedOrderBy.value.value
-    const continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value.map(continent => continent.code).join(',') : 'default'
-    const countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.map(country => country.code).join(',') : 'default'
-    const name = selectedEventName.value !== '' ? selectedEventName.value : 'default'
-
-    fetchEvents({ params: { page, games, type, orderBy, continents, countries, name, startDate, endDate}})
-})
-
-
-const {pause: pauseContinentsWatch, resume: resumeContinentsWatch } = watchPausable([selectedEventContinents], function([continents]){
-    continents = continents.length > 0 ? continents.map(continent => continent.code).join(',') : 'default'
-    fetchCountries({params: {continents}})
-
-    let startDate
-    let endDate
-    if(selectedEventDates.value){
-        startDate = selectedEventDates.value[0]
-        if (startDate){
-            startDate = useDateFormat(startDate,'YYYY-MM-DD')
-            startDate = startDate.value
-        }else{
-            startDate = 'default'
-        }
-
-        endDate = selectedEventDates.value[1]
-        if (endDate){
-            endDate = useDateFormat(endDate,'YYYY-MM-DD')
-            endDate = endDate.value
-        }else{
-            endDate = startDate
-        }
-    }else{
-        startDate = 'default'
-        endDate = 'default'
-    }
-
-    pauseCurrentPageWatch()
-    currentPage.value = 1
-    resumeCurrentPageWatch()
-    const games = selectedEventGames.value.length > 0 ? selectedEventGames.value.map(obj => obj.value).join(',') : 'default'
-    const type = selectedEventType.value.value
-    const orderBy = selectedOrderBy.value.value
-    const countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.map(country => country.code).join(',') : 'default'
-    const name = selectedEventName.value !== '' ? selectedEventName.value : 'default'
-
-    fetchEvents({ params: { page: 1, games, type, orderBy, continents, countries, name, startDate, endDate}})
-
-
-}, {immediate: false})
-
-const {pause: pauseCountriesWatch, resume: resumeCountriesWatch} = watchPausable([selectedEventCountries], function([countries]){
-    countries = countries.length > 0 ? countries.map(country => country.code).join(',') : 'default'
-
-    let startDate
-    let endDate
-    if(selectedEventDates.value){
-        startDate = selectedEventDates.value[0]
-        if (startDate){
-            startDate = useDateFormat(startDate,'YYYY-MM-DD')
-            startDate = startDate.value
-        }else{
-            startDate = 'default'
-        }
-
-        endDate = selectedEventDates.value[1]
-        if (endDate){
-            endDate = useDateFormat(endDate,'YYYY-MM-DD')
-            endDate = endDate.value
-        }else{
-            endDate = startDate
-        }
-    }else{
-        startDate = 'default'
-        endDate = 'default'
-    }
-
-    pauseCurrentPageWatch()
-    currentPage.value = 1
-    resumeCurrentPageWatch()
-
-    const games = selectedEventGames.value.length > 0 ? selectedEventGames.value.map(obj => obj.value).join(',') : 'default'
-    const type = selectedEventType.value.value
-    const orderBy = selectedOrderBy.value.value
-    const continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value.map(continent => continent.code).join(',') : 'default'
-    const name = selectedEventName.value !== '' ? selectedEventName.value : 'default'
-
-    fetchEvents({ params: { page: 1, games, type, orderBy, continents, countries, name, startDate, endDate}})
-}, {immediate: false})
-
-
-watch([selectedOrderBy, selectedEventGames, selectedEventType, selectedEventDates], function([{value: orderBy} , games, {value: type}, dates]){
-    if (type === 'online'){
-
-        pauseContinentsWatch()
-        selectedEventContinents.value = []
-        resumeContinentsWatch()
-
-        eventCountryOptions.value = []
-    }
-
-    let startDate
-    let endDate
-    if(selectedEventDates.value){
-        startDate = dates[0]
-        if (startDate){
-            startDate = useDateFormat(startDate,'YYYY-MM-DD')
-            startDate = startDate.value
-        }else{
-            startDate = 'default'
-        }
-
-        endDate = dates[1]
-        if (endDate){
-            endDate = useDateFormat(endDate,'YYYY-MM-DD')
-            endDate = endDate.value
-        }else{
-            endDate = startDate
-        }
-    }else{
-        startDate = 'default'
-        endDate = 'default'
-    }
-
-    pauseCurrentPageWatch()
-    currentPage.value = 1
-    resumeCurrentPageWatch()
-
-    games = games.length > 0 ? games.map(obj => obj.value).join(',') : 'default'
-    const continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value.map(continent => continent.code).join(',') : 'default'
-    const countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.map(country => country.code).join(',') : 'default'
-    const name = selectedEventName.value !== '' ? selectedEventName.value : 'default'
-
-    fetchEvents({ params: { page: 1, games, type, orderBy, continents, countries, name, startDate, endDate}})
-}, {immediate: false})
-
-watch(eventCountryOptions, function(availableCountries, oldValue){
-    //TODO Directly add the data to availableCountries
-    if (oldValue){
-        const availableCountryCodes = availableCountries.data.map(country => country.code)
-        pauseCountriesWatch()
-        selectedEventCountries.value = selectedEventCountries.value.filter(country => availableCountryCodes.includes(country.code))
-        resumeCountriesWatch()
-    }
-}, {immediate: false})
-
-watchDebounced([selectedEventName], function([name]){
-    name = name !== '' ? name : 'default'
-
-    let startDate
-    let endDate
-    if(selectedEventDates.value){
-        startDate = selectedEventDates.value[0]
-        if (startDate){
-            startDate = useDateFormat(startDate,'YYYY-MM-DD')
-            startDate = startDate.value
-        }else{
-            startDate = 'default'
-        }
-
-        endDate = selectedEventDates.value[1]
-        if (endDate){
-            endDate = useDateFormat(endDate,'YYYY-MM-DD')
-            endDate = endDate.value
-        }else{
-            endDate = startDate
-        }
-    }else{
-        startDate = 'default'
-        endDate = 'default'
-    }
-
-    const page = currentPage.value
-    const games = selectedEventGames.value.length > 0 ? selectedEventGames.value.map(obj => obj.value).join(',') : 'default'
-    const type = selectedEventType.value.value
-    const orderBy = selectedOrderBy.value.value
-    const continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value.map(continent => continent.code).join(',') : 'default'
-    const countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.map(country => country.code).join(',') : 'default'
-    fetchEvents({ params: { page, games, type, orderBy, continents, countries, name, startDate, endDate}})
-
-}, { immediate: false, debounce: 1000, maxWait: 2000 })
-
-const sideBarVisible = ref(false)
-
 onMounted(()=>{
     console.log('Events Mounted')
 })
@@ -297,49 +58,15 @@ onMounted(()=>{
 <template>
     <div class="event-filters">
         <div class="event-filter">
-            <Dropdown v-model="selectedOrderBy" :options="orderByOptions" optionLabel="name" placeholder="Sort by ID"/>
+            <Dropdown v-model="filtersStore.selectedOrderBy" :options="orderByOptions" optionLabel="name" placeholder="Sort by ID"/>
         </div>
         <Button class="filters-button" @click="sideBarVisible = true" icon="pi pi-filter" text rounded outlined plain label="Filters"/>
     </div>
-    <Sidebar v-model:visible="sideBarVisible" position="top" id="event-filters-sidebar">
-        <h2>Filters</h2>
-        <div class="event-filters">
-            <div class="event-filter">
-                <MultiSelect v-model="selectedEventGames" :options="eventGameOptions" display="chip" :maxSelectedLabels="2" optionLabel="name" placeholder="Select Games"/>
-            </div>
-            <div class="event-filter">
-                <Dropdown v-model="selectedEventType" :options="eventTypeOptions" optionLabel="name" placeholder="All event types"/>
-            </div>
-            <div class="event-filter">
-                <Calendar v-model=selectedEventDates :minDate="new Date()" placeholder="Event date range (UTC)" selectionMode="range" :manualInput="false" showButtonBar dateFormat="dd/mm/yy"></Calendar>
-            </div>
-            <div class="event-filter">
-                <MultiSelect v-model="selectedEventContinents" :options="eventContinentOptions" display="chip" :disabled="selectedEventType.value === 'online'" :maxSelectedLabels="2" optionLabel="name" placeholder="Select Continents"/>
-            </div>
-            <div class="event-filter">
-                <!--            TODO Directly add the data to eventCountryOptions-->
-                <MultiSelect v-if="countriesFetched" v-model="selectedEventCountries" :options="eventCountryOptions.data" filter display="chip" :disabled="selectedEventType.value === 'online'" :maxSelectedLabels="2" optionLabel="name" placeholder="Select Countries">
-                    <template #option="slotProps">
-                        <div class="country-flag">
-                            <img :alt="slotProps.option.name" :src="slotProps.option.image.url" class="country-flag-image" />
-                            <div>{{ slotProps.option.name }}</div>
-                        </div>
-                    </template>
-                </MultiSelect>
-                <MultiSelect v-else disabled loading filter placeholder="Select Countries"/>
-            </div>
-            <div class="event-filter">
-        <span class="p-input-icon-left">
-            <i class="pi pi-search"/>
-            <InputText v-model="selectedEventName" placeholder="Event name"></InputText>
-        </span>
-            </div>
-        </div>
-    </Sidebar>
-    <template v-if="countriesFetched && eventsFetched">
-        <template v-if="events.data.length > 0">
+    <FilterSidebar :sideBarVisible="sideBarVisible" @switchSideBarVisible="switchSideBarVisible"></FilterSidebar>
+    <template v-if="filtersStore.countriesFetched && eventsStore.eventsFetched">
+        <template v-if="eventsStore.events.data.length > 0">
             <div id="event-container">
-                <Card v-for="event in events.data" :key="event.id" class="event-card">
+                <Card v-for="event in eventsStore.events.data" :key="event.id" class="event-card">
                     <template #header>
                         <div class="event-image-container">
                             <img v-if="event.images[0]" :src="event.images[0].url" alt="Event Image" class="event-image">
@@ -357,13 +84,13 @@ onMounted(()=>{
                     </template>
                 </Card>
             </div>
-            <Paginator  v-if="events.meta.total > events.meta.per_page" :first="currentPage * (events.meta.per_page) -1" :rows="events.meta.per_page" :total-records="events.meta.total" @page="currentPage = $event.page + 1"/>
+            <Paginator  v-if="eventsStore.events.meta.total > eventsStore.events.meta.per_page" :first="filtersStore.currentPage * (eventsStore.events.meta.per_page) -1" :rows="eventsStore.events.meta.per_page" :total-records="eventsStore.events.meta.total" @page="filtersStore.currentPage = $event.page + 1"/>
         </template>
         <template v-else>
             <h1 id="no-events">No events correspond to your filters</h1>
         </template>
     </template>
-    <template v-if="!countriesFetched || !eventsFetched">
+    <template v-if="!filtersStore.countriesFetched || !eventsStore.eventsFetched">
         <LoaderComponent></LoaderComponent>
     </template>
 </template>
