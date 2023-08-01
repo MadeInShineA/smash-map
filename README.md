@@ -15,9 +15,9 @@ At launch Smash Map will have the following
 
 ## Smash map links
 
-GitHub repository : https://github.com/MadeInShineA/smash-map
+[GitHub](https://github.com/MadeInShineA/smash-map)
 
-Twitter account : https://twitter.com/MeleeMap
+[Twitter](https://twitter.com/\_SmashMap\_)
 
-Discord invite link : https://discord.gg/kNZFk2JYGX 
+[Discord](https://discord.gg/kNZFk2JYGX)
 
