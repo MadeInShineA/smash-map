@@ -249,7 +249,7 @@ export const useFiltersStore = defineStore('filters', function (){
         const countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.map(country => country.code).join(',') : 'default'
         eventsStore.fetchEvents({ params: { page, games, type, orderBy, continents, countries, name, startDate, endDate}})
 
-    }, { immediate: false, debounce: 1000, maxWait: 2000 })
+    }, { immediate: false, debounce: 600, maxWait: 2000 })
 
     return {
         eventTypeOptions,

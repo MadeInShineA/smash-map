@@ -1,15 +1,8 @@
 <script setup>
 
 import {onMounted, ref} from "vue";
-import { useAxios } from '@vueuse/integrations/useAxios'
-import {useDateFormat, watchDebounced, watchPausable} from '@vueuse/core'
-import { watch } from 'vue'
 import Dropdown from "primevue/dropdown";
 import Button from "primevue/button";
-import Sidebar from "primevue/sidebar";
-import MultiSelect from "primevue/multiselect";
-import Calendar from "primevue/calendar";
-import InputText from "primevue/inputtext"
 import Card from "primevue/card";
 import Paginator from "primevue/paginator";
 import Chip from "primevue/chip";
@@ -115,21 +108,6 @@ onMounted(()=>{
 
 .event-filter{
     margin:20px 10px;
-}
-
-/* Hide the No selected item text on the dropdowns */
-
-.p-hidden-accessible{
-    display:none;
-}
-
-.country-flag{
-    display: flex;
-}
-
-.country-flag-image{
-    width: 18px;
-    margin-right: 5px;
 }
 
 #event-container {

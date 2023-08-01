@@ -57,4 +57,19 @@ const emit = defineEmits(['switchSideBarVisible'])
 
 <style scoped>
 
+/* Hide the No selected item text on the dropdowns */
+
+.p-hidden-accessible{
+    display:none;
+}
+
+.country-flag{
+    display: flex;
+}
+
+.country-flag-image{
+    width: 18px;
+    margin-right: 5px;
+}
+
 </style>
