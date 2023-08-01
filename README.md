@@ -6,7 +6,7 @@ Smash Map is an open source website under development, it's goal is to help smas
 
 At launch Smash Map will have the following
 - **World map** to display events and registered users
-- **Event Calendar**to get a better overview of what is happening around the world
+- **Event Calendar** to get a better overview of what is happening around the world
 - **Event Browsing** 
 -  **User's notifications** to let users know when a tournament is happening near them
 - **Manual event creation**
