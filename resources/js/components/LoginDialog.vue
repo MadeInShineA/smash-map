@@ -66,7 +66,7 @@ const login = async function () {
 </script>
 
 <template>
-    <Dialog class="user-modal" v-model:visible="props.showLoginModal"  :draggable="false" modal header="Login">
+    <Dialog class="user-modal" :visible="showLoginModal" @update:visible="emit('switchShowLoginModal')" :draggable="false" modal header="Login">
         <div class="modal-inputs">
             <div class="p-float-label modal-input">
                 <InputText id="login-username" v-model="loginUser.username" @focus="loginValidationErrors.username = []"/>
@@ -94,7 +94,7 @@ const login = async function () {
             </TransitionGroup>
         </div>
         <template #footer>
-            <Button label="Cancel" icon="pi pi-times" @click="props.showLoginModal = false" text plain/>
+            <Button label="Cancel" icon="pi pi-times" @click="emit('switchShowLoginModal')" text plain/>
             <Button label="Login" icon="pi pi-check" @click="login" text plain/>
         </template>
     </Dialog>
