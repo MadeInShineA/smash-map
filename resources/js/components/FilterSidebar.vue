@@ -18,9 +18,9 @@ const emit = defineEmits(['switchSideBarVisible'])
 </script>
 
 <template>
-    <Sidebar :visible="sideBarVisible" @update:visible="emit('switchSideBarVisible')" position="top" id="event-filters-sidebar">
+    <Sidebar :visible="sideBarVisible" @update:visible="emit('switchSideBarVisible')" position="top" id="event-filters-sidebar" style="text-align: center; height: min-content;">
         <h2>Filters</h2>
-        <div class="event-filters">
+        <div id="event-filters">
             <div class="event-filter">
                 <MultiSelect v-model="filtersStore.selectedEventGames" :options="filtersStore.eventGameOptions" display="chip" :maxSelectedLabels="2" optionLabel="name" placeholder="Select Games"/>
             </div>
@@ -57,10 +57,14 @@ const emit = defineEmits(['switchSideBarVisible'])
 
 <style scoped>
 
-/* Hide the No selected item text on the dropdowns */
+#event-filters{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
 
-.p-hidden-accessible{
-    display:none;
+.event-filter{
+    margin:20px 10px;
 }
 
 .country-flag{

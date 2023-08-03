@@ -49,7 +49,7 @@ onMounted(()=>{
 </script>
 
 <template>
-    <div class="event-filters">
+    <div id="event-filters-container">
         <div class="event-filter">
             <Dropdown v-model="filtersStore.selectedOrderBy" :options="orderByOptions" optionLabel="name" placeholder="Sort by ID"/>
         </div>
@@ -88,26 +88,21 @@ onMounted(()=>{
     </template>
 </template>
 
-<style>
-
-.event-filters{
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-}
+<style scoped>
 
 .filters-button{
     height: min-content;
     align-self: center;
 }
 
-#event-filters-sidebar{
-    text-align: center;
-    height: min-content;
-}
-
 .event-filter{
     margin:20px 10px;
+}
+
+#event-filters-container{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 #event-container {
@@ -142,11 +137,10 @@ onMounted(()=>{
     height: 200px;
 }
 
-.p-card-title{
+>>> .p-card-title{
     height: 2em;
 }
 
-/*TODO Fix the ellipsis */
 .event-title {
     margin-bottom: 10px;
     text-decoration: none;
@@ -164,7 +158,7 @@ onMounted(()=>{
     height: 5em;
 }
 
-.event-location .p-chip-text{
+.event-location >>> .p-chip-text{
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
@@ -182,7 +176,7 @@ onMounted(()=>{
     height: 5em;
 }
 
-.p-paginator{
+>>> .p-paginator{
    background: none;
 }
 
