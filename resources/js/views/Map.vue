@@ -22,13 +22,14 @@ const rotation = ref(0);
 </script>
 
 <template>
-    <Button class="filters-button" @click="sideBarVisible = true" icon="pi pi-filter" text rounded outlined plain label="Filters"/>
-    <FilterSidebar :sideBarVisible="sideBarVisible" @switchSideBarVisible="switchSideBarVisible"></FilterSidebar>
-
+    <div id="event-filters-container">
+        <Button class="filters-button" @click="sideBarVisible = true" icon="pi pi-filter" text rounded outlined label="Filters"/>
+        <FilterSidebar :sideBarVisible="sideBarVisible" @switchSideBarVisible="switchSideBarVisible"></FilterSidebar>
+    </div>
     <ol-map
         :loadTilesWhileAnimating="true"
         :loadTilesWhileInteracting="true"
-        style="height: 90vh"
+        style="height: 100%"
     >
         <ol-view
             ref="view"
@@ -47,4 +48,15 @@ const rotation = ref(0);
 
 <style scoped>
 
+#event-filters-container{
+    position: absolute;
+    width: 100vw;
+    z-index: 1;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.filters-button{
+    color: black;
+}
 </style>
