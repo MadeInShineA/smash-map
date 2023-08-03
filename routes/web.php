@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,4 +21,10 @@ Route::get('', function () {
 
 Route::get('/{page}', function () {
     return view('app');
+});
+
+Route::post('/login', [UserController::class, 'login']);
+
+Route::middleware(['auth:sanctum'])->group(function (){
+    Route::post('/logout', [UserController::class, 'logout']);
 });

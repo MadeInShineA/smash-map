@@ -121,7 +121,7 @@ const profileItems = ref([{
         {label: 'Profile', icon: 'pi pi-fw pi-user'},
         {label: 'Settings', icon: 'pi pi-fw pi-cog'},
         {label: 'Log Out', icon: 'pi pi-sign-out', command: async function () {
-                console.log(axios.post('/api/logout'));
+                console.log(axios.post('/logout'));
                 localStorage.removeItem('userData');
                 user.value = null;
                 const alertBackground = darkMode.value ? '#1C1B22' : '#FFFFFF'
