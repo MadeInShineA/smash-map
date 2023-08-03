@@ -212,9 +212,9 @@ onMounted(() => {
 
 </template>
 
-<style>
+<style scoped>
 
-#header .router-link-active-exact .p-menuitem-text{
+#header .router-link-active-exact >>> .p-menuitem-text{
     color: #3B82F6;
     font-weight:bold;
 }
@@ -255,12 +255,12 @@ main{
     }
 }
 
-.p-menubar-start {
+>>> .p-menubar-start {
     display: flex;
     align-items: center; /* Center items vertically */
 }
 
-.p-menubar-end {
+>>> .p-menubar-end {
     display: flex;
     align-items: center; /* Center items vertically */
 }
@@ -269,36 +269,9 @@ main{
     justify-content: space-between;
 }
 
-.p-menubar-mobile-active .p-menubar-root-list{
+.p-menubar-mobile-active >>> .p-menubar-root-list{
     animation-name: scalein;
     animation-duration: 0.5s;
-}
-
-
-.user-modal{
-    width: max-content;
-    display: flex;
-    justify-content: center;
-}
-
-.modal-input{
-    margin-left: 20px;
-    margin-bottom: 10px;
-    margin-top: 10px
-}
-
-.validation-error{
-    margin-left: 20px;
-    font-size: 12px;
-    color: red;
-}
-
-.errors-enter-active,
-.errors-leave-active {
-    transition: opacity 0.5s ease;}
-.errors-enter-from,
-.errors-leave-to {
-    opacity: 0;
 }
 
 #profile-avatar-button{

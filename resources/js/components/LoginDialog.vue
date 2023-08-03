@@ -102,4 +102,30 @@ const login = async function () {
 
 <style scoped>
 
+.errors-enter-active,
+.errors-leave-active {
+    transition: opacity 0.5s ease;}
+.errors-enter-from,
+.errors-leave-to {
+    opacity: 0;
+}
+
+.validation-error{
+    margin-left: 20px;
+    font-size: 12px;
+    color: red;
+}
+
+.user-modal{
+    width: max-content;
+    display: flex;
+    justify-content: center;
+}
+
+.modal-input{
+    margin-left: 20px;
+    margin-bottom: 10px;
+    margin-top: 10px
+}
+
 </style>
