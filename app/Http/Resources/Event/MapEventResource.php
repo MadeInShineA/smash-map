@@ -4,20 +4,18 @@ namespace App\Http\Resources\Event;
 
 use App\Http\Resources\Address\AddressResource;
 use App\Http\Resources\Game\GameResource;
-use App\Http\Resources\Image\ImageResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class EventResource extends JsonResource
+class MapEventResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
         return [
+            'title'                     => $this->name,
+            'start'                     => $this->start_date_time,
+            'end'                       => $this->end_date_time,
             'game'                      => new GameResource($this->game),
-            'address'                   => new AddressResource($this->address),
-            'images'                    => ImageResource::collection($this->images),
-            'is_online'                 => $this->is_online,
-            'name'                      => $this->name,
             'timezone_start_date_time'  => $this->timezone_start_date_time,
             'timezone_end_date_time'    => $this->timezone_end_date_time,
             'timezone'                  => $this->timezone_label,

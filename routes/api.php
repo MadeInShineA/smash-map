@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AddressController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\EventController;
@@ -22,4 +23,5 @@ use Illuminate\Support\Facades\Route;
 Route::get('/events', [EventController::class, 'index']);
 Route::get('/countries-filter', [CountryController::class, 'countries_filter']);
 Route::get('/calendar/events', [EventController::class, 'calendar_index']);
+Route::get('addresses', [AddressController::class, 'index']);
 

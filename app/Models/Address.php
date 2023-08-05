@@ -34,6 +34,10 @@ class Address extends Model
     {
         return $this->belongsTo(Country::class);
     }
+    public function getColorAttribute(): string
+    {
+        return '#FFFFFF';
+    }
 
 
 }
