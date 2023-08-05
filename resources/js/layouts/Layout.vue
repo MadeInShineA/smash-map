@@ -60,6 +60,7 @@ const PrimeVue = usePrimeVue();
 import { useDark } from '@vueuse/core'
 import axios from "axios";
 import Swal from "sweetalert2";
+import RegisterDialog from "@/components/RegisterDialog.vue";
 const darkMode = useDark()
 function switch_theme(changeMode) {
     if (changeMode){
@@ -91,16 +92,14 @@ if (window.localStorage.getItem('userData') !== null) {
     user.value = JSON.parse(window.localStorage.getItem('userData'));
 }
 
-const registerUsername = ref('')
-
-const registerEmail = ref('')
-
-const registerPassword = ref('')
-
 const showLoginModal = ref(false)
 
 const switchShowLoginModal = function (){
     showLoginModal.value = !showLoginModal.value
+}
+
+const switchShowRegisterModal = function (){
+    showRegisterModal.value = !showRegisterModal.value
 }
 
 const setUser = function(){
@@ -186,27 +185,8 @@ onMounted(() => {
         </Menubar>
     </header>
     <main>
-        <LoginDialog :darkMode="darkMode" :showLoginModal="showLoginModal" @switchShowLoginModal="switchShowLoginModal" @setUser="setUser" ></LoginDialog>
-<!--        <Dialog class="user-modal" v-model:visible="showRegisterModal" :draggable="false" modal header="Register">-->
-<!--            <div class="modal-inputs">-->
-<!--                <div class="p-float-label modal-input">-->
-<!--                    <InputText id="register-username" v-model="registerUsername" required />-->
-<!--                    <label for="register-username">Username</label>-->
-<!--                </div>-->
-<!--                <div class="p-float-label modal-input">-->
-<!--                    <InputText id="register-email" v-model="registerEmail" />-->
-<!--                    <label for="register-email">Email</label>-->
-<!--                </div>-->
-<!--                <div class="p-float-label modal-input">-->
-<!--                    <Password id="register-password" v-model="registerPassword" toggleMask />-->
-<!--                    <label for="register-password">Password</label>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <template #footer>-->
-<!--                <Button label="Cancel" icon="pi pi-times" @click="showRegisterModal = false" text plain/>-->
-<!--                <Button label="Register" icon="pi pi-check" @click="showRegisterModal = false" text plain/>-->
-<!--            </template>-->
-<!--        </Dialog>-->
+        <LoginDialog :darkMode="darkMode" :showLoginModal="showLoginModal" @switchShowLoginModal="switchShowLoginModal" @setUser="setUser"/>
+        <RegisterDialog :darkMode="darkMode" :showRegisterModal="showRegisterModal" @switchShowRegisterModal="switchShowRegisterModal"/>
         <router-view></router-view>
     </main>
 
