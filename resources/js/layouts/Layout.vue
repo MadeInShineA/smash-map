@@ -194,7 +194,7 @@ onMounted(() => {
 
 <style scoped>
 
-#header .router-link-active-exact >>> .p-menuitem-text{
+#header .router-link-active-exact :deep(.p-menuitem-text){
     color: #3B82F6;
     font-weight:bold;
 }
@@ -235,12 +235,12 @@ main{
     }
 }
 
->>> .p-menubar-start {
+:deep(.p-menubar-start){
     display: flex;
     align-items: center; /* Center items vertically */
 }
 
->>> .p-menubar-end {
+:deep(.p-menubar-end){
     display: flex;
     align-items: center; /* Center items vertically */
 }
@@ -249,7 +249,7 @@ main{
     justify-content: space-between;
 }
 
-.p-menubar-mobile-active >>> .p-menubar-root-list{
+.p-menubar-mobile-active :deep(.p-menubar-root-list){
     animation-name: scalein;
     animation-duration: 0.5s;
 }

@@ -137,7 +137,7 @@ onMounted(()=>{
     height: 200px;
 }
 
->>> .p-card-title{
+:deep(.p-card-title){
     height: 2em;
 }
 
@@ -158,7 +158,7 @@ onMounted(()=>{
     height: 5em;
 }
 
-.event-location >>> .p-chip-text{
+.event-location :deep(.p-chip-text){
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
@@ -176,7 +176,7 @@ onMounted(()=>{
     height: 5em;
 }
 
->>> .p-paginator{
+:deep(.p-paginator){
    background: none;
 }
 
