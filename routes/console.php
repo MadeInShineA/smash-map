@@ -357,7 +357,8 @@ Artisan::command('import-characters-images',function(){
 
         Image::Create(['parentable_type' =>Character::class, 'parentable_id' =>$character->id, 'type' =>'character', 'uuid' => $uuid, 'md5' => $image_md5]);
 
-        $character_directory_path = '/characters-images/' . $character->name;
+        $game_name = $character->game->name;
+        $character_directory_path = '/characters-images/' . $game_name . '/' . $character->name;
         Storage::put($character_directory_path . '/' . $uuid, $image);
         var_dump('Image for: ' . $character->name . ' created');
     }

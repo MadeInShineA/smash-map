@@ -18,7 +18,7 @@ class GameSeeder extends Seeder
             ['id' => 5,     'name' => 'Brawl',      'color' => '#660d02'],
             ['id' => 2,     'name' => 'Project M',  'color' => '#3B448B'],
             ['id' => 33602, 'name' => 'Project +',  'color' => '#6FD19C'],
-            ['id' => 3,     'name' => '3DS/WiiU',   'color' => '#AFC1EE'],
+            ['id' => 3,     'name' => '3DS & WiiU',   'color' => '#AFC1EE'],
             ['id' =>1386,   'name' => 'Ultimate',   'color' => '#F18A41']
         ];
 
