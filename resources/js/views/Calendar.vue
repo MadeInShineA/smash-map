@@ -14,6 +14,7 @@ export default {
         LoaderComponent,
         Qalendar,
     },
+    name: 'calendar',
 
     data() {
         return {

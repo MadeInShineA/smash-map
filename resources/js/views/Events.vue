@@ -1,3 +1,7 @@
+<script>
+export default { name:'events'}
+</script>
+
 <script setup>
 
 import {onMounted, ref} from "vue";

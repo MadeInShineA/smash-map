@@ -1,9 +1,14 @@
+<script>
+export default { name:'map'}
+</script>
+
 <script setup>
 
-import {onBeforeMount, onMounted, ref} from "vue";
+import {onBeforeUnmount, onMounted, onUnmounted, ref} from "vue";
 import FilterSidebar from "@/components/FilterSidebar.vue";
 import Button from "primevue/button";
 import {useAxios} from "@vueuse/integrations/useAxios";
+import LoaderComponent from "@/components/LoaderComponent.vue";
 const sideBarVisible = ref(false)
 const switchSideBarVisible = function (){
     sideBarVisible.value = !sideBarVisible.value
@@ -26,9 +31,20 @@ const overrideStyleFunction = (feature, style, resolution) => {
     style.getText().setText(size.toString());
 };
 
+const featureSelected = (event) => {
+    console.log(event);
+};
 
 onMounted(()=>{
     console.log('Map Mounted')
+})
+
+onBeforeUnmount(function (){
+    addresses.value.data = []
+})
+
+onUnmounted(function (){
+    console.log('finished unmount')
 })
 
 </script>
@@ -38,49 +54,52 @@ onMounted(()=>{
         <Button class="filters-button" @click="sideBarVisible = true" icon="pi pi-filter" text rounded outlined label="Filters"/>
         <FilterSidebar :sideBarVisible="sideBarVisible" @switchSideBarVisible="switchSideBarVisible"></FilterSidebar>
     </div>
-    <ol-map
-        :loadTilesWhileAnimating="true"
-        :loadTilesWhileInteracting="true"
-        style="height: 100%"
-    >
-        <ol-view
-            ref="view"
-            :center="center"
-            :rotation="rotation"
-            :zoom="zoom"
-            :projection="projection"
-        />
 
-        <ol-tile-layer>
-            <ol-source-xyz url="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}" />
-        </ol-tile-layer>
+    <template v-if="addressesFetched">
+        <ol-map
+            :loadTilesWhileAnimating="true"
+            :loadTilesWhileInteracting="true"
+            style="height: 100%"
+        >
+            <ol-view
+                ref="view"
+                :center="center"
+                :rotation="rotation"
+                :zoom="zoom"
+                :projection="projection"
+            />
 
-        <template v-if="addressesFetched">
-            <ol-animated-clusterlayer :animationDuration="500" :distance="40">
-                <ol-source-vector>
-                    <ol-feature v-for="address in addresses.data" :properties="{ 'color': address.color }">
-                        <ol-geom-point :coordinates="[address.longitude, address.latitude]">
-                        </ol-geom-point>
-                    </ol-feature>
-                </ol-source-vector>
+            <ol-tile-layer>
+                <ol-source-xyz url="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}" />
+            </ol-tile-layer>
 
-                <ol-style :overrideStyleFunction="overrideStyleFunction">
-<!--                    <ol-style-stroke color="red" :width="2"></ol-style-stroke>-->
-<!--                    <ol-style-fill color="rgba(255,255,255,0.1)"></ol-style-fill>-->
+                <ol-animated-clusterlayer :animationDuration="500" :distance="40">
+                    <ol-source-vector>
+                        <ol-feature v-for="address in addresses.data" :properties="{ 'color': address.color }">
+                            <ol-geom-point :coordinates="[address.longitude, address.latitude]">
+                            </ol-geom-point>
+                        </ol-feature>
+                    </ol-source-vector>
 
-                    <ol-style-circle :radius="15">
-                        <ol-style-fill color="#3399CC"></ol-style-fill>
-                        <ol-style-stroke color="#fff" :width="1"></ol-style-stroke>
-                    </ol-style-circle>
-                    <ol-style-text>
-                        <ol-style-fill color="#fff"></ol-style-fill>
-                    </ol-style-text>
-                </ol-style>
+                    <ol-style :overrideStyleFunction="overrideStyleFunction">
+    <!--                    <ol-style-stroke color="red" :width="2"></ol-style-stroke>-->
+    <!--                    <ol-style-fill color="rgba(255,255,255,0.1)"></ol-style-fill>-->
 
-            </ol-animated-clusterlayer>
-        </template>
-    </ol-map>
+                        <ol-style-circle :radius="15">
+                            <ol-style-fill color="#3399CC"></ol-style-fill>
+                            <ol-style-stroke color="#fff" :width="1"></ol-style-stroke>
+                        </ol-style-circle>
+                        <ol-style-text>
+                            <ol-style-fill color="#fff"></ol-style-fill>
+                        </ol-style-text>
+                    </ol-style>
 
+                </ol-animated-clusterlayer>
+        </ol-map>
+    </template>
+    <template v-else>
+        <LoaderComponent></LoaderComponent>
+    </template>
 </template>
 
 <style scoped>

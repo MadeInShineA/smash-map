@@ -2,13 +2,15 @@
 import {computed, onMounted, ref, watch} from "vue";
 import Menubar from "primevue/menubar";
 import Button from "primevue/button";
-import Dialog from 'primevue/dialog';
-import InputText from 'primevue/inputtext'
-import Password from 'primevue/password'
-import { useWindowSize } from '@vueuse/core'
+import {useWindowSize} from '@vueuse/core'
 import LoginDialog from "@/components/LoginDialog.vue";
 import Avatar from "primevue/avatar";
 import Menu from "primevue/menu";
+import {useDark} from '@vueuse/core'
+import axios from "axios";
+import Swal from "sweetalert2";
+import RegisterDialog from "@/components/RegisterDialog.vue";
+import {usePrimeVue} from 'primevue/config';
 
 
 const { width, height } = useWindowSize()
@@ -53,14 +55,10 @@ const menuItems = ref([
     },
 ]);
 
-import {usePrimeVue} from 'primevue/config';
+
 
 const PrimeVue = usePrimeVue();
 
-import { useDark } from '@vueuse/core'
-import axios from "axios";
-import Swal from "sweetalert2";
-import RegisterDialog from "@/components/RegisterDialog.vue";
 const darkMode = useDark()
 function switch_theme(changeMode) {
     if (changeMode){
@@ -187,7 +185,11 @@ onMounted(() => {
     <main>
         <LoginDialog :darkMode="darkMode" :showLoginModal="showLoginModal" @switchShowLoginModal="switchShowLoginModal" @setUser="setUser"/>
         <RegisterDialog :darkMode="darkMode" :showRegisterModal="showRegisterModal" @switchShowRegisterModal="switchShowRegisterModal"/>
-        <router-view></router-view>
+        <router-view  v-slot="{ Component }">
+            <keep-alive :include="['events', 'map', 'calendar']">
+                <component :is="Component" />
+            </keep-alive>
+        </router-view>
     </main>
 
 </template>
