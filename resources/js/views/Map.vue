@@ -22,12 +22,22 @@ const rotation = ref(0);
 const { data: addresses, isFinished: addressesFetched, execute: fetchAddresses } = useAxios('/api/addresses')
 
 const overrideStyleFunction = (feature, style, resolution) => {
-    console.log({ feature, style, resolution });
+    console.log(style)
+    // console.log({ feature, style, resolution });
     const clusteredFeatures = feature.get("features");
     const size = clusteredFeatures.length;
-    const firstFeature = clusteredFeatures[0];
-    const color = firstFeature.get("color");
-    console.log(color)
+    if (size === 1){
+        const firstFeature = clusteredFeatures[0];
+        const color = firstFeature.get("color");
+        console.log(color)
+        const events = firstFeature.get("events");
+        console.log(events)
+        const users = firstFeature.get('users');
+        console.log(users)
+        style.getText().setText('Alone point');
+        style.getImage().getFill().setColor("#FFFFFF")
+        return null
+    }
     style.getText().setText(size.toString());
 };
 
@@ -75,7 +85,7 @@ onUnmounted(function (){
 
                 <ol-animated-clusterlayer :animationDuration="500" :distance="40">
                     <ol-source-vector>
-                        <ol-feature v-for="address in addresses.data" :properties="{ 'color': address.color }">
+                        <ol-feature v-for="address in addresses.data" :properties="{ 'color': address.color , 'events': address.events, 'users': address.users }">
                             <ol-geom-point :coordinates="[address.longitude, address.latitude]">
                             </ol-geom-point>
                         </ol-feature>
