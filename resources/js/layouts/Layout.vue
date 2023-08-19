@@ -88,6 +88,11 @@ const menuBarHeight = computed(()=>menuBar.value.clientHeight + 'px')
 const user = ref(null)
 if (window.localStorage.getItem('userData') !== null) {
     user.value = JSON.parse(window.localStorage.getItem('userData'));
+    console.log(user.value.id)
+    Echo.private(`notifications.` + user.value.id).listen('NotificationEvent', (e) => {
+        console.log('coucou')
+        console.log(e.order);
+    });
 }
 
 const showLoginModal = ref(false)
@@ -102,6 +107,10 @@ const switchShowRegisterModal = function (){
 
 const setUser = function(){
     user.value = JSON.parse(window.localStorage.getItem('userData'));
+    Echo.private(`notifications.` + user.value.id).listen('NotificationEvent', (e) => {
+        console.log('coucou')
+        console.log(e.order);
+    });
 }
 
 const showRegisterModal = ref(false)
@@ -118,7 +127,7 @@ const profileItems = ref([{
         {label: 'Profile', icon: 'pi pi-fw pi-user'},
         {label: 'Settings', icon: 'pi pi-fw pi-cog'},
         {label: 'Log Out', icon: 'pi pi-sign-out', command: async function () {
-                console.log(axios.post('/logout'));
+                await axios.post('/logout');
                 localStorage.removeItem('userData');
                 user.value = null;
                 const alertBackground = darkMode.value ? '#1C1B22' : '#FFFFFF'
@@ -135,11 +144,6 @@ const profileItems = ref([{
             }},
     ]
 }])
-
-
-onMounted(() => {
-    console.log('Default Layout Mounted')
-})
 
 </script>
 

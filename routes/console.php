@@ -392,3 +392,7 @@ Artisan::command('import-countries-images', function (){
     }
 
 });
+
+Artisan::command('test-broadcast', function(){
+    broadcast(new \App\Events\NotificationEvent(\App\Models\User::first()));
+});
