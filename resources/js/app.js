@@ -8,7 +8,7 @@ import {router} from'./router'
 import PrimeVue from 'primevue/config';
 import {Qalendar} from "qalendar";
 import { createPinia } from 'pinia'
-// import BadgeDirective from 'primevue/badgedirective';
+import BadgeDirective from 'primevue/badgedirective';
 import OpenLayersMap from "vue3-openlayers";
 import "vue3-openlayers/styles.css";
 
@@ -144,7 +144,7 @@ app.use(Qalendar)
 const pinia = createPinia()
 app.use(pinia)
 
-// app.directive('badge', BadgeDirective);
+app.directive('badge', BadgeDirective);
 
 app.use(OpenLayersMap)
 

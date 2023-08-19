@@ -7,35 +7,40 @@ import Events from "./views/Events.vue";
 import CreateEvent from "./views/CreateEvent.vue";
 import Login from "./views/Login.vue";
 import DefaultLayout from "./layouts/Layout.vue";
+import Notifications from "./views/Notifications.vue";
 
 const routes = [
     {
         path: '/',
-        component:DefaultLayout,
-        children:[
+        component: DefaultLayout,
+        children: [
             {
                 path:'',
                 component:Home
             },
             {
-                path:'map',
+                path: 'map',
                 component: Map
             },
             {
-                path:'calendar',
+                path: 'calendar',
                 component: Calendar
             },
             {
-                path:'events',
+                path: 'events',
                 component: Events
             },
             {
-                path:'create-event',
+                path: 'create-event',
                 component: CreateEvent
             },
             {
-                path:'login',
+                path: 'login',
                 component: Login
+            },
+            {
+                path: 'notifications',
+                component: Notifications
             },
             {
                 path: ':catchAll(.*)',

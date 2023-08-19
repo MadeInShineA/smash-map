@@ -86,12 +86,12 @@ const menuBar = ref()
 
 const menuBarHeight = computed(()=>menuBar.value.clientHeight + 'px')
 const user = ref(null)
+const notificationsCount = ref(0)
 if (window.localStorage.getItem('userData') !== null) {
     user.value = JSON.parse(window.localStorage.getItem('userData'));
     console.log(user.value.id)
     Echo.private(`notifications.` + user.value.id).listen('NotificationEvent', (e) => {
-        console.log('coucou')
-        console.log(e.order);
+        notificationsCount.value += 1
     });
 }
 
@@ -108,8 +108,7 @@ const switchShowRegisterModal = function (){
 const setUser = function(){
     user.value = JSON.parse(window.localStorage.getItem('userData'));
     Echo.private(`notifications.` + user.value.id).listen('NotificationEvent', (e) => {
-        console.log('coucou')
-        console.log(e.order);
+        notificationsCount.value += 1
     });
 }
 
@@ -157,10 +156,13 @@ const profileItems = ref([{
                     <Button @click="showRegisterModal = true" icon="pi pi-save" text plain label="Register"/>
                 </template>
                 <template v-else>
-                    <Button id="profile-avatar-button" plain text rounded @click="toggleProfileMenu">
+                    <Button id="profile-avatar-button" plain text @click="toggleProfileMenu">
                         <Avatar :image="user.profile_picture" :label="user.username[0]" shape="circle"  />
                     </Button>
                     <Menu :model="profileItems" :popup="true" ref="profileMenu"></Menu>
+                    <router-link to="/notifications">
+                        <Button plain text icon="pi pi-bell" label="Notifications" :badge="notificationsCount" badgeClass="p-badge-success"/>
+                    </router-link>
                 </template>
                 <Button v-if="!darkMode" id="sun-icon" @click="switch_theme(true)" icon="pi pi-sun" severity="secondary" text rounded aria-label="Sun"/>
                 <Button v-if="darkMode" id="moon-icon" @click="switch_theme(true)" icon="pi pi-moon" severity="secondary" text rounded aria-label="Sun"/>
@@ -176,6 +178,9 @@ const profileItems = ref([{
                     <Button @click="showRegisterModal = true" icon="pi pi-save" text plain label="Register"/>
                 </template>
                 <template v-else>
+                    <router-link to="/notifications">
+                        <Button plain text icon="pi pi-bell" label="Notifications" :badge="notificationsCount" badgeClass="p-badge-success"/>
+                    </router-link>
                     <Button id="profile-avatar-button" plain text rounded @click="toggleProfileMenu">
                         <Avatar :image="user.profile_picture" :label="user.username[0]" shape="circle"  />
                     </Button>
