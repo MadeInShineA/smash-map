@@ -61,6 +61,7 @@ onMounted(()=>{
     </div>
     <FilterSidebar :sideBarVisible="sideBarVisible" @switchSideBarVisible="switchSideBarVisible"></FilterSidebar>
     <template v-if="filtersStore.countriesFetched && eventsStore.eventsFetched">
+        <h1 id="events-total">{{eventsStore.events.meta.total}} Events</h1>
         <template v-if="eventsStore.events.data.length > 0">
             <div id="event-container">
                 <Card v-for="event in eventsStore.events.data" :key="event.id" class="event-card">
@@ -83,9 +84,9 @@ onMounted(()=>{
             </div>
             <Paginator  v-if="eventsStore.events.meta.total > eventsStore.events.meta.per_page" :first="filtersStore.currentPage * (eventsStore.events.meta.per_page) -1" :rows="eventsStore.events.meta.per_page" :total-records="eventsStore.events.meta.total" @page="filtersStore.currentPage = $event.page + 1"/>
         </template>
-        <template v-else>
-            <h1 id="no-events">No events correspond to your filters</h1>
-        </template>
+<!--        <template v-else>-->
+<!--            <h1 id="no-events">No events correspond to your filters</h1>-->
+<!--        </template>-->
     </template>
     <template v-if="!filtersStore.countriesFetched || !eventsStore.eventsFetched">
         <LoaderComponent></LoaderComponent>
@@ -101,6 +102,10 @@ onMounted(()=>{
 
 .event-filter{
     margin:20px 10px;
+}
+
+#events-total{
+    text-align: center;
 }
 
 #event-filters-container{

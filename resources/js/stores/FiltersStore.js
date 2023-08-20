@@ -207,7 +207,7 @@ export const useFiltersStore = defineStore('filters', function (){
 
     watch(eventCountryOptions, function(availableCountries, oldValue){
         //TODO Directly add the data to availableCountries
-        if (oldValue){
+        if (oldValue && availableCountries.length !== 0){
             const availableCountryCodes = availableCountries.data.map(country => country.code)
             pauseCountriesWatch()
             selectedEventCountries.value = selectedEventCountries.value.filter(country => availableCountryCodes.includes(country.code))
