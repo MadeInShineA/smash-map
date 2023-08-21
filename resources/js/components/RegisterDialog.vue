@@ -4,7 +4,7 @@ import Password from "primevue/password";
 import Button from "primevue/button";
 import InputText from "primevue/inputtext";
 import Dialog from "primevue/dialog";
-import {ref} from "vue";
+import {reactive, ref, watch} from "vue";
 import {useFiltersStore} from "../stores/FiltersStore.js";
 import Dropdown from "primevue/dropdown";
 
@@ -16,14 +16,31 @@ const props = defineProps({
 
 const emit = defineEmits(['switchShowRegisterModal'])
 
-const registerUser = ref({
+const registerUser = reactive({
     username: '',
     email: '',
     password: '',
-    mainGame: null
+    mainGame: null,
+    mainCharacter: null
 })
 
-const mainGame = ref()
+const mainGameOptions = ref([
+    {name: '64', value: '4'},
+    {name: 'Melee', value: '1'},
+    {name: 'Brawl', value: '5'},
+    {name: 'Project M', value: '2'},
+    {name: 'Project +', value: '33602'},
+    {name: '3DS / WiiU', value: '3'},
+    {name: 'Ultimate', value: '1386'},
+])
+
+watch(() => registerUser.mainGame, (mainGame) => {
+    if (mainGame){
+        axios.get('/api/characters?game=' + mainGame.value)
+    }
+});
+
+const mainCharacterOptions = ref([])
 
 </script>
 
@@ -43,7 +60,11 @@ const mainGame = ref()
                 <label for="register-password">Password</label>
             </div>
             <div class="modal-input">
-                <Dropdown v-model="registerUser.mainGame" :options="filtersStore.eventGameOptions" optionLabel="name" showClear placeholder="Main Game"/>
+                <Dropdown v-model="registerUser.mainGame" :options="mainGameOptions" optionLabel="name" showClear placeholder="Main Game"/>
+            </div>
+            <div class="modal-input">
+                <Dropdown v-if="registerUser.mainGame" v-model="registerUser.mainCharacter" :options="mainCharacterOptions" optionLabel="name" showClear placeholder="Main Character"/>
+                <Dropdown v-else disabled placeholder="Main Character" ></Dropdown>
             </div>
         </div>
         <template #footer>
