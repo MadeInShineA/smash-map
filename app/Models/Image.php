@@ -35,7 +35,7 @@ class Image extends Model
             return URL::to('/') . '/storage/'. $directory . '/'. $subdirectory . '/' . $this->type . '/' . $this->uuid;
         }elseif($this->parentable_type === Character::class){
             $directory = 'characters-images';
-            $subdirectory = $this->parentable->name;
+            $subdirectory = $this->parentable->game->name . '/' . $this->parentable->name;
         }elseif ($this->parentable_type === Country::class){
             $directory = 'countries-images';
             $subdirectory = $this->parentable->name;

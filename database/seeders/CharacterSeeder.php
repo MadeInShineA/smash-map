@@ -140,72 +140,72 @@ class CharacterSeeder extends Seeder
             [
                 'game_id' => GameEnum::MELEE,
                 'name' => 'Mario',
-                'image_link' => 'https://ssb.wiki.gallery/images/d/d2/MarioHeadSSBM.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/e/ec/MarioHeadSSBM.png'
             ],
             [
                 'game_id' => GameEnum::MELEE,
                 'name' => 'Marth',
-                'image_link' => 'https://ssb.wiki.gallery/images/3/34/MarthHeadSSBM.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/9/9b/MarthHeadSSBM.png'
             ],
             [
                 'game_id' => GameEnum::MELEE,
                 'name' => 'Mewtwo',
-                'image_link' => 'https://ssb.wiki.gallery/images/9/98/MewtwoHeadSSBM.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/5/5b/MewtwoHeadSSBM.png'
             ],
             [
                 'game_id' => GameEnum::MELEE,
                 'name' => 'Mr. Game & Watch',
-                'image_link' => 'https://ssb.wiki.gallery/images/4/4f/MrGame%26WatchHeadSSBM.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/b/ba/MrGame%26WatchHeadSSBM.png'
             ],
             [
                 'game_id' => GameEnum::MELEE,
                 'name' => 'Ness',
-                'image_link' => 'https://ssb.wiki.gallery/images/3/37/NessHeadSSBM.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/4/47/NessHeadSSBM.png'
             ],
             [
                 'game_id' => GameEnum::MELEE,
                 'name' => 'Peach',
-                'image_link' => 'https://ssb.wiki.gallery/images/9/94/PeachHeadSSBM.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/3/3f/PeachHeadSSBM.png'
             ],
             [
                 'game_id' => GameEnum::MELEE,
                 'name' => 'Pichu',
-                'image_link' => 'https://ssb.wiki.gallery/images/4/4b/PichuHeadSSBM.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/3/30/PichuHeadSSBM.png'
             ],
             [
                 'game_id' => GameEnum::MELEE,
                 'name' => 'Pikachu',
-                'image_link' => 'https://ssb.wiki.gallery/images/2/28/PikachuHeadSSBM.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/8/88/PikachuHeadSSBM.png'
             ],
             [
                 'game_id' => GameEnum::MELEE,
                 'name' => 'Roy',
-                'image_link' => 'https://ssb.wiki.gallery/images/5/57/RoyHeadSSBM.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/f/f2/RoyHeadSSBM.png'
             ],
             [
                 'game_id' => GameEnum::MELEE,
                 'name' => 'Samus',
-                'image_link' => 'https://ssb.wiki.gallery/images/3/3d/SamusHeadSSBM.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/f/f6/SamusHeadSSBM.png'
             ],
             [
                 'game_id' => GameEnum::MELEE,
                 'name' => 'Sheik',
-                'image_link' => 'https://ssb.wiki.gallery/images/5/5f/SheikHeadSSBM.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/7/76/SheikHeadSSBM.png'
             ],
             [
                 'game_id' => GameEnum::MELEE,
                 'name' => 'Yoshi',
-                'image_link' => 'https://ssb.wiki.gallery/images/5/50/YoshiHeadSSBM.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/6/6d/YoshiHeadSSBM.png'
             ],
             [
                 'game_id' => GameEnum::MELEE,
                 'name' => 'Young Link',
-                'image_link' => 'https://ssb.wiki.gallery/images/6/63/YoungLinkHeadSSBM.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/a/ac/YoungLinkHeadSSBM.png'
             ],
             [
                 'game_id' => GameEnum::MELEE,
                 'name' => 'Zelda',
-                'image_link' => 'https://ssb.wiki.gallery/images/f/fa/ZeldaHeadSSBM.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/2/29/ZeldaHeadSSBM.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
@@ -220,182 +220,177 @@ class CharacterSeeder extends Seeder
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Diddy Kong',
-                'image_link' => 'https://ssb.wiki.gallery/images/d/d4/DiddyKongHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/1/1c/DiddyKongHeadSSBB.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Donkey Kong',
-                'image_link' => 'https://ssb.wiki.gallery/images/4/4a/DonkeyKongHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/0/0b/DonkeyKongHeadSSBB.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Falco',
-                'image_link' => 'https://ssb.wiki.gallery/images/0/0c/FalcoHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/4/4b/FalcoHeadSSBB.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Fox',
-                'image_link' => 'https://ssb.wiki.gallery/images/3/3b/FoxHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/1/15/FoxHeadSSBB.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Ganondorf',
-                'image_link' => 'https://ssb.wiki.gallery/images/6/6f/GanondorfHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/8/82/GanondorfHeadSSBB.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Ice Climbers',
-                'image_link' => 'https://ssb.wiki.gallery/images/9/92/IceClimbersHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/e/e4/IceClimbersHeadSSBB.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Ike',
-                'image_link' => 'https://ssb.wiki.gallery/images/e/eb/IkeHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/3/32/IkeHeadSSBB.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Jigglypuff',
-                'image_link' => 'https://ssb.wiki.gallery/images/0/01/JigglypuffHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/4/4a/JigglypuffHeadSSBB.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'King Dedede',
-                'image_link' => 'https://ssb.wiki.gallery/images/e/e8/KingDededeHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/6/6b/KingDededeHeadSSBB.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Kirby',
-                'image_link' => 'https://ssb.wiki.gallery/images/3/30/KirbyHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/c/ca/KirbyHeadSSBB.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Link',
-                'image_link' => 'https://ssb.wiki.gallery/images/1/17/LinkHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/2/28/LinkHeadSSBB.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Lucario',
-                'image_link' => 'https://ssb.wiki.gallery/images/0/09/LucarioHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/e/e3/LucarioHeadSSBB.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Lucas',
-                'image_link' => 'https://ssb.wiki.gallery/images/e/ec/LucasHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/e/e6/LucasHeadSSBB.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Luigi',
-                'image_link' => 'https://ssb.wiki.gallery/images/c/c4/LuigiHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/a/af/LuigiHeadSSBB.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Mario',
-                'image_link' => 'https://ssb.wiki.gallery/images/6/6b/MarioHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/0/07/MarioHeadSSBB.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Marth',
-                'image_link' => 'https://ssb.wiki.gallery/images/7/72/MarthHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/5/52/MarthHeadSSBB.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Meta Knight',
-                'image_link' => 'https://ssb.wiki.gallery/images/1/13/MetaKnightHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/f/f1/MetaKnightHeadSSBB.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Mr. Game & Watch',
-                'image_link' => 'https://ssb.wiki.gallery/images/0/0d/MrGame%26WatchHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/4/48/MrGame%26WatchHeadSSBB.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Ness',
-                'image_link' => 'https://ssb.wiki.gallery/images/a/a3/NessHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/5/51/NessHeadSSBB.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Olimar',
-                'image_link' => 'https://ssb.wiki.gallery/images/0/04/OlimarHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/f/fd/OlimarHeadSSBB.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Peach',
-                'image_link' => 'https://ssb.wiki.gallery/images/0/0a/PeachHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/0/0c/PeachHeadSSBB.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Pikachu',
-                'image_link' => 'https://ssb.wiki.gallery/images/e/ea/PikachuHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/c/ca/PikachuHeadSSBB.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Pit',
-                'image_link' => 'https://ssb.wiki.gallery/images/9/99/PitHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/c/c8/PitHeadSSBB.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Pokémon Trainer',
-                'image_link' => 'https://ssb.wiki.gallery/images/0/02/PokemonTrainerHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/0/01/Pok%C3%A9monTrainerHeadSSBB.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Rob',
-                'image_link' => 'https://ssb.wiki.gallery/images/e/e7/ROBHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/c/cb/ROBHeadSSBB.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Samus',
-                'image_link' => 'https://ssb.wiki.gallery/images/4/44/SamusHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/e/ee/SamusHeadSSBB.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Sheik',
-                'image_link' => 'https://ssb.wiki.gallery/images/c/c0/SheikHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/2/2e/SheikHeadSSBB.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Snake',
-                'image_link' => 'https://ssb.wiki.gallery/images/1/12/SnakeHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/6/6b/SnakeHeadSSBB.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Sonic',
-                'image_link' => 'https://ssb.wiki.gallery/images/e/ec/SonicHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/4/4a/SonicHeadSSBB.png'
             ],
-//            [
-//                'game_id' => GameEnum::BRAWL,
-//                'name' => 'Squirtle',
-//                'image_link' => 'https://ssb.wiki.gallery/images/8/82/SquirtleHeadSSBB.png'
-//            ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Toon Link',
-                'image_link' => 'https://ssb.wiki.gallery/images/5/57/ToonLinkHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/6/66/ToonLinkHeadSSBB.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Wario',
-                'image_link' => 'https://ssb.wiki.gallery/images/a/ac/WarioHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/e/e1/WarioHeadSSBB.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Wolf',
-                'image_link' => 'https://ssb.wiki.gallery/images/3/3c/WolfHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/6/63/WolfHeadSSBB.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Yoshi',
-                'image_link' => 'https://ssb.wiki.gallery/images/f/f8/YoshiHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/a/ab/YoshiHeadSSBB.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Zelda',
-                'image_link' => 'https://ssb.wiki.gallery/images/2/26/ZeldaHeadSSBB.png'
+                    'image_link' => 'https://ssb.wiki.gallery/images/5/59/ZeldaHeadSSBB.png'
             ],
             [
                 'game_id' => GameEnum::BRAWL,
                 'name' => 'Zero Suit Samus',
-                'image_link' => 'https://ssb.wiki.gallery/images/4/48/ZeroSuitSamusHeadSSBB.png'
+                'image_link' => 'https://ssb.wiki.gallery/images/8/8e/ZeroSuitSamusHeadSSBB.png'
             ],
             [
                 'game_id'       => GameEnum::PROJECT_M,

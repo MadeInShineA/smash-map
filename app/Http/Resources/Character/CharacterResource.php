@@ -10,8 +10,9 @@ class CharacterResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id'    => $this->id,
             'name'  => $this->name,
-            'image' => new ImageResource($this->image)
+            'image' => new ImageResource($this->image),
         ];
     }
 }

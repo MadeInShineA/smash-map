@@ -34,13 +34,17 @@ const mainGameOptions = ref([
     {name: 'Ultimate', value: '1386'},
 ])
 
-watch(() => registerUser.mainGame, (mainGame) => {
-    if (mainGame){
-        axios.get('/api/characters?game=' + mainGame.value)
+const mainCharacterOptions = ref([])
+
+const fetchingCharacters = ref(false)
+watch(() => registerUser.mainGame, async (mainGame) => {
+    if (mainGame) {
+        fetchingCharacters.value = true
+        const response = await axios.get('/api/characters?game=' + mainGame.value)
+        mainCharacterOptions.value = response.data.data
+        fetchingCharacters.value = false
     }
 });
-
-const mainCharacterOptions = ref([])
 
 </script>
 
@@ -63,7 +67,15 @@ const mainCharacterOptions = ref([])
                 <Dropdown v-model="registerUser.mainGame" :options="mainGameOptions" optionLabel="name" showClear placeholder="Main Game"/>
             </div>
             <div class="modal-input">
-                <Dropdown v-if="registerUser.mainGame" v-model="registerUser.mainCharacter" :options="mainCharacterOptions" optionLabel="name" showClear placeholder="Main Character"/>
+                <Dropdown v-if="registerUser.mainGame && !fetchingCharacters" v-model="registerUser.mainCharacter" :options="mainCharacterOptions" optionLabel="name" showClear filter placeholder="Main Character">
+                    <template #option="slotProps">
+                        <div class="character-option">
+                            <img :alt="slotProps.option.name" :src="slotProps.option.image.url" class="character-option-image" width="30" />
+                            <div>{{ slotProps.option.name }}</div>
+                        </div>
+                    </template>
+                </Dropdown>
+                <Dropdown v-else-if="fetchingCharacters" loading placeholder="Main Character"></Dropdown>
                 <Dropdown v-else disabled placeholder="Main Character" ></Dropdown>
             </div>
         </div>
@@ -80,6 +92,15 @@ const mainCharacterOptions = ref([])
     margin-left: 20px;
     margin-bottom: 10px;
     margin-top: 10px
+}
+
+.character-option{
+    display: flex;
+}
+
+.character-option-image{
+    width: 18px;
+    margin-right: 5px;
 }
 
 </style>
