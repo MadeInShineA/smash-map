@@ -36,7 +36,7 @@ class CharacterController extends Controller
                     default:
                         return $this->sendError('Incorrect game id');
                 }
-                return $this->sendResponse(CharacterResource::collection($characters->get()), 'Characters retrieved successfully');
+                return $this->sendResponse(CharacterResource::collection($characters->orderBy('name', 'ASC')->get()), 'Characters retrieved successfully');
             }
             return $this->sendResponse([], 'Characters retrieved successfully');
         } catch (Exception $exception){

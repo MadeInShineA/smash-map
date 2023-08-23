@@ -39,6 +39,7 @@ const mainCharacterOptions = ref([])
 const fetchingCharacters = ref(false)
 watch(() => registerUser.mainGame, async (mainGame) => {
     if (mainGame) {
+        registerUser.mainCharacter = null
         fetchingCharacters.value = true
         const response = await axios.get('/api/characters?game=' + mainGame.value)
         mainCharacterOptions.value = response.data.data
