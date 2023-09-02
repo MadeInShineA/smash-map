@@ -3,8 +3,8 @@ export default { name:'map'}
 </script>
 
 <script setup>
-
-import {onBeforeUnmount, onMounted, onUnmounted, ref} from "vue";
+import {GoogleMap, CustomControl, Marker, MarkerCluster, InfoWindow} from "vue3-google-map";
+import {onMounted, ref} from "vue";
 import FilterSidebar from "@/components/FilterSidebar.vue";
 import Button from "primevue/button";
 import {useAxios} from "@vueuse/integrations/useAxios";
@@ -14,98 +14,74 @@ const switchSideBarVisible = function (){
     sideBarVisible.value = !sideBarVisible.value
 }
 
-const center = ref([0, 0]);
-const projection = ref("EPSG:4326");
-const zoom = ref(8);
-const rotation = ref(0);
+const center = ref({ lat: 40.689247, lng: -74.044502 });
+const infoWindows = ref([]);
+
+const closeInfoWindows = (i) => { infoWindows.value.forEach((ref, index) => { if (index !== i) { ref.infoWindow.close(); } }); };
+
+const clickMarkerEvent = (i) => { closeInfoWindows(i); };
 
 const { data: addresses, isFinished: addressesFetched, execute: fetchAddresses } = useAxios('/api/addresses')
-
-const overrideStyleFunction = (feature, style, resolution) => {
-    console.log(style)
-    // console.log({ feature, style, resolution });
-    const clusteredFeatures = feature.get("features");
-    const size = clusteredFeatures.length;
-    if (size === 1){
-        const firstFeature = clusteredFeatures[0];
-        const color = firstFeature.get("color");
-        console.log(color)
-        const events = firstFeature.get("events");
-        console.log(events)
-        const users = firstFeature.get('users');
-        console.log(users)
-        style.getText().setText('Alone point');
-        style.getImage().getFill().setColor("#FFFFFF")
-        return null
-    }
-    style.getText().setText(size.toString());
-};
-
-const featureSelected = (event) => {
-    console.log(event);
-};
 
 onMounted(()=>{
     console.log('Map Mounted')
 })
 
-onBeforeUnmount(function (){
-    addresses.value.data = []
-})
-
-onUnmounted(function (){
-    console.log('finished unmount')
-})
+let googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
 
 </script>
 
 <template>
-    <div id="event-filters-container">
-        <Button class="filters-button" @click="sideBarVisible = true" icon="pi pi-filter" text rounded outlined label="Filters"/>
-        <FilterSidebar :sideBarVisible="sideBarVisible" @switchSideBarVisible="switchSideBarVisible"></FilterSidebar>
-    </div>
-
     <template v-if="addressesFetched">
-        <ol-map
-            :loadTilesWhileAnimating="true"
-            :loadTilesWhileInteracting="true"
-            style="height: 100%"
-        >
-            <ol-view
-                ref="view"
-                :center="center"
-                :rotation="rotation"
-                :zoom="zoom"
-                :projection="projection"
-            />
-
-            <ol-tile-layer>
-                <ol-source-xyz url="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}" />
-            </ol-tile-layer>
-
-                <ol-animated-clusterlayer :animationDuration="500" :distance="40">
-                    <ol-source-vector>
-                        <ol-feature v-for="address in addresses.data" :properties="{ 'color': address.color , 'events': address.events, 'users': address.users }">
-                            <ol-geom-point :coordinates="[address.longitude, address.latitude]">
-                            </ol-geom-point>
-                        </ol-feature>
-                    </ol-source-vector>
-
-                    <ol-style :overrideStyleFunction="overrideStyleFunction">
-    <!--                    <ol-style-stroke color="red" :width="2"></ol-style-stroke>-->
-    <!--                    <ol-style-fill color="rgba(255,255,255,0.1)"></ol-style-fill>-->
-
-                        <ol-style-circle :radius="15">
-                            <ol-style-fill color="#3399CC"></ol-style-fill>
-                            <ol-style-stroke color="#fff" :width="1"></ol-style-stroke>
-                        </ol-style-circle>
-                        <ol-style-text>
-                            <ol-style-fill color="#fff"></ol-style-fill>
-                        </ol-style-text>
-                    </ol-style>
-
-                </ol-animated-clusterlayer>
-        </ol-map>
+<!--        <div id="event-filters-container">-->
+<!--            <Button class="filters-button" @click="sideBarVisible = true" icon="pi pi-filter" text rounded outlined label="Filters"/>-->
+<!--            <FilterSidebar :sideBarVisible="sideBarVisible" @switchSideBarVisible="switchSideBarVisible"></FilterSidebar>-->
+<!--        </div>-->
+        <GoogleMap :api-key="googleMapApiKey" style="width: 100%; height: 100%" :center="center" :zoom="15"  @click="closeInfoWindows">
+            <MarkerCluster>
+                <Marker v-for="(address, i) in addresses.data" @click="clickMarkerEvent" :options="{position: address.position, icon: {url: address.icon,  scaledSize: { width: 20, height: 20 }}}">
+                    <InfoWindow :ref="(el) => (infoWindows[i] = el)">
+                        <div v-for="event in address.events">
+                            <h1>
+                                {{event.title}}
+                            </h1>
+                        </div>
+                    </InfoWindow>
+                </Marker>
+            </MarkerCluster>
+            <CustomControl position="BOTTOM_CENTER">
+                <div id="games-legend">
+                    <div class="game-legend">
+                        <div class="color-box" style="background-color: #FAC41A;"></div>
+                        <div class="game-name">64</div>
+                    </div>
+                    <div class="game-legend">
+                        <div class="color-box" style="background-color: #A30010;"></div>
+                        <div class="game-name">Melee</div>
+                    </div>
+                    <div class="game-legend">
+                        <div class="color-box" style="background-color: #660d02;"></div>
+                        <div class="game-name">Brawl</div>
+                    </div>
+                    <div class="game-legend">
+                        <div class="color-box" style="background-color: #3B448B;"></div>
+                        <div class="game-name">Project M</div>
+                    </div>
+                    <div class="game-legend">
+                        <div class="color-box" style="background-color: #6FD19C;"></div>
+                        <div class="game-name">Project +</div>
+                    </div>
+                    <div class="game-legend">
+                        <div class="color-box" style="background-color: #AFC1EE;"></div>
+                        <div class="game-name">3DS & Wii U</div>
+                    </div>
+                    <div class="game-legend">
+                        <div class="color-box" style="background-color: #F18A41;"></div>
+                        <div class="game-name">Ultimate</div>
+                    </div>
+                </div>
+            </CustomControl>
+        </GoogleMap>
     </template>
     <template v-else>
         <LoaderComponent></LoaderComponent>
@@ -124,5 +100,32 @@ onUnmounted(function (){
 
 .filters-button{
     color: black;
+}
+
+#games-legend{
+    display:flex;
+    background-color: white;
+}
+.dark #games-legend{
+    background-color:#1E1E1E;
+}
+.game-legend {
+    display: flex;
+    align-items: center;
+    margin: 10px;
+}
+
+.dark .game-legend{
+    color: white;
+}
+
+.color-box {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+.game-name {
+    font-size: 16px;
 }
 </style>

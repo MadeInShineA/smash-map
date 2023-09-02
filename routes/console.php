@@ -48,7 +48,6 @@ Artisan::command('delete-events', function(){
             foreach ($images as $image) {
                 $image_directory_path = $base_directory_path . '/' . $image->type;
                 unlink($image_directory_path . '/' . $image->uuid);
-
                 $image->delete();
             }
             #TODO Is there a better way to do it ?

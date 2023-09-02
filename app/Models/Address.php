@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Facades\URL;
+use function Webmozart\Assert\Tests\StaticAnalysis\length;
 
 class Address extends Model
 {
@@ -34,10 +36,25 @@ class Address extends Model
     {
         return $this->belongsTo(Country::class);
     }
-    public function getColorAttribute(): string
+    public function getIconAttribute(): string
     {
-        return '#FFFFFF';
-    }
+        $users = $this->users()->get();
+        $events = $this->events()->get();
+
+        if(sizeof($users) === 0 ){
+            $event_games = $this->events->pluck('game.slug')->unique()->toArray();
+            if (sizeof($event_games) == 1){
+                return '../../images/map-icons/' . $event_games[0] . '-map-icon.png';
+            }else{
+                return '../../images/map-icons/multi-events-map-icon.png';
+            }
+        }elseif (sizeof($events) === 0 && sizeof($users) === 1){
+            $user = $users[0];
+            return $user->character->image->url;
+        }else{
+          return  '';
+        }
+        }
 
 
 }
