@@ -44,15 +44,16 @@ class Address extends Model
         if(sizeof($users) === 0 ){
             $event_games = $this->events->pluck('game.slug')->unique()->toArray();
             if (sizeof($event_games) == 1){
-                return '../../images/map-icons/' . $event_games[0] . '-map-icon.png';
+                return URL::to('/storage/map-icons/' . $event_games[0] . '-map-icon.png');
             }else{
-                return '../../images/map-icons/multi-events-map-icon.png';
+                return URL::to('/storage/map-icons/multi-events-map-icon.png');
             }
         }elseif (sizeof($events) === 0 && sizeof($users) === 1){
             $user = $users[0];
             return $user->character->image->url;
         }else{
-          return  '';
+            #TODO Add the image when there are address and users or several users
+            return  '';
         }
         }
 

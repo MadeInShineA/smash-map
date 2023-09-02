@@ -37,7 +37,7 @@ let googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
 <!--            <Button class="filters-button" @click="sideBarVisible = true" icon="pi pi-filter" text rounded outlined label="Filters"/>-->
 <!--            <FilterSidebar :sideBarVisible="sideBarVisible" @switchSideBarVisible="switchSideBarVisible"></FilterSidebar>-->
 <!--        </div>-->
-        <GoogleMap :api-key="googleMapApiKey" style="width: 100%; height: 100%" :center="center" :zoom="15"  @click="closeInfoWindows">
+        <GoogleMap :api-key="googleMapApiKey" style="width: 100%; height: 100%" :center="center" :zoom="3" :min-zoom="3" @click="closeInfoWindows">
             <MarkerCluster>
                 <Marker v-for="(address, i) in addresses.data" @click="clickMarkerEvent" :options="{position: address.position, icon: {url: address.icon,  scaledSize: { width: 20, height: 20 }}}">
                     <InfoWindow :ref="(el) => (infoWindows[i] = el)">
@@ -79,6 +79,10 @@ let googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
                         <div class="color-box" style="background-color: #F18A41;"></div>
                         <div class="game-name">Ultimate</div>
                     </div>
+                    <div class="game-legend">
+                        <div class="color-box" style="background-color: black;"></div>
+                        <div class="game-name">Multiple Games</div>
+                    </div>
                 </div>
             </CustomControl>
         </GoogleMap>
@@ -88,7 +92,7 @@ let googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
     </template>
 </template>
 
-<style scoped>
+<style>
 
 #event-filters-container{
     position: absolute;
@@ -99,6 +103,13 @@ let googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
 }
 
 .filters-button{
+    color: black;
+}
+
+/*
+    TODO Add :deep
+ */
+.dark .gm-style-iw-d{
     color: black;
 }
 
@@ -128,4 +139,6 @@ let googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
 .game-name {
     font-size: 16px;
 }
+
+
 </style>
