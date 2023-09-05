@@ -9,7 +9,10 @@ import FilterSidebar from "@/components/FilterSidebar.vue";
 import Button from "primevue/button";
 import {useAxios} from "@vueuse/integrations/useAxios";
 import LoaderComponent from "@/components/LoaderComponent.vue";
+import Sidebar from "primevue/sidebar";
+
 const sideBarVisible = ref(false)
+
 const switchSideBarVisible = function (){
     sideBarVisible.value = !sideBarVisible.value
 }
@@ -23,6 +26,8 @@ const clickMarkerEvent = (i) => { closeInfoWindows(i); };
 
 const { data: addresses, isFinished: addressesFetched, execute: fetchAddresses } = useAxios('/api/addresses')
 
+const legendsVisible = ref(false)
+
 onMounted(()=>{
     console.log('Map Mounted')
 })
@@ -33,11 +38,11 @@ let googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
 
 <template>
     <template v-if="addressesFetched">
-<!--        <div id="event-filters-container">-->
-<!--            <Button class="filters-button" @click="sideBarVisible = true" icon="pi pi-filter" text rounded outlined label="Filters"/>-->
-<!--            <FilterSidebar :sideBarVisible="sideBarVisible" @switchSideBarVisible="switchSideBarVisible"></FilterSidebar>-->
-<!--        </div>-->
         <GoogleMap :api-key="googleMapApiKey" style="width: 100%; height: 100%" :center="center" :zoom="3" :min-zoom="3" @click="closeInfoWindows">
+            <CustomControl position="TOP_CENTER">
+                <Button class="map-button" @click="sideBarVisible = true" icon="pi pi-filter" text rounded outlined label="Filters"/>
+            </CustomControl>
+            <FilterSidebar :sideBarVisible="sideBarVisible" @switchSideBarVisible="switchSideBarVisible"></FilterSidebar>
             <MarkerCluster>
                 <Marker v-for="(address, i) in addresses.data" @click="clickMarkerEvent" :options="{position: address.position, icon: {url: address.icon,  scaledSize: { width: 20, height: 20 }}}">
                     <InfoWindow :ref="(el) => (infoWindows[i] = el)">
@@ -50,40 +55,43 @@ let googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
                 </Marker>
             </MarkerCluster>
             <CustomControl position="BOTTOM_CENTER">
-                <div id="games-legend">
-                    <div class="game-legend">
-                        <div class="color-box" style="background-color: #FAC41A;"></div>
-                        <div class="game-name">64</div>
+                <Button class="map-button" @click="legendsVisible = true" icon="pi pi-filter"  rounded outlined plain label="Legends"/>
+                <Sidebar v-model:visible="legendsVisible" position="bottom" style="height: min-content;">
+                    <div id="games-legend">
+                        <div class="game-legend">
+                            <div class="color-box" style="background-color: #FAC41A;"></div>
+                            <div class="game-name">64</div>
+                        </div>
+                        <div class="game-legend">
+                            <div class="color-box" style="background-color: #A30010;"></div>
+                            <div class="game-name">Melee</div>
+                        </div>
+                        <div class="game-legend">
+                            <div class="color-box" style="background-color: #660d02;"></div>
+                            <div class="game-name">Brawl</div>
+                        </div>
+                        <div class="game-legend">
+                            <div class="color-box" style="background-color: #3B448B;"></div>
+                            <div class="game-name">Project M</div>
+                        </div>
+                        <div class="game-legend">
+                            <div class="color-box" style="background-color: #6FD19C;"></div>
+                            <div class="game-name">Project +</div>
+                        </div>
+                        <div class="game-legend">
+                            <div class="color-box" style="background-color: #AFC1EE;"></div>
+                            <div class="game-name">3DS & Wii U</div>
+                        </div>
+                        <div class="game-legend">
+                            <div class="color-box" style="background-color: #F18A41;"></div>
+                            <div class="game-name">Ultimate</div>
+                        </div>
+                        <div class="game-legend">
+                            <div class="color-box" style="background-color: black;"></div>
+                            <div class="game-name">Multiple Games</div>
+                        </div>
                     </div>
-                    <div class="game-legend">
-                        <div class="color-box" style="background-color: #A30010;"></div>
-                        <div class="game-name">Melee</div>
-                    </div>
-                    <div class="game-legend">
-                        <div class="color-box" style="background-color: #660d02;"></div>
-                        <div class="game-name">Brawl</div>
-                    </div>
-                    <div class="game-legend">
-                        <div class="color-box" style="background-color: #3B448B;"></div>
-                        <div class="game-name">Project M</div>
-                    </div>
-                    <div class="game-legend">
-                        <div class="color-box" style="background-color: #6FD19C;"></div>
-                        <div class="game-name">Project +</div>
-                    </div>
-                    <div class="game-legend">
-                        <div class="color-box" style="background-color: #AFC1EE;"></div>
-                        <div class="game-name">3DS & Wii U</div>
-                    </div>
-                    <div class="game-legend">
-                        <div class="color-box" style="background-color: #F18A41;"></div>
-                        <div class="game-name">Ultimate</div>
-                    </div>
-                    <div class="game-legend">
-                        <div class="color-box" style="background-color: black;"></div>
-                        <div class="game-name">Multiple Games</div>
-                    </div>
-                </div>
+                </Sidebar>
             </CustomControl>
         </GoogleMap>
     </template>
@@ -94,18 +102,6 @@ let googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
 
 <style>
 
-#event-filters-container{
-    position: absolute;
-    width: 100vw;
-    z-index: 1;
-    text-align: center;
-    margin-top: 10px;
-}
-
-.filters-button{
-    color: black;
-}
-
 /*
     TODO Add :deep
  */
@@ -113,21 +109,24 @@ let googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
     color: black;
 }
 
+.map-button{
+    color: white !important;
+}
+
+.dark .map-button{
+    color: #1E1E1E !important;
+}
+
 #games-legend{
     display:flex;
-    background-color: white;
+    flex-wrap: wrap;
+    justify-content: center;
 }
-.dark #games-legend{
-    background-color:#1E1E1E;
-}
+
 .game-legend {
     display: flex;
     align-items: center;
     margin: 10px;
-}
-
-.dark .game-legend{
-    color: white;
 }
 
 .color-box {

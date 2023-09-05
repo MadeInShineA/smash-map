@@ -57,7 +57,7 @@ onMounted(()=>{
         <div class="event-filter">
             <Dropdown v-model="filtersStore.selectedOrderBy" :options="orderByOptions" optionLabel="name" placeholder="Sort by ID"/>
         </div>
-        <Button class="filters-button" @click="sideBarVisible = true" icon="pi pi-filter" text rounded outlined plain label="Filters"/>
+        <Button id="filters-button" @click="sideBarVisible = true" icon="pi pi-filter" text rounded outlined plain label="Filters"/>
     </div>
     <FilterSidebar :sideBarVisible="sideBarVisible" @switchSideBarVisible="switchSideBarVisible"></FilterSidebar>
     <template v-if="filtersStore.countriesFetched && eventsStore.eventsFetched">
@@ -95,7 +95,7 @@ onMounted(()=>{
 
 <style scoped>
 
-.filters-button{
+#filters-button{
     height: min-content;
     align-self: center;
 }
