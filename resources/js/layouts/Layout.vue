@@ -196,8 +196,8 @@ const profileItems = ref([{
         <LoginDialog :darkMode="darkMode" :showLoginModal="showLoginModal" @switchShowLoginModal="switchShowLoginModal" @setUser="setUser"/>
         <RegisterDialog :darkMode="darkMode" :showRegisterModal="showRegisterModal" @switchShowRegisterModal="switchShowRegisterModal"/>
         <router-view  v-slot="{ Component }">
-            <keep-alive :include="['events', 'map', 'calendar']">
-                <component :is="Component" />
+            <keep-alive :include="['map', 'calendar']">
+                <component :is="Component" :user="user"/>
             </keep-alive>
         </router-view>
     </main>

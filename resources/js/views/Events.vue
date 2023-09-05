@@ -15,8 +15,14 @@ import {useFiltersStore} from "../stores/FiltersStore.js";
 import {useEventsStore} from "../stores/EventsStore.js";
 import FilterSidebar from "@/components/FilterSidebar.vue";
 
+
 const filtersStore = useFiltersStore()
 const eventsStore = useEventsStore()
+
+const props = defineProps({
+    user: Object,
+})
+
 
 const sideBarVisible = ref(false)
 const switchSideBarVisible = function (){
@@ -38,6 +44,8 @@ const switchSideBarVisible = function (){
 //
 // getTimezone()
 
+
+
 const orderByOptions = ref([
     {name: 'Sort by ID', value: 'default'},
     {name: 'Attendees ascending', value: 'attendeesASC'},
@@ -45,6 +53,14 @@ const orderByOptions = ref([
     {name: 'Date ascending', value: 'dateASC'},
     {name: 'Date descending', value: 'dateDESC'}
 ])
+
+const notificationsLoading = ref(false)
+const setNotifications = function (eventId){
+    notificationsLoading.value = true
+    axios.post('/api/notifications', {'event': eventId})
+
+    console.log(eventId)
+}
 
 onMounted(()=>{
     console.log('Events Mounted')
@@ -75,7 +91,11 @@ onMounted(()=>{
                         <a class="event-title" :href=event.link target="_blank"><i class="pi pi-external-link"/> {{ event.name }}</a>
                     </template>
                     <template #content>
-                        <div class="event-game-attendees"><Tag :value="event.game.name" rounded :style="{background: event.game.color, marginRight: '5px'}"></Tag><Chip :label="event.attendees || event.attendees === 0 ? event.attendees.toString() : 'Private'" icon="pi pi-users"></Chip></div>
+                        <div class="event-game-attendees">
+                            <Tag :value="event.game.name" rounded :style="{background: event.game.color, marginRight: '5px'}"></Tag>
+                            <Chip :label="event.attendees || event.attendees === 0 ? event.attendees.toString() : 'Private'" icon="pi pi-users"></Chip>
+                            <Button v-if="user" @click="setNotifications(event.id)" :loading="notificationsLoading" icon="pi pi-bell" :class="event.notifications ? 'notifications-true' : 'notifications-false'" text rounded aria-label="Notification" />
+                        </div>
                         <div v-if="!event.is_online" class="event-location"><Chip :label="event.address.name" icon="pi pi-map-marker"></Chip></div>
                         <div v-else class="event-location"><Chip label="Online" icon="pi pi-globe"></Chip></div>
                         <div class="event-datetime"><Chip :label="event.timezone_start_date_time + ' / ' + event.timezone_end_date_time + ' ' + event.timezone" icon="pi pi-clock"></Chip></div>
@@ -84,9 +104,6 @@ onMounted(()=>{
             </div>
             <Paginator  v-if="eventsStore.events.meta.total > eventsStore.events.meta.per_page" :first="filtersStore.currentPage * (eventsStore.events.meta.per_page) -1" :rows="eventsStore.events.meta.per_page" :total-records="eventsStore.events.meta.total" @page="filtersStore.currentPage = $event.page + 1"/>
         </template>
-<!--        <template v-else>-->
-<!--            <h1 id="no-events">No events correspond to your filters</h1>-->
-<!--        </template>-->
     </template>
     <template v-if="!filtersStore.countriesFetched || !eventsStore.eventsFetched">
         <LoaderComponent></LoaderComponent>
@@ -161,6 +178,13 @@ onMounted(()=>{
     text-overflow: ellipsis;
 }
 
+.notifications-true{
+    color: gold;
+}
+
+.notifications-false{
+    color: grey;
+}
 
 .event-location {
     margin-bottom: 10px;

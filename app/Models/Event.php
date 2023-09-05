@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Facades\Auth;
 
 class Event extends Model
 {
@@ -58,11 +59,18 @@ class Event extends Model
         return Carbon::parse($this->end_date_time, $this->timezone)->timezone($this->address?->country?->timezone)->format('d-m-Y H:i:s');
     }
 
-    public function getTimezoneLabelAttribute(){
+    public function getTimezoneLabelAttribute()
+    {
         if($this->address?->country?->timezone){
             return $this->address?->country?->timezone;
         }
         return $this->timezone;
+    }
+
+    #FIXME Find a way to access the logged in user inside this funciton
+    public function getNotificationsAttribute()
+    {
+        return false;
     }
 
     public function scopeCountries($query, array $countries)

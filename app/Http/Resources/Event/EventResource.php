@@ -13,6 +13,7 @@ class EventResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id'                        => $this->id,
             'game'                      => new GameResource($this->game),
             'address'                   => new AddressResource($this->address),
             'images'                    => ImageResource::collection($this->images),
@@ -22,7 +23,8 @@ class EventResource extends JsonResource
             'timezone_end_date_time'    => $this->timezone_end_date_time,
             'timezone'                  => $this->timezone_label,
             'attendees'                 => $this->attendees,
-            'link'                      => $this->link
+            'link'                      => $this->link,
+            'notifications'             => $this->notifications
         ];
     }
 

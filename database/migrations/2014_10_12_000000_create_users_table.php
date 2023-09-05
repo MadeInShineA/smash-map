@@ -20,10 +20,10 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
             $table->foreignId('address_id')->nullable()->constrained('addresses');
-            $table->string('discord');
-            $table->string('twitter');
-            $table->string('description');
-            $table->string('color');
+            $table->string('discord')->nullable();
+            $table->string('twitter')->nullable();
+            $table->string('description')->nullable();
+            $table->string('color')->nullable();
             $table->foreignId('main_character_id')->constrained('characters')->restrictOnDelete();
             $table->foreignId('main_game_id')->constrained('games')->restrictOnDelete();
             $table->boolean('is_admin')->default(false);
