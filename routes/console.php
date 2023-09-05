@@ -243,7 +243,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                     if(!$address){
 
                         //FIXME Doesn't work if we add the latitude and longitude => php float vs SQL float ?
-                        $address = Address::firstOrCreate(['name'=>$address_name, 'country_id' =>$country?->id, 'continent_id' =>$continent->id],['latitude' =>$latitude, 'longitude' =>$longitude]);
+                        $address = Address::firstOrCreate(['latitude' =>$latitude, 'longitude' =>$longitude],['name'=>$address_name, 'country_id' =>$country?->id, 'continent_id' =>$continent->id]);
                         $event_object->address_id = $address->id;
                         $event_object->save();
                     }
