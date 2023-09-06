@@ -5,6 +5,8 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -65,6 +67,11 @@ class User extends Authenticatable
     public function images(): MorphMany
     {
         return $this->morphMany(Image::class, 'parentable');
+    }
+
+    public function subscribed_events(): BelongsToMany
+    {
+        return  $this->belongsToMany(Event::class, 'relation_event_user', 'user_id', 'event_id');
     }
 
     public function getProfilePictureAttribute()

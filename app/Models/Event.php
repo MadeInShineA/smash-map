@@ -42,6 +42,11 @@ class Event extends Model
     {
         return $this->morphMany(Image::class, 'parentable')->orderByRaw("FIELD(type , 'profile', 'banner') ASC");
     }
+
+    public function notifications(): BelongsTo
+    {
+        return $this->belongsTo(Notification::class);
+    }
     public function getTimezoneStartDateTimeAttribute() :string
     {
         return Carbon::parse($this->start_date_time, $this->timezone)->timezone($this->address?->country?->timezone)->format('d-m-Y H:i:s');

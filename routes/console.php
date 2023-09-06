@@ -6,7 +6,6 @@ use App\Models\Character;
 use App\Models\Country;
 use App\Models\Event;
 use App\Models\Image;
-use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -369,7 +368,6 @@ Artisan::command('import-countries-images', function (){
     foreach ($countries as $country){
 
         $url = 'https://flagsapi.com/' . $country->code .'/flat/64.png';
-//        $url = 'http://www.geognos.com/api/en/countries/flag/' . $country->code . '.png';
         $curl_handle=curl_init();
         curl_setopt($curl_handle, CURLOPT_URL,$url);
         curl_setopt($curl_handle, CURLOPT_SSL_VERIFYPEER, false);
@@ -394,4 +392,10 @@ Artisan::command('import-countries-images', function (){
 
 Artisan::command('test-broadcast', function(){
     broadcast(new \App\Events\NotificationEvent(\App\Models\User::first()));
+});
+
+Artisan::command('setup', function(){
+   Artisan::call('import-countries-images');
+   Artisan::call('import-characters-images');
+   Artisan::call('import-100-events-all-games');
 });

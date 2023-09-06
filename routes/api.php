@@ -25,6 +25,8 @@ Route::get('/events', [EventController::class, 'index']);
 Route::get('/countries-filter', [CountryController::class, 'countries_filter']);
 Route::get('/calendar/events', [EventController::class, 'calendar_index']);
 Route::get('/addresses', [AddressController::class, 'index']);
-
 Route::get('/characters', [CharacterController::class, 'index']);
+//Route::middleware(['auth:sanctum'])->group(function (){
+//    Route::post('/users/{user}/events/{event}/subscribe', [UserController::class, 'event_subscribe']);
+//});
 
