@@ -55,18 +55,15 @@ const orderByOptions = ref([
 ])
 
 const notificationsLoading = ref(false)
-const eventSubscribe = function (event){
+function handleEventSubscription(event){
     notificationsLoading.value = true
-    axios.post('/events/' + event.id + '/subscribe')
-    event.user_subscribed = true
-    console.log(event.id)
-    notificationsLoading.value = false
-}
-
-const eventUnsubscribe = function (event){
-    notificationsLoading.value = true
-    axios.post('/events/' + event.id + '/unsubscribe')
-    event.user_subscribed = false
+    if (event.user_subscribed){
+        axios.post('/api/events/' + event.id + '/unsubscribe')
+        event.user_subscribed = false
+    }else{
+        axios.post('/api/events/' + event.id + '/subscribe')
+        event.user_subscribed = true
+    }
     console.log(event.id)
     notificationsLoading.value = false
 }
@@ -103,8 +100,15 @@ onMounted(()=>{
                         <div class="event-game-attendees">
                             <Tag :value="event.game.name" rounded :style="{background: event.game.color, marginRight: '5px'}"></Tag>
                             <Chip :label="event.attendees || event.attendees === 0 ? event.attendees.toString() : 'Private'" icon="pi pi-users"></Chip>
-                            <Button v-if="user && !event.user_subscribed" @click="eventSubscribe(event)" :loading="notificationsLoading" icon="pi pi-bell" class='user-not-subscribed' text rounded aria-label="Notification" />
-                            <Button v-if="user && event.user_subscribed" @click="eventUnsubscribe(event)" :loading="notificationsLoading" icon="pi pi-bell" class='user-subscribed' text rounded aria-label="Notification" />
+                            <Button
+                                v-if='user'
+                                @click="handleEventSubscription(event)"
+                                :loading="notificationsLoading"
+                                icon="pi pi-bell"
+                                :class='{ active: event.user_subscribed }'
+                                rounded
+                                aria-label="Notification"
+                            />
                         </div>
                         <div v-if="!event.is_online" class="event-location"><Chip :label="event.address.name" icon="pi pi-map-marker"></Chip></div>
                         <div v-else class="event-location"><Chip label="Online" icon="pi pi-globe"></Chip></div>
@@ -188,11 +192,17 @@ onMounted(()=>{
     text-overflow: ellipsis;
 }
 
-.user-subscribed{
+:deep(.p-button), :deep(.p-button:hover), :deep(.p-button:active){
+    background: transparent;
+}
+
+:deep(.p-button:hover .p-button-icon),
+:deep(.active.p-button .p-button-icon){
     color: gold;
 }
 
-.user-not-subscribed{
+:deep(.active.p-button:hover .p-button-icon),
+:deep(.p-button .p-button-icon){
     color: grey;
 }
 
@@ -221,10 +231,6 @@ onMounted(()=>{
 
 :deep(.p-paginator){
    background: none;
-}
-
-#no-events{
-    text-align:center;
 }
 
 @media (max-width: 1100px) {
