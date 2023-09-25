@@ -223,7 +223,10 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                 var_dump('Event: ' . $event->name . ' created');
                 if(!$event_object->is_online){
                     $latitude = $event->lat;
+                    $latitude = round($latitude, 7);
+
                     $longitude = $event->lng;
+                    $longitude = round($longitude, 7);
 
                     $address_name = $event->venueAddress;
                     $country_code = $event->countryCode;

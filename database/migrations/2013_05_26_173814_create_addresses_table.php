@@ -20,8 +20,8 @@ return new class extends Migration
             $table->foreignId('country_id')->constrained('countries')->restrictOnDelete();
             $table->foreignId('continent_id')->constrained('continents');
             $table->string('name');
-            $table->float('latitude');
-            $table->float('longitude');
+            $table->float('latitude', 9, 7);
+            $table->float('longitude', 10, 7);
         });
     }
 
