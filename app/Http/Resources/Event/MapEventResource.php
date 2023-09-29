@@ -2,8 +2,8 @@
 
 namespace App\Http\Resources\Event;
 
-use App\Http\Resources\Address\AddressResource;
 use App\Http\Resources\Game\GameResource;
+use App\Http\Resources\Image\ImageResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,7 +20,8 @@ class MapEventResource extends JsonResource
             'timezone_end_date_time'    => $this->timezone_end_date_time,
             'timezone'                  => $this->timezone_label,
             'attendees'                 => $this->attendees,
-            'link'                      => $this->link
+            'link'                      => $this->link,
+            'images'                    => ImageResource::collection($this->images),
         ];
     }
 

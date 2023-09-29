@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use Laravel\Sanctum\PersonalAccessToken;
+
 
 class Event extends Model
 {
@@ -73,8 +75,16 @@ class Event extends Model
     }
 
     #FIXME Find a way to access the logged in user inside this funciton
-    public function getNotificationsAttribute()
+    public function user_subscribed(Request $request)
     {
+        /* $authorization_token = $request->header('Authorization');
+        if($authorization_token){
+            $user = PersonalAccessToken::findToken($authorization_token)->tokenable;
+            if($user){
+                return $user->subscribed_events->contains($this->id);
+            }
+            return'you are not logged in';
+        } */
         return false;
     }
 

@@ -24,7 +24,7 @@ class EventResource extends JsonResource
             'timezone'                  => $this->timezone_label,
             'attendees'                 => $this->attendees,
             'link'                      => $this->link,
-            'user_subscribed'            => $this->notifications
+            'user_subscribed'           => $this->user_subscribed($request),
         ];
     }
 

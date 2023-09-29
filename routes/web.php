@@ -26,7 +26,6 @@ Route::get('/{page}', function () {
 Route::post('/login', [UserController::class, 'login']);
 
 Route::middleware(['auth:sanctum'])->group(function (){
-    Route::post('/logout', [UserController::class, 'logout']);
     Route::post('/events/{event}/subscribe', [UserController::class, 'event_subscribe']);
     Route::post('/events/{event}/unsubscribe', [UserController::class, 'event_unsubscribe']);
 

@@ -73,7 +73,6 @@ class User extends Authenticatable
     {
         return  $this->belongsToMany(Event::class, 'relation_event_user', 'user_id', 'event_id');
     }
-
     public function getProfilePictureAttribute()
     {
         return $this->morphMany(Image::class, 'parentable')->where('type', 'profile')->first()?->url_attribute();

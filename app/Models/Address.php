@@ -55,7 +55,5 @@ class Address extends Model
             #TODO Add the image when there are address and users or several users
             return  '';
         }
-        }
-
-
+    }
 }

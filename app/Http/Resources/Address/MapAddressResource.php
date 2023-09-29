@@ -11,10 +11,11 @@ class MapAddressResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'position'      => ['lat' => $this->latitude, 'lng' => $this->longitude],
-            'icon'          => $this->icon,
-            'events'        => MapEventResource::collection($this->events),
-            'users'         => MapUserResource::collection($this->users),
+            'id'                    => $this->id,
+            'position'              => ['lat' => $this->latitude, 'lng' => $this->longitude],
+            'icon'                  => $this->icon,
+            'events'                => MapEventResource::collection($this->events),
+            'users'                 => MapUserResource::collection($this->users),
         ];
     }
 }

@@ -40,7 +40,7 @@ const login = async function () {
         try {
             const response = await axios.post('/login', loginUser.value, header)
             localStorage.setItem('userData', JSON.stringify(response.data.data.user));
-            // localStorage.setItem('accessToken', response.data.data.token)
+            localStorage.setItem('accessToken', response.data.data.token)
             localStorage.setItem('tokenTime', new Date().toString());
             loginUser.value.username = ''
             loginUser.value.password = ''

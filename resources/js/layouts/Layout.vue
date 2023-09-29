@@ -89,8 +89,9 @@ const user = ref(null)
 const notificationsCount = ref(0)
 if (window.localStorage.getItem('userData') !== null) {
     user.value = JSON.parse(window.localStorage.getItem('userData'));
-    console.log(user.value.id)
+    console.log('toto')
     Echo.private(`notifications.` + user.value.id).listen('NotificationEvent', (e) => {
+        console.log('test')
         notificationsCount.value += 1
     });
 }
@@ -105,8 +106,9 @@ const switchShowRegisterModal = function (){
     showRegisterModal.value = !showRegisterModal.value
 }
 
-const setUser = function(){
+function setUser(){
     user.value = JSON.parse(window.localStorage.getItem('userData'));
+    console.log('tata')
     Echo.private(`notifications.` + user.value.id).listen('NotificationEvent', (e) => {
         notificationsCount.value += 1
         console.log('test')
@@ -127,7 +129,7 @@ const profileItems = ref([{
         {label: 'Profile', icon: 'pi pi-fw pi-user'},
         {label: 'Settings', icon: 'pi pi-fw pi-cog'},
         {label: 'Log Out', icon: 'pi pi-sign-out', command: async function () {
-                await axios.post('/logout');
+                await axios.post('/api/logout');
                 localStorage.removeItem('userData');
                 user.value = null;
                 const alertBackground = darkMode.value ? '#1C1B22' : '#FFFFFF'
@@ -197,7 +199,7 @@ const profileItems = ref([{
         <RegisterDialog :darkMode="darkMode" :showRegisterModal="showRegisterModal" @switchShowRegisterModal="switchShowRegisterModal"/>
         <router-view  v-slot="{ Component }">
             <keep-alive :include="['map', 'calendar']">
-                <component :is="Component" :user="user"/>
+                <component :is="Component" :user="user" :responsiveMenuDisplayed="responsiveMenuDisplayed"/>
             </keep-alive>
         </router-view>
     </main>

@@ -26,7 +26,10 @@ Route::get('/countries-filter', [CountryController::class, 'countries_filter']);
 Route::get('/calendar/events', [EventController::class, 'calendar_index']);
 Route::get('/addresses', [AddressController::class, 'index']);
 Route::get('/characters', [CharacterController::class, 'index']);
-//Route::middleware(['auth:sanctum'])->group(function (){
-//    Route::post('/users/{user}/events/{event}/subscribe', [UserController::class, 'event_subscribe']);
-//});
-
+/* Route::post('/login', [UserController::class, 'login']);
+ */
+Route::middleware(['auth:sanctum'])->group(function (){
+    Route::post('/logout', [UserController::class, 'logout']);
+    Route::post('/events/{event}/subscribe', [UserController::class, 'event_subscribe']);
+    Route::post('/events/{event}/unsubscribe', [UserController::class, 'event_unsubscribe']);
+});
