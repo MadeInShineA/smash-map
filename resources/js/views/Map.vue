@@ -26,6 +26,7 @@ const switchSideBarVisible = function (){
 }
 
 const center = ref({ lat: 40.713956, lng: -38.716136 });
+const zoom = ref(4);
 const infoWindows = ref([]);
 
 const closeInfoWindows = (i) => { infoWindows.value.forEach((ref, index) => { if (index !== i) { ref.infoWindow.close(); } }); };
@@ -41,6 +42,7 @@ onMounted(()=>{
     if(navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(position) {
        center.value = {lat: position.coords.latitude, lng: position.coords.longitude};
+       zoom.value = 10;
       })
     };
 })
@@ -51,7 +53,7 @@ let googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
 
 <template>
     <template v-if="addressesFetched">
-        <GoogleMap :api-key="googleMapApiKey" style="width: 100%; height: 100%" :center="center" :zoom="4" :min-zoom="4" @click="closeInfoWindows">
+        <GoogleMap :api-key="googleMapApiKey" style="width: 100%; height: 100%" :center="center" :zoom="zoom" :min-zoom="4" @click="closeInfoWindows">
             <CustomControl :position="responsiveMenuDisplayed ? 'LEFT_TOP' : 'TOP_CENTER'">
                 <Button class="map-button" @click="sideBarVisible = true" icon="pi pi-filter" text rounded outlined label="Filters"/>
             </CustomControl>
