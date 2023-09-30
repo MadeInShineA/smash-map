@@ -201,6 +201,9 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                 $is_online = $game_event->isOnline;
                 $name = $event->name;
                 $timezone = $event->timezone;
+                if(!$timezone){
+                    $timezone = 'UTC';
+                }
 
                 $start_date = new DateTime();
                 $start_date->format('Y-m-d H:i:s');
@@ -237,7 +240,9 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                     if($country){
                         $continent = $country->continent;
                     }else{
-                        $continent = $event->venueAddress;
+                        var_dump('Country not found : ' . $country_code . ' for event: ' . $event->name .'with start gg id: ' . $start_gg_id);
+                        Log::error('Country not found : ' . $country_code . ' for event: ' . $event->name .'with start gg id: ' . $start_gg_id);
+                        die();
                     }
 
                     $address = $event_object->address;
@@ -326,7 +331,7 @@ Artisan::command('import-500-events-all-games', function (){
     Artisan::call('import-500-events', ['game' => '64']);
     var_dump('Starting the melee import');
     Artisan::call('import-500-events', ['game' => 'melee']);
-    var_dump('Starting the melee brawl');
+    var_dump('Starting the brawl import');
     Artisan::call('import-500-events', ['game' => 'brawl']);
     var_dump('Starting the project + import');
     Artisan::call('import-500-events', ['game' => 'project_+']);
@@ -365,6 +370,7 @@ Artisan::command('import-characters-images',function(){
     }
 });
 
+##TODO Add the image for Frencch Guiana
 Artisan::command('import-countries-images', function (){
     $countries = Country::all();
 

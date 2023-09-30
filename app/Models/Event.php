@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Http\Request;
-use Laravel\Sanctum\PersonalAccessToken;
 
 
 class Event extends Model
@@ -28,6 +27,7 @@ class Event extends Model
         'end_date_time',
         'attendees',
         'link',
+        'timezone',
     ];
 
     public function game():BelongsTo
@@ -49,6 +49,8 @@ class Event extends Model
     {
         return $this->belongsTo(Notification::class);
     }
+
+    ##TODO Check if the date time from the start gg api are in UTC or in the timezone of the event
     public function getTimezoneStartDateTimeAttribute() :string
     {
         return Carbon::parse($this->start_date_time, $this->timezone)->timezone($this->address?->country?->timezone)->format('d-m-Y H:i:s');

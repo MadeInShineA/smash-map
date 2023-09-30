@@ -47,7 +47,7 @@ onMounted(()=>{
     };
 })
 
-let googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
+const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
 
 </script>
 
