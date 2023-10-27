@@ -4,7 +4,7 @@ import {useAxios} from "@vueuse/integrations/useAxios";
 import {useDateFormat, watchDebounced, watchPausable} from "@vueuse/core";
 import {useEventsStore} from "../stores/EventsStore.js";
 
-export const useFiltersStore = defineStore('filters', function (){
+export const useEventFiltersStore = defineStore('eventFilters', function (){
     const eventsStore = useEventsStore()
 
     const eventTypeOptions = ref([

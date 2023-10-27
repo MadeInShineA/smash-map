@@ -2,11 +2,9 @@
 
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\CharacterController;
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\UserController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,8 +24,8 @@ Route::get('/countries-filter', [CountryController::class, 'countries_filter']);
 Route::get('/calendar/events', [EventController::class, 'calendar_index']);
 Route::get('/addresses', [AddressController::class, 'index']);
 Route::get('/characters', [CharacterController::class, 'index']);
-/* Route::post('/login', [UserController::class, 'login']);
- */
+Route::post('/login', [UserController::class, 'login']);
+
 Route::middleware(['auth:sanctum'])->group(function (){
     Route::post('/logout', [UserController::class, 'logout']);
     Route::post('/events/{event}/subscribe', [UserController::class, 'event_subscribe']);

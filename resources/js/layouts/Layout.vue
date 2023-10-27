@@ -86,13 +86,11 @@ const menuBar = ref()
 
 const menuBarHeight = computed(()=>menuBar.value.clientHeight + 'px')
 const user = ref(null)
-const notificationsCount = ref(0)
+const notificationsCount = ref("0")
 if (window.localStorage.getItem('userData') !== null) {
     user.value = JSON.parse(window.localStorage.getItem('userData'));
-    console.log('toto')
     Echo.private(`notifications.` + user.value.id).listen('NotificationEvent', (e) => {
-        console.log('test')
-        notificationsCount.value += 1
+        notificationsCount.value = (parseInt(notificationsCount.value) + 1).toString()
     });
 }
 
@@ -102,20 +100,18 @@ const switchShowLoginModal = function (){
     showLoginModal.value = !showLoginModal.value
 }
 
+const showRegisterModal = ref(false)
+
 const switchShowRegisterModal = function (){
     showRegisterModal.value = !showRegisterModal.value
 }
 
 function setUser(){
     user.value = JSON.parse(window.localStorage.getItem('userData'));
-    console.log('tata')
     Echo.private(`notifications.` + user.value.id).listen('NotificationEvent', (e) => {
         notificationsCount.value += 1
-        console.log('test')
     });
 }
-
-const showRegisterModal = ref(false)
 
 const profileMenu = ref();
 

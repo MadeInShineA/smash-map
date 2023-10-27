@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Http\Request;
+use Laravel\Sanctum\PersonalAccessToken;
 
 
 class Event extends Model
@@ -58,14 +59,14 @@ class Event extends Model
 
     public function getTimezoneEndDateTimeAttribute(): string
     {
-        $start_date = Carbon::parse($this->start_date_time, $this->timezone)->timezone($this->address?->country?->timezone)->format('Y-m-d');
+        $start_date = Carbon::parse($this->start_date_time, $this->timezone)->format('Y-m-d');
 
-        $end_date = Carbon::parse($this->end_date_time, $this->timezone)->timezone($this->address?->country?->timezone)->format('Y-m-d');
+        $end_date = Carbon::parse($this->end_date_time, $this->timezone)->format('Y-m-d');
 
         if($start_date === $end_date){
-            return Carbon::parse($this->end_date_time, $this->timezone)->timezone($this->address?->country?->timezone)->format('H:i:s');
+            return Carbon::parse($this->end_date_time, $this->timezone)->format('H:i:s');
         }
-        return Carbon::parse($this->end_date_time, $this->timezone)->timezone($this->address?->country?->timezone)->format('d-m-Y H:i:s');
+        return Carbon::parse($this->end_date_time, $this->timezone)->format('d-m-Y H:i:s');
     }
 
     public function getTimezoneLabelAttribute()
@@ -79,15 +80,15 @@ class Event extends Model
     #FIXME Find a way to access the logged in user inside this funciton
     public function user_subscribed(Request $request)
     {
-        /* $authorization_token = $request->header('Authorization');
-        if($authorization_token){
-            $user = PersonalAccessToken::findToken($authorization_token)->tokenable;
-            if($user){
-                return $user->subscribed_events->contains($this->id);
-            }
-            return'you are not logged in';
-        } */
-        return false;
+//        $authorization_token = $request->header('Authorization');
+//        if($authorization_token){
+//            $user = PersonalAccessToken::findToken($authorization_token)->tokenable;
+//            if($user){
+//                return $user->subscribed_events->contains($this->id);
+//            }
+//            return'you are not logged in';
+//        }
+//        return false;
     }
 
     public function scopeCountries($query, array $countries)

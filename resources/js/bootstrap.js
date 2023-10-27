@@ -12,11 +12,11 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 window.axios.interceptors.request.use((config) => {
     const accessToken = localStorage.getItem('accessToken');
-  
+
     if (accessToken) {
       config.headers['Authorization'] = `Bearer ${accessToken}`;
     }
-  
+
     return config;
 })
 
@@ -50,6 +50,28 @@ window.Echo = new Echo({
     wsPort: 6001,
     cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
     disableStats: true,
-    forceTLS: false // Critical if you want to use a non-secure WebSocket connection
+    forceTLS: false, // Critical if you want to use a non-secure WebSocket connection
+    enabledTransports: ['ws', 'wss'],
+    authorizer: (channel, options) => {
+        return{
+            authorize(socketId, callback){
+                (axios)({
+                    method: "POST",
+                    url: "http://127.0.0.1:8000/broadcasting/auth",
+                    data: {
+                        socket_id: socketId,
+                        channel_name: channel.name
+                    }
+                })
+                    .then((response) =>{
+                        callback(false, response.data)
+                    })
+                    .catch((error => {
+                        console.log(error)
+                        callback(true, error)
+                    }))
+            }
+        }
+    }
 });
 

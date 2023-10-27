@@ -11,12 +11,12 @@ import Card from "primevue/card";
 import Paginator from "primevue/paginator";
 import Chip from "primevue/chip";
 import Tag from "primevue/tag";
-import {useFiltersStore} from "../stores/FiltersStore.js";
+import {useEventFiltersStore} from "../stores/EventFiltersStore.js";
 import {useEventsStore} from "../stores/EventsStore.js";
 import FilterSidebar from "@/components/FilterSidebar.vue";
 
 
-const filtersStore = useFiltersStore()
+const eventsFiltersStore = useEventFiltersStore()
 const eventsStore = useEventsStore()
 
 const props = defineProps({
@@ -77,12 +77,12 @@ onMounted(()=>{
 <template>
     <div id="event-filters-container">
         <div class="event-filter">
-            <Dropdown v-model="filtersStore.selectedOrderBy" :options="orderByOptions" optionLabel="name" placeholder="Sort by ID"/>
+            <Dropdown v-model="eventsFiltersStore.selectedOrderBy" :options="orderByOptions" optionLabel="name" placeholder="Sort by ID"/>
         </div>
         <Button id="filters-button" @click="sideBarVisible = true" icon="pi pi-filter" text rounded outlined plain label="Filters"/>
     </div>
     <FilterSidebar :sideBarVisible="sideBarVisible" @switchSideBarVisible="switchSideBarVisible"></FilterSidebar>
-    <template v-if="filtersStore.countriesFetched && eventsStore.eventsFetched">
+    <template v-if="eventsFiltersStore.countriesFetched && eventsStore.eventsFetched">
         <h1 id="events-total">{{eventsStore.events.meta.total}} Events</h1>
         <template v-if="eventsStore.events.data.length > 0">
             <div id="event-container">
@@ -102,6 +102,7 @@ onMounted(()=>{
                             <Chip :label="event.attendees || event.attendees === 0 ? event.attendees.toString() : 'Private'" icon="pi pi-users"></Chip>
                             <Button
                                 v-if='user'
+                                class="event-bell-button"
                                 @click="handleEventSubscription(event)"
                                 :loading="notificationsLoading"
                                 icon="pi pi-bell"
@@ -116,10 +117,10 @@ onMounted(()=>{
                     </template>
                 </Card>
             </div>
-            <Paginator v-if="eventsStore.events.meta.total > eventsStore.events.meta.per_page" :first="filtersStore.currentPage * (eventsStore.events.meta.per_page) -1" :rows="eventsStore.events.meta.per_page" :total-records="eventsStore.events.meta.total" @page="filtersStore.currentPage = $event.page + 1"/>
+            <Paginator v-if="eventsStore.events.meta.total > eventsStore.events.meta.per_page" :first="eventsFiltersStore.currentPage * (eventsStore.events.meta.per_page) -1" :rows="eventsStore.events.meta.per_page" :total-records="eventsStore.events.meta.total" @page="eventsFiltersStore.currentPage = $event.page + 1"/>
         </template>
     </template>
-    <template v-if="!filtersStore.countriesFetched || !eventsStore.eventsFetched">
+    <template v-if="!eventsFiltersStore.countriesFetched || !eventsStore.eventsFetched">
         <LoaderComponent></LoaderComponent>
     </template>
 </template>
@@ -192,17 +193,17 @@ onMounted(()=>{
     text-overflow: ellipsis;
 }
 
-:deep(.p-button), :deep(.p-button:hover), :deep(.p-button:active){
+.event-bell-button, .event-bell-button:hover, .event-bell-button.active, .event-bell-button:focus{
     background: transparent;
 }
 
-:deep(.p-button:hover .p-button-icon),
-:deep(.active.p-button .p-button-icon){
+.event-bell-button:hover :deep(.p-button-icon),
+.event-bell-button.active :deep(.p-button-icon){
     color: gold;
 }
 
-:deep(.active.p-button:hover .p-button-icon),
-:deep(.p-button .p-button-icon){
+.event-bell-button.active:hover :deep(.p-button-icon),
+.event-bell-button :deep(.p-button-icon){
     color: grey;
 }
 

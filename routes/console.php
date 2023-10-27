@@ -7,6 +7,7 @@ use App\Models\Country;
 use App\Models\Event;
 use App\Models\Image;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
@@ -406,5 +407,5 @@ Artisan::command('test-broadcast', function(){
 Artisan::command('setup', function(){
    Artisan::call('import-countries-images');
    Artisan::call('import-characters-images');
-   Artisan::call('import-100-events-all-games');
+   Artisan::call('import-500-events-all-games');
 });

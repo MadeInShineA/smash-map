@@ -5,9 +5,9 @@ import Calendar from "primevue/calendar";
 import MultiSelect from "primevue/multiselect";
 import Dropdown from "primevue/dropdown";
 import InputText from "primevue/inputtext";
-import { useFiltersStore } from '../stores/FiltersStore.js'
+import { useEventFiltersStore } from '../stores/EventFiltersStore.js'
 
-const filtersStore = useFiltersStore()
+const filtersStore = useEventFiltersStore()
 
 const props = defineProps({
     sideBarVisible:Boolean

@@ -26,6 +26,9 @@ return new class extends Migration
             $table->string('color')->nullable();
             $table->foreignId('main_character_id')->constrained('characters')->restrictOnDelete();
             $table->foreignId('main_game_id')->constrained('games')->restrictOnDelete();
+            $table->boolean('distance_notifications')->default(true);
+            $table->boolean('attendees_notifications')->default(true);
+            $table->boolean('time_notifications')->default(true);
             $table->boolean('is_admin')->default(false);
             $table->boolean('is_subscribed')->default(false);
         });
