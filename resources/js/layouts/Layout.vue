@@ -109,7 +109,7 @@ const switchShowRegisterModal = function (){
 function setUser(){
     user.value = JSON.parse(window.localStorage.getItem('userData'));
     Echo.private(`notifications.` + user.value.id).listen('NotificationEvent', (e) => {
-        notificationsCount.value += 1
+        notificationsCount.value = (parseInt(notificationsCount.value) + 1).toString()
     });
 }
 

@@ -23,8 +23,6 @@ Route::get('/{page}', function () {
     return view('app');
 });
 
-Route::post('/login', [UserController::class, 'login']);
-
 Route::middleware(['auth:sanctum'])->group(function (){
     Route::post('/events/{event}/subscribe', [UserController::class, 'event_subscribe']);
     Route::post('/events/{event}/unsubscribe', [UserController::class, 'event_unsubscribe']);

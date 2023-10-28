@@ -12,3 +12,12 @@
 
 </body>
 </html>
+
+<style>
+    /*
+        Style for the google map address autocomplete
+     */
+    .pac-container{
+        z-index:10000;
+    }
+</style>

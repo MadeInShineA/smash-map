@@ -4,11 +4,10 @@ import Password from "primevue/password";
 import Button from "primevue/button";
 import InputText from "primevue/inputtext";
 import Dialog from "primevue/dialog";
-import {reactive, ref, watch} from "vue";
-import {useFiltersStore} from "../stores/FiltersStore.js";
+import {onMounted, reactive, ref, watch} from "vue";
 import Dropdown from "primevue/dropdown";
+import GoogleAddressAutocomplete from 'vue3-google-address-autocomplete'
 
-const filtersStore = useFiltersStore()
 const props = defineProps({
     darkMode: Boolean,
     showRegisterModal:Boolean
@@ -21,7 +20,10 @@ const registerUser = reactive({
     email: '',
     password: '',
     mainGame: null,
-    mainCharacter: null
+    mainCharacter: null,
+    addressName: '',
+    latitude: null,
+    longitude: null
 })
 
 const mainGameOptions = ref([
@@ -47,6 +49,23 @@ watch(() => registerUser.mainGame, async (mainGame) => {
     }
 });
 
+const RegisterUserAddressInput = ref(null)
+
+function RegisterUserAddressInputSelect(place) {
+    registerUser.latitude = place.geometry.location.lat()
+    registerUser.longitude = place.geometry.location.lng()
+}
+
+function setRegisterUserAddressNameToTheAddressInput(){
+    const addressInput = document.getElementById('register-address')
+    registerUser.addressName = addressInput.value
+}
+
+const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
+
+onMounted(function(){
+    console.log('RegisterDialog Mounted')
+})
 </script>
 
 <template>
@@ -78,6 +97,18 @@ watch(() => registerUser.mainGame, async (mainGame) => {
                 </Dropdown>
                 <Dropdown v-else-if="fetchingCharacters" loading placeholder="Main Character"></Dropdown>
                 <Dropdown v-else disabled placeholder="Main Character" ></Dropdown>
+            </div>
+            <div class="p-float-label modal-input">
+                <GoogleAddressAutocomplete
+                    :apiKey="googleMapApiKey"
+                    v-model="registerUser.addressName"
+                    @callback="RegisterUserAddressInputSelect"
+                    @keyup="setRegisterUserAddressNameToTheAddressInput"
+                    id="register-address"
+                    :class="{ 'p-filled': registerUser.addressName !== ''}"
+                    class="p-inputtext p-component"
+                />
+                <label for="register-address">Address</label>
             </div>
         </div>
         <template #footer>
