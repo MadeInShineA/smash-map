@@ -22,15 +22,19 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'username',
         'email',
         'password',
         'address_id',
-        'main',
-        'color',
         'discord',
         'twitter',
         'description',
+        'color',
+        'main_character_id',
+        'main_game_id',
+        'distance_notifications',
+        'attendees_notifications',
+        'time_notifications',
         'is_admin',
         'is_subscribed'
     ];

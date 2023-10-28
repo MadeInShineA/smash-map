@@ -57,7 +57,7 @@ window.Echo = new Echo({
             authorize(socketId, callback){
                 (axios)({
                     method: "POST",
-                    url: import.meta.env.VITE_APP_URL + "/broadcasting/auth",
+                    url: "http://127.0.0.1:8000/broadcasting/auth",
                     data: {
                         socket_id: socketId,
                         channel_name: channel.name

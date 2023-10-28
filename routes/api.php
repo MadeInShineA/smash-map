@@ -25,6 +25,7 @@ Route::get('/calendar/events', [EventController::class, 'calendar_index']);
 Route::get('/addresses', [AddressController::class, 'index']);
 Route::get('/characters', [CharacterController::class, 'index']);
 Route::post('/login', [UserController::class, 'login']);
+Route::post('/register', [UserController::class, 'register']);
 
 Route::middleware(['auth:sanctum'])->group(function (){
     Route::post('/logout', [UserController::class, 'logout']);

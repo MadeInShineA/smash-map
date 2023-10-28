@@ -14,11 +14,7 @@ return new class extends Migration
         Schema::create('addresses', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-
-            //TODO can be ignored if we don't use continents and can directly query inside contry (but is it faster like that ? 1 relation instead of 2)
-//            $table->foreignId('continent_id')->constrained('continents')->restrictOnDelete();
             $table->foreignId('country_id')->constrained('countries')->restrictOnDelete();
-            $table->foreignId('continent_id')->constrained('continents');
             $table->string('name');
             $table->float('latitude', 9, 7);
             $table->float('longitude', 10, 7);

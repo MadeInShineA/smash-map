@@ -72,26 +72,32 @@ const login = async function () {
                 <InputText id="login-username" v-model="loginUser.username" @focus="loginValidationErrors.username = []"/>
                 <label for="login-username">Username</label>
             </div>
-            <TransitionGroup name="errors">
-                <template v-for="loginUsernameError in loginValidationErrors.username" :key="loginUsernameError" class="validation-errors">
-                    <div class="validation-error">{{loginUsernameError}}</div>
-                </template>
-            </TransitionGroup>
+            <div class="validation-errors">
+                <TransitionGroup name="errors">
+                    <template v-for="loginUsernameError in loginValidationErrors.username" :key="loginUsernameError" class="validation-errors">
+                        <div class="validation-error">{{loginUsernameError}}</div>
+                    </template>
+                </TransitionGroup>
+            </div>
 
             <div class="p-float-label modal-input">
                 <Password id="login-password" v-model="loginUser.password" :feedback="false" @focus="loginValidationErrors.password = []" toggleMask/>
                 <label for="login-password">Password</label>
             </div>
-            <TransitionGroup name="errors">
-                <template v-for="loginPasswordError in loginValidationErrors.password" :key="loginPasswordError" class="validation-errors">
-                    <div class="validation-error">{{loginPasswordError}}</div>
-                </template>
-            </TransitionGroup>
-            <TransitionGroup name="errors">
-                <template v-for="loginError in loginValidationErrors.login" :key="loginError" class="validation-errors">
-                    <div class="validation-error">{{loginError}}</div>
-                </template>
-            </TransitionGroup>
+            <div class="validation-errors">
+                <TransitionGroup name="errors">
+                    <template v-for="loginPasswordError in loginValidationErrors.password" :key="loginPasswordError" class="validation-errors">
+                        <div class="validation-error">{{loginPasswordError}}</div>
+                    </template>
+                </TransitionGroup>
+            </div>
+            <div class="validation-errors">
+                <TransitionGroup name="errors">
+                    <template v-for="loginError in loginValidationErrors.login" :key="loginError" class="validation-errors">
+                        <div class="validation-error">{{loginError}}</div>
+                    </template>
+                </TransitionGroup>
+            </div>
         </div>
         <template #footer>
             <Button label="Cancel" icon="pi pi-times" @click="emit('switchShowLoginModal')" text plain/>
@@ -108,6 +114,10 @@ const login = async function () {
 .errors-enter-from,
 .errors-leave-to {
     opacity: 0;
+}
+
+.validation-errors{
+    min-height: 1em;
 }
 
 .validation-error{

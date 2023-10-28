@@ -160,11 +160,18 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
     $response = json_decode(curl_exec($ch));
 
     if (curl_errno($ch)) {
-      echo 'Error: ' . curl_error($ch);
+        echo 'Error: ' . curl_error($ch);
     }
 
-    curl_close($ch);
+//    while(!$response->data){
+//        $response = json_decode(curl_exec($ch));
+//
+//        if (curl_errno($ch)) {
+//            echo 'Error: ' . curl_error($ch);
+//        }
+//    }
 
+    curl_close($ch);
     $events = $response->data->tournaments->nodes;
 
     foreach ($events as $event){
@@ -238,9 +245,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                     $country = Country::where('code',$country_code)->first();
 
                     # Handle the Oceania case
-                    if($country){
-                        $continent = $country->continent;
-                    }else{
+                    if(!$country){
                         var_dump('Country not found : ' . $country_code . ' for event: ' . $event->name .'with start gg id: ' . $start_gg_id);
                         Log::error('Country not found : ' . $country_code . ' for event: ' . $event->name .'with start gg id: ' . $start_gg_id);
                         die();
@@ -251,7 +256,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                     if(!$address){
 
                         //FIXME Doesn't work if we add the latitude and longitude => php float vs SQL float ?
-                        $address = Address::firstOrCreate(['latitude' =>$latitude, 'longitude' =>$longitude],['name'=>$address_name, 'country_id' =>$country?->id, 'continent_id' =>$continent->id]);
+                        $address = Address::firstOrCreate(['latitude' =>$latitude, 'longitude' =>$longitude],['name'=>$address_name, 'country_id' =>$country?->id]);
                         $event_object->address_id = $address->id;
                         $event_object->save();
                     }
