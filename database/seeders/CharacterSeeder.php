@@ -392,6 +392,192 @@ class CharacterSeeder extends Seeder
                 'name' => 'Zero Suit Samus',
                 'image_link' => 'https://ssb.wiki.gallery/images/8/8e/ZeroSuitSamusHeadSSBB.png'
             ],
+
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Bowser',
+                'image_link' => 'https://ssb.wiki.gallery/images/0/05/BowserHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Captain Falcon',
+                'image_link' => 'https://ssb.wiki.gallery/images/6/61/CaptainFalconHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Diddy Kong',
+                'image_link' => 'https://ssb.wiki.gallery/images/1/1c/DiddyKongHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Donkey Kong',
+                'image_link' => 'https://ssb.wiki.gallery/images/0/0b/DonkeyKongHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Falco',
+                'image_link' => 'https://ssb.wiki.gallery/images/4/4b/FalcoHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Fox',
+                'image_link' => 'https://ssb.wiki.gallery/images/1/15/FoxHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Ganondorf',
+                'image_link' => 'https://ssb.wiki.gallery/images/8/82/GanondorfHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Ice Climbers',
+                'image_link' => 'https://ssb.wiki.gallery/images/e/e4/IceClimbersHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Ike',
+                'image_link' => 'https://ssb.wiki.gallery/images/3/32/IkeHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Jigglypuff',
+                'image_link' => 'https://ssb.wiki.gallery/images/4/4a/JigglypuffHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'King Dedede',
+                'image_link' => 'https://ssb.wiki.gallery/images/6/6b/KingDededeHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Kirby',
+                'image_link' => 'https://ssb.wiki.gallery/images/c/ca/KirbyHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Link',
+                'image_link' => 'https://ssb.wiki.gallery/images/2/28/LinkHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Lucario',
+                'image_link' => 'https://ssb.wiki.gallery/images/e/e3/LucarioHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Lucas',
+                'image_link' => 'https://ssb.wiki.gallery/images/e/e6/LucasHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Luigi',
+                'image_link' => 'https://ssb.wiki.gallery/images/a/af/LuigiHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Mario',
+                'image_link' => 'https://ssb.wiki.gallery/images/0/07/MarioHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Marth',
+                'image_link' => 'https://ssb.wiki.gallery/images/5/52/MarthHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Meta Knight',
+                'image_link' => 'https://ssb.wiki.gallery/images/f/f1/MetaKnightHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Mr. Game & Watch',
+                'image_link' => 'https://ssb.wiki.gallery/images/4/48/MrGame%26WatchHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Ness',
+                'image_link' => 'https://ssb.wiki.gallery/images/5/51/NessHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Olimar',
+                'image_link' => 'https://ssb.wiki.gallery/images/f/fd/OlimarHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Peach',
+                'image_link' => 'https://ssb.wiki.gallery/images/0/0c/PeachHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Pikachu',
+                'image_link' => 'https://ssb.wiki.gallery/images/c/ca/PikachuHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Pit',
+                'image_link' => 'https://ssb.wiki.gallery/images/c/c8/PitHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Pokémon Trainer',
+                'image_link' => 'https://ssb.wiki.gallery/images/0/01/Pok%C3%A9monTrainerHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Rob',
+                'image_link' => 'https://ssb.wiki.gallery/images/c/cb/ROBHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Samus',
+                'image_link' => 'https://ssb.wiki.gallery/images/e/ee/SamusHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Sheik',
+                'image_link' => 'https://ssb.wiki.gallery/images/2/2e/SheikHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Snake',
+                'image_link' => 'https://ssb.wiki.gallery/images/6/6b/SnakeHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Sonic',
+                'image_link' => 'https://ssb.wiki.gallery/images/4/4a/SonicHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Toon Link',
+                'image_link' => 'https://ssb.wiki.gallery/images/6/66/ToonLinkHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Wario',
+                'image_link' => 'https://ssb.wiki.gallery/images/e/e1/WarioHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Wolf',
+                'image_link' => 'https://ssb.wiki.gallery/images/6/63/WolfHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Yoshi',
+                'image_link' => 'https://ssb.wiki.gallery/images/a/ab/YoshiHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Zelda',
+                'image_link' => 'https://ssb.wiki.gallery/images/5/59/ZeldaHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_M,
+                'name' => 'Zero Suit Samus',
+                'image_link' => 'https://ssb.wiki.gallery/images/8/8e/ZeroSuitSamusHeadSSBB.png'
+            ],
             [
                 'game_id'       => GameEnum::PROJECT_M,
                 'name'          => 'Mewtwo',
@@ -401,6 +587,191 @@ class CharacterSeeder extends Seeder
                 'game_id'       => GameEnum::PROJECT_M,
                 'name'          => 'Roy',
                 'image_link'    => 'https://ssb.wiki.gallery/images/2/25/RoyHeadPM.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Bowser',
+                'image_link' => 'https://ssb.wiki.gallery/images/0/05/BowserHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Captain Falcon',
+                'image_link' => 'https://ssb.wiki.gallery/images/6/61/CaptainFalconHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Diddy Kong',
+                'image_link' => 'https://ssb.wiki.gallery/images/1/1c/DiddyKongHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Donkey Kong',
+                'image_link' => 'https://ssb.wiki.gallery/images/0/0b/DonkeyKongHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Falco',
+                'image_link' => 'https://ssb.wiki.gallery/images/4/4b/FalcoHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Fox',
+                'image_link' => 'https://ssb.wiki.gallery/images/1/15/FoxHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Ganondorf',
+                'image_link' => 'https://ssb.wiki.gallery/images/8/82/GanondorfHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Ice Climbers',
+                'image_link' => 'https://ssb.wiki.gallery/images/e/e4/IceClimbersHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Ike',
+                'image_link' => 'https://ssb.wiki.gallery/images/3/32/IkeHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Jigglypuff',
+                'image_link' => 'https://ssb.wiki.gallery/images/4/4a/JigglypuffHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'King Dedede',
+                'image_link' => 'https://ssb.wiki.gallery/images/6/6b/KingDededeHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Kirby',
+                'image_link' => 'https://ssb.wiki.gallery/images/c/ca/KirbyHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Link',
+                'image_link' => 'https://ssb.wiki.gallery/images/2/28/LinkHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Lucario',
+                'image_link' => 'https://ssb.wiki.gallery/images/e/e3/LucarioHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Lucas',
+                'image_link' => 'https://ssb.wiki.gallery/images/e/e6/LucasHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Luigi',
+                'image_link' => 'https://ssb.wiki.gallery/images/a/af/LuigiHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Mario',
+                'image_link' => 'https://ssb.wiki.gallery/images/0/07/MarioHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Marth',
+                'image_link' => 'https://ssb.wiki.gallery/images/5/52/MarthHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Meta Knight',
+                'image_link' => 'https://ssb.wiki.gallery/images/f/f1/MetaKnightHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Mr. Game & Watch',
+                'image_link' => 'https://ssb.wiki.gallery/images/4/48/MrGame%26WatchHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Ness',
+                'image_link' => 'https://ssb.wiki.gallery/images/5/51/NessHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Olimar',
+                'image_link' => 'https://ssb.wiki.gallery/images/f/fd/OlimarHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Peach',
+                'image_link' => 'https://ssb.wiki.gallery/images/0/0c/PeachHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Pikachu',
+                'image_link' => 'https://ssb.wiki.gallery/images/c/ca/PikachuHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Pit',
+                'image_link' => 'https://ssb.wiki.gallery/images/c/c8/PitHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Pokémon Trainer',
+                'image_link' => 'https://ssb.wiki.gallery/images/0/01/Pok%C3%A9monTrainerHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Rob',
+                'image_link' => 'https://ssb.wiki.gallery/images/c/cb/ROBHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Samus',
+                'image_link' => 'https://ssb.wiki.gallery/images/e/ee/SamusHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Sheik',
+                'image_link' => 'https://ssb.wiki.gallery/images/2/2e/SheikHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Snake',
+                'image_link' => 'https://ssb.wiki.gallery/images/6/6b/SnakeHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Sonic',
+                'image_link' => 'https://ssb.wiki.gallery/images/4/4a/SonicHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Toon Link',
+                'image_link' => 'https://ssb.wiki.gallery/images/6/66/ToonLinkHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Wario',
+                'image_link' => 'https://ssb.wiki.gallery/images/e/e1/WarioHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Wolf',
+                'image_link' => 'https://ssb.wiki.gallery/images/6/63/WolfHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Yoshi',
+                'image_link' => 'https://ssb.wiki.gallery/images/a/ab/YoshiHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Zelda',
+                'image_link' => 'https://ssb.wiki.gallery/images/5/59/ZeldaHeadSSBB.png'
+            ],
+            [
+                'game_id' => GameEnum::PROJECT_PLUS,
+                'name' => 'Zero Suit Samus',
+                'image_link' => 'https://ssb.wiki.gallery/images/8/8e/ZeroSuitSamusHeadSSBB.png'
             ],
             [
                 'game_id'       => GameEnum::PROJECT_PLUS,

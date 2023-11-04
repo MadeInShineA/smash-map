@@ -29,8 +29,6 @@ class UserSeeder extends Seeder
             'twitter' => 'MadeInShineA',
             'description' => 'Smash Map Developer',
             'color' => '#00FFFF',
-            'main_character_id' => 18,
-            'main_game_id' => 1,
             'is_admin' => true,
             'is_subscribed' => true,
         ]);

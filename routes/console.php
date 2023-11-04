@@ -361,6 +361,12 @@ Artisan::command('import-characters-images',function(){
         curl_setopt($curl_handle, CURLOPT_USERAGENT, 'Smash Map');
         $query = curl_exec($curl_handle);
 
+        if (curl_errno($curl_handle)) {
+            echo 'Error: ' . curl_error($curl_handle);
+            Log::error('Error: ' . curl_error($curl_handle));
+            die();
+        }
+
         curl_close($curl_handle);
 
         $image = $query;
@@ -390,6 +396,12 @@ Artisan::command('import-countries-images', function (){
         curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($curl_handle, CURLOPT_USERAGENT, 'Smash Map');
         $query = curl_exec($curl_handle);
+
+        if (curl_errno($curl_handle)) {
+            echo 'Error: ' . curl_error($curl_handle);
+            Log::error('Error: ' . curl_error($curl_handle));
+            die();
+        }
 
         $image = $query;
         $uuid = Str::uuid()->toString() . '.png';

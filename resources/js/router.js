@@ -8,6 +8,7 @@ import CreateEvent from "./views/CreateEvent.vue";
 import Login from "./views/Login.vue";
 import DefaultLayout from "./layouts/Layout.vue";
 import Notifications from "./views/Notifications.vue";
+import Settings from "./views/Settings.vue";
 
 const routes = [
     {
@@ -39,6 +40,11 @@ const routes = [
                 component: Login
             },
             {
+                path: 'settings',
+                component: Settings
+
+            },
+            {
                 path: 'notifications',
                 component: Notifications
             },
@@ -51,6 +57,7 @@ const routes = [
 
     },
 ]
+
 
 export const router = createRouter({
     history: createWebHistory(''),

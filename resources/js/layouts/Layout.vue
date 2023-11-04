@@ -122,8 +122,13 @@ const toggleProfileMenu = function(event) {
 const profileItems = ref([{
     label: 'Account',
     items: [
-        {label: 'Profile', icon: 'pi pi-fw pi-user'},
-        {label: 'Settings', icon: 'pi pi-fw pi-cog'},
+        {   label: 'Profile',
+            icon: 'pi pi-fw pi-user'
+        },
+        {   label: 'Settings',
+            icon: 'pi pi-fw pi-cog',
+            to: 'settings'
+        },
         {label: 'Log Out', icon: 'pi pi-sign-out', command: async function () {
                 await axios.post('/api/logout');
                 localStorage.removeItem('userData');
@@ -283,5 +288,6 @@ main{
 #moon-icon{
     color: white;
 }
+
 
 </style>

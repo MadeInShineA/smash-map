@@ -66,10 +66,10 @@ const login = async function () {
 </script>
 
 <template>
-    <Dialog class="user-modal" :visible="showLoginModal" @update:visible="emit('switchShowLoginModal')" :draggable="false" modal header="Login">
+    <Dialog id="login-modal" class="user-modal" :visible="showLoginModal" @update:visible="emit('switchShowLoginModal')" :draggable="false" modal header="Login" :style="{ width: '30vw' }" :breakpoints="{ '1200px': '50vw', '575px': '90vw' }">
         <div class="modal-inputs">
-            <div class="p-float-label modal-input">
-                <InputText id="login-username" v-model="loginUser.username" @focus="loginValidationErrors.username = []"/>
+            <div class="p-float-label modal-input-container">
+                <InputText id="login-username" class="modal-input" v-model="loginUser.username" @focus="loginValidationErrors.username = []"/>
                 <label for="login-username">Username</label>
             </div>
             <div class="validation-errors">
@@ -80,8 +80,8 @@ const login = async function () {
                 </TransitionGroup>
             </div>
 
-            <div class="p-float-label modal-input">
-                <Password id="login-password" v-model="loginUser.password" :feedback="false" @focus="loginValidationErrors.password = []" toggleMask/>
+            <div class="p-float-label modal-input-container">
+                <Password id="login-password" class="modal-input" v-model="loginUser.password" :feedback="false" @focus="loginValidationErrors.password = []" toggleMask/>
                 <label for="login-password">Password</label>
             </div>
             <div class="validation-errors">
@@ -105,6 +105,12 @@ const login = async function () {
         </template>
     </Dialog>
 </template>
+
+<style>
+#login-modal .p-dialog-title{
+    margin: auto;
+}
+</style>
 
 <style scoped>
 
@@ -132,10 +138,13 @@ const login = async function () {
     justify-content: center;
 }
 
-.modal-input{
-    margin-left: 20px;
-    margin-bottom: 10px;
-    margin-top: 10px
+.modal-input-container{
+    margin: 10px 20px;
+}
+
+.modal-input,
+.modal-input :deep(input){
+    width: 100%;
 }
 
 </style>

@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Models\Character;
 use App\Models\Game;
 use App\Models\User;
+use App\Rules\AtLeastOneCharacterPerGame;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 
@@ -30,8 +31,8 @@ class RegisterRequest extends FormRequest
             'email'                 => 'required|email:rfc,dns|max:255|unique:' . User::class . ',email',
             'password'              => 'required',
             'passwordConfirmation'  => 'required|same:password',
-            'mainGame'              => 'required|exists:' . Game::class . ',id',
-            'mainCharacter'         => 'required|exists:' .Character::class . ',id',
+            'games'                 => 'required|exists:' . Game::class . ',id',
+            'characters'            => ['required', 'exists:' .Character::class . ',id', new AtLeastOneCharacterPerGame],
             'addressName'           => 'required',
             'latitude'              => ['required','regex:/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?)$/'],
             'longitude'             => ['required','regex:/^[-]?((((1[0-7][0-9])|([0-9]?[0-9]))\.(\d+))|180(\.0+)?)$/'],

@@ -30,8 +30,6 @@ class User extends Authenticatable
         'twitter',
         'description',
         'color',
-        'main_character_id',
-        'main_game_id',
         'distance_notifications',
         'attendees_notifications',
         'time_notifications',
@@ -76,6 +74,16 @@ class User extends Authenticatable
     public function subscribed_events(): BelongsToMany
     {
         return  $this->belongsToMany(Event::class, 'relation_event_user', 'user_id', 'event_id');
+    }
+
+    public function characters(): BelongsToMany
+    {
+        return  $this->belongsToMany(Character::class, 'relation_user_character', 'user_id', 'character_id');
+    }
+
+    public function games(): BelongsToMany
+    {
+        return  $this->belongsToMany(Game::class, 'relation_user_game', 'user_id', 'game_id');
     }
     public function getProfilePictureAttribute()
     {

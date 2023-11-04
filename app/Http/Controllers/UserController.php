@@ -32,9 +32,10 @@ class UserController extends Controller
                 'email' => $request->input('email'),
                 'password' => Hash::make($request->input('password')),
                 'address_id' => $address->id,
-                'main_character_id' => $request->input('mainCharacter'),
-                'main_game_id' => $request->input('mainGame')
             ]);
+
+            $user->games()->attach($request->input('games'));
+            $user->characters()->attach($request->input('characters'));
 
             return $this->sendResponse(['user' => $user, 'token' => $user->createToken('API Token')->plainTextToken], 'You are registered and connected');
         }catch (\Error $error){
@@ -53,11 +54,20 @@ class UserController extends Controller
         return $this->sendResponse(['user' => auth::user(), 'token' => auth::user()->createToken('API Token')->plainTextToken], 'You are connected');
     }
 
-    public function logout(Request $request){
+    public function logout(Request $request):JsonResponse
+    {
         if($request->user()){
             $request->user()->currentAccessToken()->delete();
         }
         return $this->sendResponse([], 'You are disconnected');
+    }
+
+    public function is_authenticated(Request $request): JsonResponse
+    {
+        if(Auth::check()){
+            return $this->sendResponse([], 'You are authenticated');
+        }
+        return $this->sendError('You are not authenticated', [], 401);
     }
 
     public function event_subscribe(Request $request, Event $event): JsonResponse

@@ -14,10 +14,7 @@
 </html>
 
 <style>
-    /*
-        Style for the google map address autocomplete
-     */
-    .pac-container{
-        z-index:10000;
+    body{
+        font-family: Roboto, Helvetica Neue Light, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;
     }
 </style>

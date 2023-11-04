@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\GameEnum;
-use App\Http\Controllers\Controller;
+
 use App\Http\Resources\Character\CharacterResource;
 use App\Models\Character;
 use App\Models\Game;
-use Exception;
+use Error;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -16,31 +15,21 @@ class CharacterController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
-            if ($request->input('game')){
-                $game = $request->input('game');
-                $characters = Character::query();
-                switch ($game){
-                    case GameEnum::ULTIMATE:
-                    case GameEnum::BRAWL:
-                    case GameEnum::SMASH64:
-                    case GameEnum::SMASH4:
-                    case GameEnum::MELEE:
-                        $characters->where('game_id', $game);
-                        break;
-                    case GameEnum::PROJECT_M:
-                        $characters->where('game_id', GameEnum::BRAWL)->orWhere('game_id', $game);
-                        break;
-                    case GameEnum::PROJECT_PLUS:
-                        $characters->where('game_id', GameEnum::BRAWL)->orWhere('game_id', GameEnum::PROJECT_M)->orWhere('game_id', $game);
-                        break;
-                    default:
-                        return $this->sendError('Incorrect game id');
+            if ($request->input('games')){
+                $games_ids = $request->input('games');
+                $games_ids_array = explode(',', $games_ids);
+                $games = Game::whereIn('id', $games_ids_array)->orderByRaw("FIELD(id, {$games_ids})")->get();
+                $characters_array = [];
+                foreach ($games as $game){
+                    $characters = Character::where('game_id', $game->id)->orderBy('name', 'ASC')->get();
+
+                    $characters_array[] = ['game' => $game->name, 'characters'=> CharacterResource::collection($characters)];;
                 }
-                return $this->sendResponse(CharacterResource::collection($characters->orderBy('name', 'ASC')->get()), 'Characters retrieved successfully');
+                return $this->sendResponse($characters_array, 'Characters retrieved successfully');
             }
             return $this->sendResponse([], 'Characters retrieved successfully');
-        } catch (Exception $exception){
-            return $this->sendError($exception, ['An error occurred while retrieving the characters'], 500);
+        } catch (Error $error){
+            return $this->sendError($error, ['An error occurred while retrieving the characters'], 500);
         }
     }
 }
