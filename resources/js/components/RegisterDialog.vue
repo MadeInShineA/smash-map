@@ -269,16 +269,14 @@ onMounted(function(){
 
 
 <style>
-
 #register-modal .p-dialog-title{
     margin: auto;
 }
 
-// Style for the google map address autocomplete
 .pac-container{
     z-index: 10000;
-    cursor: pointer;
 }
+
 
 </style>
 

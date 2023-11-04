@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('code');
             $table->string('name');
             $table->string('timezone');
+            $table->boolean('has_api_image')->default(false);
         });
     }
 

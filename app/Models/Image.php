@@ -39,6 +39,9 @@ class Image extends Model
         }elseif ($this->parentable_type === Country::class){
             $directory = 'countries-images';
             $subdirectory = $this->parentable->name;
+        }elseif ($this->parentable_type === User::class) {
+            $directory = 'users-images';
+            $subdirectory = $this->parentable->id;
         }
         return URL::to('/storage/'. $directory . '/'. $subdirectory . '/' . $this->uuid);
     }

@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use App\Enums\ImageTypeEnum;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\Address;
 use App\Models\Country;
 use App\Models\Event;
+use App\Models\Image;
 use App\Models\User;
-use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -37,6 +39,15 @@ class UserController extends Controller
             $user->games()->attach($request->input('games'));
             $user->characters()->attach($request->input('characters'));
 
+            $profile_picture = file_get_contents('https://ui-avatars.com/api/?name=' . $user->username . '&rounded=true&length=1&background=random');
+            $uuid = Str::uuid()->toString() . '.png';
+            $profile_picture_md5 = md5($profile_picture);
+            Image::Create(['parentable_type' =>User::class, 'parentable_id' =>$user->id, 'type' =>ImageTypeEnum::USER_PROFILE, 'uuid' => $uuid, 'md5' => $profile_picture_md5]);
+
+            $user_directory_path = '/users-images/' . $user->id;
+            Storage::put($user_directory_path . '/' . $uuid, $profile_picture);
+
+
             return $this->sendResponse(['user' => $user, 'token' => $user->createToken('API Token')->plainTextToken], 'You are registered and connected');
         }catch (\Error $error){
             return $this->sendError($error, ['An error occurred while registering'], 500);
@@ -44,14 +55,18 @@ class UserController extends Controller
     }
     public function login(LoginRequest $request): JsonResponse
     {
-        if (!Auth::attempt($request->json()->all())) {
-            return $this->sendError('Unauthorized - 402E -',
-                [
-                    'login' => ['Email or password are incorrect']
-                ],
-                401);
+        try {
+            if (!Auth::attempt($request->json()->all())) {
+                return $this->sendError('Unauthorized - 402E -',
+                    [
+                        'login' => ['Email or password are incorrect']
+                    ],
+                    401);
+            }
+            return $this->sendResponse(['user' => auth::user(), 'token' => auth::user()->createToken('API Token')->plainTextToken], 'You are connected');
+        }catch (\Error $error) {
+            return $this->sendError($error, ['login' => ['An error occurred while logging in please contact the administration  - 500E -']], 500);
         }
-        return $this->sendResponse(['user' => auth::user(), 'token' => auth::user()->createToken('API Token')->plainTextToken], 'You are connected');
     }
 
     public function logout(Request $request):JsonResponse

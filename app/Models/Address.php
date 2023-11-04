@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ImageTypeEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -50,7 +51,7 @@ class Address extends Model
             }
         }elseif (sizeof($events) === 0 && sizeof($users) === 1){
             $user = $users[0];
-            return $user->character->image->url;
+            return $user->profile_picture;
         }else{
             #TODO Add the image when there are address and users or several users
             return  '';

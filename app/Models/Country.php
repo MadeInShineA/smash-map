@@ -14,7 +14,12 @@ class Country extends Model
     use HasFactory;
 
     protected $fillable =[
-        'hex'
+        'continent_id',
+        'name',
+        'code',
+        'timezone',
+        'has_api_image'
+
     ];
 
     public function image(): MorphOne

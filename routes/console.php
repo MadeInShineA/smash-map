@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\GameEnum;
+use App\Enums\ImageTypeEnum;
 use App\Models\Address;
 use App\Models\Character;
 use App\Models\Country;
@@ -276,20 +277,9 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                 foreach ($images as $image) {
 
                     $uuid = Str::uuid()->toString() . '.jpg';
+                    $image_type = $image->type == 'profile'? ImageTypeEnum::EVENT_PROFILE : ImageTypeEnum::EVENT_BANNER;
 
-                    $image_type = $image->type;
-                    $curl_handle=curl_init();
-                    curl_setopt($curl_handle, CURLOPT_URL,$image->url);
-                    curl_setopt($curl_handle, CURLOPT_SSL_VERIFYPEER, false);
-                    curl_setopt($curl_handle, CURLOPT_CONNECTTIMEOUT, 2);
-                    curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
-                    curl_setopt($curl_handle, CURLOPT_USERAGENT, 'Smash Map');
-                    $query = curl_exec($curl_handle);
-
-                    curl_close($curl_handle);
-
-                    $image = $query;
-
+                    $image = file_get_contents($image->url);
                     $image_md5 = md5($image);
                 #TODO Delete the unused images (inside event_db_md5s but not in event_md5s)
 
@@ -353,27 +343,12 @@ Artisan::command('import-characters-images',function(){
     $characters = Character::all();
 
     foreach ($characters as $character){
-        $curl_handle=curl_init();
-        curl_setopt($curl_handle, CURLOPT_URL,$character->image_link);
-        curl_setopt($curl_handle, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curl_handle, CURLOPT_CONNECTTIMEOUT, 2);
-        curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl_handle, CURLOPT_USERAGENT, 'Smash Map');
-        $query = curl_exec($curl_handle);
 
-        if (curl_errno($curl_handle)) {
-            echo 'Error: ' . curl_error($curl_handle);
-            Log::error('Error: ' . curl_error($curl_handle));
-            die();
-        }
-
-        curl_close($curl_handle);
-
-        $image = $query;
+        $image = file_get_contents($character->image_link);
         $uuid = Str::uuid()->toString() . '.png';
         $image_md5 = md5($image);
 
-        Image::Create(['parentable_type' =>Character::class, 'parentable_id' =>$character->id, 'type' =>'character', 'uuid' => $uuid, 'md5' => $image_md5]);
+        Image::Create(['parentable_type' =>Character::class, 'parentable_id' =>$character->id, 'type' => ImageTypeEnum::ICON, 'uuid' => $uuid, 'md5' => $image_md5]);
 
         $game_slug = $character->game->slug;
         $character_directory_path = '/characters-images/' . $game_slug . '/' . $character->name;
@@ -384,31 +359,17 @@ Artisan::command('import-characters-images',function(){
 
 ##TODO Add the image for Frencch Guiana
 Artisan::command('import-countries-images', function (){
-    $countries = Country::all();
+    $countries = Country::where('has_api_image', true)->get();
 
     foreach ($countries as $country){
 
         $url = 'https://flagsapi.com/' . $country->code .'/flat/64.png';
-        $curl_handle=curl_init();
-        curl_setopt($curl_handle, CURLOPT_URL,$url);
-        curl_setopt($curl_handle, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curl_handle, CURLOPT_CONNECTTIMEOUT, 2);
-        curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl_handle, CURLOPT_USERAGENT, 'Smash Map');
-        $query = curl_exec($curl_handle);
 
-        if (curl_errno($curl_handle)) {
-            echo 'Error: ' . curl_error($curl_handle);
-            Log::error('Error: ' . curl_error($curl_handle));
-            die();
-        }
-
-        $image = $query;
+        $image = file_get_contents($url);
         $uuid = Str::uuid()->toString() . '.png';
         $image_md5 = md5($image);
-        curl_close($curl_handle);
 
-        Image::Create(['parentable_type' =>Country::class, 'parentable_id' =>$country->id, 'type' =>'country', 'uuid' => $uuid, 'md5' => $image_md5]);
+        Image::Create(['parentable_type' =>Country::class, 'parentable_id' =>$country->id, 'type' => ImageTypeEnum::ICON, 'uuid' => $uuid, 'md5' => $image_md5]);
 
         $character_directory_path = '/countries-images/' . $country->name;
         Storage::put($character_directory_path . '/' . $uuid, $image);

@@ -59,13 +59,13 @@ const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
             </CustomControl>
             <FilterSidebar :sideBarVisible="sideBarVisible" @switchSideBarVisible="switchSideBarVisible"></FilterSidebar>
             <MarkerCluster>
-                <Marker v-for="(address, i) in addresses.data" @click="clickMarkerEvent" :options="{position: address.position, icon: {url: address.icon,  scaledSize: { width: 20, height: 20 }}}">
+                <Marker v-for="(address, i) in addresses.data" @click="clickMarkerEvent" :options="{position: address.position, icon: {url: address.icon,  scaledSize: { width: 25, height: 25 }}}">
 <!--                <Marker v-for="(address, i) in addresses.data" @click="clickMarkerEvent" :options="{position: address.position, icon: {url: 'https://w7.pngwing.com/pngs/107/759/png-transparent-circle-white-circle-white-monochrome-black-thumbnail.png',  scaledSize: { width: 20, height: 20 }}}">-->
                     <InfoWindow :ref="(el) => (infoWindows[i] = el)" class="info-window">
-                        <template v-if="address.players">
-                            <h3 class="category-holder">Players</h3>
+                        <template v-if="address.users.length > 0">
+                            <h3 class="category-holder">Users</h3>
                         </template>
-                        <template v-if="address.events">
+                        <template v-if="address.events.length > 0">
                             <h3 class="category-holder">Events</h3>
                             <template v-for="event in address.events">
                                 <div class="event-image-container">

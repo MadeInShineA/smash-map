@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\ImageTypeEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -47,8 +48,9 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    //TODO Add the profile picture url inside the data returned by login / register
     protected $appends = [
-        'profile_picture'
+//        'profile_picture'
     ];
 
     /**
@@ -85,8 +87,9 @@ class User extends Authenticatable
     {
         return  $this->belongsToMany(Game::class, 'relation_user_game', 'user_id', 'game_id');
     }
-    public function getProfilePictureAttribute()
+    public function getProfilePictureAttribute(): string
     {
-        return $this->morphMany(Image::class, 'parentable')->where('type', 'profile')->first()?->url_attribute();
+        return $this->images->where('type', ImageTypeEnum::USER_PROFILE)->first()->url;
+
     }
 }
