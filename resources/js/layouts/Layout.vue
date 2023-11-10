@@ -160,8 +160,8 @@ const profileItems = ref([{
                     <Button @click="showRegisterModal = true" icon="pi pi-save" text plain label="Register"/>
                 </template>
                 <template v-else>
-                    <Button id="profile-avatar-button" plain text @click="toggleProfileMenu">
-                        <Avatar :image="user.profile_picture" :label="user.username[0]" shape="circle"  />
+                    <Button id="profile-avatar-button" plain text rounded @click="toggleProfileMenu">
+                        <Avatar :image="user.profile_picture" shape="circle"  />
                     </Button>
                     <Menu :model="profileItems" :popup="true" ref="profileMenu"></Menu>
                     <router-link to="/notifications">
@@ -186,7 +186,7 @@ const profileItems = ref([{
                         <Button plain text icon="pi pi-bell" label="Notifications" :badge="notificationsCount" badgeClass="p-badge-success"/>
                     </router-link>
                     <Button id="profile-avatar-button" plain text rounded @click="toggleProfileMenu">
-                        <Avatar :image="user.profile_picture" :label="user.username[0]" shape="circle"  />
+                        <Avatar :image="user.profile_picture" shape="circle"  />
                     </Button>
                     <Menu :model="profileItems" :popup="true" ref="profileMenu"></Menu>
                 </template>
