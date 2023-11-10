@@ -10,7 +10,9 @@ class MapUserResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-           'username'   => $this->username,
+            'username'          => $this->username,
+            'profilePicture'    => $this->profile_picture,
+            'games'             => $this->games_characters_array
         ];
     }
 }

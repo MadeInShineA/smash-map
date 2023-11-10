@@ -4,10 +4,10 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\ImageTypeEnum;
+use App\Http\Resources\Character\CharacterResource;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -50,7 +50,7 @@ class User extends Authenticatable
 
     //TODO Add the profile picture url inside the data returned by login / register
     protected $appends = [
-//        'profile_picture'
+        'profile_picture'
     ];
 
     /**
@@ -89,7 +89,22 @@ class User extends Authenticatable
     }
     public function getProfilePictureAttribute(): string
     {
-        return $this->images->where('type', ImageTypeEnum::USER_PROFILE)->first()->url;
+        $user = User::where('id', $this->id)->first();
+        return $user->images->where('type', ImageTypeEnum::USER_PROFILE)->first()->url;
+    }
 
+    public function getGamesCharactersArrayAttribute(): array
+    {
+        $games = $this->games;
+        $event_games_array = [];
+        foreach ($games as $game) {
+            $event_games_array[$game->name] = [
+                'name' => $game->name,
+                'color' => $game->color,
+                'characters' => CharacterResource::collection($this->characters()->where('game_id', $game->id)->get())
+            ];
+
+        }
+        return $event_games_array;
     }
 }
