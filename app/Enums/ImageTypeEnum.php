@@ -4,10 +4,10 @@ namespace App\Enums;
 
 enum ImageTypeEnum
 {
-    const ICON = 1;
-    const EVENT_PROFILE = 2;
-    const EVENT_BANNER = 3;
-    const USER_PROFILE = 4;
-    const USER_BANNER = 5;
+    const ICON = 'icon';
+    const EVENT_PROFILE = 'event-profile';
+    const EVENT_BANNER = 'event-banner';
+    const USER_PROFILE = 'user-profile';
+    const USER_BANNER = 'user-banner';
 
 }

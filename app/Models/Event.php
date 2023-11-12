@@ -44,7 +44,7 @@ class Event extends Model
 
     public function images(): MorphMany
     {
-        return $this->morphMany(Image::class, 'parentable')->orderByRaw("FIELD(type ,". ImageTypeEnum::EVENT_PROFILE . ", " . ImageTypeEnum::EVENT_BANNER . ") ASC");
+        return $this->morphMany(Image::class, 'parentable')->orderByRaw("FIELD(type ,'".ImageTypeEnum::EVENT_PROFILE . "', '" . ImageTypeEnum::EVENT_BANNER . "') ASC");
     }
 
     public function notifications(): BelongsTo

@@ -275,7 +275,6 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                 $images = $event->images;
 
                 foreach ($images as $image) {
-
                     $uuid = Str::uuid()->toString() . '.jpg';
                     $image_type = $image->type == 'profile'? ImageTypeEnum::EVENT_PROFILE : ImageTypeEnum::EVENT_BANNER;
 
