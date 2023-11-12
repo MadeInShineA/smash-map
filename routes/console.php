@@ -52,11 +52,11 @@ Artisan::command('delete-events', function(){
                 $image->delete();
             }
             #TODO Is there a better way to do it ?
-            if (file_exists($base_directory_path . '/banner')){
-                rmdir($base_directory_path . '/banner');
+            if (file_exists($base_directory_path . '/' . ImageTypeEnum::EVENT_PROFILE)){
+                rmdir($base_directory_path . '/' . ImageTypeEnum::EVENT_PROFILE);
             }
-            if (file_exists($base_directory_path . '/profile')){
-                rmdir($base_directory_path . '/profile');
+            if (file_exists($base_directory_path . '/' . ImageTypeEnum::EVENT_BANNER)){
+                rmdir($base_directory_path . '/' . ImageTypeEnum::EVENT_BANNER);
             }
             if (file_exists($base_directory_path)){
                 rmdir($base_directory_path);

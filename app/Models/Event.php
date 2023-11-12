@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ImageTypeEnum;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -43,7 +44,7 @@ class Event extends Model
 
     public function images(): MorphMany
     {
-        return $this->morphMany(Image::class, 'parentable')->orderByRaw("FIELD(type , 'profile', 'banner') ASC");
+        return $this->morphMany(Image::class, 'parentable')->orderByRaw("FIELD(type ,". ImageTypeEnum::EVENT_PROFILE . ", " . ImageTypeEnum::EVENT_BANNER . ") ASC");
     }
 
     public function notifications(): BelongsTo
