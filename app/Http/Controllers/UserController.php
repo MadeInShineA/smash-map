@@ -30,22 +30,21 @@ class UserController extends Controller
                     'country_id' =>$country->id
                 ]);
             $user = User::create([
-                'username'=> $request->input('username'),
-                'email' => $request->input('email'),
-                'password' => Hash::make($request->input('password')),
-                'address_id' => $address->id,
+                'uuid'          => Str::uuid()->toString(),
+                'username'      => $request->input('username'),
+                'email'         => $request->input('email'),
+                'password'      => Hash::make($request->input('password')),
+                'address_id'    => $address->id,
             ]);
 
             $user->games()->attach($request->input('games'));
             $user->characters()->attach($request->input('characters'));
 
             $profile_picture = file_get_contents('https://ui-avatars.com/api/?name=' . $user->username . '&rounded=true&length=1&background=random');
-            $uuid = Str::uuid()->toString() . '.png';
-            $profile_picture_md5 = md5($profile_picture);
-            Image::Create(['parentable_type' =>User::class, 'parentable_id' =>$user->id, 'type' =>ImageTypeEnum::USER_PROFILE, 'uuid' => $uuid, 'md5' => $profile_picture_md5]);
+            Image::Create(['parentable_type' =>User::class, 'parentable_id' =>$user->id, 'type' =>ImageTypeEnum::USER_PROFILE]);
 
-            $user_directory_path = '/users-images/' . $user->id;
-            Storage::put($user_directory_path . '/' . $uuid, $profile_picture);
+            $user_directory_path = '/users-images/' . $user->uuid;
+            Storage::put($user_directory_path . '/' . ImageTypeEnum::USER_PROFILE . '.png', $profile_picture);
 
 
             return $this->sendResponse(['user' => $user, 'token' => $user->createToken('API Token')->plainTextToken], 'You are registered and connected');

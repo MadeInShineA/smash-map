@@ -45,10 +45,10 @@ Artisan::command('delete-events', function(){
     foreach ($events as $event){
         if ($event->end_date_time < $current_time){
             $images = $event->images;
-            $base_directory_path = base_path(). '/storage/app/public/events-images/event-' . $event->id;
+            $base_directory_path = base_path(). '/storage/app/public/events-images/' . Str::slug($event->name);
             foreach ($images as $image) {
-                $image_directory_path = $base_directory_path . '/' . $image->type;
-                unlink($image_directory_path . '/' . $image->uuid);
+                $image_directory_path = $base_directory_path . '/' . $image->type .'.png';
+                unlink($image_directory_path);
                 $image->delete();
             }
             #TODO Is there a better way to do it ?
@@ -263,7 +263,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                     }
                 }
 
-                $event_directory_path = '/events-images/event-' . $event_object->id;
+                $event_directory_path = '/events-images/' . Str::slug($event->name);
 
                 $event_db_md5s = $event_object->images->pluck('md5')->toArray();
 
@@ -275,7 +275,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                 $images = $event->images;
 
                 foreach ($images as $image) {
-                    $uuid = Str::uuid()->toString() . '.jpg';
+                    $filename = $image->type == 'profile' ? ImageTypeEnum::EVENT_PROFILE : ImageTypeEnum::EVENT_BANNER;
                     $image_type = $image->type == 'profile'? ImageTypeEnum::EVENT_PROFILE : ImageTypeEnum::EVENT_BANNER;
 
                     $image = file_get_contents($image->url);
@@ -285,8 +285,8 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
 //                $event_md5s[] = $image_md5;
 
                     if (!in_array($image_md5, $event_db_md5s)) {
-                        Storage::put($event_directory_path . '/' . $image_type . '/' . $uuid, $image);
-                        Image::Create(['parentable_type' =>Event::class, 'parentable_id' =>$event_object->id, 'type' =>$image_type, 'uuid' => $uuid, 'md5' => $image_md5]);
+                        Storage::put($event_directory_path . '/' . $image_type . '.png', $image);
+                        Image::Create(['parentable_type' =>Event::class, 'parentable_id' =>$event_object->id, 'type' =>$image_type,'md5' => $image_md5]);
                         var_dump('Images for:' . $event->name . ' created');
                     }
                 }
@@ -342,16 +342,7 @@ Artisan::command('import-characters-images',function(){
     $characters = Character::all();
 
     foreach ($characters as $character){
-
-        $image = file_get_contents($character->image_link);
-        $uuid = Str::uuid()->toString() . '.png';
-        $image_md5 = md5($image);
-
-        Image::Create(['parentable_type' =>Character::class, 'parentable_id' =>$character->id, 'type' => ImageTypeEnum::ICON, 'uuid' => $uuid, 'md5' => $image_md5]);
-
-        $game_slug = $character->game->slug;
-        $character_directory_path = '/characters-images/' . $game_slug . '/' . $character->name;
-        Storage::put($character_directory_path . '/' . $uuid, $image);
+        Image::Create(['parentable_type' =>Character::class, 'parentable_id' =>$character->id, 'type' => ImageTypeEnum::ICON]);
         var_dump('Image for: ' . $character->name . ' created');
     }
 });
@@ -361,17 +352,7 @@ Artisan::command('import-countries-images', function (){
     $countries = Country::where('has_api_image', true)->get();
 
     foreach ($countries as $country){
-
-        $url = 'https://flagsapi.com/' . $country->code .'/flat/64.png';
-
-        $image = file_get_contents($url);
-        $uuid = Str::uuid()->toString() . '.png';
-        $image_md5 = md5($image);
-
-        Image::Create(['parentable_type' =>Country::class, 'parentable_id' =>$country->id, 'type' => ImageTypeEnum::ICON, 'uuid' => $uuid, 'md5' => $image_md5]);
-
-        $character_directory_path = '/countries-images/' . $country->name;
-        Storage::put($character_directory_path . '/' . $uuid, $image);
+        Image::Create(['parentable_type' =>Country::class, 'parentable_id' =>$country->id, 'type' => ImageTypeEnum::ICON]);
         var_dump('Image for: ' . $country->name . ' created');
     }
 

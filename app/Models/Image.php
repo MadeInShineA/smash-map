@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 
 class Image extends Model
 {
@@ -30,19 +31,14 @@ class Image extends Model
 
     public function getUrlAttribute(){
         if($this->parentable_type === Event::class){
-            $directory = 'events-images';
-            $subdirectory = 'event-' . $this->parentable->id;
-            return URL::to( '/storage/'. $directory . '/'. $subdirectory . '/' . $this->type . '/' . $this->uuid);
+            $directory_path = '/storage/events-images/' . Str::slug($this->parentable->name) . '/' . $this->type . '.png';
         }elseif($this->parentable_type === Character::class){
-            $directory = 'characters-images';
-            $subdirectory = $this->parentable->game->slug . '/' . $this->parentable->name;
+            $directory_path = '/storage/characters-images/' . $this->parentable->game->slug . '/' . Str::slug($this->parentable->name) . '.png';
         }elseif ($this->parentable_type === Country::class){
-            $directory = 'countries-images';
-            $subdirectory = $this->parentable->name;
+            $directory_path = '/storage/countries-images/' . $this->parentable->code . '.png';
         }elseif ($this->parentable_type === User::class) {
-            $directory = 'users-images';
-            $subdirectory = $this->parentable->id;
+            $directory_path = '/storage/users-images/' . $this->parentable->uuid . '/' . $this->type . '.png';
         }
-        return URL::to('/storage/'. $directory . '/'. $subdirectory . '/' . $this->uuid);
+        return URL::to(urlencode($directory_path));
     }
 }
