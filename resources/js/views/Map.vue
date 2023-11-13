@@ -59,11 +59,29 @@ const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
             </CustomControl>
             <FilterSidebar :sideBarVisible="sideBarVisible" @switchSideBarVisible="switchSideBarVisible"></FilterSidebar>
             <MarkerCluster>
-                <Marker v-for="(address, i) in addresses.data" @click="clickMarkerEvent" :options="{position: address.position, icon: {url: address.icon,  scaledSize: { width: 25, height: 25 }}}">
+                <Marker v-for="(address, i) in addresses.data" @click="clickMarkerEvent" :options="{position: address.position, icon: {url: address.icon,  scaledSize: { width: 30, height: 30 }}}">
 <!--                <Marker v-for="(address, i) in addresses.data" @click="clickMarkerEvent" :options="{position: address.position, icon: {url: 'https://w7.pngwing.com/pngs/107/759/png-transparent-circle-white-circle-white-monochrome-black-thumbnail.png',  scaledSize: { width: 20, height: 20 }}}">-->
                     <InfoWindow :ref="(el) => (infoWindows[i] = el)" class="info-window">
                         <template v-if="address.users.length > 0">
                             <h3 class="category-holder">Users</h3>
+                            <template v-for="user in address.users">
+                                <div class = user-image-container>
+                                    <img :src="user.profilePicture"  alt="User Image">
+                                </div>
+                                <div class="user-username">
+                                    {{ user.username }}
+                                </div>
+                                <div class="user-games-characters">
+                                    <template v-for="game in user.games">
+                                        <div class="user-game-tag">
+                                            <Tag :value="game.name" rounded :style="{background: game.color, marginRight: '5px'}"></Tag>
+                                        </div>
+                                        <template v-for="character in game.characters">
+                                            <img class="user-character-image" :alt="character.name" :src="character.image.url" width="20" />
+                                        </template>
+                                    </template>
+                                </div>
+                            </template>
                         </template>
                         <template v-if="address.events.length > 0">
                             <h3 class="category-holder">Events</h3>
@@ -133,9 +151,6 @@ const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
 
 <style>
 
-/*
-    TODO Add :deep
- */
 .dark .gm-style-iw-d{
     color: black;
 }
@@ -196,7 +211,8 @@ const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
     height: 80px;
 }
 
-.dark .category-holder{
+.dark .category-holder,
+.dark .user-username{
     color: white;
 }
 
@@ -218,6 +234,24 @@ const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
     margin-top: 10px;
     margin-bottom: 10px;
 }
+
+.user-username{
+    margin-top: 5px
+}
+
+.user-games-characters{
+    padding: 10px;
+}
+
+.user-game-tag{
+    margin:10px;
+}
+
+.user-character-image {
+    margin: 5px;
+}
+
+
 
 
 

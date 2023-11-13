@@ -45,16 +45,21 @@ class Address extends Model
         if(sizeof($users) === 0 ){
             $event_games = $this->events->pluck('game.slug')->unique()->toArray();
             if (sizeof($event_games) == 1){
-                return URL::to('/storage/map-icons/' . $event_games[0] . '-map-icon.png');
+                return URL::to('/storage/map-icons/' . $event_games[0] . '.png');
             }else{
-                return URL::to('/storage/map-icons/multi-events-map-icon.png');
+                return URL::to('/storage/map-icons/events.png');
             }
         }elseif (sizeof($events) === 0 && sizeof($users) === 1){
             $user = $users[0];
             return $user->profile_picture;
+        }elseif(sizeof($events) === 0){
+            return URL::to('/storage/map-icons/users.svg');
+        }elseif (sizeof($users) === 1){
+            $event_games = $this->events->pluck('game.slug')->unique()->toArray();
+            return URL::to('/storage/map-icons/' . $event_games[0] . '-user.png');
         }else{
-            #TODO Add the image when there are address and users or several users
-            return  '';
+            $event_games = $this->events->pluck('game.slug')->unique()->toArray();
+            return URL::to('/storage/map-icons/' . $event_games[0] . '-users.png');
         }
     }
 }
