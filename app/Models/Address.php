@@ -37,6 +37,8 @@ class Address extends Model
     {
         return $this->belongsTo(Country::class);
     }
+
+    //TODO Fix the icon size (invisible border)
     public function getIconAttribute(): string
     {
         $users = $this->users()->get();

@@ -31,8 +31,15 @@ const infoWindows = ref([]);
 
 const closeInfoWindows = (i) => { infoWindows.value.forEach((ref, index) => { if (index !== i) { ref.infoWindow.close(); } }); };
 
-const clickMarkerEvent = (i) => { closeInfoWindows(i); };
-
+//TODO Fix the Zooming on marker click
+function clickMarkerEvent(i) {
+    // console.log(zoom.value)
+    // if(zoom.value < 6){
+    //     console.log('Zooming')
+    //     zoom.value = 8;
+    // }
+    closeInfoWindows(i);
+}
 const { data: addresses, isFinished: addressesFetched, execute: fetchAddresses } = useAxios('/api/addresses')
 
 const legendsVisible = ref(false)
@@ -44,7 +51,7 @@ onMounted(()=>{
        center.value = {lat: position.coords.latitude, lng: position.coords.longitude};
        zoom.value = 10;
       })
-    };
+    }
 })
 
 const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
@@ -60,7 +67,6 @@ const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
             <FilterSidebar :sideBarVisible="sideBarVisible" @switchSideBarVisible="switchSideBarVisible"></FilterSidebar>
             <MarkerCluster>
                 <Marker v-for="(address, i) in addresses.data" @click="clickMarkerEvent" :options="{position: address.position, icon: {url: address.icon,  scaledSize: { width: 30, height: 30 }}}">
-<!--                <Marker v-for="(address, i) in addresses.data" @click="clickMarkerEvent" :options="{position: address.position, icon: {url: 'https://w7.pngwing.com/pngs/107/759/png-transparent-circle-white-circle-white-monochrome-black-thumbnail.png',  scaledSize: { width: 20, height: 20 }}}">-->
                     <InfoWindow :ref="(el) => (infoWindows[i] = el)" class="info-window">
                         <template v-if="address.users.length > 0">
                             <h3 class="category-holder">Users</h3>

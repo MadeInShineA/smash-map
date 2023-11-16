@@ -27,6 +27,6 @@ class CountryController extends Controller
             }
         }
 
-        return $this->sendResponse(CountryFilterResource::collection($countries->get()), 'Countries retrieved with success');
+        return $this->sendResponse(CountryFilterResource::collection($countries->orderBy('name', 'ASC')->get()), 'Countries retrieved with success');
     }
 }

@@ -38,7 +38,7 @@ const emit = defineEmits(['switchSideBarVisible'])
                 <MultiSelect v-if="filtersStore.countriesFetched" v-model="filtersStore.selectedEventCountries" :options="filtersStore.eventCountryOptions.data" filter display="chip" :disabled="filtersStore.selectedEventTypes.value === 'online'" :maxSelectedLabels="2" optionLabel="name" placeholder="Select Countries">
                     <template #option="slotProps">
                         <div class="country-flag">
-                            <img :alt="''" :src="slotProps.option.image.url" class="country-flag-image" />
+                            <img v-if="slotProps.option.image" :alt="slotProps.option.name + '-image'" :src="slotProps.option.image.url" class="country-flag-image" />
                             <div>{{ slotProps.option.name }}</div>
                         </div>
                     </template>
