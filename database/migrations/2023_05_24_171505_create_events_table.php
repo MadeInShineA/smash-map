@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('events', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreignId('game_id')->constrained('games');
+            $table->foreignId('game_id')->constrained('games')->cascadeOnDelete();
             $table->foreignId('address_id')->nullable()->constrained('addresses');
             $table->integer('start_gg_id');
             $table->dateTime('start_gg_updated_at');
