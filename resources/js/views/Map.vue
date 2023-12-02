@@ -31,18 +31,29 @@ const switchSideBarVisible = function (){
 const center = ref({ lat: 40.713956, lng: -38.716136 });
 const zoom = ref(4);
 const infoWindows = ref([]);
+const mapRef = ref(null);
 
-//TODO Fix the ref undefined then we filter the addresses
+//TODO Understand why this watch works but not this one
+// watch(addressStore.addressesFetched, function([addresses, oldAddresses]){
+//     console.log('Addresses changed')
+// })
+
+
+
 const closeInfoWindows = (i) => { infoWindows.value.forEach((ref, index) => { if (index !== i) { ref.infoWindow.close(); } }); };
 
+
+
 //TODO Fix the Zooming on marker click
+
+
 function clickMarkerEvent(i) {
     // console.log(zoom.value)
     // if(zoom.value < 6){
     //     console.log('Zooming')
     //     zoom.value = 8;
-    // }
     closeInfoWindows(i);
+
 }
 
 const legendsVisible = ref(false)
@@ -55,6 +66,13 @@ onMounted(()=>{
        zoom.value = 10;
       })
     }
+    watch(() => addressStore.addressesFetched, () => {
+        infoWindows.value = [];
+        if (mapRef.value) {
+            center.value = mapRef.value.map.getCenter()
+            zoom.value = mapRef.value.map.getZoom()
+        }
+    });
 })
 
 const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
@@ -62,12 +80,12 @@ const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
 </script>
 
 <template>
+    <AddressFilterSidebar :sideBarVisible="sideBarVisible" @switchSideBarVisible="switchSideBarVisible"></AddressFilterSidebar>
     <template v-if="addressStore.addressesFetched">
-        <GoogleMap :api-key="googleMapApiKey" style="width: 100%; height: 100%" :center="center" :zoom="zoom" :min-zoom="4" @click="closeInfoWindows">
+        <GoogleMap ref="mapRef" :api-key="googleMapApiKey" style="width: 100%; height: 100%" :center="center" :zoom="zoom" :min-zoom="4" @click="closeInfoWindows">
             <CustomControl :position="responsiveMenuDisplayed ? 'LEFT_TOP' : 'TOP_CENTER'">
                 <Button class="map-button" @click="sideBarVisible = true" icon="pi pi-filter" text rounded outlined label="Filters"/>
             </CustomControl>
-            <AddressFilterSidebar :sideBarVisible="sideBarVisible" @switchSideBarVisible="switchSideBarVisible"></AddressFilterSidebar>
             <MarkerCluster>
                 <Marker v-for="(address, i) in addressStore.addresses.data" @click="clickMarkerEvent" :options="{position: address.position, icon: {url: address.icon,  scaledSize: { width: 30, height: 30 }}}">
                     <InfoWindow :ref="(el) => (infoWindows[i] = el)" class="info-window">
