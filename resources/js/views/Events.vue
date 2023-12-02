@@ -13,7 +13,7 @@ import Chip from "primevue/chip";
 import Tag from "primevue/tag";
 import {useEventFiltersStore} from "../stores/EventFiltersStore.js";
 import {useEventsStore} from "../stores/EventsStore.js";
-import FilterSidebar from "@/components/FilterSidebar.vue";
+import EventFilterSidebar from "@/components/EventFilterSidebar.vue";
 
 
 const eventsFiltersStore = useEventFiltersStore()
@@ -77,11 +77,11 @@ onMounted(()=>{
 <template>
     <div id="event-filters-container">
         <div class="event-filter">
-            <Dropdown v-model="eventsFiltersStore.selectedOrderBy" :options="orderByOptions" optionLabel="name" placeholder="Sort by ID"/>
+            <Dropdown v-model="eventsFiltersStore.selectedOrderBy" :options="orderByOptions" optionLabel="name" optionValue="value" placeholder="Sort by ID"/>
         </div>
         <Button id="filters-button" @click="sideBarVisible = true" icon="pi pi-filter" text rounded outlined plain label="Filters"/>
     </div>
-    <FilterSidebar :sideBarVisible="sideBarVisible" @switchSideBarVisible="switchSideBarVisible"></FilterSidebar>
+    <EventFilterSidebar :sideBarVisible="sideBarVisible" @switchSideBarVisible="switchSideBarVisible"></EventFilterSidebar>
     <template v-if="eventsFiltersStore.countriesFetched && eventsStore.eventsFetched">
         <h1 id="events-total">{{eventsStore.events.meta.total}} Events</h1>
         <template v-if="eventsStore.events.data.length > 0">

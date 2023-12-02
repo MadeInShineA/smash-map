@@ -4,19 +4,22 @@ export default { name:'map'}
 
 <script setup>
 import {GoogleMap, CustomControl, Marker, MarkerCluster, InfoWindow} from "vue3-google-map";
-import {onMounted, ref} from "vue";
-import FilterSidebar from "@/components/FilterSidebar.vue";
+import {onMounted, ref, watch} from "vue";
+import AddressFilterSidebar from "@/components/AddressFilterSidebar.vue";
 import Button from "primevue/button";
 import {useAxios} from "@vueuse/integrations/useAxios";
 import LoaderComponent from "@/components/LoaderComponent.vue";
 import Sidebar from "primevue/sidebar";
 import Chip from "primevue/chip";
 import Tag from "primevue/tag";
+import { useAddressesStore } from '../stores/AddressesStore.js'
 
 const props = defineProps({
     user: Object,
     responsiveMenuDisplayed: Boolean
 })
+
+const addressStore = useAddressesStore()
 
 
 const sideBarVisible = ref(false)
@@ -29,6 +32,7 @@ const center = ref({ lat: 40.713956, lng: -38.716136 });
 const zoom = ref(4);
 const infoWindows = ref([]);
 
+//TODO Fix the ref undefined then we filter the addresses
 const closeInfoWindows = (i) => { infoWindows.value.forEach((ref, index) => { if (index !== i) { ref.infoWindow.close(); } }); };
 
 //TODO Fix the Zooming on marker click
@@ -40,7 +44,6 @@ function clickMarkerEvent(i) {
     // }
     closeInfoWindows(i);
 }
-const { data: addresses, isFinished: addressesFetched, execute: fetchAddresses } = useAxios('/api/addresses')
 
 const legendsVisible = ref(false)
 
@@ -59,14 +62,14 @@ const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
 </script>
 
 <template>
-    <template v-if="addressesFetched">
+    <template v-if="addressStore.addressesFetched">
         <GoogleMap :api-key="googleMapApiKey" style="width: 100%; height: 100%" :center="center" :zoom="zoom" :min-zoom="4" @click="closeInfoWindows">
             <CustomControl :position="responsiveMenuDisplayed ? 'LEFT_TOP' : 'TOP_CENTER'">
                 <Button class="map-button" @click="sideBarVisible = true" icon="pi pi-filter" text rounded outlined label="Filters"/>
             </CustomControl>
-            <FilterSidebar :sideBarVisible="sideBarVisible" @switchSideBarVisible="switchSideBarVisible"></FilterSidebar>
+            <AddressFilterSidebar :sideBarVisible="sideBarVisible" @switchSideBarVisible="switchSideBarVisible"></AddressFilterSidebar>
             <MarkerCluster>
-                <Marker v-for="(address, i) in addresses.data" @click="clickMarkerEvent" :options="{position: address.position, icon: {url: address.icon,  scaledSize: { width: 30, height: 30 }}}">
+                <Marker v-for="(address, i) in addressStore.addresses.data" @click="clickMarkerEvent" :options="{position: address.position, icon: {url: address.icon,  scaledSize: { width: 30, height: 30 }}}">
                     <InfoWindow :ref="(el) => (infoWindows[i] = el)" class="info-window">
                         <template v-if="address.users.length > 0">
                             <h3 class="category-holder">Users</h3>

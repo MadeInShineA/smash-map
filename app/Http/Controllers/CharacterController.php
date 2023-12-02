@@ -29,7 +29,7 @@ class CharacterController extends Controller
             }
             return $this->sendResponse([], 'Characters retrieved successfully');
         } catch (Error $error){
-            return $this->sendError($error, ['An error occurred while retrieving the characters'], 500);
+            return $this->sendError($error, ['An error occurred while retrieving the characters E521'], 500);
         }
     }
 }

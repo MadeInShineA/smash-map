@@ -24,21 +24,21 @@ export const useEventFiltersStore = defineStore('eventFilters', function (){
     ])
 
     const eventGameOptions = ref([
-        {name: '64', value: '4'},
-        {name: 'Melee', value: '1'},
-        {name: 'Brawl', value: '5'},
-        {name: 'Project M', value: '2'},
-        {name: 'Project +', value: '33602'},
-        {name: '3DS / WiiU', value: '3'},
-        {name: 'Ultimate', value: '1386'},
+        {name: '64', id: '4'},
+        {name: 'Melee', id: '1'},
+        {name: 'Brawl', id: '5'},
+        {name: 'Project M', id: '2'},
+        {name: 'Project +', id: '33602'},
+        {name: '3DS / WiiU', id: '3'},
+        {name: 'Ultimate', id: '1386'},
     ])
 
     const {data: eventCountryOptions, isFinished: countriesFetched, execute: fetchCountries} = useAxios('/api/countries-filter')
 
     const currentPage = ref(1);
-    const selectedOrderBy = ref({name: 'Default sort', value: 'default'});
+    const selectedOrderBy = ref('default');
     const selectedEventGames = ref([]);
-    const selectedEventTypes = ref({name: 'Default type', value: 'default'});
+    const selectedEventTypes = ref('default');
     const selectedEventDates = ref([])
     const selectedEventContinents = ref([]);
     const selectedEventCountries = ref([]);
@@ -69,18 +69,18 @@ export const useEventFiltersStore = defineStore('eventFilters', function (){
             endDate = 'default'
         }
 
-        const games = selectedEventGames.value.length > 0 ? selectedEventGames.value.map(obj => obj.value).join(',') : 'default'
-        const type = selectedEventTypes.value.value
-        const orderBy = selectedOrderBy.value.value
-        const continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value.map(continent => continent.code).join(',') : 'default'
-        const countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.map(country => country.code).join(',') : 'default'
+        const games = selectedEventGames.value.length > 0 ? selectedEventGames.value.join(',') : 'default'
+        const type = selectedEventTypes.value
+        const orderBy = selectedOrderBy.value
+        const continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value.join(',') : 'default'
+        const countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.join(',') : 'default'
         const name = selectedEventName.value !== '' ? selectedEventName.value : 'default'
 
         eventsStore.fetchEvents({ params: { page, games, type, orderBy, continents, countries, name, startDate, endDate}})
     })
 
     const {pause: pauseContinentsWatch, resume: resumeContinentsWatch } = watchPausable([selectedEventContinents], function([continents]){
-        continents = continents.length > 0 ? continents.map(continent => continent.code).join(',') : 'default'
+        continents = continents.length > 0 ? continents.join(',') : 'default'
         fetchCountries({params: {continents}})
 
         let startDate
@@ -109,10 +109,10 @@ export const useEventFiltersStore = defineStore('eventFilters', function (){
         pauseCurrentPageWatch()
         currentPage.value = 1
         resumeCurrentPageWatch()
-        const games = selectedEventGames.value.length > 0 ? selectedEventGames.value.map(obj => obj.value).join(',') : 'default'
-        const type = selectedEventTypes.value.value
-        const orderBy = selectedOrderBy.value.value
-        const countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.map(country => country.code).join(',') : 'default'
+        const games = selectedEventGames.value.length > 0 ? selectedEventGames.value.join(',') : 'default'
+        const type = selectedEventTypes.value
+        const orderBy = selectedOrderBy.value
+        const countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.join(',') : 'default'
         const name = selectedEventName.value !== '' ? selectedEventName.value : 'default'
 
         eventsStore.fetchEvents({ params: { page: 1, games, type, orderBy, continents, countries, name, startDate, endDate}})
@@ -121,7 +121,7 @@ export const useEventFiltersStore = defineStore('eventFilters', function (){
     }, {immediate: false})
 
     const {pause: pauseCountriesWatch, resume: resumeCountriesWatch} = watchPausable([selectedEventCountries], function([countries]){
-        countries = countries.length > 0 ? countries.map(country => country.code).join(',') : 'default'
+        countries = countries.length > 0 ? countries.join(',') : 'default'
 
         let startDate
         let endDate
@@ -150,17 +150,17 @@ export const useEventFiltersStore = defineStore('eventFilters', function (){
         currentPage.value = 1
         resumeCurrentPageWatch()
 
-        const games = selectedEventGames.value.length > 0 ? selectedEventGames.value.map(obj => obj.value).join(',') : 'default'
-        const type = selectedEventTypes.value.value
-        const orderBy = selectedOrderBy.value.value
-        const continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value.map(continent => continent.code).join(',') : 'default'
+        const games = selectedEventGames.value.length > 0 ? selectedEventGames.value.join(',') : 'default'
+        const type = selectedEventTypes.value
+        const orderBy = selectedOrderBy.value
+        const continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value.join(',') : 'default'
         const name = selectedEventName.value !== '' ? selectedEventName.value : 'default'
 
         eventsStore.fetchEvents({ params: { page: 1, games, type, orderBy, continents, countries, name, startDate, endDate}})
     }, {immediate: false})
 
 
-    watch([selectedOrderBy, selectedEventGames, selectedEventTypes, selectedEventDates], function([{value: orderBy} , games, {value: type}, dates]){
+    watch([selectedOrderBy, selectedEventGames, selectedEventTypes, selectedEventDates], function([ orderBy , games,  type, dates]){
         if (type === 'online'){
 
             pauseContinentsWatch()
@@ -197,20 +197,19 @@ export const useEventFiltersStore = defineStore('eventFilters', function (){
         currentPage.value = 1
         resumeCurrentPageWatch()
 
-        games = games.length > 0 ? games.map(obj => obj.value).join(',') : 'default'
-        const continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value.map(continent => continent.code).join(',') : 'default'
-        const countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.map(country => country.code).join(',') : 'default'
+        games = games.length > 0 ? games.join(',') : 'default'
+        const continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value.join(',') : 'default'
+        const countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.join(',') : 'default'
         const name = selectedEventName.value !== '' ? selectedEventName.value : 'default'
 
         eventsStore.fetchEvents({ params: { page: 1, games, type, orderBy, continents, countries, name, startDate, endDate}})
     }, {immediate: false})
 
     watch(eventCountryOptions, function(availableCountries, oldValue){
-        //TODO Directly add the data to availableCountries
         if (oldValue && availableCountries.length !== 0){
             const availableCountryCodes = availableCountries.data.map(country => country.code)
             pauseCountriesWatch()
-            selectedEventCountries.value = selectedEventCountries.value.filter(country => availableCountryCodes.includes(country.code))
+            selectedEventCountries.value = selectedEventCountries.value.filter(code => availableCountryCodes.includes(code))
             resumeCountriesWatch()
         }
     }, {immediate: false})
@@ -242,11 +241,11 @@ export const useEventFiltersStore = defineStore('eventFilters', function (){
         }
 
         const page = currentPage.value
-        const games = selectedEventGames.value.length > 0 ? selectedEventGames.value.map(obj => obj.value).join(',') : 'default'
-        const type = selectedEventTypes.value.value
-        const orderBy = selectedOrderBy.value.value
-        const continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value.map(continent => continent.code).join(',') : 'default'
-        const countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.map(country => country.code).join(',') : 'default'
+        const games = selectedEventGames.value.length > 0 ? selectedEventGames.value.join(',') : 'default'
+        const type = selectedEventTypes.value
+        const orderBy = selectedOrderBy.value
+        const continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value.join(',') : 'default'
+        const countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.join(',') : 'default'
         eventsStore.fetchEvents({ params: { page, games, type, orderBy, continents, countries, name, startDate, endDate}})
 
     }, { immediate: false, debounce: 600, maxWait: 2000 })
