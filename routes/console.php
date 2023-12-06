@@ -37,11 +37,10 @@ Artisan::command('delete-addresses', function (){
     }
 });
 
+// TODO Test correctly
 Artisan::command('delete-events', function(){
     $events = Event::all();
     $current_time = date('Y-m-d H:i:s');
-
-
     foreach ($events as $event){
         if ($event->end_date_time < $current_time){
             $images = $event->images;
@@ -284,7 +283,8 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
 
 //                $event_md5s[] = $image_md5;
 
-                    if (!in_array($image_md5, $event_db_md5s)) {
+                    // TODO Check if it doesn't create the file if the image isn't available
+                    if (!in_array($image_md5, $event_db_md5s) && $image) {
                         Storage::put($event_directory_path . '/' . $image_type . '.png', $image);
                         Image::Create(['parentable_type' =>Event::class, 'parentable_id' =>$event_object->id, 'type' =>$image_type,'md5' => $image_md5]);
                         var_dump('Images for:' . $event->name . ' created');

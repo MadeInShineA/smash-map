@@ -15,7 +15,7 @@ class EventController extends Controller
 {
     #TODO Return timezone as well to avoid a double api call
     # Avoid calling the getTimeZone every fetch ?
-    public function index(Request $request): AnonymousResourceCollection | JsonResponse
+                        public function index(Request $request): AnonymousResourceCollection | JsonResponse
     {
 
         #TODO Update the timezone based on the user's IP
@@ -60,6 +60,19 @@ class EventController extends Controller
                 }
             }
 
+            if ($request->has('type')){
+                $type = $request->input('type');
+                switch ($type){
+                    case 'default':
+                        break;
+                    case 'online':
+                        $events->where('is_online', true);
+                        break;
+                    case 'offline':
+                        $events->where('is_online', false);
+                }
+            }
+
             if ($request->has('continents')){
                 $continents = $request->input('continents');
                 switch ($continents){
@@ -79,19 +92,6 @@ class EventController extends Controller
                     default:
                         $countries = explode(',', $countries);
                         $events->countries($countries);
-                }
-            }
-
-            if ($request->has('type')){
-                $type = $request->input('type');
-                switch ($type){
-                    case 'default':
-                        break;
-                    case 'online':
-                        $events->where('is_online', true);
-                        break;
-                    case 'offline':
-                        $events->where('is_online', false);
                 }
             }
 

@@ -33,7 +33,7 @@ export const useEventFiltersStore = defineStore('eventFilters', function (){
         {name: 'Ultimate', id: '1386'},
     ])
 
-    const {data: eventCountryOptions, isFinished: countriesFetched, execute: fetchCountries} = useAxios('/api/countries-filter')
+    const {data: eventCountryOptions, isFinished: countriesFetched, execute: fetchCountries} = useAxios('/api/countries')
 
     const currentPage = ref(1);
     const selectedOrderBy = ref('default');
@@ -45,6 +45,7 @@ export const useEventFiltersStore = defineStore('eventFilters', function (){
     const selectedEventName = ref('')
 
     const {pause: pauseCurrentPageWatch, resume: resumeCurrentPageWatch } = watchPausable([currentPage], function([page]){
+        console.log(1)
         let startDate
         let endDate
 
@@ -72,55 +73,18 @@ export const useEventFiltersStore = defineStore('eventFilters', function (){
         const games = selectedEventGames.value.length > 0 ? selectedEventGames.value.join(',') : 'default'
         const type = selectedEventTypes.value
         const orderBy = selectedOrderBy.value
-        const continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value.join(',') : 'default'
-        const countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.join(',') : 'default'
+        let continents = "default"
+        let countries = "default"
+        if(type !== 'online'){
+            continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value.join(',') : 'default'
+            countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.join(',') : 'default'
+        }
         const name = selectedEventName.value !== '' ? selectedEventName.value : 'default'
 
         eventsStore.fetchEvents({ params: { page, games, type, orderBy, continents, countries, name, startDate, endDate}})
     })
 
-    const {pause: pauseContinentsWatch, resume: resumeContinentsWatch } = watchPausable([selectedEventContinents], function([continents]){
-        continents = continents.length > 0 ? continents.join(',') : 'default'
-        fetchCountries({params: {continents}})
-
-        let startDate
-        let endDate
-        if(selectedEventDates.value){
-            startDate = selectedEventDates.value[0]
-            if (startDate){
-                startDate = useDateFormat(startDate,'YYYY-MM-DD')
-                startDate = startDate.value
-            }else{
-                startDate = 'default'
-            }
-
-            endDate = selectedEventDates.value[1]
-            if (endDate){
-                endDate = useDateFormat(endDate,'YYYY-MM-DD')
-                endDate = endDate.value
-            }else{
-                endDate = startDate
-            }
-        }else{
-            startDate = 'default'
-            endDate = 'default'
-        }
-
-        pauseCurrentPageWatch()
-        currentPage.value = 1
-        resumeCurrentPageWatch()
-        const games = selectedEventGames.value.length > 0 ? selectedEventGames.value.join(',') : 'default'
-        const type = selectedEventTypes.value
-        const orderBy = selectedOrderBy.value
-        const countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.join(',') : 'default'
-        const name = selectedEventName.value !== '' ? selectedEventName.value : 'default'
-
-        eventsStore.fetchEvents({ params: { page: 1, games, type, orderBy, continents, countries, name, startDate, endDate}})
-
-
-    }, {immediate: false})
-
-    const {pause: pauseCountriesWatch, resume: resumeCountriesWatch} = watchPausable([selectedEventCountries], function([countries]){
+    const countriesWatch = watchPausable([selectedEventCountries], function([countries]){
         countries = countries.length > 0 ? countries.join(',') : 'default'
 
         let startDate
@@ -159,16 +123,50 @@ export const useEventFiltersStore = defineStore('eventFilters', function (){
         eventsStore.fetchEvents({ params: { page: 1, games, type, orderBy, continents, countries, name, startDate, endDate}})
     }, {immediate: false})
 
+    watch([selectedEventContinents], function([continents]){
+        continents = continents.length > 0 ? continents.join(',') : 'default'
+        countriesWatch.pause()
+        fetchCountries({params: {continents}}).then(() => {
+            countriesWatch.resume()
+        })
+
+        let startDate
+        let endDate
+        if(selectedEventDates.value){
+            startDate = selectedEventDates.value[0]
+            if (startDate){
+                startDate = useDateFormat(startDate,'YYYY-MM-DD')
+                startDate = startDate.value
+            }else{
+                startDate = 'default'
+            }
+
+            endDate = selectedEventDates.value[1]
+            if (endDate){
+                endDate = useDateFormat(endDate,'YYYY-MM-DD')
+                endDate = endDate.value
+            }else{
+                endDate = startDate
+            }
+        }else{
+            startDate = 'default'
+            endDate = 'default'
+        }
+
+        pauseCurrentPageWatch()
+        currentPage.value = 1
+        resumeCurrentPageWatch()
+        const games = selectedEventGames.value.length > 0 ? selectedEventGames.value.join(',') : 'default'
+        const type = selectedEventTypes.value
+        const orderBy = selectedOrderBy.value
+        const countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.join(',') : 'default'
+        const name = selectedEventName.value !== '' ? selectedEventName.value : 'default'
+
+        eventsStore.fetchEvents({ params: { page: 1, games, type, orderBy, continents, countries, name, startDate, endDate}})
+    })
 
     watch([selectedOrderBy, selectedEventGames, selectedEventTypes, selectedEventDates], function([ orderBy , games,  type, dates]){
-        if (type === 'online'){
-
-            pauseContinentsWatch()
-            selectedEventContinents.value = []
-            resumeContinentsWatch()
-
-            eventCountryOptions.value = []
-        }
+        console.log(4)
 
         let startDate
         let endDate
@@ -198,8 +196,12 @@ export const useEventFiltersStore = defineStore('eventFilters', function (){
         resumeCurrentPageWatch()
 
         games = games.length > 0 ? games.join(',') : 'default'
-        const continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value.join(',') : 'default'
-        const countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.join(',') : 'default'
+        let continents = "default"
+        let countries = "default"
+        if(type !== 'online'){
+            continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value.join(',') : 'default'
+            countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.join(',') : 'default'
+        }
         const name = selectedEventName.value !== '' ? selectedEventName.value : 'default'
 
         eventsStore.fetchEvents({ params: { page: 1, games, type, orderBy, continents, countries, name, startDate, endDate}})
@@ -208,13 +210,12 @@ export const useEventFiltersStore = defineStore('eventFilters', function (){
     watch(eventCountryOptions, function(availableCountries, oldValue){
         if (oldValue && availableCountries.length !== 0){
             const availableCountryCodes = availableCountries.data.map(country => country.code)
-            pauseCountriesWatch()
             selectedEventCountries.value = selectedEventCountries.value.filter(code => availableCountryCodes.includes(code))
-            resumeCountriesWatch()
         }
     }, {immediate: false})
 
     watchDebounced([selectedEventName], function([name]){
+        console.log(5)
         name = name !== '' ? name : 'default'
 
         let startDate

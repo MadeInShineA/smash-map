@@ -236,7 +236,7 @@ class CountrySeeder extends Seeder {
             array('code' => 'UA', 'name' => 'Ukraine', 'timezone' => 'Europe/Kiev', 'continent_id' => 4, 'has_api_image' => true),
             array('code' => 'AE', 'name' => 'United Arab Emirates', 'timezone' => 'Asia/Dubai', 'continent_id' => 3, 'has_api_image' => true),
             array('code' => 'GB', 'name' => 'United Kingdom', 'timezone' => 'Europe/London', 'continent_id' => 4, 'has_api_image' => true),
-            array('code' => 'US', 'name' => 'United States', 'timezone' => 'America/New_York', 'continent_id' => 5, 'has_api_image' => true),
+//            array('code' => 'US', 'name' => 'United States', 'timezone' => 'America/New_York', 'continent_id' => 5, 'has_api_image' => true),
 //            array('code' => 'UM', 'name' => 'United States minor outlying islands', 'timezone' => 'Pacific/Wake', 'continent_id' => 6, 'has_api_image' => true),
             array('code' => 'UY', 'name' => 'Uruguay', 'timezone' => 'America/Montevideo', 'continent_id' => 7, 'has_api_image' => true),
             array('code' => 'UZ', 'name' => 'Uzbekistan', 'timezone' => 'Asia/Samarkand', 'continent_id' => 3, 'has_api_image' => true),

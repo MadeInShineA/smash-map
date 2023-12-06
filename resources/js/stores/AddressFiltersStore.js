@@ -34,9 +34,9 @@ export const useAddressFiltersStore = defineStore('addressFilters', function (){
         {name: 'Ultimate', id: '1386'},
     ])
 
-    const {data:addressesCountryOptions, isFinished: countriesFetched, execute: fetchCountries} = useAxios('/api/addresses-countries-filter')
-
-    const { data: addressesCharactersOptions, isFinished: charactersFetched, execute: fetchCharacters } = useAxios('/api/addresses-characters-filter')
+    // TODO Move this 2 to a store with the available options ?
+    const {data:addressesCountryOptions, isFinished: countriesFetched, execute: fetchCountries} = useAxios('/api/countries')
+    const { data: addressesCharactersOptions, isFinished: charactersFetched, execute: fetchCharacters } = useAxios('/api/characters')
 
     const selectedAddressGames = ref([]);
     const selectedAddressTypes = ref('default');
@@ -47,49 +47,11 @@ export const useAddressFiltersStore = defineStore('addressFilters', function (){
     const selectedAddressCharacters = ref([])
 
 
-    const {pause: pauseContinentsWatch, resume: resumeContinentsWatch } = watchPausable([selectedAddressContinents], function([continents]){
-        continents = continents.length > 0 ? continents.join(',') : 'default'
-        fetchCountries({params: {continents}})
-
+    const countriesWatch = watchPausable([selectedAddressCountries], function([countries]){
+        countries = countries.length > 0 ? countries.join(',') : 'default'
         let startDate
         let endDate
-        if(selectedAddressDates.value){
-            startDate = selectedAddressDates.value[0]
-            if (startDate){
-                startDate = useDateFormat(startDate,'YYYY-MM-DD')
-                startDate = startDate.value
-            }else{
-                startDate = 'default'
-            }
-
-            endDate = selectedAddressDates.value[1]
-            if (endDate){
-                endDate = useDateFormat(endDate,'YYYY-MM-DD')
-                endDate = endDate.value
-            }else{
-                endDate = startDate
-            }
-        }else{
-            startDate = 'default'
-            endDate = 'default'
-        }
-
-        const games = selectedAddressGames.value.length > 0 ? selectedAddressGames.value.join(',') : 'default'
-        const type = selectedAddressTypes.value.value
-        const countries = selectedAddressCountries.value.length > 0 ? selectedAddressCountries.value.join(',') : 'default'
-        const name = selectedAddressName.value !== '' ? selectedAddressName.value : 'default'
-
-        addressesStore.fetchAddresses({ params: { games, type, continents, countries, name, startDate, endDate}})
-
-
-    }, {immediate: false})
-
-    const {pause: pauseCountriesWatch, resume: resumeCountriesWatch} = watchPausable([selectedAddressCountries], function([countries]){
-        countries = countries.length > 0 ? countries.map(country => country.code).join(',') : 'default'
-
-        let startDate
-        let endDate
-        if(selectedAddressDates.value){
+        if(selectedAddressDates.value && selectedAddressTypes.value !== 'users' ){
             startDate = selectedAddressDates.value[0]
             if (startDate){
                 startDate = useDateFormat(startDate,'YYYY-MM-DD')
@@ -114,24 +76,129 @@ export const useAddressFiltersStore = defineStore('addressFilters', function (){
         const type = selectedAddressTypes.value
         const continents = selectedAddressContinents.value.length > 0 ? selectedAddressContinents.value.join(',') : 'default'
         const name = selectedAddressName.value !== '' ? selectedAddressName.value : 'default'
+        const characters = selectedAddressCharacters.value.length > 0 ? selectedAddressCharacters.value.join(',') : 'default'
 
-        addressesStore.fetchAddresses({ params: { page: 1, games, type, continents, countries, name, startDate, endDate}})
+        addressesStore.fetchAddresses({ params: {games, type, continents, countries, name, startDate, endDate, characters}})
     }, {immediate: false})
 
+    const charactersWatch = watchPausable([selectedAddressCharacters], function([characters]){
+        characters = characters.length > 0 ? characters.join(',') : 'default'
+        let startDate
+        let endDate
+        if(selectedAddressDates.value && selectedAddressTypes.value !== 'users' ){
+            startDate = selectedAddressDates.value[0]
+            if (startDate){
+                startDate = useDateFormat(startDate,'YYYY-MM-DD')
+                startDate = startDate.value
+            }else{
+                startDate = 'default'
+            }
 
-    watch([selectedAddressGames, selectedAddressTypes, selectedAddressDates], function([games, type, dates]){
-        if (type === 'online'){
-
-            pauseContinentsWatch()
-            selectedAddressContinents.value = []
-            resumeContinentsWatch()
-
-            addressesCountryOptions.value = []
+            endDate = selectedAddressDates.value[1]
+            if (endDate){
+                endDate = useDateFormat(endDate,'YYYY-MM-DD')
+                endDate = endDate.value
+            }else{
+                endDate = startDate
+            }
+        }else{
+            startDate = 'default'
+            endDate = 'default'
         }
+
+        const games = selectedAddressGames.value.length > 0 ? selectedAddressGames.value.join(',') : 'default'
+        const type = selectedAddressTypes.value
+        const continents = selectedAddressContinents.value.length > 0 ? selectedAddressContinents.value.join(',') : 'default'
+        const countries = selectedAddressCountries.value.length > 0 ? selectedAddressCountries.value.join(',') : 'default'
+        const name = selectedAddressName.value !== '' ? selectedAddressName.value : 'default'
+
+        addressesStore.fetchAddresses({ params: {games, type, continents, countries, name, startDate, endDate, characters}})
+    }, {immediate: false})
+
+    watch([selectedAddressContinents], function([continents]){
+        continents = continents.length > 0 ? continents.join(',') : 'default'
+        countriesWatch.pause()
+        fetchCountries({params: {continents}}).then(() => {
+            countriesWatch.resume()
+        })
 
         let startDate
         let endDate
-        if(selectedAddressDates.value){
+        if(selectedAddressDates.value && selectedAddressTypes.value !== 'users'){
+            startDate = selectedAddressDates.value[0]
+            if (startDate){
+                startDate = useDateFormat(startDate,'YYYY-MM-DD')
+                startDate = startDate.value
+            }else{
+                startDate = 'default'
+            }
+
+            endDate = selectedAddressDates.value[1]
+            if (endDate){
+                endDate = useDateFormat(endDate,'YYYY-MM-DD')
+                endDate = endDate.value
+            }else{
+                endDate = startDate
+            }
+        }else{
+            startDate = 'default'
+            endDate = 'default'
+        }
+
+        const games = selectedAddressGames.value.length > 0 ? selectedAddressGames.value.join(',') : 'default'
+        const type = selectedAddressTypes.value
+        const countries = selectedAddressCountries.value.length > 0 ? selectedAddressCountries.value.join(',') : 'default'
+        const name = selectedAddressName.value !== '' ? selectedAddressName.value : 'default'
+        const characters = selectedAddressCharacters.value.length > 0 ? selectedAddressCharacters.value.join(',') : 'default'
+
+
+        addressesStore.fetchAddresses({ params: { games, type, continents, countries, name, startDate, endDate, characters}})
+    })
+
+    watch([selectedAddressGames], function([games]){
+        games = games.length > 0 ? games.join(',') : 'default'
+        charactersWatch.pause()
+        fetchCharacters({params: {games}}).then(() => {
+            charactersWatch.resume()
+        })
+
+        let startDate
+        let endDate
+        if(selectedAddressDates.value && selectedAddressTypes.value !== 'users'){
+            startDate = selectedAddressDates.value[0]
+            if (startDate){
+                startDate = useDateFormat(startDate,'YYYY-MM-DD')
+                startDate = startDate.value
+            }else{
+                startDate = 'default'
+            }
+
+            endDate = selectedAddressDates.value[1]
+            if (endDate){
+                endDate = useDateFormat(endDate,'YYYY-MM-DD')
+                endDate = endDate.value
+            }else{
+                endDate = startDate
+            }
+        }else{
+            startDate = 'default'
+            endDate = 'default'
+        }
+
+        const type = selectedAddressTypes.value
+        const continents = selectedAddressContinents.value.length > 0 ? selectedAddressContinents.value.join(',') : 'default'
+        const countries = selectedAddressCountries.value.length > 0 ? selectedAddressCountries.value.join(',') : 'default'
+        const name = selectedAddressName.value !== '' ? selectedAddressName.value : 'default'
+        const characters = selectedAddressCharacters.value.length > 0 ? selectedAddressCharacters.value.join(',') : 'default'
+
+        addressesStore.fetchAddresses({ params: { games, type, continents, countries, name, startDate, endDate, characters}})
+    })
+
+
+    watch([selectedAddressTypes, selectedAddressDates], function([type, dates]){
+        let startDate
+        let endDate
+        if(selectedAddressDates.value && selectedAddressTypes.value !== 'users'){
             startDate = dates[0]
             if (startDate){
                 startDate = useDateFormat(startDate,'YYYY-MM-DD')
@@ -152,29 +219,41 @@ export const useAddressFiltersStore = defineStore('addressFilters', function (){
             endDate = 'default'
         }
 
-        games = games.length > 0 ? games.join(',') : 'default'
+        const games = selectedAddressGames.value.length > 0 ? selectedAddressGames.value.join(',') : 'default'
         const continents = selectedAddressContinents.value.length > 0 ? selectedAddressContinents.value.join(',') : 'default'
         const countries = selectedAddressCountries.value.length > 0 ? selectedAddressCountries.value.join(',') : 'default'
         const name = selectedAddressName.value !== '' ? selectedAddressName.value : 'default'
+        const characters = selectedAddressCharacters.value.length > 0 ? selectedAddressCharacters.value.join(',') : 'default'
 
-        addressesStore.fetchAddresses({ params: {games, type, continents, countries, name, startDate, endDate}})
+        addressesStore.fetchAddresses({ params: {games, type, continents, countries, name, startDate, endDate, characters}})
     }, {immediate: false})
 
     watch(addressesCountryOptions, function(availableCountries, oldValue){
         if (oldValue && availableCountries.length !== 0){
             const availableCountryCodes = availableCountries.data.map(country => country.code)
-            pauseCountriesWatch()
             selectedAddressCountries.value = selectedAddressCountries.value.filter(code => availableCountryCodes.includes(code))
-            resumeCountriesWatch()
         }
     }, {immediate: false})
+
+    watch(addressesCharactersOptions, function(availableCharacters, oldValue){
+        if (oldValue && availableCharacters.length !== 0){
+            let availableCharacterIds = []
+            availableCharacters.data.forEach((game) => {
+                game.characters.forEach((character) => {
+                    availableCharacterIds.push(character.id)
+                })
+            })
+            selectedAddressCharacters.value = selectedAddressCharacters.value.filter(id => availableCharacterIds.includes(id))
+        }
+    }, {immediate: false})
+
 
     watchDebounced([selectedAddressName], function([name]){
         name = name !== '' ? name : 'default'
 
         let startDate
         let endDate
-        if(selectedAddressDates.value){
+        if(selectedAddressDates.value && selectedAddressTypes.value !== 'users'){
             startDate = selectedAddressDates.value[0]
             if (startDate){
                 startDate = useDateFormat(startDate,'YYYY-MM-DD')
@@ -199,7 +278,8 @@ export const useAddressFiltersStore = defineStore('addressFilters', function (){
         const type = selectedAddressTypes.value
         const continents = selectedAddressContinents.value.length > 0 ? selectedAddressContinents.value.join(',') : 'default'
         const countries = selectedAddressCountries.value.length > 0 ? selectedAddressCountries.value.join(',') : 'default'
-        addressesStore.fetchAddresses({ params: {games, type, continents, countries, name, startDate, endDate}})
+        const characters = selectedAddressCharacters.value.length > 0 ? selectedAddressCharacters.value.join(',') : 'default'
+        addressesStore.fetchAddresses({ params: {games, type, continents, countries, name, startDate, endDate, characters}})
 
     }, { immediate: false, debounce: 600, maxWait: 2000 })
 
@@ -214,6 +294,10 @@ export const useAddressFiltersStore = defineStore('addressFilters', function (){
         selectedAddressDates,
         selectedAddressContinents,
         selectedAddressCountries,
-        selectedAddressName
+        selectedAddressName,
+        selectedAddressCharacters,
+        addressesCharactersOptions,
+        charactersFetched,
+        fetchCharacters
     }
 })

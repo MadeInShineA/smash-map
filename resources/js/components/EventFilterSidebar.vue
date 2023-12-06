@@ -31,11 +31,11 @@ const emit = defineEmits(['switchSideBarVisible'])
                 <Calendar v-model=filtersStore.selectedEventDates :minDate="new Date()" placeholder="Event date range (UTC)" selectionMode="range" :manualInput="false" showButtonBar dateFormat="dd/mm/yy"></Calendar>
             </div>
             <div class="event-filter">
-                <MultiSelect v-model="filtersStore.selectedEventContinents" :options="filtersStore.eventContinentOptions" display="chip" :disabled="filtersStore.selectedEventTypes.value === 'online'" :maxSelectedLabels="2" optionLabel="name" optionValue="code" placeholder="Select Continents"/>
+                <MultiSelect v-model="filtersStore.selectedEventContinents" :options="filtersStore.eventContinentOptions" display="chip" :disabled="filtersStore.selectedEventTypes === 'online'" :maxSelectedLabels="2" optionLabel="name" optionValue="code" placeholder="Select Continents"/>
             </div>
             <div class="event-filter">
                 <!--            TODO Directly add the data to eventCountryOptions-->
-                <MultiSelect v-if="filtersStore.countriesFetched" v-model="filtersStore.selectedEventCountries" :options="filtersStore.eventCountryOptions.data" filter display="chip" :disabled="filtersStore.selectedEventTypes.value === 'online'" :maxSelectedLabels="2" optionLabel="name" optionValue="code" placeholder="Select Countries">
+                <MultiSelect :loading="!filtersStore.countriesFetched" v-model="filtersStore.selectedEventCountries" :options="filtersStore.eventCountryOptions.data" filter display="chip" :disabled="filtersStore.selectedEventTypes === 'online' || !filtersStore.countriesFetched" :maxSelectedLabels="2" optionLabel="name" optionValue="code" placeholder="Select Countries">
                     <template #option="slotProps">
                         <div class="country-flag">
                             <img v-if="slotProps.option.image" :alt="slotProps.option.name + '-image'" :src="slotProps.option.image.url" class="country-flag-image" />
@@ -43,7 +43,6 @@ const emit = defineEmits(['switchSideBarVisible'])
                         </div>
                     </template>
                 </MultiSelect>
-                <MultiSelect v-else disabled loading filter placeholder="Select Countries"/>
             </div>
             <div class="event-filter">
         <span class="p-input-icon-left">

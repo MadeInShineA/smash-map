@@ -219,7 +219,7 @@ onMounted(function(){
 
             <!-- TODO Fix the placeholder / empty item bug -->
             <div class="modal-input-container p-float-label">
-                <MultiSelect id="register-characters" class="modal-input" v-if="registerUser.games && registerUser.games.length !== 0 && !fetchingCharacters" v-model="registerUser.characters" :maxSelectedLabels="2" :options="charactersOptions" optionLabel="name"  optionValue="id" data-key="id" filter optionGroupLabel="game" optionGroupChildren="characters" showClear @focus="registerValidationErrors.characters = []">
+                <MultiSelect id="register-characters" class="modal-input" :disabled="registerUser.games.length === 0" :loading="fetchingCharacters" v-model="registerUser.characters" :maxSelectedLabels="2" :options="charactersOptions" optionLabel="name"  optionValue="id" data-key="id" filter optionGroupLabel="game" optionGroupChildren="characters" showClear @focus="registerValidationErrors.characters = []">
                     <template #option="slotProps">
                         <div class="character-option">
                             <img :alt="slotProps.option.name" :src="slotProps.option.image.url" class="character-option-image" width="30" />
@@ -227,8 +227,6 @@ onMounted(function(){
                         </div>
                     </template>
                 </MultiSelect>
-                <MultiSelect id="register-characters" class="modal-input" v-else-if="fetchingCharacters" loading></MultiSelect>
-                <MultiSelect id="register-characters" class="modal-input" v-else disabled></MultiSelect>
                 <label for="register-characters">Characters</label>
             </div>
             <div class="validation-errors">
