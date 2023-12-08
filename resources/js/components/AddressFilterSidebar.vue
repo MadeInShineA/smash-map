@@ -19,7 +19,7 @@ const emit = defineEmits(['switchSideBarVisible'])
 
 <template>
     <Sidebar :visible="sideBarVisible" @update:visible="emit('switchSideBarVisible')" position="top"
-             id="event-filters-sidebar" style="text-align: center; height: min-content;">
+             id="address-filters-sidebar" style="text-align: center; height: min-content; max-height:100vh">
         <h2>Filters</h2>
         <div id="event-filters">
             <div class="event-filter">
@@ -33,7 +33,7 @@ const emit = defineEmits(['switchSideBarVisible'])
             </div>
             <div class="event-filter">
                 <Calendar v-model=addressesStore.selectedAddressDates :minDate="new Date()"
-                          :disabled="addressesStore.selectedAddressTypes === 'users'"
+                          :disabled="addressesStore.selectedAddressTypes === 'users' || addressesStore.selectedAddressCharacters.length > 0"
                           placeholder="Event date range (UTC)" selectionMode="range" :manualInput="false" showButtonBar
                           dateFormat="dd/mm/yy"></Calendar>
             </div>
@@ -78,6 +78,9 @@ const emit = defineEmits(['switchSideBarVisible'])
 
 <style scoped>
 
+#address-filters-sidebar{
+    max-height: 100vh;
+}
 #event-filters {
     display: flex;
     justify-content: center;

@@ -82,7 +82,7 @@ const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
 <template>
     <AddressFilterSidebar :sideBarVisible="sideBarVisible" @switchSideBarVisible="switchSideBarVisible"></AddressFilterSidebar>
     <template v-if="addressStore.addressesFetched">
-        <GoogleMap ref="mapRef" :api-key="googleMapApiKey" style="width: 100%; height: 100%" :center="center" :zoom="zoom" :min-zoom="4" @click="closeInfoWindows">
+        <GoogleMap ref="mapRef" :api-key="googleMapApiKey" style="width: 100%; height: 100%" :center="center" :zoom="zoom" :min-zoom="4" @click="closeInfoWindows" :clickableIcons="false">
             <CustomControl :position="responsiveMenuDisplayed ? 'LEFT_TOP' : 'TOP_CENTER'">
                 <Button class="map-button" @click="sideBarVisible = true" icon="pi pi-filter" text rounded outlined label="Filters"/>
             </CustomControl>
