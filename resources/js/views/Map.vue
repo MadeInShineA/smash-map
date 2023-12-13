@@ -82,9 +82,9 @@ const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
 <template>
     <AddressFilterSidebar :sideBarVisible="sideBarVisible" @switchSideBarVisible="switchSideBarVisible"></AddressFilterSidebar>
     <template v-if="addressStore.addressesFetched">
-        <GoogleMap ref="mapRef" :api-key="googleMapApiKey" style="width: 100%; height: 100%" :center="center" :zoom="zoom" :min-zoom="4" @click="closeInfoWindows" :clickableIcons="false">
+        <GoogleMap ref="mapRef" :api-key="googleMapApiKey" language="en" :map-type-control-options="{ mapTypeIds: ['roadmap','satellite',]}" style="width: 100%; height: 100%" :center="center" :zoom="zoom" :min-zoom="4" @click="closeInfoWindows" :clickableIcons="false">
             <CustomControl :position="responsiveMenuDisplayed ? 'LEFT_TOP' : 'TOP_CENTER'">
-                <Button class="map-button" @click="sideBarVisible = true" icon="pi pi-filter" text rounded outlined label="Filters"/>
+                <Button class="map-button margin-top-15-important" @click="sideBarVisible = true" icon="pi pi-filter" rounded label="Filters"/>
             </CustomControl>
             <MarkerCluster>
                 <Marker v-for="(address, i) in addressStore.addresses.data" @click="clickMarkerEvent" :options="{position: address.position, icon: {url: address.icon,  scaledSize: { width: 30, height: 30 }}}">
@@ -131,7 +131,7 @@ const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
                 </Marker>
             </MarkerCluster>
             <CustomControl :position="responsiveMenuDisplayed ? 'LEFT_BOTTOM' : 'BOTTOM_CENTER'">
-                <Button class="map-button" @click="legendsVisible = true" icon="pi pi-filter"  rounded outlined plain label="Legends"/>
+                <Button class="map-button margin-bottom-15-important" @click="legendsVisible = true" icon="pi pi-filter"  rounded label="Legends"/>
                 <Sidebar v-model:visible="legendsVisible" position="bottom" style="height: min-content;">
                     <div id="games-legend">
                         <div class="game-legend">
@@ -182,12 +182,29 @@ const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
     color: black;
 }
 
-.map-button{
+.dark .map-button{
     color: white !important;
+    background-color: #1E1E1E !important;
 }
 
-.dark .map-button{
+.map-button{
     color: #1E1E1E !important;
+    background-color: white !important;
+
+}
+
+@media(max-width: 960px){
+    .map-button{
+        margin-left:8px !important;
+    }
+}
+
+.margin-top-15-important{
+    margin-top:15px !important;
+}
+
+.margin-bottom-15-important{
+    margin-bottom:15px !important;
 }
 
 #games-legend{

@@ -253,6 +253,7 @@ class CountrySeeder extends Seeder {
             array('code' => 'ZM', 'name' => 'Zambia', 'timezone' => 'Africa/Lusaka', 'continent_id' => 1, 'has_api_image' => true),
             array('code' => 'ZW', 'name' => 'Zimbabwe', 'timezone' => 'Africa/Harare', 'continent_id' => 1, 'has_api_image' => true),
             array('code' => 'GF', 'name' => 'French Guiana', 'timezone' => 'America/Cayenne', 'continent_id' => 7, 'has_api_image' => false),
+            ['code' => 'GP', 'name' => 'Guadeloupe', 'timezone' => 'America/Guadeloupe', 'continent_id' => 5, 'has_api_image' => false],
         );
 
         DB::table('countries')->insert($countries);
