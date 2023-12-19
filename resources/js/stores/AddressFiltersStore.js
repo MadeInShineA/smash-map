@@ -117,10 +117,14 @@ export const useAddressFiltersStore = defineStore('addressFilters', function (){
 
     watch([selectedAddressContinents], function([continents]){
         continents = continents.length > 0 ? continents.join(',') : 'default'
-        countriesWatch.pause()
+
+        // TODO What was the point of this pause/resume ? (Removing it fixes  the country not changing when continent changes and the country is no longer on  the continents list)
+        // countriesWatch.pause()
         fetchCountries({params: {continents}}).then(() => {
-            countriesWatch.resume()
+            // countriesWatch.resume()
         })
+
+
 
         let startDate
         let endDate

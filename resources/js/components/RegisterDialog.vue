@@ -157,7 +157,7 @@ onMounted(function(){
         <template #header class="p-dialog-title p-dialog-header margin-auto"></template>
         <div class="modal-inputs">
             <div class="p-float-label modal-input-container">
-                <InputText id="register-username" class="modal-input" v-model="registerUser.username" required @focus="registerValidationErrors.username = []" />
+                <InputText id="register-username" class="modal-input" v-model="registerUser.username" required  autofocus @focus="registerValidationErrors.username = []" />
                 <label for="register-username">Username</label>
             </div>
             <div class="validation-errors">

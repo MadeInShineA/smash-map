@@ -31,7 +31,7 @@ const switchSideBarVisible = function (){
 const center = ref({ lat: 40.713956, lng: -38.716136 });
 const zoom = ref(4);
 const infoWindows = ref([]);
-const mapRef = ref(null);
+const mapRef = ref();
 
 //TODO Understand why this watch works but not this one
 // watch(addressStore.addressesFetched, function([addresses, oldAddresses]){
@@ -82,7 +82,7 @@ const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
 <template>
     <AddressFilterSidebar :sideBarVisible="sideBarVisible" @switchSideBarVisible="switchSideBarVisible"></AddressFilterSidebar>
     <template v-if="addressStore.addressesFetched">
-        <GoogleMap ref="mapRef" :api-key="googleMapApiKey" language="en" :map-type-control-options="{ mapTypeIds: ['roadmap','satellite',]}" style="width: 100%; height: 100%" :center="center" :zoom="zoom" :min-zoom="4" @click="closeInfoWindows" :clickableIcons="false">
+        <GoogleMap ref="mapRef" :api-key="googleMapApiKey" language="en" :map-type-control-options="{ mapTypeIds: ['roadmap','satellite',]}" style="width: 100%; height: 100%" :center="center" :zoom="zoom" :min-zoom="4" @click="closeInfoWindows" :clickableIcons="false" :fullscreen-control="false">
             <CustomControl :position="responsiveMenuDisplayed ? 'LEFT_TOP' : 'TOP_CENTER'">
                 <Button class="map-button margin-top-15-important" @click="sideBarVisible = true" icon="pi pi-filter" rounded label="Filters"/>
             </CustomControl>

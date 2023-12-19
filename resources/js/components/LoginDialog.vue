@@ -69,7 +69,7 @@ const login = async function () {
     <Dialog id="login-modal" class="user-modal" :visible="showLoginModal" @update:visible="emit('switchShowLoginModal')" :draggable="false" modal header="Login" :style="{ width: '30vw' }" :breakpoints="{ '1200px': '50vw', '575px': '90vw' }">
         <div class="modal-inputs">
             <div class="p-float-label modal-input-container">
-                <InputText id="login-username" class="modal-input" v-model="loginUser.username" @focus="loginValidationErrors.username = []"/>
+                <InputText id="login-username" class="modal-input" v-model="loginUser.username" autofocus @focus="loginValidationErrors.username = []"/>
                 <label for="login-username">Username</label>
             </div>
             <div class="validation-errors">
