@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->foreignId('continent_id')->constrained('continents')->restrictOnDelete();
-            $table->string('code');
+            $table->string('code')->unique();
             $table->string('name');
             $table->string('timezone');
-            $table->boolean('has_api_image')->default(false);
+            $table->boolean('has_image')->default(false);
         });
     }
 

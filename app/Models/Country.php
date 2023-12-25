@@ -18,7 +18,7 @@ class Country extends Model
         'name',
         'code',
         'timezone',
-        'has_api_image'
+        'has_image'
 
     ];
 

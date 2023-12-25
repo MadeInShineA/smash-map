@@ -237,6 +237,10 @@ const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
     background: #1E1E1E;
 }
 
+.gm-style .gm-style-iw.gm-style-iw-c{
+    padding: 12px !important;
+}
+
 .dark .poi-info-window div, .dark .poi-info-window a{
     background-color: #1E1E1E;
     color:white

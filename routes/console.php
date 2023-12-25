@@ -46,6 +46,7 @@ Artisan::command('delete-events', function(){
             $images = $event->images;
             $base_directory_path = base_path(). '/storage/app/public/events-images/' . Str::slug($event->name);
             foreach ($images as $image) {
+                var_dump($image->id);
                 $image_directory_path = $base_directory_path . '/' . $image->type .'.png';
                 unlink($image_directory_path);
                 $image->delete();
@@ -62,8 +63,8 @@ Artisan::command('delete-events', function(){
             }
 
             var_dump('Images for:' . $event->name . ' deleted');
-            var_dump('Event: ' . $event->name . ' deleted');
             $event->delete();
+            var_dump('Event: ' . $event->name . ' deleted');
         }
     }
 });
@@ -172,7 +173,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
 //    }
 
     curl_close($ch);
-    $events = $response->data->tournaments->nodes;
+    $events = $response?->data->tournaments->nodes;
 
     foreach ($events as $event){
 
@@ -246,8 +247,8 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
 
                     # Handle the Oceania case
                     if(!$country){
-                        var_dump('Country not found : ' . $country_code . ' for event: ' . $event->name .'with start gg id: ' . $start_gg_id);
-                        Log::error('Country not found : ' . $country_code . ' for event: ' . $event->name .'with start gg id: ' . $start_gg_id);
+                        var_dump('Country not found : ' . $country_code . ' for event: ' . $event->name .' with start gg id: ' . $start_gg_id);
+                        Log::error('Country not found : ' . $country_code . ' for event: ' . $event->name .' with start gg id: ' . $start_gg_id);
                         die();
                     }
 
@@ -274,26 +275,38 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                 $images = $event->images;
 
                 foreach ($images as $image) {
-                    $filename = $image->type == 'profile' ? ImageTypeEnum::EVENT_PROFILE : ImageTypeEnum::EVENT_BANNER;
                     $image_type = $image->type == 'profile'? ImageTypeEnum::EVENT_PROFILE : ImageTypeEnum::EVENT_BANNER;
 
-                    $image = file_get_contents($image->url);
-                    $image_md5 = md5($image);
+
+                    $image_file = @file_get_contents($image->url);
+                    if (!$image_file){
+                        var_dump("Event" . $event->name . " : Image ". $image->url . " couldn't be retrieved");
+                        Log::error("Event" . $event->name . " : Image ". $image->url . " couldn't be retrieved");
+                        continue;
+                    }
+                    $image_md5 = md5($image_file);
                 #TODO Delete the unused images (inside event_db_md5s but not in event_md5s)
 
 //                $event_md5s[] = $image_md5;
 
-                    // TODO Check if it doesn't create the file if the image isn't available
-                    if (!in_array($image_md5, $event_db_md5s) && $image) {
-                        Storage::put($event_directory_path . '/' . $image_type . '.png', $image);
-                        Image::Create(['parentable_type' =>Event::class, 'parentable_id' =>$event_object->id, 'type' =>$image_type,'md5' => $image_md5]);
-                        var_dump('Images for:' . $event->name . ' created');
+                    // TODO Check if it doesn't create the file if the image isn't available with the md5
+//                    if (!in_array($image_md5, $event_db_md5s) && $image_file) {
+                    if($image_file){
+                        $isImageStored = Storage::put($event_directory_path . '/' . $image_type . '.png', $image_file);
+                        if ($isImageStored){
+                            Image::Create(['parentable_type' =>Event::class, 'parentable_id' =>$event_object->id, 'type' =>$image_type,'md5' => $image_md5]);
+                            var_dump('Images for:' . $event->name . ' created');
+                        }else{
+                            var_dump("Image ". $image->url . " couldn't be stored stored");
+                            Log::error("Image ". $image->url . " couldn't be stored stored");
+                            die();
+                        }
+
                     }
                 }
             }
 
         }
-
     }
 
 });
@@ -349,7 +362,16 @@ Artisan::command('import-characters-images',function(){
 
 ##TODO Add the image for Frencch Guiana
 Artisan::command('import-countries-images', function (){
-    $countries = Country::where('has_api_image', true)->get();
+
+//    $url = 'https://flagsapi.com/' . $country->code .'/flat/64.png';
+//
+//    $image = file_get_contents($url);
+//    $uuid = Str::uuid()->toString() . '.png';
+//    $image_md5 = md5($image);
+//
+//    Image::Create(['parentable_type' =>Country::class, 'parentable_id' =>$country->id, 'type' => ImageTypeEnum::ICON, 'uuid' => $uuid, 'md5' => $image_md5]);
+
+    $countries = Country::where('has_image', true)->get();
 
     foreach ($countries as $country){
         Image::Create(['parentable_type' =>Country::class, 'parentable_id' =>$country->id, 'type' => ImageTypeEnum::ICON]);
@@ -365,5 +387,5 @@ Artisan::command('test-broadcast', function(){
 Artisan::command('setup', function(){
    Artisan::call('import-countries-images');
    Artisan::call('import-characters-images');
-   Artisan::call('import-500-events-all-games');
+   Artisan::call('import-100-events-all-games');
 });
