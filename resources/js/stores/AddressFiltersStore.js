@@ -118,7 +118,7 @@ export const useAddressFiltersStore = defineStore('addressFilters', function (){
     watch([selectedAddressContinents], function([continents]){
         continents = continents.length > 0 ? continents.join(',') : 'default'
 
-        // TODO What was the point of this pause/resume ? (Removing it fixes  the country not changing when continent changes and the country is no longer on  the continents list)
+        // TODO Find how to avoid the double fetch + not have the hold countries when removing a continent
         // countriesWatch.pause()
         fetchCountries({params: {continents}}).then(() => {
             // countriesWatch.resume()
@@ -161,9 +161,11 @@ export const useAddressFiltersStore = defineStore('addressFilters', function (){
 
     watch([selectedAddressGames], function([games]){
         games = games.length > 0 ? games.join(',') : 'default'
-        charactersWatch.pause()
+
+        // TODO Find how to avoid the double fetch + not have the hold characters when removing a game
+        // charactersWatch.pause()
         fetchCharacters({params: {games}}).then(() => {
-            charactersWatch.resume()
+            // charactersWatch.resume()
         })
 
         let startDate
@@ -287,6 +289,41 @@ export const useAddressFiltersStore = defineStore('addressFilters', function (){
 
     }, { immediate: false, debounce: 600, maxWait: 2000 })
 
+    // TODO Use this function in the different watch functions
+    function fetchAddressesWithFilters() {
+
+        let startDate
+        let endDate
+        if(selectedAddressDates.value && selectedAddressTypes.value !== 'users'){
+            startDate = selectedAddressDates.value[0]
+            if (startDate){
+                startDate = useDateFormat(startDate,'YYYY-MM-DD')
+                startDate = startDate.value
+            }else{
+                startDate = 'default'
+            }
+
+            endDate = selectedAddressDates.value[1]
+            if (endDate){
+                endDate = useDateFormat(endDate,'YYYY-MM-DD')
+                endDate = endDate.value
+            }else{
+                endDate = startDate
+            }
+        }else{
+            startDate = 'default'
+            endDate = 'default'
+        }
+
+        const games = selectedAddressGames.value.length > 0 ? selectedAddressGames.value.join(',') : 'default'
+        const type = selectedAddressTypes.value
+        const continents = selectedAddressContinents.value.length > 0 ? selectedAddressContinents.value.join(',') : 'default'
+        const countries = selectedAddressCountries.value.length > 0 ? selectedAddressCountries.value.join(',') : 'default'
+        const name = selectedAddressName.value !== '' ? selectedAddressName.value : 'default'
+        const characters = selectedAddressCharacters.value.length > 0 ? selectedAddressCharacters.value.join(',') : 'default'
+        addressesStore.fetchAddresses({ params: {games, type, continents, countries, name, startDate, endDate, characters}})
+    }
+
     return {
         addressTypeOptions,
         addressContinentOptions,
@@ -302,6 +339,7 @@ export const useAddressFiltersStore = defineStore('addressFilters', function (){
         selectedAddressCharacters,
         addressesCharactersOptions,
         charactersFetched,
-        fetchCharacters
+        fetchCharacters,
+        fetchAddressesWithFilters
     }
 })

@@ -17,36 +17,44 @@ const routes = [
         children: [
             {
                 path:'',
-                component:Home
+                component:Home,
+                name:'home'
             },
             {
                 path: 'map',
-                component: Map
+                component: Map,
+                name:'map'
             },
             {
                 path: 'calendar',
-                component: Calendar
+                component: Calendar,
+                name:'calendar'
             },
             {
                 path: 'events',
-                component: Events
+                component: Events,
+                name:'events'
             },
             {
                 path: 'create-event',
-                component: CreateEvent
+                component: CreateEvent,
+                name:'create-event'
             },
             {
                 path: 'login',
-                component: Login
+                component: Login,
+                name:'login'
             },
             {
                 path: 'settings',
-                component: Settings
+                component: Settings,
+                name:'settings'
 
             },
             {
                 path: 'notifications',
-                component: Notifications
+                component: Notifications,
+                name:'notifications'
             },
             {
                 path: ':catchAll(.*)',

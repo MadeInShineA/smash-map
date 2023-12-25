@@ -45,7 +45,6 @@ export const useEventFiltersStore = defineStore('eventFilters', function (){
     const selectedEventName = ref('')
 
     const {pause: pauseCurrentPageWatch, resume: resumeCurrentPageWatch } = watchPausable([currentPage], function([page]){
-        console.log(1)
         let startDate
         let endDate
 
@@ -125,9 +124,11 @@ export const useEventFiltersStore = defineStore('eventFilters', function (){
 
     watch([selectedEventContinents], function([continents]){
         continents = continents.length > 0 ? continents.join(',') : 'default'
-        countriesWatch.pause()
+
+        // TODO How to avoid the double fetch without having the old countries when changing continents?
+        // countriesWatch.pause()
         fetchCountries({params: {continents}}).then(() => {
-            countriesWatch.resume()
+            // countriesWatch.resume()
         })
 
         let startDate
@@ -215,7 +216,6 @@ export const useEventFiltersStore = defineStore('eventFilters', function (){
     }, {immediate: false})
 
     watchDebounced([selectedEventName], function([name]){
-        console.log(5)
         name = name !== '' ? name : 'default'
 
         let startDate
@@ -251,6 +251,42 @@ export const useEventFiltersStore = defineStore('eventFilters', function (){
 
     }, { immediate: false, debounce: 600, maxWait: 2000 })
 
+    // TODO Use this function in the different watch functions
+    function fetchEventsWithFilters(){
+        let startDate
+        let endDate
+        if(selectedEventDates.value){
+            startDate = selectedEventDates.value[0]
+            if (startDate){
+                startDate = useDateFormat(startDate,'YYYY-MM-DD')
+                startDate = startDate.value
+            }else{
+                startDate = 'default'
+            }
+
+            endDate = selectedEventDates.value[1]
+            if (endDate){
+                endDate = useDateFormat(endDate,'YYYY-MM-DD')
+                endDate = endDate.value
+            }else{
+                endDate = startDate
+            }
+        }else{
+            startDate = 'default'
+            endDate = 'default'
+        }
+
+        const page = currentPage.value
+        const games = selectedEventGames.value.length > 0 ? selectedEventGames.value.join(',') : 'default'
+        const type = selectedEventTypes.value
+        const orderBy = selectedOrderBy.value
+        const continents = selectedEventContinents.value.length > 0 ? selectedEventContinents.value.join(',') : 'default'
+        const countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.join(',') : 'default'
+        const name = selectedEventName.value !== '' ? selectedEventName.value : 'default'
+
+        eventsStore.fetchEvents({ params: { page, games, type, orderBy, continents, countries, name, startDate, endDate}})
+    }
+
     return {
         eventTypeOptions,
         eventContinentOptions,
@@ -264,6 +300,7 @@ export const useEventFiltersStore = defineStore('eventFilters', function (){
         selectedEventDates,
         selectedEventContinents,
         selectedEventCountries,
-        selectedEventName
+        selectedEventName,
+        fetchEventsWithFilters
     }
 })

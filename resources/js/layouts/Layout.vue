@@ -11,6 +11,9 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import RegisterDialog from "@/components/RegisterDialog.vue";
 import {usePrimeVue} from 'primevue/config';
+import { useRouter } from 'vue-router';
+import {useEventFiltersStore} from "../stores/EventFiltersStore.js";
+import {useAddressFiltersStore} from "../stores/AddressFiltersStore.js";
 
 
 const { width, height } = useWindowSize()
@@ -106,11 +109,20 @@ const switchShowRegisterModal = function (){
     showRegisterModal.value = !showRegisterModal.value
 }
 
+const router = useRouter()
+const eventsFilterStore = useEventFiltersStore()
+const addressesFilterStore = useAddressFiltersStore()
+
+
 function setUser(){
     user.value = JSON.parse(window.localStorage.getItem('userData'));
     Echo.private(`notifications.` + user.value.id).listen('NotificationEvent', (e) => {
         notificationsCount.value = (parseInt(notificationsCount.value) + 1).toString()
     });
+    console.log(router.currentRoute.value)
+
+    addressesFilterStore.fetchAddressesWithFilters()
+    eventsFilterStore.fetchEventsWithFilters()
 }
 
 const profileMenu = ref();
@@ -147,6 +159,7 @@ const profileItems = ref([{
             }},
     ]
 }])
+
 
 </script>
 
