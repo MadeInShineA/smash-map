@@ -48,7 +48,9 @@ Artisan::command('delete-events', function(){
             foreach ($images as $image) {
                 var_dump($image->id);
                 $image_directory_path = $base_directory_path . '/' . $image->type .'.png';
-                unlink($image_directory_path);
+                if(file_exists($image_directory_path)){
+                    unlink($image_directory_path);
+                }
                 $image->delete();
             }
             #TODO Is there a better way to do it ?
@@ -277,21 +279,13 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                 foreach ($images as $image) {
                     $image_type = $image->type == 'profile'? ImageTypeEnum::EVENT_PROFILE : ImageTypeEnum::EVENT_BANNER;
 
-
-                    $image_file = @file_get_contents($image->url);
+                    $image_file = file_get_contents($image->url);
                     if (!$image_file){
                         var_dump("Event" . $event->name . " : Image ". $image->url . " couldn't be retrieved");
                         Log::error("Event" . $event->name . " : Image ". $image->url . " couldn't be retrieved");
-                        continue;
-                    }
-                    $image_md5 = md5($image_file);
-                #TODO Delete the unused images (inside event_db_md5s but not in event_md5s)
-
-//                $event_md5s[] = $image_md5;
-
-                    // TODO Check if it doesn't create the file if the image isn't available with the md5
-//                    if (!in_array($image_md5, $event_db_md5s) && $image_file) {
-                    if($image_file){
+                        die();
+                    }else{
+                        $image_md5 = md5($image_file);
                         $isImageStored = Storage::put($event_directory_path . '/' . $image_type . '.png', $image_file);
                         if ($isImageStored){
                             Image::Create(['parentable_type' =>Event::class, 'parentable_id' =>$event_object->id, 'type' =>$image_type,'md5' => $image_md5]);
@@ -301,14 +295,13 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                             Log::error("Image ". $image->url . " couldn't be stored stored");
                             die();
                         }
-
                     }
+                #TODO Delete the unused images (inside event_db_md5s but not in event_md5s)
+
                 }
             }
-
         }
     }
-
 });
 
 Artisan::command('import-100-events-all-games', function (){

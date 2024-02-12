@@ -22,6 +22,8 @@ class MapEventResource extends JsonResource
             'attendees'                 => $this->attendees,
             'link'                      => $this->link,
             'images'                    => ImageResource::collection($this->images),
+            'user_subscribed'           => $this->user_subscribed($request),
+
         ];
     }
 

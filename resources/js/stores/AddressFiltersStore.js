@@ -118,7 +118,7 @@ export const useAddressFiltersStore = defineStore('addressFilters', function (){
     watch([selectedAddressContinents], function([continents]){
         continents = continents.length > 0 ? continents.join(',') : 'default'
 
-        // TODO Find how to avoid the double fetch + not have the hold countries when removing a continent
+        // TODO Find how to avoid the double fetch + not have the old countries when removing a continent
         // countriesWatch.pause()
         fetchCountries({params: {continents}}).then(() => {
             // countriesWatch.resume()
@@ -162,7 +162,7 @@ export const useAddressFiltersStore = defineStore('addressFilters', function (){
     watch([selectedAddressGames], function([games]){
         games = games.length > 0 ? games.join(',') : 'default'
 
-        // TODO Find how to avoid the double fetch + not have the hold characters when removing a game
+        // TODO Find how to avoid the double fetch + not have the old characters when removing a game
         // charactersWatch.pause()
         fetchCharacters({params: {games}}).then(() => {
             // charactersWatch.resume()

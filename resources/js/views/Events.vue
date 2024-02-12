@@ -54,19 +54,7 @@ const orderByOptions = ref([
     {name: 'Date descending', value: 'dateDESC'}
 ])
 
-const notificationsLoading = ref(false)
-function handleEventSubscription(event){
-    notificationsLoading.value = true
-    if (event.user_subscribed){
-        axios.post('/api/events/' + event.id + '/unsubscribe')
-        event.user_subscribed = false
-    }else{
-        axios.post('/api/events/' + event.id + '/subscribe')
-        event.user_subscribed = true
-    }
-    console.log(event.id)
-    notificationsLoading.value = false
-}
+
 
 onMounted(()=>{
     console.log('Events Mounted')
@@ -103,8 +91,8 @@ onMounted(()=>{
                             <Button
                                 v-if='user'
                                 class="event-bell-button"
-                                @click="handleEventSubscription(event)"
-                                :loading="notificationsLoading"
+                                @click="eventsStore.handleEventSubscription(event)"
+                                :loading="eventsStore.subscriptionLoading"
                                 icon="pi pi-bell"
                                 :class='{ active: event.user_subscribed }'
                                 rounded

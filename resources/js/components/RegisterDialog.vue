@@ -259,8 +259,8 @@ onMounted(function(){
             </div>
         </div>
         <template #footer>
-            <Button label="Cancel" icon="pi pi-times" @click="emit('switchShowRegisterModal')" text plain/>
-            <Button label="Register" icon="pi pi-check" @click="register" text plain/>
+            <Button label="Cancel" severity="danger" icon="pi pi-times" @click="emit('switchShowRegisterModal')" text plain/>
+            <Button label="Register" severity="success" icon="pi pi-check" @click="register" text plain/>
         </template>
     </Dialog>
 </template>

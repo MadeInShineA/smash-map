@@ -13,6 +13,7 @@ import Sidebar from "primevue/sidebar";
 import Chip from "primevue/chip";
 import Tag from "primevue/tag";
 import { useAddressesStore } from '../stores/AddressesStore.js'
+import { useEventsStore} from "../stores/EventsStore.js";
 
 const props = defineProps({
     user: Object,
@@ -20,6 +21,8 @@ const props = defineProps({
 })
 
 const addressStore = useAddressesStore()
+
+const eventsStore = useEventsStore()
 
 
 const sideBarVisible = ref(false)
@@ -123,6 +126,16 @@ const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
                                 <div class="event-game-attendees">
                                     <Tag :value="event.game.name" rounded :style="{background: event.game.color, marginRight: '5px'}"></Tag>
                                     <Chip :label="event.attendees || event.attendees === 0 ? event.attendees.toString() : 'Private'" icon="pi pi-users"></Chip>
+                                    <Button
+                                        v-if='user'
+                                        class="event-bell-button"
+                                        @click="eventsStore.handleEventSubscription(event)"
+                                        :loading="eventsStore.subscriptionLoading"
+                                        icon="pi pi-bell"
+                                        :class='{ active: event.user_subscribed }'
+                                        rounded
+                                        aria-label="Notification"
+                                    />
                                 </div>
                                 <div class="event-datetime"><Chip :label="event.timezone_start_date_time + ' / ' + event.timezone_end_date_time + ' ' + event.timezone" icon="pi pi-clock"></Chip></div>
                             </template>
@@ -219,6 +232,7 @@ const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
     margin: 10px;
 }
 
+
 .color-box {
     width: 20px;
     height: 20px;
@@ -227,6 +241,20 @@ const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
 
 .game-name {
     font-size: 16px;
+}
+
+.event-bell-button, .event-bell-button:hover, .event-bell-button.active, .event-bell-button:focus, .p-button.event-bell-button:enabled{
+    background: transparent;
+}
+
+.event-bell-button:hover .p-button-icon,
+.event-bell-button.active .p-button-icon{
+    color: gold;
+}
+
+.event-bell-button.active:hover .p-button-icon,
+.event-bell-button .p-button-icon{
+    color: grey;
 }
 
 .dark .gm-style-iw{

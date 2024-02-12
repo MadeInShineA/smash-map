@@ -100,8 +100,9 @@ const login = async function () {
             </div>
         </div>
         <template #footer>
-            <Button label="Cancel" icon="pi pi-times" @click="emit('switchShowLoginModal')" text plain/>
-            <Button label="Login" icon="pi pi-check" @click="login" text plain/>
+            <Button label="Forgot password" severity="warning" icon="pi pi-exclamation-triangle" @click="login" text plain/>
+            <Button label="Cancel" severity="danger" icon="pi pi-times" @click="emit('switchShowLoginModal')" text plain/>
+            <Button label="Login" severity="success" icon="pi pi-check" @click="login" text plain/>
         </template>
     </Dialog>
 </template>
