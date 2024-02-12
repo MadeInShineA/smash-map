@@ -374,7 +374,8 @@ Artisan::command('import-countries-images', function (){
 });
 
 Artisan::command('test-broadcast', function(){
-    broadcast(new \App\Events\NotificationEvent(\App\Models\User::first()));
+    broadcast(new \App\Events\NotificationEvent(\App\Models\User::where('username', 'misa')->first()));
+    var_dump("yay");
 });
 
 Artisan::command('setup', function(){

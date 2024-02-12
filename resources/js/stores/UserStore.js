@@ -1,5 +1,4 @@
 import {defineStore} from "pinia"
-import {useAxios} from "@vueuse/integrations/useAxios";
 import {ref} from "vue";
 import {useAddressFiltersStore} from "../stores/AddressFiltersStore.js";
 import {useEventFiltersStore} from "../stores/EventFiltersStore.js";
@@ -10,13 +9,22 @@ export const useUserStore = defineStore('user', function (){
     const eventsFilterStore = useEventFiltersStore()
 
     // TODO Sync the notifications count with the server
-    const notificationsCount = ref(0)
-
-
+    const notificationsCount = ref(10)
     const user = ref(JSON.parse(window.localStorage.getItem('userData')))
 
     function setUser(){
         user.value = JSON.parse(window.localStorage.getItem('userData'));
+    }
+
+    function subscribeToNotifications(){
+        Echo.private(`notifications.` + user.value.id).listen('NotificationEvent', (e) => {
+            console.log("Notification received", e)
+            notificationsCount.value = (parseInt(notificationsCount.value) + 1).toString()
+        });
+    }
+
+    function unsubscribeToNotifications(){
+        Echo.leave(`notifications.` + user.value.id)
     }
     async function login(loginUser) {
 
@@ -30,15 +38,13 @@ export const useUserStore = defineStore('user', function (){
         localStorage.setItem('userData', JSON.stringify(response.data.data.user));
         localStorage.setItem('accessToken', response.data.data.token)
         localStorage.setItem('tokenTime', new Date().toString());
-
-        user.value = JSON.parse(window.localStorage.getItem('userData'));
-        Echo.private(`notifications.` + user.value.id).listen('NotificationEvent', (e) => {
-            notificationsCount.value = (parseInt(notificationsCount.value) + 1).toString()
-        });
-
+        setUser()
+        subscribeToNotifications()
         addressesFilterStore.fetchAddressesWithFilters()
         eventsFilterStore.fetchEventsWithFilters()
     }
+
+
 
     async function register(registerUser) {
 
@@ -54,12 +60,14 @@ export const useUserStore = defineStore('user', function (){
         localStorage.setItem('accessToken', response.data.data.token)
         localStorage.setItem('tokenTime', new Date().toString());
         setUser()
+        subscribeToNotifications()
         addressesFilterStore.fetchAddressesWithFilters()
         eventsFilterStore.fetchEventsWithFilters()
     }
 
     async function logout() {
         await axios.post('/api/logout');
+        unsubscribeToNotifications()
         localStorage.removeItem('userData');
         user.value = null;
     }
@@ -68,6 +76,7 @@ export const useUserStore = defineStore('user', function (){
         user,
         notificationsCount,
         setUser,
+        subscribeToNotifications,
         login,
         register,
         logout,

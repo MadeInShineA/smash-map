@@ -7,18 +7,17 @@ import LoginDialog from "@/components/LoginDialog.vue";
 import Avatar from "primevue/avatar";
 import Menu from "primevue/menu";
 import {useDark} from '@vueuse/core'
-import axios from "axios";
 import Swal from "sweetalert2";
 import RegisterDialog from "@/components/RegisterDialog.vue";
 import {usePrimeVue} from 'primevue/config';
 import { useRouter } from 'vue-router';
-import {useEventFiltersStore} from "../stores/EventFiltersStore.js";
-import {useAddressFiltersStore} from "../stores/AddressFiltersStore.js";
 import { useUserStore } from "../stores/UserStore.js";
 
 
 const { width, height } = useWindowSize()
 const responsiveMenuDisplayed = ref(false)
+
+const userStore = useUserStore()
 
 watch(width, function (width){
     responsiveMenuDisplayed.value = width <= 960
@@ -89,13 +88,9 @@ switch_theme(false)
 const menuBar = ref()
 
 const menuBarHeight = computed(()=>menuBar.value.clientHeight + 'px')
-const user = ref(null)
-const notificationsCount = ref("0")
-if (window.localStorage.getItem('userData') !== null) {
-    user.value = JSON.parse(window.localStorage.getItem('userData'));
-    Echo.private(`notifications.` + user.value.id).listen('NotificationEvent', (e) => {
-        notificationsCount.value = (parseInt(notificationsCount.value) + 1).toString()
-    });
+
+if (userStore.user) {
+    userStore.subscribeToNotifications()
 }
 
 const showLoginModal = ref(false)
@@ -111,9 +106,7 @@ const switchShowRegisterModal = function (){
 }
 
 const router = useRouter()
-const eventsFilterStore = useEventFiltersStore()
-const addressesFilterStore = useAddressFiltersStore()
-const userStore = useUserStore()
+
 
 
 // function setUser(){
@@ -179,7 +172,7 @@ const profileItems = ref([{
                     </Button>
                     <Menu :model="profileItems" :popup="true" ref="profileMenu"></Menu>
                     <router-link to="/notifications">
-                        <Button plain text icon="pi pi-bell" label="Notifications" :badge="notificationsCount" badgeClass="p-badge-success"/>
+                        <Button plain text icon="pi pi-bell" label="Notifications" :badge="userStore.notificationsCount" badgeClass="p-badge-success"/>
                     </router-link>
                 </template>
                 <Button v-if="!darkMode" id="sun-icon" @click="switch_theme(true)" icon="pi pi-sun" severity="secondary" text rounded aria-label="Sun"/>
@@ -197,7 +190,7 @@ const profileItems = ref([{
                 </template>
                 <template v-else>
                     <router-link to="/notifications">
-                        <Button plain text icon="pi pi-bell" label="Notifications" :badge="notificationsCount" badgeClass="p-badge-success"/>
+                        <Button plain text icon="pi pi-bell" label="Notifications" :badge="userStore.notificationsCount" badgeClass="p-badge-success"/>
                     </router-link>
                     <Button id="profile-avatar-button" plain text rounded @click="toggleProfileMenu">
                         <Avatar :image="userStore.user.profile_picture" shape="circle"  />
