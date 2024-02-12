@@ -6,6 +6,10 @@ import Dialog from "primevue/dialog";
 import Button from "primevue/button";
 import {ref} from "vue";
 import Swal from "sweetalert2";
+import {useUserStore} from "../stores/UserStore.js";
+
+
+const userStore = useUserStore()
 
 const props = defineProps({
     darkMode: Boolean,
@@ -28,37 +32,40 @@ const loginValidationErrors = ref({
 const login = async function () {
     loginValidationErrors.value.login = []
 
-    const header = {
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-        },
-    }
+    // const header = {
+    //     headers: {
+    //         'Accept': 'application/json',
+    //         'Content-Type': 'application/json',
+    //     },
+    // }
 
 
     axios.get('/sanctum/csrf-cookie').then(async () => {
         try {
-            const response = await axios.post('/api/login', loginUser.value, header)
-            localStorage.setItem('userData', JSON.stringify(response.data.data.user));
-            localStorage.setItem('accessToken', response.data.data.token)
-            localStorage.setItem('tokenTime', new Date().toString());
-            loginUser.value.username = ''
-            loginUser.value.password = ''
-            emit('setUser')
-            emit('switchShowLoginModal')
-            const alertBackground = props.darkMode ? '#1C1B22' : '#FFFFFF'
-            const alertColor = props.darkMode ? '#FFFFFF' : '#1C1B22'
-            await Swal.fire({
-                title: 'Logged in!',
-                text: 'Your are successfully logged in!',
-                icon: 'success',
-                background: alertBackground,
-                color: alertColor,
-                timer: 2000,
-                showConfirmButton: false
+            // const response = await axios.post('/api/login', loginUser.value, header)
+            // localStorage.setItem('userData', JSON.stringify(response.data.data.user));
+            // localStorage.setItem('accessToken', response.data.data.token)
+            // localStorage.setItem('tokenTime', new Date().toString());
+
+            // emit('setUser')
+
+            await userStore.login(loginUser.value).then(async function () {
+                loginUser.value.username = ''
+                loginUser.value.password = ''
+                emit('switchShowLoginModal')
+                const alertBackground = props.darkMode ? '#1C1B22' : '#FFFFFF'
+                const alertColor = props.darkMode ? '#FFFFFF' : '#1C1B22'
+                await Swal.fire({
+                    title: 'Logged in!',
+                    text: 'Your are successfully logged in!',
+                    icon: 'success',
+                    background: alertBackground,
+                    color: alertColor,
+                    timer: 2000,
+                    showConfirmButton: false
+                })
             })
         } catch (error) {
-            console.log(error)
             loginValidationErrors.value = error.response.data.errors
         }
     })

@@ -14,6 +14,7 @@ import {usePrimeVue} from 'primevue/config';
 import { useRouter } from 'vue-router';
 import {useEventFiltersStore} from "../stores/EventFiltersStore.js";
 import {useAddressFiltersStore} from "../stores/AddressFiltersStore.js";
+import { useUserStore } from "../stores/UserStore.js";
 
 
 const { width, height } = useWindowSize()
@@ -112,18 +113,19 @@ const switchShowRegisterModal = function (){
 const router = useRouter()
 const eventsFilterStore = useEventFiltersStore()
 const addressesFilterStore = useAddressFiltersStore()
+const userStore = useUserStore()
 
 
-function setUser(){
-    user.value = JSON.parse(window.localStorage.getItem('userData'));
-    Echo.private(`notifications.` + user.value.id).listen('NotificationEvent', (e) => {
-        notificationsCount.value = (parseInt(notificationsCount.value) + 1).toString()
-    });
-    console.log(router.currentRoute.value)
-
-    addressesFilterStore.fetchAddressesWithFilters()
-    eventsFilterStore.fetchEventsWithFilters()
-}
+// function setUser(){
+//     user.value = JSON.parse(window.localStorage.getItem('userData'));
+//     Echo.private(`notifications.` + user.value.id).listen('NotificationEvent', (e) => {
+//         notificationsCount.value = (parseInt(notificationsCount.value) + 1).toString()
+//     });
+//     console.log(router.currentRoute.value)
+//
+//     addressesFilterStore.fetchAddressesWithFilters()
+//     eventsFilterStore.fetchEventsWithFilters()
+// }
 
 const profileMenu = ref();
 
@@ -142,19 +144,18 @@ const profileItems = ref([{
             to: 'settings'
         },
         {label: 'Log Out', icon: 'pi pi-sign-out', command: async function () {
-                await axios.post('/api/logout');
-                localStorage.removeItem('userData');
-                user.value = null;
-                const alertBackground = darkMode.value ? '#1C1B22' : '#FFFFFF'
-                const alertColor = darkMode.value ? '#FFFFFF' : '#1C1B22'
-                await Swal.fire({
-                    title: 'Logged out!',
-                    text: 'Your are successfully logged out!',
-                    icon: 'success',
-                    background: alertBackground,
-                    color: alertColor,
-                    timer: 2000,
-                    showConfirmButton: false
+                await userStore.logout().then(async function () {
+                    const alertBackground = darkMode.value ? '#1C1B22' : '#FFFFFF'
+                    const alertColor = darkMode.value ? '#FFFFFF' : '#1C1B22'
+                    await Swal.fire({
+                        title: 'Logged out!',
+                        text: 'Your are successfully logged out!',
+                        icon: 'success',
+                        background: alertBackground,
+                        color: alertColor,
+                        timer: 2000,
+                        showConfirmButton: false
+                    })
                 })
             }},
     ]
@@ -168,13 +169,13 @@ const profileItems = ref([{
         <Menubar v-if="responsiveMenuDisplayed" id="responsive-menu" :model="menuItems">
             <template #start>
                 <router-link to="/"><img alt="logo" src="../../images/logo-no-text-no-bg.png" height="40" class="mr-2"/></router-link>
-                <template v-if="!user">
+                <template v-if="!userStore.user">
                     <Button @click="showLoginModal = true" icon="pi pi-user" text plain label="Login"/>
                     <Button @click="showRegisterModal = true" icon="pi pi-save" text plain label="Register"/>
                 </template>
                 <template v-else>
                     <Button id="profile-avatar-button" plain text rounded @click="toggleProfileMenu">
-                        <Avatar :image="user.profile_picture" shape="circle"  />
+                        <Avatar :image="userStore.user.profile_picture" shape="circle"  />
                     </Button>
                     <Menu :model="profileItems" :popup="true" ref="profileMenu"></Menu>
                     <router-link to="/notifications">
@@ -190,7 +191,7 @@ const profileItems = ref([{
                 <router-link to="/"><img alt="logo" src="../../images/logo-no-text-no-bg.png" height="40" class="mr-2"/></router-link>
             </template>
             <template #end>
-                <template v-if="!user">
+                <template v-if="!userStore.user">
                     <Button @click="showLoginModal = true" icon="pi pi-user" text plain label="Login"/>
                     <Button @click="showRegisterModal = true" icon="pi pi-save" text plain label="Register"/>
                 </template>
@@ -199,7 +200,7 @@ const profileItems = ref([{
                         <Button plain text icon="pi pi-bell" label="Notifications" :badge="notificationsCount" badgeClass="p-badge-success"/>
                     </router-link>
                     <Button id="profile-avatar-button" plain text rounded @click="toggleProfileMenu">
-                        <Avatar :image="user.profile_picture" shape="circle"  />
+                        <Avatar :image="userStore.user.profile_picture" shape="circle"  />
                     </Button>
                     <Menu :model="profileItems" :popup="true" ref="profileMenu"></Menu>
                 </template>
@@ -209,11 +210,11 @@ const profileItems = ref([{
         </Menubar>
     </header>
     <main>
-        <LoginDialog :darkMode="darkMode" :showLoginModal="showLoginModal" @switchShowLoginModal="switchShowLoginModal" @setUser="setUser"/>
-        <RegisterDialog :darkMode="darkMode" :showRegisterModal="showRegisterModal" @switchShowRegisterModal="switchShowRegisterModal" @setUser="setUser"/>
+        <LoginDialog :darkMode="darkMode" :showLoginModal="showLoginModal" @switchShowLoginModal="switchShowLoginModal"/>
+        <RegisterDialog :darkMode="darkMode" :showRegisterModal="showRegisterModal" @switchShowRegisterModal="switchShowRegisterModal"/>
         <router-view  v-slot="{ Component }">
             <keep-alive :include="['map', 'calendar']">
-                <component :is="Component" :user="user" :responsiveMenuDisplayed="responsiveMenuDisplayed"/>
+                <component :is="Component" :responsiveMenuDisplayed="responsiveMenuDisplayed"/>
             </keep-alive>
         </router-view>
     </main>

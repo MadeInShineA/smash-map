@@ -13,10 +13,11 @@ import Sidebar from "primevue/sidebar";
 import Chip from "primevue/chip";
 import Tag from "primevue/tag";
 import { useAddressesStore } from '../stores/AddressesStore.js'
-import { useEventsStore} from "../stores/EventsStore.js";
+import { useEventsStore } from "../stores/EventsStore.js";
+import { useUserStore } from "../stores/UserStore.js";
 
 const props = defineProps({
-    user: Object,
+    // user: Object,
     responsiveMenuDisplayed: Boolean
 })
 
@@ -24,6 +25,7 @@ const addressStore = useAddressesStore()
 
 const eventsStore = useEventsStore()
 
+const userStore = useUserStore()
 
 const sideBarVisible = ref(false)
 
@@ -127,7 +129,7 @@ const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
                                     <Tag :value="event.game.name" rounded :style="{background: event.game.color, marginRight: '5px'}"></Tag>
                                     <Chip :label="event.attendees || event.attendees === 0 ? event.attendees.toString() : 'Private'" icon="pi pi-users"></Chip>
                                     <Button
-                                        v-if='user'
+                                        v-if='userStore.user'
                                         class="event-bell-button"
                                         @click="eventsStore.handleEventSubscription(event)"
                                         :loading="eventsStore.subscriptionLoading"

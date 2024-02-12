@@ -9,6 +9,9 @@ import Dropdown from "primevue/dropdown";
 import GoogleAddressAutocomplete from 'vue3-google-address-autocomplete'
 import Swal from "sweetalert2";
 import MultiSelect from "primevue/multiselect";
+import {useUserStore} from "../stores/UserStore.js";
+
+const userStore = useUserStore()
 
 const props = defineProps({
     darkMode: Boolean,
@@ -112,36 +115,33 @@ function register(){
 
     axios.get('/sanctum/csrf-cookie').then(async () => {
         try {
-            const response = await axios.post('/api/register', registerUser, header)
-            registerUser.username = ''
-            registerUser.password = ''
-            registerUser.passwordConfirmation = ''
-            registerUser.email = ''
-            registerUser.games = []
-            registerUser.characters = []
-            registerUser.addressName = ''
-            registerUser.latitude = null
-            registerUser.longitude = null
-            registerUser.countryCode = ''
-            localStorage.setItem('userData', JSON.stringify(response.data.data.user));
-            localStorage.setItem('accessToken', response.data.data.token)
-            localStorage.setItem('tokenTime', new Date().toString());
-            emit('setUser')
-            emit('switchShowRegisterModal')
-            const alertBackground = props.darkMode ? '#1C1B22' : '#FFFFFF'
-            const alertColor = props.darkMode ? '#FFFFFF' : '#1C1B22'
-            await Swal.fire({
-                title: 'Logged in!',
-                text: 'Your are successfully logged in!',
-                icon: 'success',
-                background: alertBackground,
-                color: alertColor,
-                timer: 2000,
-                showConfirmButton: false
+            await userStore.register(registerUser).then(async function () {
+                registerUser.username = ''
+                registerUser.password = ''
+                registerUser.passwordConfirmation = ''
+                registerUser.email = ''
+                registerUser.games = []
+                registerUser.characters = []
+                registerUser.addressName = ''
+                registerUser.latitude = null
+                registerUser.longitude = null
+                registerUser.countryCode = ''
+
+                emit('switchShowRegisterModal')
+                const alertBackground = props.darkMode ? '#1C1B22' : '#FFFFFF'
+                const alertColor = props.darkMode ? '#FFFFFF' : '#1C1B22'
+                await Swal.fire({
+                    title: 'Logged in!',
+                    text: 'Your are successfully logged in!',
+                    icon: 'success',
+                    background: alertBackground,
+                    color: alertColor,
+                    timer: 2000,
+                    showConfirmButton: false
+                })
             })
+
         } catch (error) {
-            console.log(error)
-            console.log(error.response.data.errors)
             registerValidationErrors.value = error.response.data.errors
         }
     })
