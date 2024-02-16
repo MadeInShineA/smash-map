@@ -64,4 +64,22 @@ class Address extends Model
             return URL::to('/storage/map-icons/' . $event_games[0] . '-users.png');
         }
     }
+
+    public function distanceToKM(Address $address): float
+    {
+        $earth_radius = 6371;
+        $latitude1 = $this->latitude;
+        $longitude1 = $this->longitude;
+        $latitude2 = $address->latitude;
+        $longitude2 = $address->longitude;
+
+        $latitude1 = deg2rad($latitude1);
+        $longitude1 = deg2rad($longitude1);
+        $latitude2 = deg2rad($latitude2);
+        $longitude2 = deg2rad($longitude2);
+
+        $distance = acos(sin($latitude1) * sin($latitude2) + cos($latitude1) * cos($latitude2) * cos($longitude2 - $longitude1)) * $earth_radius;
+
+        return $distance;
+    }
 }
