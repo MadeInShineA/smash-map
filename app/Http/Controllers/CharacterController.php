@@ -34,6 +34,8 @@ class CharacterController extends Controller
                     $characters_array[] = ['game' => $game->name, 'characters'=> CharacterResource::collection($characters)];;
                 }
                 return $this->sendResponse($characters_array, 'Characters retrieved successfully');
+            }elseif ($request->input('setup')){
+                return $this->sendResponse([], 'Characters retrieved successfully');
             }
 
             // TODO Correct this, it's not smart to do this because it's the same as the query with the default games parameter

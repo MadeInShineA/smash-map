@@ -35,6 +35,7 @@ class UserController extends Controller
                 'email'         => $request->input('email'),
                 'password'      => Hash::make($request->input('password')),
                 'address_id'    => $address->id,
+                'is_moder'      => $request->input('isModer'),
             ]);
 
             $user->games()->attach($request->input('games'));

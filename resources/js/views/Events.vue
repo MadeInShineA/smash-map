@@ -18,7 +18,9 @@ import EventFilterSidebar from "@/components/EventFilterSidebar.vue";
 
 
 const eventsFiltersStore = useEventFiltersStore()
+eventsFiltersStore.fetchCountries()
 const eventsStore = useEventsStore()
+eventsStore.fetchEvents()
 const userStore = useUserStore()
 
 const props = defineProps({

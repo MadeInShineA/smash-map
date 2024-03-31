@@ -7,7 +7,6 @@ import {GoogleMap, CustomControl, Marker, MarkerCluster, InfoWindow} from "vue3-
 import {onMounted, ref, watch} from "vue";
 import AddressFilterSidebar from "@/components/AddressFilterSidebar.vue";
 import Button from "primevue/button";
-import {useAxios} from "@vueuse/integrations/useAxios";
 import LoaderComponent from "@/components/LoaderComponent.vue";
 import Sidebar from "primevue/sidebar";
 import Chip from "primevue/chip";
@@ -22,6 +21,8 @@ const props = defineProps({
 })
 
 const addressStore = useAddressesStore()
+
+addressStore.fetchAddresses()
 
 const eventsStore = useEventsStore()
 

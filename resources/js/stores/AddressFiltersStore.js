@@ -35,8 +35,8 @@ export const useAddressFiltersStore = defineStore('addressFilters', function (){
     ])
 
     // TODO Move this 2 to a store with the available options ?
-    const {data:addressesCountryOptions, isFinished: countriesFetched, execute: fetchCountries} = useAxios('/api/countries')
-    const { data: addressesCharactersOptions, isFinished: charactersFetched, execute: fetchCharacters } = useAxios('/api/characters')
+    const {data:addressesCountryOptions, isFinished: countriesFetched, execute: fetchCountries} = useAxios('/api/countries', {}, {immediate: false})
+    const { data: addressesCharacterOptions, isFinished: charactersFetched, execute: fetchCharacters } = useAxios('/api/characters',{}, {immediate: false})
 
     const selectedAddressGames = ref([]);
     const selectedAddressTypes = ref('default');
@@ -241,7 +241,7 @@ export const useAddressFiltersStore = defineStore('addressFilters', function (){
         }
     }, {immediate: false})
 
-    watch(addressesCharactersOptions, function(availableCharacters, oldValue){
+    watch(addressesCharacterOptions, function(availableCharacters, oldValue){
         if (oldValue && availableCharacters.length !== 0){
             let availableCharacterIds = []
             availableCharacters.data.forEach((game) => {
@@ -337,9 +337,10 @@ export const useAddressFiltersStore = defineStore('addressFilters', function (){
         selectedAddressCountries,
         selectedAddressName,
         selectedAddressCharacters,
-        addressesCharactersOptions,
+        addressesCharacterOptions,
         charactersFetched,
         fetchCharacters,
+        fetchCountries,
         fetchAddressesWithFilters
     }
 })

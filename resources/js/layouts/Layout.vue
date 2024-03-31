@@ -107,19 +107,6 @@ const switchShowRegisterModal = function (){
 
 const router = useRouter()
 
-
-
-// function setUser(){
-//     user.value = JSON.parse(window.localStorage.getItem('userData'));
-//     Echo.private(`notifications.` + user.value.id).listen('NotificationEvent', (e) => {
-//         notificationsCount.value = (parseInt(notificationsCount.value) + 1).toString()
-//     });
-//     console.log(router.currentRoute.value)
-//
-//     addressesFilterStore.fetchAddressesWithFilters()
-//     eventsFilterStore.fetchEventsWithFilters()
-// }
-
 const profileMenu = ref();
 
 const toggleProfileMenu = function(event) {

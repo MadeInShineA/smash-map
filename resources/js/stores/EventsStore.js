@@ -3,7 +3,7 @@ import {useAxios} from "@vueuse/integrations/useAxios";
 import {ref} from "vue";
 
 export const useEventsStore = defineStore('events', function (){
-    const { data: events, isFinished: eventsFetched, execute: fetchEvents } = useAxios('/api/events')
+    const { data: events, isFinished: eventsFetched, execute: fetchEvents } = useAxios('/api/events',{}, {immediate: false})
 
 
     const subscriptionLoading = ref(false)

@@ -46,7 +46,6 @@ Artisan::command('delete-events', function(){
             $images = $event->images;
             $base_directory_path = base_path(). '/storage/app/public/events-images/' . Str::slug($event->name);
             foreach ($images as $image) {
-                var_dump($image->id);
                 $image_directory_path = $base_directory_path . '/' . $image->type .'.png';
                 if(file_exists($image_directory_path)){
                     unlink($image_directory_path);

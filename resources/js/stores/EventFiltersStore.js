@@ -33,7 +33,7 @@ export const useEventFiltersStore = defineStore('eventFilters', function (){
         {name: 'Ultimate', id: '1386'},
     ])
 
-    const {data: eventCountryOptions, isFinished: countriesFetched, execute: fetchCountries} = useAxios('/api/countries')
+    const {data: eventCountryOptions, isFinished: countriesFetched, execute: fetchCountries} = useAxios('/api/countries', {}, {immediate: false})
 
     const currentPage = ref(1);
     const selectedOrderBy = ref('default');
@@ -81,7 +81,7 @@ export const useEventFiltersStore = defineStore('eventFilters', function (){
         const name = selectedEventName.value !== '' ? selectedEventName.value : 'default'
 
         eventsStore.fetchEvents({ params: { page, games, type, orderBy, continents, countries, name, startDate, endDate}})
-    })
+    }, {immediate: false})
 
     const countriesWatch = watchPausable([selectedEventCountries], function([countries]){
         countries = countries.length > 0 ? countries.join(',') : 'default'
@@ -164,10 +164,9 @@ export const useEventFiltersStore = defineStore('eventFilters', function (){
         const name = selectedEventName.value !== '' ? selectedEventName.value : 'default'
 
         eventsStore.fetchEvents({ params: { page: 1, games, type, orderBy, continents, countries, name, startDate, endDate}})
-    })
+    }, {immediate: false})
 
     watch([selectedOrderBy, selectedEventGames, selectedEventTypes, selectedEventDates], function([ orderBy , games,  type, dates]){
-        console.log(4)
 
         let startDate
         let endDate
@@ -293,6 +292,7 @@ export const useEventFiltersStore = defineStore('eventFilters', function (){
         eventGameOptions,
         eventCountryOptions,
         countriesFetched,
+        fetchCountries,
         currentPage,
         selectedOrderBy,
         selectedEventGames,

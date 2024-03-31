@@ -2,9 +2,13 @@
 
 namespace Database\Seeders;
 
+use App\Enums\ImageTypeEnum;
+use App\Models\Image;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class UserSeeder extends Seeder
@@ -15,23 +19,18 @@ class UserSeeder extends Seeder
     public function run(): void
     {
 
-        DB::table('users')->delete();
-
-        DB::table('users')->insert([
-            'uuid' => Str::uuid()->toString(),
-            'username' => 'admin',
-            'email' => 'admin@gmail.com',
-            'email_verified_at' => now(),
-            'password' => Hash::make('1234'),
-            'created_at' => now(),
-            'updated_at' => now(),
-            'address_id' => null,
-            'discord' => 'ssbm_misa',
-            'twitter' => 'MadeInShineA',
-            'description' => 'Smash Map Developer',
-            'color' => '#00FFFF',
-            'is_admin' => true,
-            'is_subscribed' => true,
+        $user = User::create([
+            'uuid'          => Str::uuid()->toString(),
+            'username'      => "admin",
+            'email'         => "admin@gmail.com",
+            'password'      => Hash::make("1234"),
+            'is_moder'      => false,
         ]);
+
+        $profile_picture = file_get_contents('https://ui-avatars.com/api/?name=' . $user->username . '&rounded=true&length=1&background=random');
+        Image::Create(['parentable_type' =>User::class, 'parentable_id' =>$user->id, 'type' =>ImageTypeEnum::USER_PROFILE]);
+
+        $user_directory_path = '/users-images/' . $user->uuid;
+        Storage::put($user_directory_path . '/' . ImageTypeEnum::USER_PROFILE . '.png', $profile_picture);
     }
 }

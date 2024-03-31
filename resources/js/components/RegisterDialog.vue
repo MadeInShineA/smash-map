@@ -5,11 +5,12 @@ import Button from "primevue/button";
 import InputText from "primevue/inputtext";
 import Dialog from "primevue/dialog";
 import {onMounted, reactive, ref, watch} from "vue";
-import Dropdown from "primevue/dropdown";
 import GoogleAddressAutocomplete from 'vue3-google-address-autocomplete'
 import Swal from "sweetalert2";
 import MultiSelect from "primevue/multiselect";
+import Checkbox from "primevue/checkbox";
 import {useUserStore} from "../stores/UserStore.js";
+import {useAxios} from "@vueuse/integrations/useAxios";
 
 const userStore = useUserStore()
 
@@ -31,6 +32,7 @@ const registerUser = reactive({
     latitude: null,
     longitude: null,
     countryCode: '',
+    isModer: false
 })
 
 const registerValidationErrors = ref({
@@ -54,31 +56,34 @@ const gameOptions = ref([
     {name: 'Ultimate', id: '1386'},
 ])
 
-const charactersOptions = ref([])
 
-const fetchingCharacters = ref(false)
-watch(() => registerUser.games, async (games) => {
-    if (games) {
-        fetchingCharacters.value = true
-        const response = await axios.get('/api/characters?games=' + games)
-        charactersOptions.value = response.data.data
+const { data: characterOptions, isFinished: charactersFetched, execute: fetchCharacters } = useAxios('/api/characters', {}, {immediate: false})
+fetchCharacters({params: {setup: true}})
 
+watch(() => registerUser.games, function(games){
+    games = games.length > 0 ? games.join(',') : 'default'
+    fetchCharacters({params: {games}})
+}, {immediate: false})
 
-        const characterOptionsId = []
-        charactersOptions.value.forEach((game) => {
+watch(characterOptions, function(availableCharacters, oldValue){
+    if (registerUser.games.length === 0){
+        registerUser.characters = []
+    }
+
+    if (oldValue && availableCharacters.length !== 0){
+        let availableCharacterIds = []
+        availableCharacters.data.forEach((game) => {
             game.characters.forEach((character) => {
-                characterOptionsId.push(character.id)
+                availableCharacterIds.push(character.id)
             })
         })
-        registerUser.characters = registerUser.characters.filter((character) => {
-            return characterOptionsId.includes(character)
-        })
 
-        fetchingCharacters.value = false
-
-
+    registerUser.characters = registerUser.characters.filter((character) => {
+        return availableCharacterIds.includes(character)
+    })
     }
-});
+}, {immediate: false})
+
 
 const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
 
@@ -126,6 +131,7 @@ function register(){
                 registerUser.latitude = null
                 registerUser.longitude = null
                 registerUser.countryCode = ''
+                registerUser.isModer = false
 
                 emit('switchShowRegisterModal')
                 const alertBackground = props.darkMode ? '#1C1B22' : '#FFFFFF'
@@ -204,10 +210,21 @@ onMounted(function(){
                 </TransitionGroup>
             </div>
 
+            <div class="modal-input-container">
+                <Checkbox v-model="registerUser.isModer" :binary="true"  input-id="register-is-moder"/>
+                <label for="register-is-moder" class="ml-10"> I am a controller moder </label>
+            </div>
+            <div class="validation-errors">
+                <TransitionGroup name="errors">
+                    <template v-for="registerIsModer in registerValidationErrors.is_moder" :key="registerIsModer" class="validation-errors">
+                        <div class="validation-error">{{registerIsModer}}</div>
+                    </template>
+                </TransitionGroup>
+            </div>
+
             <!-- TODO Fix the placeholder / empty item bug -->
-            <div class="modal-input-container p-float-label">
-                <MultiSelect id="register-games" class="modal-input" v-model="registerUser.games" :options="gameOptions" optionLabel="name" optionValue="id" :maxSelectedLabels="2" showClear @focus="registerValidationErrors.games = []"/>
-                <label for="register-games">Games</label>
+            <div class="modal-input-container">
+                <MultiSelect id="register-games" class="modal-input" v-model="registerUser.games" :options="gameOptions" optionLabel="name" optionValue="id" :maxSelectedLabels="3" placeholder="Games" @focus="registerValidationErrors.games = []"/>
             </div>
             <div class="validation-errors">
                 <TransitionGroup name="errors">
@@ -218,8 +235,8 @@ onMounted(function(){
             </div>
 
             <!-- TODO Fix the placeholder / empty item bug -->
-            <div class="modal-input-container p-float-label">
-                <MultiSelect id="register-characters" class="modal-input" :disabled="registerUser.games.length === 0" :loading="fetchingCharacters" v-model="registerUser.characters" :maxSelectedLabels="2" :options="charactersOptions" optionLabel="name"  optionValue="id" data-key="id" filter optionGroupLabel="game" optionGroupChildren="characters" showClear @focus="registerValidationErrors.characters = []">
+            <div class="modal-input-container">
+                <MultiSelect id="register-characters" class="modal-input" :disabled="registerUser.games.length === 0" :loading="!charactersFetched" v-model="registerUser.characters" :maxSelectedLabels="2" :options="characterOptions.data" optionLabel="name"  optionValue="id" data-key="id" filter optionGroupLabel="game" optionGroupChildren="characters" placeholder="Characters" showClear @focus="registerValidationErrors.characters = []">
                     <template #option="slotProps">
                         <div class="character-option">
                             <img :alt="slotProps.option.name" :src="slotProps.option.image.url" class="character-option-image" width="30" />
@@ -227,12 +244,11 @@ onMounted(function(){
                         </div>
                     </template>
                 </MultiSelect>
-                <label for="register-characters">Characters</label>
             </div>
             <div class="validation-errors">
                 <TransitionGroup name="errors">
-                    <template v-for="registercharactersError in registerValidationErrors.characters" :key="registercharactersError" class="validation-errors">
-                        <div class="validation-error">{{registercharactersError}}</div>
+                    <template v-for="registerCharactersError in registerValidationErrors.characters" :key="registerCharactersError" class="validation-errors">
+                        <div class="validation-error">{{registerCharactersError}}</div>
                     </template>
                 </TransitionGroup>
             </div>
@@ -314,6 +330,10 @@ onMounted(function(){
     margin-left: 20px;
     font-size: 12px;
     color: red;
+}
+
+.ml-10{
+    margin-left: 10px;
 }
 
 

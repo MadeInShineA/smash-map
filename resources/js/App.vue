@@ -6,6 +6,7 @@ onMounted(()=>{
     console.log('App Mounted')
 })
 
+
 </script>
 
 <template>

@@ -7,7 +7,10 @@ import Dropdown from "primevue/dropdown";
 import InputText from "primevue/inputtext";
 import {useAddressFiltersStore} from '../stores/AddressFiltersStore.js'
 
-const addressesStore = useAddressFiltersStore()
+const addressFiltersStore = useAddressFiltersStore()
+
+addressFiltersStore.fetchCountries()
+addressFiltersStore.fetchCharacters()
 
 const props = defineProps({
     sideBarVisible: Boolean
@@ -23,22 +26,22 @@ const emit = defineEmits(['switchSideBarVisible'])
         <h2>Filters</h2>
         <div id="event-filters">
             <div class="event-filter">
-                <MultiSelect v-model="addressesStore.selectedAddressGames" :options="addressesStore.addressGameOptions"
+                <MultiSelect v-model="addressFiltersStore.selectedAddressGames" :options="addressFiltersStore.addressGameOptions"
                              display="chip" :maxSelectedLabels="2" optionLabel="name" optionValue="id"
                              placeholder="Select Games"/>
             </div>
             <div class="event-filter">
-                <Dropdown v-model="addressesStore.selectedAddressTypes" :options="addressesStore.addressTypeOptions"
+                <Dropdown v-model="addressFiltersStore.selectedAddressTypes" :options="addressFiltersStore.addressTypeOptions"
                           optionLabel="name" optionValue="value" placeholder="All markers types"/>
             </div>
             <div class="event-filter">
-                <Calendar v-model=addressesStore.selectedAddressDates :minDate="new Date()"
-                          :disabled="addressesStore.selectedAddressTypes === 'users' || addressesStore.selectedAddressCharacters.length > 0"
+                <Calendar v-model=addressFiltersStore.selectedAddressDates :minDate="new Date()"
+                          :disabled="addressFiltersStore.selectedAddressTypes === 'users' || addressFiltersStore.selectedAddressCharacters.length > 0"
                           placeholder="Event date range (UTC)" selectionMode="range" :manualInput="false" showButtonBar
                           dateFormat="dd/mm/yy"></Calendar>
             </div>
             <div class="event-filter">
-                <MultiSelect :disabled="addressesStore.selectedAddressDates != null && (addressesStore.selectedAddressTypes ==='events' || addressesStore.selectedAddressDates.length !== 0)" :loading="!addressesStore.charactersFetched" v-model="addressesStore.selectedAddressCharacters" :maxSelectedLabels="2" :options="addressesStore.addressesCharactersOptions.data" optionLabel="name"  optionValue="id" data-key="id" filter optionGroupLabel="game" optionGroupChildren="characters" placeholder="Users characters">
+                <MultiSelect :disabled="addressFiltersStore.selectedAddressDates != null && (addressFiltersStore.selectedAddressTypes ==='events' || addressFiltersStore.selectedAddressDates.length !== 0)" :loading="!addressFiltersStore.charactersFetched" v-model="addressFiltersStore.selectedAddressCharacters" :maxSelectedLabels="2" :options="addressFiltersStore.addressesCharacterOptions.data" optionLabel="name" optionValue="id" data-key="id" filter optionGroupLabel="game" optionGroupChildren="characters" placeholder="Users characters">
                     <template #option="slotProps">
                         <div class="character-option">
                             <img :alt="slotProps.option.name" :src="slotProps.option.image.url" class="character-option-image" width="30" />
@@ -48,13 +51,13 @@ const emit = defineEmits(['switchSideBarVisible'])
                 </MultiSelect>
             </div>
             <div class="event-filter">
-                <MultiSelect v-model="addressesStore.selectedAddressContinents"
-                             :options="addressesStore.addressContinentOptions" display="chip" :maxSelectedLabels="2"
+                <MultiSelect v-model="addressFiltersStore.selectedAddressContinents"
+                             :options="addressFiltersStore.addressContinentOptions" display="chip" :maxSelectedLabels="2"
                              optionLabel="name" optionValue="code" placeholder="Select Continents"/>
             </div>
             <div class="event-filter">
-                <MultiSelect :loading="!addressesStore.countriesFetched" :disabled="!addressesStore.countriesFetched" v-model="addressesStore.selectedAddressCountries"
-                             :options="addressesStore.addressesCountryOptions.data" filter display="chip"
+                <MultiSelect :loading="!addressFiltersStore.countriesFetched" :disabled="!addressFiltersStore.countriesFetched" v-model="addressFiltersStore.selectedAddressCountries"
+                             :options="addressFiltersStore.addressesCountryOptions.data" filter display="chip"
                              :maxSelectedLabels="2" optionLabel="name" optionValue="code"
                              placeholder="Select Countries">
                     <template #option="slotProps">
@@ -69,7 +72,7 @@ const emit = defineEmits(['switchSideBarVisible'])
             <div class="event-filter">
         <span class="p-input-icon-left">
             <i class="pi pi-search"/>
-            <InputText v-model="addressesStore.selectedAddressName" placeholder="Name"></InputText>
+            <InputText v-model="addressFiltersStore.selectedAddressName" placeholder="Name"></InputText>
         </span>
             </div>
         </div>

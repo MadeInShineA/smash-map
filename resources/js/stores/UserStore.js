@@ -3,13 +3,14 @@ import {ref} from "vue";
 import {useAddressFiltersStore} from "../stores/AddressFiltersStore.js";
 import {useEventFiltersStore} from "../stores/EventFiltersStore.js";
 import axios from "axios";
+import {router} from "@/router.js";
 export const useUserStore = defineStore('user', function (){
 
     const addressesFilterStore = useAddressFiltersStore()
     const eventsFilterStore = useEventFiltersStore()
 
     // TODO Sync the notifications count with the server
-    const notificationsCount = ref(10)
+    const notificationsCount = ref(0)
     const user = ref(JSON.parse(window.localStorage.getItem('userData')))
 
     function setUser(){
@@ -40,8 +41,12 @@ export const useUserStore = defineStore('user', function (){
         localStorage.setItem('tokenTime', new Date().toString());
         setUser()
         subscribeToNotifications()
-        addressesFilterStore.fetchAddressesWithFilters()
-        eventsFilterStore.fetchEventsWithFilters()
+        if(router.currentRoute.value.path === '/map'){
+            addressesFilterStore.fetchAddressesWithFilters()
+        }
+        else if(router.currentRoute.value.path === '/events'){
+            eventsFilterStore.fetchEventsWithFilters()
+        }
     }
 
 
@@ -61,8 +66,12 @@ export const useUserStore = defineStore('user', function (){
         localStorage.setItem('tokenTime', new Date().toString());
         setUser()
         subscribeToNotifications()
-        addressesFilterStore.fetchAddressesWithFilters()
-        eventsFilterStore.fetchEventsWithFilters()
+        if(router.currentRoute.value.path === '/map'){
+            addressesFilterStore.fetchAddressesWithFilters()
+        }
+        else if(router.currentRoute.value.path === '/events'){
+            eventsFilterStore.fetchEventsWithFilters()
+        }
     }
 
     async function logout() {
