@@ -10,7 +10,8 @@ export const useAddressFiltersStore = defineStore('addressFilters', function (){
     const addressTypeOptions = ref([
         {name: 'All marker types', value: 'default'},
         {name: 'Events', value: 'events'},
-        {name: 'Users', value: 'users'}
+        {name: 'Users', value: 'users'},
+        {name: 'Modders', value: 'modders'},
     ]);
 
 

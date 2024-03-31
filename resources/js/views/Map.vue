@@ -104,6 +104,9 @@ const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
                                 <div class="user-username">
                                     {{ user.username }}
                                 </div>
+                                <div v-if="user.isModder" class="user-is-modder-container">
+                                    <Tag value="Modder" rounded :style="{background: 'aqua', marginRight: '5px'}"></Tag>
+                                </div>
                                 <div class="user-games-characters">
                                     <template v-for="game in user.games">
                                         <div class="user-game-tag">
@@ -316,6 +319,10 @@ const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
 
 .user-username{
     margin-top: 5px
+}
+
+.user-is-modder-container{
+    padding-top: 20px
 }
 
 .user-games-characters{

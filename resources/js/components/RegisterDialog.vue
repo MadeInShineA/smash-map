@@ -32,7 +32,7 @@ const registerUser = reactive({
     latitude: null,
     longitude: null,
     countryCode: '',
-    isModer: false
+    isModder: false
 })
 
 const registerValidationErrors = ref({
@@ -131,7 +131,7 @@ function register(){
                 registerUser.latitude = null
                 registerUser.longitude = null
                 registerUser.countryCode = ''
-                registerUser.isModer = false
+                registerUser.isModder = false
 
                 emit('switchShowRegisterModal')
                 const alertBackground = props.darkMode ? '#1C1B22' : '#FFFFFF'
@@ -211,13 +211,13 @@ onMounted(function(){
             </div>
 
             <div class="modal-input-container">
-                <Checkbox v-model="registerUser.isModer" :binary="true"  input-id="register-is-moder"/>
-                <label for="register-is-moder" class="ml-10"> I am a controller moder </label>
+                <Checkbox v-model="registerUser.isModder" :binary="true"  input-id="register-is-moder"/>
+                <label for="register-is-moder" class="ml-10"> I am a controller modder </label>
             </div>
             <div class="validation-errors">
                 <TransitionGroup name="errors">
-                    <template v-for="registerIsModer in registerValidationErrors.is_moder" :key="registerIsModer" class="validation-errors">
-                        <div class="validation-error">{{registerIsModer}}</div>
+                    <template v-for="registerIsModder in registerValidationErrors.isModder" :key="registerIsModder" class="validation-errors">
+                        <div class="validation-error">{{registerIsModder}}</div>
                     </template>
                 </TransitionGroup>
             </div>

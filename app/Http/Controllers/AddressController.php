@@ -89,6 +89,12 @@ class AddressController extends Controller
                         break;
                     case 'users':
                         $addresses->whereHas('users');
+                        break;
+                    case 'modders':
+                        $addresses->whereHas('users', function ($query){
+                            $query->where('is_modder', true);
+                        });
+                        break;
                 }
             }
 

@@ -35,7 +35,7 @@ class User extends Authenticatable
         'distance_notifications',
         'attendees_notifications',
         'time_notifications',
-        'is_moder',
+        'is_modder',
         'is_admin',
         'is_subscribed'
     ];

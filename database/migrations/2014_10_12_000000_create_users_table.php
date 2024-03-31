@@ -28,7 +28,7 @@ return new class extends Migration
             $table->boolean('distance_notifications')->default(true);
             $table->boolean('attendees_notifications')->default(true);
             $table->boolean('time_notifications')->default(true);
-            $table->boolean('is_moder')->default(false);
+            $table->boolean('is_modder')->default(false);
             $table->boolean('is_admin')->default(false);
             $table->boolean('is_subscribed')->default(false);
         });

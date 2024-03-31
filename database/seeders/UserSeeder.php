@@ -24,7 +24,7 @@ class UserSeeder extends Seeder
             'username'      => "admin",
             'email'         => "admin@gmail.com",
             'password'      => Hash::make("1234"),
-            'is_moder'      => false,
+            'is_modder'      => false,
         ]);
 
         $profile_picture = file_get_contents('https://ui-avatars.com/api/?name=' . $user->username . '&rounded=true&length=1&background=random');

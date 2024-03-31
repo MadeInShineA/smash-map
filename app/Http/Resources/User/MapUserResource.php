@@ -12,7 +12,8 @@ class MapUserResource extends JsonResource
         return [
             'username'          => $this->username,
             'profilePicture'    => $this->profile_picture,
-            'games'             => $this->games_characters_array
+            'games'             => $this->games_characters_array,
+            'isModder'          => $this->is_modder,
         ];
     }
 }
