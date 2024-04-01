@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\ImageTypeEnum;
+use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\Address;
@@ -14,6 +15,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -75,6 +77,20 @@ class UserController extends Controller
             $request->user()->currentAccessToken()->delete();
         }
         return $this->sendResponse([], 'You are disconnected');
+    }
+
+    public function forgot_password(ForgotPasswordRequest $request): JsonResponse
+    {
+        try {
+            $status = Password::sendResetLink(
+                $request->only('email')
+            );
+            return $status === Password::RESET_LINK_SENT
+                ? $this->sendResponse([], 'Reset link sent')
+                : $this->sendError('Email not found', ['email' => ['There is no account with this email address.']], 500);
+        } catch (\Error $error) {
+            return $this->sendError($error, ['An error occurred while sending the email'], 500);
+        }
     }
 
     public function is_authenticated(Request $request): JsonResponse

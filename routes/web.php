@@ -22,6 +22,9 @@ Route::get('', function () {
 Route::get('/{page}', function () {
     return view('app');
 });
+Route::get('/reset-password/{token}', function (string $token) {
+    return view('auth.reset-password', ['token' => $token]);
+})->name('password.reset');
 
 Route::middleware(['auth:sanctum'])->group(function (){
     Route::post('/events/{event}/subscribe', [UserController::class, 'event_subscribe']);

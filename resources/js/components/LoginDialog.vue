@@ -32,23 +32,8 @@ const loginValidationErrors = ref({
 const login = async function () {
     loginValidationErrors.value.login = []
 
-    // const header = {
-    //     headers: {
-    //         'Accept': 'application/json',
-    //         'Content-Type': 'application/json',
-    //     },
-    // }
-
-
     axios.get('/sanctum/csrf-cookie').then(async () => {
         try {
-            // const response = await axios.post('/api/login', loginUser.value, header)
-            // localStorage.setItem('userData', JSON.stringify(response.data.data.user));
-            // localStorage.setItem('accessToken', response.data.data.token)
-            // localStorage.setItem('tokenTime', new Date().toString());
-
-            // emit('setUser')
-
             await userStore.login(loginUser.value).then(async function () {
                 loginUser.value.username = ''
                 loginUser.value.password = ''
@@ -70,11 +55,47 @@ const login = async function () {
         }
     })
 }
+
+
+const showForgetPasswordInputs = ref(false)
+const forgotEmail = ref('')
+
+const sendPasswordLink = async function () {
+    forgotValidationErrors.value.email = []
+
+    axios.get('/sanctum/csrf-cookie').then(async () => {
+        try {
+            console.log("Forgot")
+            await userStore.forgotPassword(forgotEmail.value).then(async function () {
+                forgotEmail.value = ''
+                emit('switchShowLoginModal')
+                const alertBackground = props.darkMode ? '#1C1B22' : '#FFFFFF'
+                const alertColor = props.darkMode ? '#FFFFFF' : '#1C1B22'
+                await Swal.fire({
+                    title: 'Password reset link sent!',
+                    text: 'A password reset link has been sent to your email!',
+                    icon: 'success',
+                    background: alertBackground,
+                    color: alertColor,
+                    timer: 2000,
+                    showConfirmButton: false
+                })
+            })
+        } catch (error) {
+            forgotValidationErrors.value = error.response.data.errors
+        }
+    })
+}
+
+const forgotValidationErrors = ref({
+    email: []
+})
+
 </script>
 
 <template>
-    <Dialog id="login-modal" class="user-modal" :visible="showLoginModal" @update:visible="emit('switchShowLoginModal')" :draggable="false" modal header="Login" :style="{ width: '30vw' }" :breakpoints="{ '1200px': '50vw', '575px': '90vw' }">
-        <div class="modal-inputs">
+    <Dialog id="login-modal" class="user-modal" :visible="showLoginModal" @update:visible="emit('switchShowLoginModal')" :draggable="false" modal :header="showForgetPasswordInputs ? 'Forgot Password' : 'Login'" :style="{ width: '30vw' }" :breakpoints="{ '1200px': '50vw', '575px': '90vw' }">
+        <div v-if="!showForgetPasswordInputs">
             <div class="p-float-label modal-input-container">
                 <InputText id="login-username" class="modal-input" v-model="loginUser.username" autofocus @focus="loginValidationErrors.username = []"/>
                 <label for="login-username">Username</label>
@@ -106,10 +127,23 @@ const login = async function () {
                 </TransitionGroup>
             </div>
         </div>
+        <div v-if="showForgetPasswordInputs">
+            <div class="p-float-label modal-input-container">
+                <InputText id="forgot-email" class="modal-input" v-model="forgotEmail" autofocus @focus="forgotValidationErrors.email = []"/>
+                <label for="forgot-email">Email</label>
+            </div>
+            <div class="validation-errors">
+                <TransitionGroup name="errors">
+                    <template v-for="forgotEmailError in forgotValidationErrors.email" :key="forgotEmailError" class="validation-errors">
+                        <div class="validation-error">{{forgotEmailError}}</div>
+                    </template>
+                </TransitionGroup>
+            </div>
+        </div>
         <template #footer>
-            <Button label="Forgot password" severity="warning" icon="pi pi-exclamation-triangle" @click="console.log('login')" text plain/>
+            <Button :label="showForgetPasswordInputs ? '' : 'Forgot password'" severity="warning" :icon="showForgetPasswordInputs ? 'pi pi-arrow-left' : 'pi pi-exclamation-triangle'" @click="showForgetPasswordInputs = !showForgetPasswordInputs" text plain/>
             <Button label="Cancel" severity="danger" icon="pi pi-times" @click="emit('switchShowLoginModal')" text plain/>
-            <Button label="Login" severity="success" icon="pi pi-check" @click="login" text plain/>
+            <Button :label="showForgetPasswordInputs ? 'Sent reset link' : 'Login'" severity="success" icon="pi pi-check" @click="() => showForgetPasswordInputs ? sendPasswordLink() : login()" text plain/>
         </template>
     </Dialog>
 </template>

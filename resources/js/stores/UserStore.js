@@ -81,6 +81,16 @@ export const useUserStore = defineStore('user', function (){
         user.value = null;
     }
 
+    async function forgotPassword(email) {
+        const header = {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+        }
+        await axios.post('/api/forgot-password', {"email": email}, header)
+    }
+
     return {
         user,
         notificationsCount,
@@ -89,5 +99,6 @@ export const useUserStore = defineStore('user', function (){
         login,
         register,
         logout,
+        forgotPassword
     }
 })
