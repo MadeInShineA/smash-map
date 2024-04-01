@@ -194,7 +194,7 @@ const profileItems = ref([{
         <RegisterDialog :darkMode="darkMode" :showRegisterModal="showRegisterModal" @switchShowRegisterModal="switchShowRegisterModal"/>
         <router-view  v-slot="{ Component }">
             <keep-alive :include="['map', 'calendar']">
-                <component :is="Component" :responsiveMenuDisplayed="responsiveMenuDisplayed"/>
+                <component :darkMode="darkMode" :is="Component" :responsiveMenuDisplayed="responsiveMenuDisplayed"/>
             </keep-alive>
         </router-view>
     </main>

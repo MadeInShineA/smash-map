@@ -24,7 +24,7 @@ eventsStore.fetchEvents()
 const userStore = useUserStore()
 
 const props = defineProps({
-    user: Object,
+    darkMode: Boolean
 })
 
 
@@ -95,7 +95,7 @@ onMounted(()=>{
                             <Button
                                 v-if='userStore.user'
                                 class="event-bell-button"
-                                @click="eventsStore.handleEventSubscription(event)"
+                                @click="eventsStore.handleEventSubscription(event, props.darkMode)"
                                 :loading="eventsStore.subscriptionLoading"
                                 icon="pi pi-bell"
                                 :class='{ active: event.user_subscribed }'

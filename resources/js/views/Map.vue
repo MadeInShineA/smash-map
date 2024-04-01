@@ -16,8 +16,8 @@ import { useEventsStore } from "../stores/EventsStore.js";
 import { useUserStore } from "../stores/UserStore.js";
 
 const props = defineProps({
-    // user: Object,
-    responsiveMenuDisplayed: Boolean
+    responsiveMenuDisplayed: Boolean,
+    darkMode: Boolean
 })
 
 const addressStore = useAddressesStore()
@@ -135,7 +135,7 @@ const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
                                     <Button
                                         v-if='userStore.user'
                                         class="event-bell-button"
-                                        @click="eventsStore.handleEventSubscription(event)"
+                                        @click="eventsStore.handleEventSubscription(event, darkMode)"
                                         :loading="eventsStore.subscriptionLoading"
                                         icon="pi pi-bell"
                                         :class='{ active: event.user_subscribed }'
