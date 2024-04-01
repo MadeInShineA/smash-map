@@ -143,7 +143,7 @@ const forgotValidationErrors = ref({
         <template #footer>
             <Button :label="showForgetPasswordInputs ? '' : 'Forgot password'" severity="warning" :icon="showForgetPasswordInputs ? 'pi pi-arrow-left' : 'pi pi-exclamation-triangle'" @click="showForgetPasswordInputs = !showForgetPasswordInputs" text plain/>
             <Button label="Cancel" severity="danger" icon="pi pi-times" @click="emit('switchShowLoginModal')" text plain/>
-            <Button :label="showForgetPasswordInputs ? 'Sent reset link' : 'Login'" severity="success" icon="pi pi-check" @click="() => showForgetPasswordInputs ? sendPasswordLink() : login()" text plain/>
+            <Button :label="showForgetPasswordInputs ? 'Send reset link' : 'Login'" severity="success" icon="pi pi-check" @click="() => showForgetPasswordInputs ? sendPasswordLink() : login()" text plain/>
         </template>
     </Dialog>
 </template>
