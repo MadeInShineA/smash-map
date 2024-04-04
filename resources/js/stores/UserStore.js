@@ -4,6 +4,7 @@ import {useAddressFiltersStore} from "../stores/AddressFiltersStore.js";
 import {useEventFiltersStore} from "../stores/EventFiltersStore.js";
 import axios from "axios";
 import {router} from "@/router.js";
+
 export const useUserStore = defineStore('user', function (){
 
     const addressesFilterStore = useAddressFiltersStore()
@@ -88,7 +89,17 @@ export const useUserStore = defineStore('user', function (){
                 'Content-Type': 'application/json',
             },
         }
-        await axios.post('/api/forgot-password', {"email": email}, header)
+        return axios.post('/api/forgot-password', {"email": email}, header)
+    }
+
+    async function resetPassword(resetData) {
+        const header = {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+        }
+        return axios.post('/api/reset-password', resetData, header)
     }
 
     return {
@@ -99,6 +110,7 @@ export const useUserStore = defineStore('user', function (){
         login,
         register,
         logout,
-        forgotPassword
+        forgotPassword,
+        resetPassword
     }
 })

@@ -6,11 +6,13 @@ use App\Enums\ImageTypeEnum;
 use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\ResetPasswordRequest;
 use App\Models\Address;
 use App\Models\Country;
 use App\Models\Event;
 use App\Models\Image;
 use App\Models\User;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -86,11 +88,36 @@ class UserController extends Controller
                 $request->only('email')
             );
             return $status === Password::RESET_LINK_SENT
-                ? $this->sendResponse([], 'Reset link sent')
-                : $this->sendError('Email not found', ['email' => ['There is no account with this email address.']], 500);
+                ? $this->sendResponse([], __($status))
+                : $this->sendError( __($status),[], 500);
         } catch (\Error $error) {
             return $this->sendError($error, ['An error occurred while sending the email'], 500);
         }
+    }
+
+    public function reset_password(ResetPasswordRequest $request):JsonResponse
+    {
+        try{
+            $status = Password::reset(
+                $request->only('email', 'password', 'password_confirmation', 'token'),
+                function (User $user, string $password) {
+                    $user->forceFill([
+                        'password' => Hash::make($password)
+                    ])->setRememberToken(Str::random(60));
+
+                    $user->save();
+
+                    event(new PasswordReset($user));
+                }
+            );
+
+            return $status === Password::PASSWORD_RESET
+                ? $this->sendResponse([], __($status))
+                : $this->sendError(__($status), [], 500);
+        }catch (\Error $error) {
+            return $this->sendError($error, ['An error occurred while sending the email'], 500);
+        }
+
     }
 
     public function is_authenticated(Request $request): JsonResponse

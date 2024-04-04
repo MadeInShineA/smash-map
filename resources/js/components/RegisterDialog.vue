@@ -87,8 +87,6 @@ watch(characterOptions, function(availableCharacters, oldValue){
 
 const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
 
-const RegisterUserAddressInput = ref(null)
-
 function RegisterUserAddressInputSelect(place) {
     for (let i = 0; i < place.address_components.length; i++) {
         const addressType = place.address_components[i].types[0];
@@ -148,7 +146,24 @@ function register(){
             })
 
         } catch (error) {
-            registerValidationErrors.value = error.response.data.errors
+            if(error.response.data.errors === undefined && error.response.data.message && error.response.status === 500){
+                emit('switchShowRegisterModal')
+                const alertBackground = props.darkMode ? '#1C1B22' : '#FFFFFF'
+                const alertColor = props.darkMode ? '#FFFFFF' : '#1C1B22'
+                await Swal.fire({
+                    title: 'Error',
+                    text: error.response.data.message,
+                    icon: 'error',
+                    background: alertBackground,
+                    color: alertColor,
+                    timer: 2000,
+                    showConfirmButton: false
+                })
+            }else if(error.response.data.errors){
+                registerValidationErrors.value = error.response.data.errors
+            }else {
+                console.log(error)
+            }
         }
     })
 }

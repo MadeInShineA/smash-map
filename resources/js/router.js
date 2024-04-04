@@ -9,6 +9,7 @@ import Login from "./views/Login.vue";
 import DefaultLayout from "./layouts/Layout.vue";
 import Notifications from "./views/Notifications.vue";
 import Settings from "./views/Settings.vue";
+import ResetPassword from "./views/ResetPassword.vue";
 
 const routes = [
     {
@@ -56,6 +57,13 @@ const routes = [
                 component: Notifications,
                 name:'notifications'
             },
+            {
+                path: 'reset-password/:token',
+                component: ResetPassword,
+                name:'reset-password',
+                props: true
+            },
+
             {
                 path: ':catchAll(.*)',
                 redirect: '/'

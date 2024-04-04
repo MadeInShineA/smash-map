@@ -29,15 +29,15 @@ class RegisterRequest extends FormRequest
         return [
             'username'              => 'required|max:20|unique:' .User::class . ',username|alpha_dash:ascii' ,
             'email'                 => 'required|email:rfc,dns|max:255|unique:' . User::class . ',email',
-            'password'              => 'required',
-            'passwordConfirmation'  => 'required|same:password',
+            'password'              => 'required|string',
+            'passwordConfirmation'  => 'required|string|same:password',
             'games'                 => 'required|exists:' . Game::class . ',id',
             'characters'            => ['required', 'exists:' .Character::class . ',id', new AtLeastOneCharacterPerGame],
             'addressName'           => 'required',
             'latitude'              => ['required','regex:/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?)$/'],
             'longitude'             => ['required','regex:/^[-]?((((1[0-7][0-9])|([0-9]?[0-9]))\.(\d+))|180(\.0+)?)$/'],
             'countryCode'           => 'required',
-            'isModder'               => 'required|boolean',
+            'isModder'              => 'required|boolean',
         ];
     }
 

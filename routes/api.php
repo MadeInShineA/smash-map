@@ -27,6 +27,7 @@ Route::get('/characters', [CharacterController::class, 'index']);
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/register', [UserController::class, 'register']);
 Route::post('/forgot-password', [UserController::class, 'forgot_password']);
+Route::post('/reset-password', [UserController::class, 'reset_password']);
 
 Route::middleware(['auth:sanctum'])->group(function (){
     Route::post('/logout', [UserController::class, 'logout']);

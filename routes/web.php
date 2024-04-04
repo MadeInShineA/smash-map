@@ -22,9 +22,13 @@ Route::get('', function () {
 Route::get('/{page}', function () {
     return view('app');
 });
-Route::get('/reset-password/{token}', function (string $token) {
-    return view('auth.reset-password', ['token' => $token]);
+
+Route::get('/{page}/{token}', function () {
+    return view('app');
 })->name('password.reset');
+
+// This route is used to reset the password (needed for PasswordBroker)
+Route::get('/reset-password/{token}', function (string $token) {})->name('password.reset');
 
 Route::middleware(['auth:sanctum'])->group(function (){
     Route::post('/events/{event}/subscribe', [UserController::class, 'event_subscribe']);

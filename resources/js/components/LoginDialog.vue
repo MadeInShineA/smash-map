@@ -26,7 +26,6 @@ const loginUser = ref({
 const loginValidationErrors = ref({
     username: [],
     password: [],
-    login:[]
 })
 
 const login = async function () {
@@ -34,7 +33,7 @@ const login = async function () {
 
     axios.get('/sanctum/csrf-cookie').then(async () => {
         try {
-            await userStore.login(loginUser.value).then(async function () {
+            await userStore.login(loginUser.value).then(async function (response) {
                 loginUser.value.username = ''
                 loginUser.value.password = ''
                 emit('switchShowLoginModal')
@@ -42,7 +41,7 @@ const login = async function () {
                 const alertColor = props.darkMode ? '#FFFFFF' : '#1C1B22'
                 await Swal.fire({
                     title: 'Logged in!',
-                    text: 'Your are successfully logged in!',
+                    text: response.data.message,
                     icon: 'success',
                     background: alertBackground,
                     color: alertColor,
@@ -51,7 +50,24 @@ const login = async function () {
                 })
             })
         } catch (error) {
-            loginValidationErrors.value = error.response.data.errors
+            if(error.response.data.errors === undefined && error.response.data.message && error.response.status === 500){
+                emit('switchShowLoginModal')
+                const alertBackground = props.darkMode ? '#1C1B22' : '#FFFFFF'
+                const alertColor = props.darkMode ? '#FFFFFF' : '#1C1B22'
+                await Swal.fire({
+                    title: 'Error',
+                    text: error.response.data.message,
+                    icon: 'error',
+                    background: alertBackground,
+                    color: alertColor,
+                    timer: 2000,
+                    showConfirmButton: false
+                })
+            }else if(error.response.data.errors){
+                loginValidationErrors.value = error.response.data.errors
+            }else {
+                console.log(error)
+            }
         }
     })
 }
@@ -65,15 +81,14 @@ const sendPasswordLink = async function () {
 
     axios.get('/sanctum/csrf-cookie').then(async () => {
         try {
-            console.log("Forgot")
-            await userStore.forgotPassword(forgotEmail.value).then(async function () {
+            await userStore.forgotPassword(forgotEmail.value).then(async function (response) {
                 forgotEmail.value = ''
                 emit('switchShowLoginModal')
                 const alertBackground = props.darkMode ? '#1C1B22' : '#FFFFFF'
                 const alertColor = props.darkMode ? '#FFFFFF' : '#1C1B22'
                 await Swal.fire({
                     title: 'Password reset link sent!',
-                    text: 'A password reset link has been sent to your email!',
+                    text: response.data.message,
                     icon: 'success',
                     background: alertBackground,
                     color: alertColor,
@@ -82,7 +97,24 @@ const sendPasswordLink = async function () {
                 })
             })
         } catch (error) {
-            forgotValidationErrors.value = error.response.data.errors
+            if(error.response.data.errors === undefined && error.response.data.message && error.status === 500){
+                emit('switchShowLoginModal')
+                const alertBackground = props.darkMode ? '#1C1B22' : '#FFFFFF'
+                const alertColor = props.darkMode ? '#FFFFFF' : '#1C1B22'
+                await Swal.fire({
+                    title: 'Error',
+                    text: error.response.data.message,
+                    icon: 'error',
+                    background: alertBackground,
+                    color: alertColor,
+                    timer: 2000,
+                    showConfirmButton: false
+                })
+            }else if(error.response.data.errors){
+                forgotValidationErrors.value = error.response.data.errors
+            }else{
+                console.log(error)
+            }
         }
     })
 }
@@ -119,17 +151,10 @@ const forgotValidationErrors = ref({
                     </template>
                 </TransitionGroup>
             </div>
-            <div class="validation-errors">
-                <TransitionGroup name="errors">
-                    <template v-for="loginError in loginValidationErrors.login" :key="loginError" class="validation-errors">
-                        <div class="validation-error">{{loginError}}</div>
-                    </template>
-                </TransitionGroup>
-            </div>
         </div>
         <div v-if="showForgetPasswordInputs">
             <div class="p-float-label modal-input-container">
-                <InputText id="forgot-email" class="modal-input" v-model="forgotEmail" autofocus @focus="forgotValidationErrors.email = []"/>
+                <InputText id="forgot-email" class="modal-input" v-model="forgotEmail" @focus="forgotValidationErrors.email = []"/>
                 <label for="forgot-email">Email</label>
             </div>
             <div class="validation-errors">
