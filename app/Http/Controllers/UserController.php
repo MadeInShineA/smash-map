@@ -54,22 +54,22 @@ class UserController extends Controller
 
             return $this->sendResponse(['user' => $user, 'token' => $user->createToken('API Token')->plainTextToken], 'You are registered and connected');
         }catch (\Error $error){
-            return $this->sendError($error, ['An error occurred while registering'], 500);
+            return $this->sendError($error, ['An error occurred while registering E001'], 500);
         }
     }
     public function login(LoginRequest $request): JsonResponse
     {
         try {
             if (!Auth::attempt($request->json()->all())) {
-                return $this->sendError('Unauthorized - 402E -',
+                return $this->sendError('Unauthorized  E 002',
                     [
-                        'login' => ['Email or password are incorrect']
+                        'login' => ['Username or password are incorrect']
                     ],
                     401);
             }
             return $this->sendResponse(['user' => auth::user(), 'token' => auth::user()->createToken('API Token')->plainTextToken], 'You are connected');
         }catch (\Error $error) {
-            return $this->sendError($error, ['login' => ['An error occurred while logging in please contact the administration  - 500E -']], 500);
+            return $this->sendError($error, ['login' => ['An error occurred while logging in please contact the administration  E 003']], 500);
         }
     }
 
@@ -91,7 +91,7 @@ class UserController extends Controller
                 ? $this->sendResponse([], __($status))
                 : $this->sendError( __($status),[], 500);
         } catch (\Error $error) {
-            return $this->sendError($error, ['An error occurred while sending the email'], 500);
+            return $this->sendError($error, ['An error occurred while sending the email E 004'], 500);
         }
     }
 
@@ -115,7 +115,7 @@ class UserController extends Controller
                 ? $this->sendResponse([], __($status))
                 : $this->sendError(__($status), [], 500);
         }catch (\Error $error) {
-            return $this->sendError($error, ['An error occurred while sending the email'], 500);
+            return $this->sendError($error, ['An error occurred while sending the email E 005'], 500);
         }
 
     }

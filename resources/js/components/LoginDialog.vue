@@ -26,6 +26,7 @@ const loginUser = ref({
 const loginValidationErrors = ref({
     username: [],
     password: [],
+    login:[]
 })
 
 const login = async function () {
@@ -148,6 +149,13 @@ const forgotValidationErrors = ref({
                 <TransitionGroup name="errors">
                     <template v-for="loginPasswordError in loginValidationErrors.password" :key="loginPasswordError" class="validation-errors">
                         <div class="validation-error">{{loginPasswordError}}</div>
+                    </template>
+                </TransitionGroup>
+            </div>
+            <div class="validation-errors">
+                <TransitionGroup name="errors">
+                    <template v-for="loginError in loginValidationErrors.login" :key="loginError" class="validation-errors">
+                        <div class="validation-error">{{loginError}}</div>
                     </template>
                 </TransitionGroup>
             </div>
