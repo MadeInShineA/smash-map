@@ -42,12 +42,12 @@ export const useUserStore = defineStore('user', function (){
         localStorage.setItem('tokenTime', new Date().toString());
         setUser()
         subscribeToNotifications()
-        if(router.currentRoute.value.path === '/map'){
+        if (router.currentRoute.value.path === '/map') {
             addressesFilterStore.fetchAddressesWithFilters()
-        }
-        else if(router.currentRoute.value.path === '/events'){
+        } else if (router.currentRoute.value.path === '/events') {
             eventsFilterStore.fetchEventsWithFilters()
         }
+        return response
     }
 
 
@@ -73,13 +73,15 @@ export const useUserStore = defineStore('user', function (){
         else if(router.currentRoute.value.path === '/events'){
             eventsFilterStore.fetchEventsWithFilters()
         }
+        return response
     }
 
     async function logout() {
-        await axios.post('/api/logout');
+        const response = await axios.post('/api/logout');
         unsubscribeToNotifications()
         localStorage.removeItem('userData');
         user.value = null;
+        return response
     }
 
     async function forgotPassword(email) {

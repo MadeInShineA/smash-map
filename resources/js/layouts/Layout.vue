@@ -116,34 +116,54 @@ const toggleProfileMenu = function(event) {
 const profileItems = ref([{
     label: 'Account',
     items: [
-        {   label: 'Profile',
+        {
+            label: 'Profile',
             icon: 'pi pi-fw pi-user'
         },
-        {   label: 'Settings',
+        {
+            label: 'Settings',
             icon: 'pi pi-fw pi-cog',
             to: 'settings'
         },
-        {label: 'Log Out', icon: 'pi pi-sign-out', command: async function () {
-                await userStore.logout().then(async function () {
-                    const alertBackground = darkMode.value ? '#1C1B22' : '#FFFFFF'
-                    const alertColor = darkMode.value ? '#FFFFFF' : '#1C1B22'
-                    await Swal.fire({
-                        title: 'Logged out!',
-                        text: 'Your are successfully logged out!',
-                        icon: 'success',
-                        background: alertBackground,
-                        color: alertColor,
-                        timer: 2000,
-                        showConfirmButton: false
+        {
+            label: 'Log Out', icon: 'pi pi-sign-out', command: async function () {
+                try {
+                    await userStore.logout().then(async function (response) {
+                        const alertBackground = darkMode.value ? '#1C1B22' : '#FFFFFF'
+                        const alertColor = darkMode.value ? '#FFFFFF' : '#1C1B22'
+                        await Swal.fire({
+                            title: 'Logged out!',
+                            text: response.data.message,
+                            icon: 'success',
+                            background: alertBackground,
+                            color: alertColor,
+                            timer: 2000,
+                            showConfirmButton: false
+                        })
                     })
-                })
-            }},
+                } catch (error) {
+                    if (error.response.data.message && error.response.status === 500) {
+                        const alertBackground = darkMode ? '#1C1B22' : '#FFFFFF'
+                        const alertColor = darkMode ? '#FFFFFF' : '#1C1B22'
+                        await Swal.fire({
+                            title: 'Error',
+                            text: error.response.data.message,
+                            icon: 'error',
+                            background: alertBackground,
+                            color: alertColor,
+                            timer: 2000,
+                            showConfirmButton: false
+                        })
+                    } else {
+                        console.log(error)
+                    }
+                }
+            }
+        }
     ]
 }])
 
-
 </script>
-
 <template>
     <header ref="menuBar" id="header">
         <Menubar v-if="responsiveMenuDisplayed" id="responsive-menu" :model="menuItems">

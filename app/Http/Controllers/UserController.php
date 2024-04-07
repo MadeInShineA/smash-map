@@ -52,7 +52,7 @@ class UserController extends Controller
             Storage::put($user_directory_path . '/' . ImageTypeEnum::USER_PROFILE . '.png', $profile_picture);
 
 
-            return $this->sendResponse(['user' => $user, 'token' => $user->createToken('API Token')->plainTextToken], 'You are registered and connected');
+            return $this->sendResponse(['user' => $user, 'token' => $user->createToken('API Token')->plainTextToken], 'You are registered and connected!');
         }catch (\Error $error){
             return $this->sendError($error, ['An error occurred while registering E001'], 500);
         }
@@ -69,16 +69,20 @@ class UserController extends Controller
             }
             return $this->sendResponse(['user' => auth::user(), 'token' => auth::user()->createToken('API Token')->plainTextToken], 'You are connected');
         }catch (\Error $error) {
-            return $this->sendError($error, ['login' => ['An error occurred while logging in please contact the administration  E 003']], 500);
+            return $this->sendError($error, ['login' => ['An error occurred while logging in E 003']], 500);
         }
     }
 
     public function logout(Request $request):JsonResponse
     {
-        if($request->user()){
-            $request->user()->currentAccessToken()->delete();
+        try {
+            if ($request->user()) {
+                $request->user()->currentAccessToken()->delete();
+            }
+            return $this->sendResponse([], 'You are disconnected');
+        } catch (\Error $error) {
+            return $this->sendError('An error occurred while logging out E 007', [$error], 500);
         }
-        return $this->sendResponse([], 'You are disconnected');
     }
 
     public function forgot_password(ForgotPasswordRequest $request): JsonResponse

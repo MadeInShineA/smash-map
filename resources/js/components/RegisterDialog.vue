@@ -118,7 +118,7 @@ function register(){
 
     axios.get('/sanctum/csrf-cookie').then(async () => {
         try {
-            await userStore.register(registerUser).then(async function () {
+            await userStore.register(registerUser).then(async function (response) {
                 registerUser.username = ''
                 registerUser.password = ''
                 registerUser.passwordConfirmation = ''
@@ -136,7 +136,7 @@ function register(){
                 const alertColor = props.darkMode ? '#FFFFFF' : '#1C1B22'
                 await Swal.fire({
                     title: 'Logged in!',
-                    text: 'Your are successfully logged in!',
+                    text: response.data.message,
                     icon: 'success',
                     background: alertBackground,
                     color: alertColor,
