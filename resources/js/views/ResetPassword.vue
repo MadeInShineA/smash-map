@@ -36,7 +36,7 @@ async function resetPassword() {
             const alertBackground = props.darkMode ? '#1C1B22' : '#FFFFFF'
             const alertColor = props.darkMode ? '#FFFFFF' : '#1C1B22'
             await Swal.fire({
-                title: 'Password reset link sent!',
+                title: 'Password reset!',
                 text: response.data.message,
                 icon: 'success',
                 background: alertBackground,
