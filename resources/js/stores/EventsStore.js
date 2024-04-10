@@ -36,11 +36,16 @@ export const useEventsStore = defineStore('events', function (){
         subscriptionLoading.value = false
     }
 
+    const {data: statistics, isFinished: statisticsFetched, execute: fetchStatistics} = useAxios('/api/events/statistics', {}, {immediate: false})
+
     return {
         events,
         eventsFetched,
         fetchEvents,
         subscriptionLoading,
-        handleEventSubscription
+        handleEventSubscription,
+        statistics,
+        statisticsFetched,
+        fetchStatistics
     }
 })

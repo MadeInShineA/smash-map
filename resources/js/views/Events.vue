@@ -34,22 +34,6 @@ const switchSideBarVisible = function (){
 }
 // TODO Update the timezone based on the user's IP
 
-// const timezone = ref('UTC')
-
-// const getTimezone = async function(){
-//     try{
-//         const response = await axios.get('/api/timezone')
-//         timezone.value=response.data
-//     } catch(error){
-//         timezone.value = 'UTC'
-//     }
-//
-// }
-//
-// getTimezone()
-
-
-
 const orderByOptions = ref([
     {name: 'Sort by ID', value: 'default'},
     {name: 'Attendees ascending', value: 'attendeesASC'},
@@ -57,8 +41,6 @@ const orderByOptions = ref([
     {name: 'Date ascending', value: 'dateASC'},
     {name: 'Date descending', value: 'dateDESC'}
 ])
-
-
 
 onMounted(()=>{
     console.log('Events Mounted')

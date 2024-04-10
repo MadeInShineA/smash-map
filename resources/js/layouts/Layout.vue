@@ -28,17 +28,17 @@ const menuItems = ref([
     {
         label: 'Home',
         icon: 'pi pi-fw pi-home',
-        to: '/'
+        route: '/'
     },
     {
         label: 'Map',
         icon: 'pi pi-fw pi-map',
-        to: '/map'
+        route: '/map'
     },
     {
         label: 'Calendar',
         icon: 'pi pi-fw pi-calendar',
-        to: '/calendar'
+        route: '/calendar'
     },
     {
         label: 'Events',
@@ -47,13 +47,13 @@ const menuItems = ref([
             {
                 label: 'Create',
                 icon: 'pi pi-fw pi-plus',
-                to: '/create-event'
+                route: '/create-event'
             },
             {
                 label: 'Browse',
                 icon: 'pi pi-fw pi-search',
-                to: '/events'
-            }
+                route: '/events'
+            },
         ]
     },
 ]);
@@ -123,7 +123,7 @@ const profileItems = ref([{
         {
             label: 'Settings',
             icon: 'pi pi-fw pi-cog',
-            to: 'settings'
+            route: 'settings'
         },
         {
             label: 'Log Out', icon: 'pi pi-sign-out', command: async function () {
@@ -177,7 +177,20 @@ const profileItems = ref([{
                     <Button id="profile-avatar-button" plain text rounded @click="toggleProfileMenu">
                         <Avatar :image="userStore.user.profile_picture" shape="circle"  />
                     </Button>
-                    <Menu :model="profileItems" :popup="true" ref="profileMenu"></Menu>
+                    <Menu :model="profileItems" :popup="true" ref="profileMenu">
+                        <template #item="{ item, props }">
+                            <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
+                                <a :href="href" v-bind="props.action" @click="navigate">
+                                    <span :class="item.icon" />
+                                    <span class="ml-2">{{ item.label }}</span>
+                                </a>
+                            </router-link>
+                            <a v-else :href="item.url" :target="item.target" v-bind="props.action">
+                                <span :class="item.icon" />
+                                <span class="ml-2">{{ item.label }}</span>
+                            </a>
+                        </template>
+                    </Menu>
                     <router-link to="/notifications">
                         <Button plain text icon="pi pi-bell" label="Notifications" :badge="userStore.notificationsCount" badgeClass="p-badge-success"/>
                     </router-link>
@@ -185,10 +198,36 @@ const profileItems = ref([{
                 <Button v-if="!darkMode" id="sun-icon" @click="switch_theme(true)" icon="pi pi-sun" severity="secondary" text rounded aria-label="Sun"/>
                 <Button v-if="darkMode" id="moon-icon" @click="switch_theme(true)" icon="pi pi-moon" severity="secondary" text rounded aria-label="Sun"/>
             </template>
+            <template #item="{ item, props, hasSubmenu }">
+                <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
+                    <a :href="href" v-bind="props.action" @click="navigate">
+                        <span :class="item.icon" />
+                        <span class="ml-2">{{ item.label }}</span>
+                    </a>
+                </router-link>
+                <a v-else :href="item.url" :target="item.target" v-bind="props.action">
+                    <span :class="item.icon" />
+                    <span class="ml-2">{{ item.label }}</span>
+                    <span v-if="hasSubmenu" class="pi pi-fw pi-angle-down ml-2" />
+                </a>
+            </template>
         </Menubar>
         <Menubar v-else :model="menuItems">
             <template #start>
                 <router-link to="/"><img alt="logo" src="../../images/logo-no-text-no-bg.png" height="40" class="mr-2"/></router-link>
+            </template>
+            <template #item="{ item, props, hasSubmenu }">
+                <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
+                    <a :href="href" v-bind="props.action" @click="navigate">
+                        <span :class="item.icon" />
+                        <span class="ml-2">{{ item.label }}</span>
+                    </a>
+                </router-link>
+                <a v-else :href="item.url" :target="item.target" v-bind="props.action">
+                    <span :class="item.icon" />
+                    <span class="ml-2">{{ item.label }}</span>
+                    <span v-if="hasSubmenu" class="pi pi-fw pi-angle-down ml-2" />
+                </a>
             </template>
             <template #end>
                 <template v-if="!userStore.user">
@@ -202,7 +241,20 @@ const profileItems = ref([{
                     <Button id="profile-avatar-button" plain text rounded @click="toggleProfileMenu">
                         <Avatar :image="userStore.user.profile_picture" shape="circle"  />
                     </Button>
-                    <Menu :model="profileItems" :popup="true" ref="profileMenu"></Menu>
+                    <Menu :model="profileItems" :popup="true" ref="profileMenu">
+                        <template #item="{ item, props }">
+                            <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
+                                <a :href="href" v-bind="props.action" @click="navigate">
+                                    <span :class="item.icon" />
+                                    <span class="ml-2">{{ item.label }}</span>
+                                </a>
+                            </router-link>
+                            <a v-else :href="item.url" :target="item.target" v-bind="props.action">
+                                <span :class="item.icon" />
+                                <span class="ml-2">{{ item.label }}</span>
+                            </a>
+                        </template>
+                    </Menu>
                 </template>
                 <Button v-if="!darkMode" id="sun-icon" @click="switch_theme(true)" icon="pi pi-sun" severity="secondary" plain text rounded aria-label="Sun"/>
                 <Button v-if="darkMode" id="moon-icon" @click="switch_theme(true)" icon="pi pi-moon" severity="secondary" plain text rounded aria-label="Sun"/>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\GameEnum;
 use App\Http\Resources\Event\EventCalendarResource;
 use App\Http\Resources\Event\EventResource;
 use App\Models\Event;
@@ -130,5 +131,23 @@ class EventController extends Controller
         }catch (\Error $error){
             return $this->sendError($error, ['An error occurred while retrieving the events E007'], 500);
         }
+    }
+
+    public function get_statistics(Request $request): JsonResponse
+    {
+        $events = Event::all();
+        $numberOfEvents = $events->count();
+        $statistics = [];
+        foreach (GameEnum::GAMES as $id => $title){
+            $statistic = [
+                'label' => $title,
+                'value' => round($events->where('game_id', $id)->count() / $numberOfEvents * 100, 1),
+                'color' => GameEnum::COLORS[$id]
+            ];
+            $statistics[] = $statistic;
+        }
+        $statistics = collect($statistics)->sortByDesc('value')->values();
+        return $this->sendResponse($statistics, 'Statistics retrieved with success');
+
     }
 }
