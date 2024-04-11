@@ -7,6 +7,8 @@ use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\ResetPasswordRequest;
+use App\Http\Resources\Character\CharacterResource;
+use App\Http\Resources\Game\GameResource;
 use App\Models\Address;
 use App\Models\Country;
 use App\Models\Event;
@@ -130,12 +132,13 @@ class UserController extends Controller
             if ($user->id != $request->user('sanctum')->id){
                 return $this->sendError('You are not authorized to access this page', [], 401);
             }
+
             $settings = [
                 'email' => $user->email,
                 'username' => $user->username,
                 'isModder' => boolval($user->is_modder),
-                'games' => $user->games,
-                'characters' => $user->characters,
+                'games' => $user->games->pluck('id'),
+                'characters' => $user->characters->pluck('id'),
                 'address' => $user->address,
             ];
             return $this->sendResponse($settings, 'User retrieved with success');
