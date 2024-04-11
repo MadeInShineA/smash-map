@@ -30,6 +30,8 @@ Route::post('/forgot-password', [UserController::class, 'forgot_password']);
 Route::post('/reset-password', [UserController::class, 'reset_password']);
 Route::get('events/statistics', [EventController::class, 'get_statistics']);
 
+Route::get('/users/{user}/settings', [UserController::class, 'get_settings']);
+
 Route::middleware(['auth:sanctum'])->group(function (){
     Route::post('/logout', [UserController::class, 'logout']);
     Route::post('/events/{event}/subscribe', [UserController::class, 'event_subscribe']);

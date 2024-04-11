@@ -10,6 +10,7 @@ import DefaultLayout from "./layouts/Layout.vue";
 import Notifications from "./views/Notifications.vue";
 import Settings from "./views/Settings.vue";
 import ResetPassword from "./views/ResetPassword.vue";
+import {useUserStore} from "./stores/UserStore.js";
 
 const routes = [
     {
@@ -49,7 +50,16 @@ const routes = [
             {
                 path: 'settings',
                 component: Settings,
-                name:'settings'
+                name:'settings',
+                beforeEnter: (to, from, next) => {
+
+                    // TODO Make the user connected == session user check here or inside Settings.vue ?
+                    const userStore = useUserStore();
+                    if (userStore.user == null){
+                        return next('/')
+                    }
+                    return next()
+                }
 
             },
             {
@@ -74,9 +84,7 @@ const routes = [
     },
 ]
 
-
 export const router = createRouter({
     history: createWebHistory(''),
     routes,
-
 })

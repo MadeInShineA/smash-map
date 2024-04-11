@@ -129,7 +129,7 @@ class EventController extends Controller
             $events = Event::all();
             return $this->sendResponse(EventCalendarResource::collection($events), 'Events retrieved with success');
         }catch (\Error $error){
-            return $this->sendError($error, ['An error occurred while retrieving the events E007'], 500);
+            return $this->sendError($error, ['An error occurred while retrieving the events E 007'], 500);
         }
     }
 
@@ -188,7 +188,7 @@ class EventController extends Controller
 
             return $this->sendResponse($statistics, 'Statistics retrieved with success');
         }catch (\Error $error){
-            return $this->sendError($error, ['An error occurred while retrieving the events statistics E010'], 500);
+            return $this->sendError($error, ['An error occurred while retrieving the events statistics E 010'], 500);
         }
 
 

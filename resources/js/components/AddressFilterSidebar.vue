@@ -6,11 +6,14 @@ import MultiSelect from "primevue/multiselect";
 import Dropdown from "primevue/dropdown";
 import InputText from "primevue/inputtext";
 import {useAddressFiltersStore} from '../stores/AddressFiltersStore.js'
+import {useOptionsStore} from "../stores/OptionsStore.js";
 
 const addressFiltersStore = useAddressFiltersStore()
 
 addressFiltersStore.fetchCountries()
 addressFiltersStore.fetchCharacters()
+
+const optionsStore = useOptionsStore()
 
 const props = defineProps({
     sideBarVisible: Boolean
@@ -26,12 +29,12 @@ const emit = defineEmits(['switchSideBarVisible'])
         <h2>Filters</h2>
         <div id="event-filters">
             <div class="event-filter">
-                <MultiSelect v-model="addressFiltersStore.selectedAddressGames" :options="addressFiltersStore.addressGameOptions"
+                <MultiSelect v-model="addressFiltersStore.selectedAddressGames" :options="optionsStore.gameOptions"
                              display="chip" :maxSelectedLabels="2" optionLabel="name" optionValue="id"
                              placeholder="Select Games"/>
             </div>
             <div class="event-filter">
-                <Dropdown v-model="addressFiltersStore.selectedAddressTypes" :options="addressFiltersStore.addressTypeOptions"
+                <Dropdown v-model="addressFiltersStore.selectedAddressTypes" :options="optionsStore.addressTypeOptions"
                           optionLabel="name" optionValue="value" placeholder="All markers types"/>
             </div>
             <div class="event-filter">
@@ -52,7 +55,7 @@ const emit = defineEmits(['switchSideBarVisible'])
             </div>
             <div class="event-filter">
                 <MultiSelect v-model="addressFiltersStore.selectedAddressContinents"
-                             :options="addressFiltersStore.addressContinentOptions" display="chip" :maxSelectedLabels="2"
+                             :options="optionsStore.continentOptions" display="chip" :maxSelectedLabels="2"
                              optionLabel="name" optionValue="code" placeholder="Select Continents"/>
             </div>
             <div class="event-filter">
@@ -70,10 +73,7 @@ const emit = defineEmits(['switchSideBarVisible'])
                 </MultiSelect>
             </div>
             <div class="event-filter">
-        <span class="p-input-icon-left">
-            <i class="pi pi-search"/>
-            <InputText v-model="addressFiltersStore.selectedAddressName" placeholder="Name"></InputText>
-        </span>
+                <InputText v-model="addressFiltersStore.selectedAddressName" placeholder="Name"></InputText>
             </div>
         </div>
     </Sidebar>

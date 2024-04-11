@@ -127,7 +127,7 @@ class AddressController extends Controller
 
             return MapAddressResource::collection($addresses->get());
         }catch (\Error $error){
-            return $this->sendError($error, ['An error occurred while retrieving the addresses E009'], 500);
+            return $this->sendError($error, ['An error occurred while retrieving the addresses E 009'], 500);
         }
     }
 }

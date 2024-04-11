@@ -54,7 +54,7 @@ class UserController extends Controller
 
             return $this->sendResponse(['user' => $user, 'token' => $user->createToken('API Token')->plainTextToken], 'You are registered and connected!');
         }catch (\Error $error){
-            return $this->sendError($error, ['An error occurred while registering E001'], 500);
+            return $this->sendError('An error occurred while registering E 001', [$error], 500);
         }
     }
     public function login(LoginRequest $request): JsonResponse
@@ -95,7 +95,7 @@ class UserController extends Controller
                 ? $this->sendResponse([], __($status))
                 : $this->sendError( __($status),[], 500);
         } catch (\Error $error) {
-            return $this->sendError($error, ['An error occurred while sending the email E 004'], 500);
+            return $this->sendError('An error occurred while sending the email E 004', [$error], 500);
         }
     }
 
@@ -119,9 +119,29 @@ class UserController extends Controller
                 ? $this->sendResponse([], __($status))
                 : $this->sendError(__($status), [], 500);
         }catch (\Error $error) {
-            return $this->sendError($error, ['An error occurred while sending the email E 005'], 500);
+            return $this->sendError('An error occurred while sending the email E 005', [$error], 500);
         }
 
+    }
+
+    public function get_settings(Request $request, User $user): JsonResponse
+    {
+        try{
+            if ($user->id != $request->user('sanctum')->id){
+                return $this->sendError('You are not authorized to access this page', [], 401);
+            }
+            $settings = [
+                'email' => $user->email,
+                'username' => $user->username,
+                'isModder' => boolval($user->is_modder),
+                'games' => $user->games,
+                'characters' => $user->characters,
+                'address' => $user->address,
+            ];
+            return $this->sendResponse($settings, 'User retrieved with success');
+        }catch (\Error $error){
+            return $this->sendError('An error occurred while retrieving the user E 011', [$error], 500);
+        }
     }
 
     public function is_authenticated(Request $request): JsonResponse

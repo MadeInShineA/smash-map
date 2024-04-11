@@ -10,9 +10,11 @@ import Swal from "sweetalert2";
 import MultiSelect from "primevue/multiselect";
 import Checkbox from "primevue/checkbox";
 import {useUserStore} from "../stores/UserStore.js";
+import {useOptionsStore} from "../stores/OptionsStore.js";
 import {useAxios} from "@vueuse/integrations/useAxios";
 
 const userStore = useUserStore()
+const optionsStore = useOptionsStore()
 
 const props = defineProps({
     darkMode: Boolean,
@@ -45,17 +47,6 @@ const registerValidationErrors = ref({
     addressName: [],
     register: []
 })
-
-const gameOptions = ref([
-    {name: '64', id: '4'},
-    {name: 'Melee', id: '1'},
-    {name: 'Brawl', id: '5'},
-    {name: 'Project M', id: '2'},
-    {name: 'Project +', id: '33602'},
-    {name: '3DS / WiiU', id: '3'},
-    {name: 'Ultimate', id: '1386'},
-])
-
 
 const { data: characterOptions, isFinished: charactersFetched, execute: fetchCharacters } = useAxios('/api/characters', {}, {immediate: false})
 fetchCharacters({params: {setup: true}})
@@ -176,7 +167,7 @@ onMounted(function(){
 <template>
     <Dialog id="register-modal" class="user-modal" :visible="showRegisterModal" @update:visible="emit('switchShowRegisterModal')" :draggable="false" modal header="Register" :style="{ width: '30vw' }" :breakpoints="{ '1200px': '50vw', '575px': '90vw' }">
         <template #header class="p-dialog-title p-dialog-header margin-auto"></template>
-        <div class="modal-inputs">
+        <div>
             <div class="p-float-label modal-input-container">
                 <InputText id="register-username" class="modal-input" v-model="registerUser.username" required  autofocus @focus="registerValidationErrors.username = []" />
                 <label for="register-username">Username</label>
@@ -239,7 +230,7 @@ onMounted(function(){
 
             <!-- TODO Fix the placeholder / empty item bug -->
             <div class="modal-input-container">
-                <MultiSelect id="register-games" class="modal-input" v-model="registerUser.games" :options="gameOptions" optionLabel="name" optionValue="id" :maxSelectedLabels="3" placeholder="Games" @focus="registerValidationErrors.games = []"/>
+                <MultiSelect id="register-games" class="modal-input" v-model="registerUser.games" :options="optionsStore.gameOptions" optionLabel="name" optionValue="id" :maxSelectedLabels="3" placeholder="Games" @focus="registerValidationErrors.games = []"/>
             </div>
             <div class="validation-errors">
                 <TransitionGroup name="errors">

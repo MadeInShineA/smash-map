@@ -4,6 +4,8 @@ import {useAddressFiltersStore} from "../stores/AddressFiltersStore.js";
 import {useEventFiltersStore} from "../stores/EventFiltersStore.js";
 import axios from "axios";
 import {router} from "@/router.js";
+import {useAxios} from "@vueuse/integrations/useAxios";
+import Swal from "sweetalert2";
 
 export const useUserStore = defineStore('user', function (){
 
@@ -13,6 +15,30 @@ export const useUserStore = defineStore('user', function (){
     // TODO Sync the notifications count with the server
     const notificationsCount = ref(0)
     const user = ref(JSON.parse(window.localStorage.getItem('userData')))
+
+    function getSettings(userId, darkMode){
+        return axios.get('/api/users/' + userId + '/settings').then((response) =>{
+            return response.data
+         }).catch((error) => {
+            console.log(error)
+            const alertBackground = darkMode ? '#1C1B22' : '#FFFFFF'
+            const alertColor = darkMode ? '#FFFFFF' : '#1C1B22'
+            Swal.fire({
+                title: 'Error',
+                text: error.response.data.message,
+                icon: 'error',
+                background: alertBackground,
+                color: alertColor,
+                timer: 2000,
+                showConfirmButton: false
+            }).then(() => {
+                if (error.response.status === 401) {
+                    router.push('/')
+                }
+            })
+
+        })
+    }
 
     function setUser(){
         user.value = JSON.parse(window.localStorage.getItem('userData'));
@@ -108,6 +134,7 @@ export const useUserStore = defineStore('user', function (){
         user,
         notificationsCount,
         setUser,
+        getSettings,
         subscribeToNotifications,
         login,
         register,

@@ -14,7 +14,8 @@ import Tag from "primevue/tag";
 import {useEventFiltersStore} from "../stores/EventFiltersStore.js";
 import {useEventsStore} from "../stores/EventsStore.js";
 import {useUserStore} from "../stores/UserStore.js";
-import EventFilterSidebar from "@/components/EventFilterSidebar.vue";
+import EventFilterSidebar from "../components/EventFilterSidebar.vue";
+import {useOptionsStore} from "../stores/OptionsStore.js";
 
 
 const eventsFiltersStore = useEventFiltersStore()
@@ -22,6 +23,8 @@ eventsFiltersStore.fetchCountries()
 const eventsStore = useEventsStore()
 eventsStore.fetchEvents()
 const userStore = useUserStore()
+
+const optionsStore = useOptionsStore()
 
 const props = defineProps({
     darkMode: Boolean
@@ -34,14 +37,6 @@ const switchSideBarVisible = function (){
 }
 // TODO Update the timezone based on the user's IP
 
-const orderByOptions = ref([
-    {name: 'Sort by ID', value: 'default'},
-    {name: 'Attendees ascending', value: 'attendeesASC'},
-    {name: 'Attendees descending', value: 'attendeesDESC'},
-    {name: 'Date ascending', value: 'dateASC'},
-    {name: 'Date descending', value: 'dateDESC'}
-])
-
 onMounted(()=>{
     console.log('Events Mounted')
 })
@@ -51,7 +46,7 @@ onMounted(()=>{
 <template>
     <div id="event-filters-container">
         <div class="event-filter">
-            <Dropdown v-model="eventsFiltersStore.selectedOrderBy" :options="orderByOptions" optionLabel="name" optionValue="value" placeholder="Sort by ID"/>
+            <Dropdown v-model="eventsFiltersStore.selectedOrderBy" :options="optionsStore.eventOrderByOptions" optionLabel="name" optionValue="value" placeholder="Sort by ID"/>
         </div>
         <Button id="filters-button" @click="sideBarVisible = true" icon="pi pi-filter" text rounded outlined plain label="Filters"/>
     </div>

@@ -6,8 +6,10 @@ import MultiSelect from "primevue/multiselect";
 import Dropdown from "primevue/dropdown";
 import InputText from "primevue/inputtext";
 import { useEventFiltersStore } from '../stores/EventFiltersStore.js'
+import {useOptionsStore} from "../stores/OptionsStore.js";
 
 const filtersStore = useEventFiltersStore()
+const optionsStore = useOptionsStore()
 
 const props = defineProps({
     sideBarVisible:Boolean
@@ -22,16 +24,16 @@ const emit = defineEmits(['switchSideBarVisible'])
         <h2>Filters</h2>
         <div id="event-filters">
             <div class="event-filter">
-                <MultiSelect v-model="filtersStore.selectedEventGames" :options="filtersStore.eventGameOptions" display="chip" :maxSelectedLabels="2" optionLabel="name" optionValue="id" placeholder="Select Games"/>
+                <MultiSelect v-model="filtersStore.selectedEventGames" :options="optionsStore.gameOptions" display="chip" :maxSelectedLabels="2" optionLabel="name" optionValue="id" placeholder="Select Games"/>
             </div>
             <div class="event-filter">
-                <Dropdown v-model="filtersStore.selectedEventTypes" :options="filtersStore.eventTypeOptions" optionLabel="name" optionValue="value" placeholder="All event types"/>
+                <Dropdown v-model="filtersStore.selectedEventTypes" :options="optionsStore.eventTypeOptions" optionLabel="name" optionValue="value" placeholder="All event types"/>
             </div>
             <div class="event-filter">
                 <Calendar v-model=filtersStore.selectedEventDates :minDate="new Date()" placeholder="Event date range (UTC)" selectionMode="range" :manualInput="false" showButtonBar dateFormat="dd/mm/yy"></Calendar>
             </div>
             <div class="event-filter">
-                <MultiSelect v-model="filtersStore.selectedEventContinents" :options="filtersStore.eventContinentOptions" display="chip" :disabled="filtersStore.selectedEventTypes === 'online'" :maxSelectedLabels="2" optionLabel="name" optionValue="code" placeholder="Select Continents"/>
+                <MultiSelect v-model="filtersStore.selectedEventContinents" :options="optionsStore.continentOptions" display="chip" :disabled="filtersStore.selectedEventTypes === 'online'" :maxSelectedLabels="2" optionLabel="name" optionValue="code" placeholder="Select Continents"/>
             </div>
             <div class="event-filter">
                 <!--            TODO Directly add the data to eventCountryOptions-->

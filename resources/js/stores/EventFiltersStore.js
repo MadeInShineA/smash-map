@@ -7,32 +7,6 @@ import {useEventsStore} from "../stores/EventsStore.js";
 export const useEventFiltersStore = defineStore('eventFilters', function (){
     const eventsStore = useEventsStore()
 
-    const eventTypeOptions = ref([
-        {name: 'All event types', value: 'default'},
-        {name: 'Online', value: 'online'},
-        {name: 'Offline', value: 'offline'}
-    ]);
-
-    const eventContinentOptions = ref( [
-        { name: 'Africa', code: 'AF' },
-        { name: 'Antarctica', code: 'AN' },
-        { name: 'Asia', code: 'AS' },
-        { name: 'Europe', code: 'EU' },
-        { name: 'North America', code: 'NA' },
-        { name: 'Oceania', code: 'OC' },
-        { name: 'South America', code: 'SA' }
-    ])
-
-    const eventGameOptions = ref([
-        {name: '64', id: '4'},
-        {name: 'Melee', id: '1'},
-        {name: 'Brawl', id: '5'},
-        {name: 'Project M', id: '2'},
-        {name: 'Project +', id: '33602'},
-        {name: '3DS / WiiU', id: '3'},
-        {name: 'Ultimate', id: '1386'},
-    ])
-
     const {data: eventCountryOptions, isFinished: countriesFetched, execute: fetchCountries} = useAxios('/api/countries', {}, {immediate: false})
 
     const currentPage = ref(1);
@@ -287,9 +261,6 @@ export const useEventFiltersStore = defineStore('eventFilters', function (){
     }
 
     return {
-        eventTypeOptions,
-        eventContinentOptions,
-        eventGameOptions,
         eventCountryOptions,
         countriesFetched,
         fetchCountries,

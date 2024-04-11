@@ -7,34 +7,6 @@ import {useAddressesStore} from "../stores/AddressesStore.js";
 export const useAddressFiltersStore = defineStore('addressFilters', function (){
     const addressesStore = useAddressesStore()
 
-    const addressTypeOptions = ref([
-        {name: 'All marker types', value: 'default'},
-        {name: 'Events', value: 'events'},
-        {name: 'Users', value: 'users'},
-        {name: 'Modders', value: 'modders'},
-    ]);
-
-
-    const addressContinentOptions = ref( [
-        { name: 'Africa', code: 'AF' },
-        { name: 'Antarctica', code: 'AN' },
-        { name: 'Asia', code: 'AS' },
-        { name: 'Europe', code: 'EU' },
-        { name: 'North America', code: 'NA' },
-        { name: 'Oceania', code: 'OC' },
-        { name: 'South America', code: 'SA' }
-    ])
-
-    const addressGameOptions = ref([
-        {name: '64', id: '4'},
-        {name: 'Melee', id: '1'},
-        {name: 'Brawl', id: '5'},
-        {name: 'Project M', id: '2'},
-        {name: 'Project +', id: '33602'},
-        {name: '3DS / WiiU', id: '3'},
-        {name: 'Ultimate', id: '1386'},
-    ])
-
     // TODO Move this 2 to a store with the available options ?
     const {data:addressesCountryOptions, isFinished: countriesFetched, execute: fetchCountries} = useAxios('/api/countries', {}, {immediate: false})
     const { data: addressesCharacterOptions, isFinished: charactersFetched, execute: fetchCharacters } = useAxios('/api/characters',{}, {immediate: false})
@@ -326,9 +298,6 @@ export const useAddressFiltersStore = defineStore('addressFilters', function (){
     }
 
     return {
-        addressTypeOptions,
-        addressContinentOptions,
-        addressGameOptions,
         addressesCountryOptions,
         countriesFetched,
         selectedAddressGames,
