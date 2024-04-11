@@ -135,19 +135,62 @@ class EventController extends Controller
 
     public function get_statistics(Request $request): JsonResponse
     {
-        $events = Event::all();
-        $numberOfEvents = $events->count();
-        $statistics = [];
-        foreach (GameEnum::GAMES as $id => $title){
-            $statistic = [
-                'label' => $title,
-                'value' => round($events->where('game_id', $id)->count() / $numberOfEvents * 100, 1),
-                'color' => GameEnum::COLORS[$id]
+        try {
+            $statisticsType = $request->input('type');
+
+
+            $statistics = [
+                'labels' => [],
+                'datasets' => [
+                    [
+                        'data' => [],
+                        'backgroundColor' => [],
+                        'hoverBackgroundColor' => []
+
+                    ]
+
+                ]
             ];
-            $statistics[] = $statistic;
+
+            if($statisticsType === 'games'){
+                $events = Event::all();
+
+                foreach (GameEnum::ABBREVIATION as $id => $title){
+                    $statistics['labels'][] = $title;
+                    $statistics['datasets'][0]['data'][] = $events->where('game_id', $id)->count();
+                    $statistics['datasets'][0]['backgroundColor'][] = GameEnum::COLORS[$id];
+                    $statistics['datasets'][0]['hoverBackgroundColor'][] = GameEnum::HOVER_COLORS[$id];
+                }
+            }else if($statisticsType === 'months'){
+                $currentMonth = (int)date('m');
+
+                for ($x = $currentMonth; $x < $currentMonth + 6; $x++) {
+                    $statistics['labels'][] = date('F', mktime(0, 0, 0, $x, 1));
+                }
+
+                $datasetIndex = 0;
+                foreach (GameEnum::ABBREVIATION as $id => $title){
+                    $statistics['datasets'][$datasetIndex]['label'] = $title;
+                    $statistics['datasets'][$datasetIndex]['backgroundColor'][] = GameEnum::COLORS[$id];
+                    $statistics['datasets'][$datasetIndex]['hoverBackgroundColor'][] = GameEnum::HOVER_COLORS[$id];
+                    $eventsEachMonth = [];
+                    for ($x = $currentMonth; $x < $currentMonth + 6; $x++) {
+                        $events = Event::query();
+                        $eventsEachMonth[] = $events->where('game_id', $id)->whereMonth('start_date_time', $x)->count();
+                    }
+                    $statistics['datasets'][$datasetIndex]['data'] = $eventsEachMonth;
+                    $datasetIndex += 1;
+                }
+
+
+
+            }
+
+            return $this->sendResponse($statistics, 'Statistics retrieved with success');
+        }catch (\Error $error){
+            return $this->sendError($error, ['An error occurred while retrieving the events statistics E010'], 500);
         }
-        $statistics = collect($statistics)->sortByDesc('value')->values();
-        return $this->sendResponse($statistics, 'Statistics retrieved with success');
+
 
     }
 }

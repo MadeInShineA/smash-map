@@ -32,6 +32,16 @@ abstract class GameEnum
         self::ULTIMATE => 'Super Smash Bros. Ultimate'
     ];
 
+    const ABBREVIATION = [
+        self::SMASH64 => '64',
+        self::MELEE => 'Melee',
+        self::BRAWL => 'Brawl',
+        self::PROJECT_M => 'Project M',
+        self::PROJECT_PLUS => 'Project +',
+        self::SMASH4 => '3DS / WiiU',
+        self::ULTIMATE => 'Ultimate'
+    ];
+
     const COLORS = [
         self::SMASH64 => '#FAC41A',
         self::MELEE => '#A30010',
@@ -41,5 +51,16 @@ abstract class GameEnum
         self::SMASH4 => '#AFC1EE',
         self::ULTIMATE => '#F18A41'
     ];
+
+    const HOVER_COLORS = [
+        self::SMASH64 => '#D8A504',
+        self::MELEE => '#82000C',
+        self::BRAWL => '#510A01',
+        self::PROJECT_M => '#2F366F',
+        self::PROJECT_PLUS => '#3EC17A',
+        self::SMASH4 => '#6A8CDF',
+        self::ULTIMATE => '#E46810'
+    ];
+
 
 }

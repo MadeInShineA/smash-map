@@ -45,10 +45,7 @@ const emit = defineEmits(['switchSideBarVisible'])
                 </MultiSelect>
             </div>
             <div class="event-filter">
-        <span class="p-input-icon-left">
-            <i class="pi pi-search"/>
-            <InputText v-model="filtersStore.selectedEventName" placeholder="Event name"></InputText>
-        </span>
+                <InputText v-model="filtersStore.selectedEventName" placeholder="Event name"></InputText>
             </div>
         </div>
     </Sidebar>

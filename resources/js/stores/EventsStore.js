@@ -36,7 +36,9 @@ export const useEventsStore = defineStore('events', function (){
         subscriptionLoading.value = false
     }
 
-    const {data: statistics, isFinished: statisticsFetched, execute: fetchStatistics} = useAxios('/api/events/statistics', {}, {immediate: false})
+    const {data: gamesStatistics, isFinished: gamesStatisticsFetched, execute: fetchGameStatistics} = useAxios('/api/events/statistics?type=games', {}, {immediate: false})
+    const {data: monthsStatistics, isFinished: monthsStatisticsFetched, execute: fetchMonthsStatistics} = useAxios('/api/events/statistics?type=months', {}, {immediate: false})
+
 
     return {
         events,
@@ -44,8 +46,11 @@ export const useEventsStore = defineStore('events', function (){
         fetchEvents,
         subscriptionLoading,
         handleEventSubscription,
-        statistics,
-        statisticsFetched,
-        fetchStatistics
+        gamesStatistics,
+        gamesStatisticsFetched,
+        fetchGameStatistics,
+        monthsStatistics,
+        monthsStatisticsFetched,
+        fetchMonthsStatistics
     }
 })
