@@ -167,7 +167,7 @@ onMounted(function(){
 <template>
     <Dialog id="register-modal" class="user-modal" :visible="showRegisterModal" @update:visible="emit('switchShowRegisterModal')" :draggable="false" modal header="Register" :style="{ width: '30vw' }" :breakpoints="{ '1200px': '50vw', '575px': '90vw' }">
         <template #header class="p-dialog-title p-dialog-header margin-auto"></template>
-        <div>
+        <div  v-if="charactersFetched">
             <div class="p-float-label modal-input-container">
                 <InputText id="register-username" class="modal-input" v-model="registerUser.username" required  autofocus @focus="registerValidationErrors.username = []" />
                 <label for="register-username">Username</label>
@@ -280,6 +280,9 @@ onMounted(function(){
                 </TransitionGroup>
             </div>
         </div>
+        <template v-else>
+            <LoaderComponent></LoaderComponent>
+        </template>
         <template #footer>
             <Button label="Cancel" severity="danger" icon="pi pi-times" @click="emit('switchShowRegisterModal')" text plain/>
             <Button label="Register" severity="success" icon="pi pi-check" @click="register" text plain/>

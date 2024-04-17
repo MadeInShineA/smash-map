@@ -87,7 +87,7 @@ onMounted(function(){
 </script>
 
 <template>
-    <template v-if="settings">
+    <template v-if="settings && charactersFetched">
         {{settings}}
         <div id="settings-inputs-container">
             <div class="p-float-label settings-input-container">
