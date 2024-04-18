@@ -34,7 +34,8 @@ const registerUser = reactive({
     latitude: null,
     longitude: null,
     countryCode: '',
-    isModder: false
+    isModder: false,
+    isOnMap: false
 })
 
 const registerValidationErrors = ref({
@@ -167,7 +168,7 @@ onMounted(function(){
 <template>
     <Dialog id="register-modal" class="user-modal" :visible="showRegisterModal" @update:visible="emit('switchShowRegisterModal')" :draggable="false" modal header="Register" :style="{ width: '30vw' }" :breakpoints="{ '1200px': '50vw', '575px': '90vw' }">
         <template #header class="p-dialog-title p-dialog-header margin-auto"></template>
-        <div  v-if="charactersFetched">
+        <div  v-if="characterOptions">
             <div class="p-float-label modal-input-container">
                 <InputText id="register-username" class="modal-input" v-model="registerUser.username" required  autofocus @focus="registerValidationErrors.username = []" />
                 <label for="register-username">Username</label>
@@ -216,18 +217,6 @@ onMounted(function(){
                 </TransitionGroup>
             </div>
 
-            <div class="modal-input-container">
-                <Checkbox v-model="registerUser.isModder" :binary="true"  input-id="register-is-moder"/>
-                <label for="register-is-moder" class="ml-10"> I am a controller modder </label>
-            </div>
-            <div class="validation-errors">
-                <TransitionGroup name="errors">
-                    <template v-for="registerIsModder in registerValidationErrors.isModder" :key="registerIsModder" class="validation-errors">
-                        <div class="validation-error">{{registerIsModder}}</div>
-                    </template>
-                </TransitionGroup>
-            </div>
-
             <!-- TODO Fix the placeholder / empty item bug -->
             <div class="modal-input-container">
                 <MultiSelect id="register-games" class="modal-input" v-model="registerUser.games" :options="optionsStore.gameOptions" optionLabel="name" optionValue="id" :maxSelectedLabels="3" placeholder="Games" @focus="registerValidationErrors.games = []"/>
@@ -259,6 +248,18 @@ onMounted(function(){
                 </TransitionGroup>
             </div>
 
+            <div class="modal-input-container">
+                <Checkbox v-model="registerUser.isModder" :binary="true"  input-id="register-is-moder"/>
+                <label for="register-is-moder" class="ml-10"> I am a controller modder </label>
+            </div>
+            <div class="validation-errors">
+                <TransitionGroup name="errors">
+                    <template v-for="registerIsModder in registerValidationErrors.isModder" :key="registerIsModder" class="validation-errors">
+                        <div class="validation-error">{{registerIsModder}}</div>
+                    </template>
+                </TransitionGroup>
+            </div>
+
             <div class="p-float-label modal-input-container">
                 <GoogleAddressAutocomplete
                     :apiKey="googleMapApiKey"
@@ -279,6 +280,19 @@ onMounted(function(){
                     </template>
                 </TransitionGroup>
             </div>
+
+            <div class="modal-input-container">
+                <Checkbox v-model="registerUser.isOnMap" :binary="true"  input-id="register-is-on-map"/>
+                <label for="register-is-on-map" class="ml-10"> I want to appear on the map </label>
+            </div>
+            <div class="validation-errors">
+                <TransitionGroup name="errors">
+                    <template v-for="registerIsOnMap in registerValidationErrors.isOnMap" :key="registerIsOnMap" class="validation-errors">
+                        <div class="validation-error">{{registerIsOnMap}}</div>
+                    </template>
+                </TransitionGroup>
+            </div>
+
         </div>
         <template v-else>
             <LoaderComponent></LoaderComponent>

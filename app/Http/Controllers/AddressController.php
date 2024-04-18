@@ -15,6 +15,9 @@ class AddressController extends Controller
     {
         try {
             $addresses = Address::query();
+            $addresses->whereHas('users', function ($query){
+                $query->where('is_on_map', true);
+            })->orWhereHas('events');
 
             if($request->has('games')){
                 $games = $request->input('games');
@@ -125,6 +128,7 @@ class AddressController extends Controller
                 }
             }
 
+//            return $this->sendResponse($addresses->get(), 'Addresses retrieved successfully');
             return MapAddressResource::collection($addresses->get());
         }catch (\Error $error){
             return $this->sendError($error, ['An error occurred while retrieving the addresses E 009'], 500);

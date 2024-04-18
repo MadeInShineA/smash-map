@@ -37,6 +37,7 @@ class User extends Authenticatable
         'attendees_notifications',
         'time_notifications',
         'is_modder',
+        'is_on_map',
         'is_admin',
         'is_subscribed'
     ];

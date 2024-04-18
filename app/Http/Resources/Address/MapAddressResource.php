@@ -15,7 +15,7 @@ class MapAddressResource extends JsonResource
             'position'              => ['lat' => $this->latitude, 'lng' => $this->longitude],
             'icon'                  => $this->icon,
             'events'                => MapEventResource::collection($this->events),
-            'users'                 => MapUserResource::collection($this->users),
+            'users'                 => MapUserResource::collection($this->map_users),
         ];
     }
 }

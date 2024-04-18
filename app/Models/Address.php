@@ -33,6 +33,11 @@ class Address extends Model
         return $this->hasMany(User::class);
     }
 
+    public function map_users(): HasMany
+    {
+        return $this->users()->where('is_on_map', true);
+    }
+
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);
@@ -41,7 +46,7 @@ class Address extends Model
     //TODO Fix the icon size (invisible border)
     public function getIconAttribute(): string
     {
-        $users = $this->users()->get();
+        $users = $this->users()->where('is_on_map', true)->get();
         $events = $this->events()->get();
 
         if(sizeof($users) === 0 ){

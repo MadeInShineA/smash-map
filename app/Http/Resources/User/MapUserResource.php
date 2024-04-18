@@ -14,6 +14,7 @@ class MapUserResource extends JsonResource
             'profilePicture'    => $this->profile_picture,
             'games'             => $this->games_characters_array,
             'isModder'          => $this->is_modder,
+            'isOnMap'           => $this->is_on_map,
         ];
     }
 }

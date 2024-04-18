@@ -49,7 +49,7 @@ watch(characterOptions, function(availableCharacters, oldValue){
             })
         })
 
-        settings.valuecharacters = settings.value.characters.filter((character) => {
+        settings.value.characters = settings.value.characters.filter((character) => {
             return availableCharacterIds.includes(character)
         })
     }
@@ -87,7 +87,7 @@ onMounted(function(){
 </script>
 
 <template>
-    <template v-if="settings && charactersFetched">
+    <template v-if="settings && characterOptions">
         {{settings}}
         <div id="settings-inputs-container">
             <div class="p-float-label settings-input-container">

@@ -9,6 +9,7 @@ use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\ResetPasswordRequest;
 use App\Http\Resources\Character\CharacterResource;
 use App\Http\Resources\Game\GameResource;
+use App\Http\Resources\User\SettingsUserResource;
 use App\Models\Address;
 use App\Models\Country;
 use App\Models\Event;
@@ -42,6 +43,7 @@ class UserController extends Controller
                 'password'      => Hash::make($request->input('password')),
                 'address_id'    => $address->id,
                 'is_modder'      => $request->input('isModder'),
+                'is_on_map'      => $request->input('isOnMap'),
             ]);
 
             $user->games()->attach($request->input('games'));
@@ -133,14 +135,8 @@ class UserController extends Controller
                 return $this->sendError('You are not authorized to access this page', [], 401);
             }
 
-            $settings = [
-                'email' => $user->email,
-                'username' => $user->username,
-                'isModder' => boolval($user->is_modder),
-                'games' => $user->games->pluck('id'),
-                'characters' => $user->characters->pluck('id'),
-                'address' => $user->address,
-            ];
+            $settings = new SettingsUserResource($user);
+
             return $this->sendResponse($settings, 'User retrieved with success');
         }catch (\Error $error){
             return $this->sendError('An error occurred while retrieving the user E 011', [$error], 500);
