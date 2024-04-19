@@ -6,6 +6,7 @@ import Password from "primevue/password";
 import Button from "primevue/button";
 import {useUserStore} from "../stores/UserStore.js";
 import Swal from "sweetalert2";
+import FloatLabel from "primevue/floatlabel";
 
 const props = defineProps({
     token: String,
@@ -74,9 +75,11 @@ async function resetPassword() {
 <template>
     <div id="inputs-container">
         <div class="input-errors-container">
-            <div class="p-float-label input-container">
-                <InputText id="email" class="input" v-model="email" @click="resetPasswordErrors.email=[]"/>
-                <label for="email">Email</label>
+            <div class="input-container">
+                <FloatLabel>
+                    <InputText id="email" class="input" v-model="email" @click="resetPasswordErrors.email=[]"/>
+                    <label for="email">Email</label>
+                </FloatLabel>
             </div>
             <div class="validation-errors">
                 <TransitionGroup name="errors">
@@ -89,9 +92,11 @@ async function resetPassword() {
 
 
         <div class="input-errors-container">
-            <div class="p-float-label input-container">
-                <Password id="new-password" class="input" v-model="newPassword" toggle-mask :feedback="false" @click="resetPasswordErrors.password=[]"/>
-                <label for="new-password">New password</label>
+            <div class="input-container">
+                <FloatLabel>
+                    <Password id="new-password" class="input" v-model="newPassword" toggle-mask :feedback="false" @click="resetPasswordErrors.password=[]"/>
+                    <label for="new-password">New password</label>
+                </FloatLabel>
             </div>
             <div class="validation-errors">
                 <TransitionGroup name="errors">
@@ -103,9 +108,11 @@ async function resetPassword() {
         </div>
 
         <div class="input-errors-container">
-            <div class="p-float-label input-container">
-                <Password id="new-password-confirmation" class="input" v-model="newPasswordConfirmation" toggle-mask :feedback="false" @click="resetPasswordErrors.passwordConfirmation=[]"/>
-                <label for="new-password">New password confirmation</label>
+            <div class="input-container">
+                <FloatLabel>
+                    <Password id="new-password-confirmation" class="input" v-model="newPasswordConfirmation" toggle-mask :feedback="false" @click="resetPasswordErrors.passwordConfirmation=[]"/>
+                    <label for="new-password">New password confirmation</label>
+                </FloatLabel>
             </div>
             <div class="validation-errors">
                 <TransitionGroup name="errors">

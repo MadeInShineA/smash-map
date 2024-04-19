@@ -12,6 +12,7 @@ import Checkbox from "primevue/checkbox";
 import {useUserStore} from "../stores/UserStore.js";
 import {useOptionsStore} from "../stores/OptionsStore.js";
 import {useAxios} from "@vueuse/integrations/useAxios";
+import FloatLabel from "primevue/floatlabel";
 
 const userStore = useUserStore()
 const optionsStore = useOptionsStore()
@@ -169,9 +170,11 @@ onMounted(function(){
     <Dialog id="register-modal" class="user-modal" :visible="showRegisterModal" @update:visible="emit('switchShowRegisterModal')" :draggable="false" modal header="Register" :style="{ width: '30vw' }" :breakpoints="{ '1200px': '50vw', '575px': '90vw' }">
         <template #header class="p-dialog-title p-dialog-header margin-auto"></template>
         <div  v-if="characterOptions">
-            <div class="p-float-label modal-input-container">
-                <InputText id="register-username" class="modal-input" v-model="registerUser.username" required  autofocus @focus="registerValidationErrors.username = []" />
-                <label for="register-username">Username</label>
+            <div class="modal-input-container">
+                <FloatLabel>
+                    <InputText id="register-username" class="modal-input" v-model="registerUser.username" required  autofocus @focus="registerValidationErrors.username = []" />
+                    <label for="register-username">Username</label>
+                </FloatLabel>
             </div>
             <div class="validation-errors">
                 <TransitionGroup name="errors">
@@ -181,9 +184,11 @@ onMounted(function(){
                 </TransitionGroup>
             </div>
 
-            <div class="p-float-label modal-input-container">
-                <InputText id="register-email" class="modal-input" v-model="registerUser.email" @focus="registerValidationErrors.email = []"/>
-                <label for="register-email">Email</label>
+            <div class="modal-input-container">
+                <FloatLabel>
+                    <InputText id="register-email" class="modal-input" v-model="registerUser.email" @focus="registerValidationErrors.email = []"/>
+                    <label for="register-email">Email</label>
+                </FloatLabel>
             </div>
             <div class="validation-errors">
                 <TransitionGroup name="errors">
@@ -193,9 +198,11 @@ onMounted(function(){
                 </TransitionGroup>
             </div>
 
-            <div class="p-float-label modal-input-container">
-                <Password id="register-password" class="modal-input" v-model="registerUser.password" :feedback="false" toggleMask @focus="registerValidationErrors.password = []" />
-                <label for="register-password">Password</label>
+            <div class="modal-input-container">
+                <FloatLabel>
+                    <Password id="register-password" class="modal-input" v-model="registerUser.password" :feedback="false" toggleMask @focus="registerValidationErrors.password = []" />
+                    <label for="register-password">Password</label>
+                </FloatLabel>
             </div>
             <div class="validation-errors">
                 <TransitionGroup name="errors">
@@ -205,9 +212,11 @@ onMounted(function(){
                 </TransitionGroup>
             </div>
 
-            <div class="p-float-label modal-input-container">
-                <Password id="register-password-confirmation" class="modal-input" v-model="registerUser.passwordConfirmation" :feedback="false" toggleMask @focus="registerValidationErrors.passwordConfirmation = []" />
-                <label for="register-password">Password Confirmation</label>
+            <div class="modal-input-container">
+                <FloatLabel>
+                    <Password id="register-password-confirmation" class="modal-input" v-model="registerUser.passwordConfirmation" :feedback="false" toggleMask @focus="registerValidationErrors.passwordConfirmation = []" />
+                    <label for="register-password">Password Confirmation</label>
+                </FloatLabel>
             </div>
             <div class="validation-errors">
                 <TransitionGroup name="errors">
@@ -219,7 +228,10 @@ onMounted(function(){
 
             <!-- TODO Fix the placeholder / empty item bug -->
             <div class="modal-input-container">
-                <MultiSelect id="register-games" class="modal-input" v-model="registerUser.games" :options="optionsStore.gameOptions" optionLabel="name" optionValue="id" :maxSelectedLabels="3" placeholder="Games" @focus="registerValidationErrors.games = []"/>
+                <FloatLabel>
+                    <MultiSelect id="register-games" class="modal-input" v-model="registerUser.games" :options="optionsStore.gameOptions" optionLabel="name" optionValue="id" :maxSelectedLabels="3" placeholder="Games" @focus="registerValidationErrors.games = []"/>
+                    <label for="register-games">Games</label>
+                </FloatLabel>
             </div>
             <div class="validation-errors">
                 <TransitionGroup name="errors">
@@ -229,16 +241,19 @@ onMounted(function(){
                 </TransitionGroup>
             </div>
 
-            <!-- TODO Fix the placeholder / empty item bug -->
             <div class="modal-input-container">
-                <MultiSelect id="register-characters" class="modal-input" :disabled="registerUser.games.length === 0" :loading="!charactersFetched" v-model="registerUser.characters" :maxSelectedLabels="2" :options="characterOptions.data" optionLabel="name"  optionValue="id" data-key="id" filter optionGroupLabel="game" optionGroupChildren="characters" placeholder="Characters" showClear @focus="registerValidationErrors.characters = []">
-                    <template #option="slotProps">
-                        <div class="character-option">
-                            <img :alt="slotProps.option.name" :src="slotProps.option.image.url" class="character-option-image" width="30" />
-                            <div>{{ slotProps.option.name }}</div>
-                        </div>
-                    </template>
-                </MultiSelect>
+                <FloatLabel>
+                    <MultiSelect id="register-characters" class="modal-input" :disabled="registerUser.games.length === 0" :loading="!charactersFetched" v-model="registerUser.characters" :maxSelectedLabels="2" :options="characterOptions.data" optionLabel="name"  optionValue="id" data-key="id" filter optionGroupLabel="game" optionGroupChildren="characters" placeholder="Characters" showClear @focus="registerValidationErrors.characters = []">
+                        <template #option="slotProps">
+                            <div class="character-option">
+                                <img :alt="slotProps.option.name" :src="slotProps.option.image.url" class="character-option-image" width="30" />
+                                <div>{{ slotProps.option.name }}</div>
+                            </div>
+                        </template>
+                    </MultiSelect>
+                    <label for="register-characters">Characters</label>
+                </FloatLabel>
+
             </div>
             <div class="validation-errors">
                 <TransitionGroup name="errors">
@@ -260,18 +275,21 @@ onMounted(function(){
                 </TransitionGroup>
             </div>
 
-            <div class="p-float-label modal-input-container">
-                <GoogleAddressAutocomplete
-                    :apiKey="googleMapApiKey"
-                    v-model="registerUser.addressName"
-                    @callback="RegisterUserAddressInputSelect"
-                    @keyup="setRegisterUserAddressNameToTheAddressInput"
-                    @focus="registerValidationErrors.addressName = []"
-                    id="register-address"
-                    :class="{ 'p-filled': registerUser.addressName !== ''}"
-                    class="p-inputtext p-component modal-input"
-                />
-                <label for="register-address">Address</label>
+            <div class="modal-input-container">
+                <FloatLabel>
+                    <GoogleAddressAutocomplete
+                        :apiKey="googleMapApiKey"
+                        v-model="registerUser.addressName"
+                        @callback="RegisterUserAddressInputSelect"
+                        @keyup="setRegisterUserAddressNameToTheAddressInput"
+                        @focus="registerValidationErrors.addressName = []"
+                        id="register-address"
+                        :class="{ 'p-filled': registerUser.addressName !== ''}"
+                        class="p-inputtext p-component modal-input"
+                    />
+                    <label for="register-address">Address</label>
+                </FloatLabel>
+
             </div>
             <div class="validation-errors">
                 <TransitionGroup name="errors">

@@ -9,6 +9,7 @@ import {onMounted, ref, watch} from "vue";
 import {useOptionsStore} from "../stores/OptionsStore.js";
 import {useAxios} from "@vueuse/integrations/useAxios";
 import Button from "primevue/button";
+import FloatLabel from "primevue/floatlabel";
 
 const props = defineProps({
     darkMode: Boolean
@@ -153,7 +154,10 @@ onMounted(function(){
 
             <!-- TODO Fix the placeholder / empty item bug -->
             <div class="setting-input-container">
-                <MultiSelect id="settings-games" class="setting-input" v-model="settings.games" :options="optionsStore.gameOptions" optionLabel="name" optionValue="id" :maxSelectedLabels="3" placeholder="Games"/>
+                <FloatLabel>
+                    <MultiSelect id="settings-games" class="setting-input" v-model="settings.games" :options="optionsStore.gameOptions" optionLabel="name" optionValue="id" :maxSelectedLabels="3" placeholder="Games"/>
+                    <label for="settings-games">Games</label>
+                </FloatLabel>
             </div>
             <div class="validation-errors">
                 <TransitionGroup name="errors">
@@ -165,14 +169,18 @@ onMounted(function(){
 
             <!-- TODO Fix the placeholder / empty item bug -->
             <div class="setting-input-container">
-                <MultiSelect id="settings-characters" class="setting-input" :disabled="settings.games.length === 0" :loading="!charactersFetched" v-model="settings.characters" :maxSelectedLabels="2" :options="characterOptions.data" optionLabel="name" optionValue="id" data-key="id" filter optionGroupLabel="game" optionGroupChildren="characters" placeholder="Characters" showClear>
-                    <template #option="slotProps">
-                        <div class="character-option">
-                            <img :alt="slotProps.option.name" :src="slotProps.option.image.url" class="character-option-image" width="30" />
-                            <div>{{ slotProps.option.name }}</div>
-                        </div>
-                    </template>
-                </MultiSelect>
+                <FloatLabel>
+                    <MultiSelect id="settings-characters" class="setting-input" :disabled="settings.games.length === 0" :loading="!charactersFetched" v-model="settings.characters" :maxSelectedLabels="2" :options="characterOptions.data" optionLabel="name" optionValue="id" data-key="id" filter optionGroupLabel="game" optionGroupChildren="characters" placeholder="Characters" showClear>
+                        <template #option="slotProps">
+                            <div class="character-option">
+                                <img :alt="slotProps.option.name" :src="slotProps.option.image.url" class="character-option-image" width="30" />
+                                <div>{{ slotProps.option.name }}</div>
+                            </div>
+                        </template>
+                    </MultiSelect>
+                    <label for="settings-characters">Characters</label>
+                </FloatLabel>
+
             </div>
             <div class="validation-errors">
                 <TransitionGroup name="errors">
@@ -228,7 +236,11 @@ onMounted(function(){
             </div>
 
             <div class="setting-input-container">
-                <MultiSelect :options="optionsStore.notificationOptions" v-model="settings.notifications" optionLabel="name" optionValue="value" :maxSelectedLabels="3" placeholder="Notifications"/>
+                <FloatLabel>
+                    <MultiSelect id="settings-notifications" :options="optionsStore.notificationOptions" v-model="settings.notifications" optionLabel="name" optionValue="value" :maxSelectedLabels="3" placeholder="Notifications"/>
+                    <label for="settings-notifications">Notifications</label>
+                </FloatLabel>
+
             </div>
 
             <div>

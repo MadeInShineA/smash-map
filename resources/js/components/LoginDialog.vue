@@ -7,6 +7,7 @@ import Button from "primevue/button";
 import {ref} from "vue";
 import Swal from "sweetalert2";
 import {useUserStore} from "../stores/UserStore.js";
+import FloatLabel from "primevue/floatlabel";
 
 
 const userStore = useUserStore()
@@ -129,9 +130,11 @@ const forgotValidationErrors = ref({
 <template>
     <Dialog id="login-modal" class="user-modal" :visible="showLoginModal" @update:visible="emit('switchShowLoginModal')" :draggable="false" modal :header="showForgetPasswordInputs ? 'Forgot Password' : 'Login'" :style="{ width: '30vw' }" :breakpoints="{ '1200px': '50vw', '575px': '90vw' }">
         <div v-if="!showForgetPasswordInputs">
-            <div class="p-float-label modal-input-container">
-                <InputText id="login-username" class="modal-input" v-model="loginUser.username" autofocus @focus="loginValidationErrors.username = []"/>
-                <label for="login-username">Username</label>
+            <div class="modal-input-container">
+                <FloatLabel>
+                    <InputText id="login-username" class="modal-input" v-model="loginUser.username" autofocus @focus="loginValidationErrors.username = []"/>
+                    <label for="login-username">Username</label>
+                </FloatLabel>
             </div>
             <div class="validation-errors">
                 <TransitionGroup name="errors">
@@ -141,9 +144,11 @@ const forgotValidationErrors = ref({
                 </TransitionGroup>
             </div>
 
-            <div class="p-float-label modal-input-container">
-                <Password id="login-password" class="modal-input" v-model="loginUser.password" :feedback="false" @focus="loginValidationErrors.password = []" toggleMask/>
-                <label for="login-password">Password</label>
+            <div class="modal-input-container">
+                <FloatLabel>
+                    <Password id="login-password" class="modal-input" v-model="loginUser.password" :feedback="false" @focus="loginValidationErrors.password = []" toggleMask/>
+                    <label for="login-password">Password</label>
+                </FloatLabel>
             </div>
             <div class="validation-errors">
                 <TransitionGroup name="errors">
@@ -161,9 +166,11 @@ const forgotValidationErrors = ref({
             </div>
         </div>
         <div v-if="showForgetPasswordInputs">
-            <div class="p-float-label modal-input-container">
-                <InputText id="forgot-email" class="modal-input" v-model="forgotEmail" @focus="forgotValidationErrors.email = []"/>
-                <label for="forgot-email">Email</label>
+            <div class="modal-input-container">
+                <FloatLabel>
+                    <InputText id="forgot-email" class="modal-input" v-model="forgotEmail" @focus="forgotValidationErrors.email = []"/>
+                    <label for="forgot-email">Email</label>
+                </FloatLabel>
             </div>
             <div class="validation-errors">
                 <TransitionGroup name="errors">
