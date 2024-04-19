@@ -107,6 +107,9 @@ export const useUserStore = defineStore('user', function (){
         unsubscribeToNotifications()
         localStorage.removeItem('userData');
         user.value = null;
+        if(router.currentRoute.value.path === '/settings'){
+            router.push('/')
+        }
         return response
     }
 

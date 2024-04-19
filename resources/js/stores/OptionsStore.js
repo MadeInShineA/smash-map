@@ -44,12 +44,19 @@ export const useOptionsStore = defineStore('option', function (){
         { name: 'South America', code: 'SA' }
     ])
 
+    const notificationOptions = ref([
+        {name: 'Distance notifications', value: 'distanceNotifications'},
+        {name: 'Attendees notifications', value: 'attendeesNotifications'},
+        {name: 'Time notifications', value: 'timeNotifications'},
+    ]);
+
     return {
         gameOptions,
         eventTypeOptions,
         eventOrderByOptions,
         addressTypeOptions,
-        continentOptions
+        continentOptions,
+        notificationOptions
     }
 
 })

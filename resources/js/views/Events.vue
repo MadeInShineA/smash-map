@@ -200,7 +200,8 @@ onMounted(()=>{
 }
 
 :deep(.p-paginator){
-   background: none;
+    background: none;
+    justify-content: center;
 }
 
 @media (max-width: 1100px) {

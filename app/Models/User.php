@@ -111,4 +111,22 @@ class User extends Authenticatable
         }
         return $event_games_array;
     }
+
+    public function notification_settings(): array
+    {
+        $res = [];
+        if($this->distance_notifications){
+            $res[] = 'distanceNotifications';
+        }
+
+        if($this->attendees_notifications){
+            $res[] = 'attendeesNotifications';
+        }
+
+        if($this->time_notifications){
+            $res[] = 'timeNotifications';
+        }
+
+        return $res;
+    }
 }

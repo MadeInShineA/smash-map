@@ -1,5 +1,5 @@
 <script setup>
-import {computed, onMounted, ref, watch} from "vue";
+import {computed, nextTick, onMounted, ref, watch} from "vue";
 import Menubar from "primevue/menubar";
 import Button from "primevue/button";
 import {useWindowSize} from '@vueuse/core'
@@ -22,7 +22,6 @@ const userStore = useUserStore()
 watch(width, function (width){
     responsiveMenuDisplayed.value = width <= 960
 }, {immediate: true})
-
 
 const menuItems = ref([
     {
@@ -85,9 +84,10 @@ function switch_theme(changeMode) {
 
 switch_theme(false)
 
-const menuBar = ref()
+const header = ref()
 
-const menuBarHeight = computed(()=>menuBar.value.clientHeight + 'px')
+// const headerHeight = computed(()=>header.value.clientHeight + 'px')
+const headerHeight = ref()
 
 if (userStore.user) {
     userStore.subscribeToNotifications()
@@ -163,9 +163,17 @@ const profileItems = ref([{
     ]
 }])
 
+onMounted(()=>{
+    console.log('Layout Mounted')
+    nextTick(() => { console.log(header.value.clientHeight) });
+    nextTick(() => {
+        headerHeight.value = header.value.clientHeight + 'px';
+    });
+})
+
 </script>
 <template>
-    <header ref="menuBar" id="header">
+    <header ref="header" id="header">
         <Menubar v-if="responsiveMenuDisplayed" id="responsive-menu" :model="menuItems">
             <template #start>
                 <router-link to="/"><img alt="logo" src="../../images/logo-no-text-no-bg.png" height="40" class="mr-2"/></router-link>
@@ -300,7 +308,7 @@ const profileItems = ref([{
  */
 
 main{
-    height: calc(100vh - v-bind(menuBarHeight));
+    height: calc(100vh - v-bind(headerHeight));
     overflow-y: auto;
 }
 

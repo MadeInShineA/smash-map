@@ -8,6 +8,7 @@ import InputText from "primevue/inputtext";
 import {onMounted, ref, watch} from "vue";
 import {useOptionsStore} from "../stores/OptionsStore.js";
 import {useAxios} from "@vueuse/integrations/useAxios";
+import Button from "primevue/button";
 
 const props = defineProps({
     darkMode: Boolean
@@ -35,6 +36,18 @@ userStore.getSettings(userStore.user.id, props.darkMode).then((response)=>{
 
 })
 
+const settingsValidationErrors = ref({
+    username: [],
+    email: [],
+    password: [],
+    passwordConfirmation: [],
+    games: [],
+    characters: [],
+    isModder: [],
+    addressName: [],
+    notifications: []
+})
+
 
 watch(characterOptions, function(availableCharacters, oldValue){
     if (settings.value.games.length === 0){
@@ -60,19 +73,19 @@ const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
 
 
 // TODO Check if it's done correctly and in a good way
-function RegisterUserAddressInputSelect(place) {
+function addressInputSelect(place) {
     for (let i = 0; i < place.address_components.length; i++) {
         const addressType = place.address_components[i].types[0];
         if (addressType === "country") {
-            registerUser.countryCode = place.address_components[i].short_name;
+            settings.value.address.countryCode = place.address_components[i].short_name;
         }
     }
     settings.value.address.latitude = place.geometry.location.lat()
     settings.value.address.longitude = place.geometry.location.lng()
 }
 
-function setRegisterUserAddressNameToTheAddressInput(){
-    const addressInput = document.getElementById('register-address')
+function addressNameToTheAddressInput(){
+    const addressInput = document.getElementById('settings-address')
     settings.value.address.latitude = null
     settings.value.address.longitude = null
     settings.value.address.countryCode = ''
@@ -87,84 +100,72 @@ onMounted(function(){
 </script>
 
 <template>
-    <template v-if="settings && characterOptions">
-        {{settings}}
-        <div id="settings-inputs-container">
-            <div class="p-float-label settings-input-container">
-                <InputText id="register-username" class="setting-input" v-model="settings.username" required/>
-                <label for="register-username">Username</label>
+<!--    <template v-if="settings && characterOptions">-->
+<!--        {{settings}}-->
+        <div  v-if="settings && characterOptions" id="settings-container">
+            <div class="p-float-label setting-input-container">
+                <InputText id="settings-username" class="setting-input" v-model="settings.username" required/>
+                <label for="settings-username">Username</label>
             </div>
-<!--            <div class="validation-errors">-->
-<!--                <TransitionGroup name="errors">-->
-<!--                    <template v-for="registerUsernameError in registerValidationErrors.username" :key="registerUsernameError" class="validation-errors">-->
-<!--                        <div class="validation-error">{{registerUsernameError}}</div>-->
-<!--                    </template>-->
-<!--                </TransitionGroup>-->
-<!--            </div>-->
+            <div class="validation-errors">
+                <TransitionGroup name="errors">
+                    <template v-for="settingsUsernameError in settingsValidationErrors.username" :key="settingsUsernameError" class="validation-errors">
+                        <div class="validation-error">{{settingsUsernameError}}</div>
+                    </template>
+                </TransitionGroup>
+            </div>
 
-            <div class="p-float-label settings-input-container">
-                <InputText id="register-email" class="setting-input" v-model="settings.email"/>
-                <label for="register-email">Email</label>
+            <div class="p-float-label setting-input-container">
+                <InputText id="settings-email" class="setting-input" v-model="settings.email"/>
+                <label for="settings-email">Email</label>
             </div>
-<!--            <div class="validation-errors">-->
-<!--                <TransitionGroup name="errors">-->
-<!--                    <template v-for="registerEmailError in registerValidationErrors.email" :key="registerEmailError" class="validation-errors">-->
-<!--                        <div class="validation-error">{{registerEmailError}}</div>-->
-<!--                    </template>-->
-<!--                </TransitionGroup>-->
-<!--            </div>-->
+            <div class="validation-errors">
+                <TransitionGroup name="errors">
+                    <template v-for="settingsEmailError in settingsValidationErrors.email" :key="settingsEmailError" class="validation-errors">
+                        <div class="validation-error">{{settingsEmailError}}</div>
+                    </template>
+                </TransitionGroup>
+            </div>
 
-            <div class="p-float-label settings-input-container">
-                <Password id="register-password" class="setting-input" v-model="settings.password" :feedback="false" toggleMask/>
-                <label for="register-password">Password</label>
+            <div class="p-float-label setting-input-container">
+                <Password id="settings-password" class="setting-input" v-model="settings.password" :feedback="false" toggleMask/>
+                <label for="settings-password">New password</label>
             </div>
-<!--            <div class="validation-errors">-->
-<!--                <TransitionGroup name="errors">-->
-<!--                    <template v-for="registerPasswordError in registerValidationErrors.password" :key="registerPasswordError" class="validation-errors">-->
-<!--                        <div class="validation-error">{{registerPasswordError}}</div>-->
-<!--                    </template>-->
-<!--                </TransitionGroup>-->
-<!--            </div>-->
+            <div class="validation-errors">
+                <TransitionGroup name="errors">
+                    <template v-for="settingsPasswordError in settingsValidationErrors.password" :key="settingsPasswordError" class="validation-errors">
+                        <div class="validation-error">{{settingsPasswordError}}</div>
+                    </template>
+                </TransitionGroup>
+            </div>
 
-            <div class="p-float-label settings-input-container">
-                <Password id="register-password-confirmation" class="setting-input" v-model="settings.passwordConfirmation" :feedback="false" toggleMask/>
-                <label for="register-password">Password Confirmation</label>
+            <div class="p-float-label setting-input-container">
+                <Password id="settings-password-confirmation" class="setting-input" v-model="settings.passwordConfirmation" :feedback="false" toggleMask/>
+                <label for="settings-password">New password confirmation</label>
             </div>
-<!--            <div class="validation-errors">-->
-<!--                <TransitionGroup name="errors">-->
-<!--                    <template v-for="registerPasswordConfirmationError in registerValidationErrors.passwordConfirmation" :key="registerPasswordConfirmationError" class="validation-errors">-->
-<!--                        <div class="validation-error">{{registerPasswordConfirmationError}}</div>-->
-<!--                    </template>-->
-<!--                </TransitionGroup>-->
-<!--            </div>-->
-
-            <div class="settings-input-container">
-                <Checkbox v-model="settings.isModder" :binary="true"  input-id="register-is-moder"/>
-                <label for="register-is-moder" class="ml-10"> I am a controller modder </label>
+            <div class="validation-errors">
+                <TransitionGroup name="errors">
+                    <template v-for="settingsPasswordConfirmationError in settingsValidationErrors.passwordConfirmation" :key="settingsPasswordConfirmationError" class="validation-errors">
+                        <div class="validation-error">{{settingsPasswordConfirmationError}}</div>
+                    </template>
+                </TransitionGroup>
             </div>
-<!--            <div class="validation-errors">-->
-<!--                <TransitionGroup name="errors">-->
-<!--                    <template v-for="registerIsModder in registerValidationErrors.isModder" :key="registerIsModder" class="validation-errors">-->
-<!--                        <div class="validation-error">{{registerIsModder}}</div>-->
-<!--                    </template>-->
-<!--                </TransitionGroup>-->
-<!--            </div>-->
 
             <!-- TODO Fix the placeholder / empty item bug -->
-            <div class="modal-input-container">
-                <MultiSelect id="register-games" class="modal-input" v-model="settings.games" :options="optionsStore.gameOptions" optionLabel="name" optionValue="id" :maxSelectedLabels="3" placeholder="Games"/>
+            <div class="setting-input-container">
+                <MultiSelect id="settings-games" class="setting-input" v-model="settings.games" :options="optionsStore.gameOptions" optionLabel="name" optionValue="id" :maxSelectedLabels="3" placeholder="Games"/>
             </div>
-<!--            <div class="validation-errors">-->
-<!--                <TransitionGroup name="errors">-->
-<!--                    <template v-for="registerGamesError in registerValidationErrors.games" :key="registerGamesError" class="validation-errors">-->
-<!--                        <div class="validation-error">{{registerGamesError}}</div>-->
-<!--                    </template>-->
-<!--                </TransitionGroup>-->
-<!--            </div>-->
+            <div class="validation-errors">
+                <TransitionGroup name="errors">
+                    <template v-for="settingsGamesError in settingsValidationErrors.games" :key="settingsGamesError" class="validation-errors">
+                        <div class="validation-error">{{settingsGamesError}}</div>
+                    </template>
+                </TransitionGroup>
+            </div>
 
             <!-- TODO Fix the placeholder / empty item bug -->
-            <div class="modal-input-container">
-                <MultiSelect id="register-characters" class="modal-input" :disabled="settings.games.length === 0" :loading="!charactersFetched" v-model="settings.characters" :maxSelectedLabels="2" :options="characterOptions.data" optionLabel="name" optionValue="id" data-key="id" filter optionGroupLabel="game" optionGroupChildren="characters" placeholder="Characters" showClear>
+            <div class="setting-input-container">
+                <MultiSelect id="settings-characters" class="setting-input" :disabled="settings.games.length === 0" :loading="!charactersFetched" v-model="settings.characters" :maxSelectedLabels="2" :options="characterOptions.data" optionLabel="name" optionValue="id" data-key="id" filter optionGroupLabel="game" optionGroupChildren="characters" placeholder="Characters" showClear>
                     <template #option="slotProps">
                         <div class="character-option">
                             <img :alt="slotProps.option.name" :src="slotProps.option.image.url" class="character-option-image" width="30" />
@@ -173,42 +174,76 @@ onMounted(function(){
                     </template>
                 </MultiSelect>
             </div>
-<!--            <div class="validation-errors">-->
-<!--                <TransitionGroup name="errors">-->
-<!--                    <template v-for="registerCharactersError in registerValidationErrors.characters" :key="registerCharactersError" class="validation-errors">-->
-<!--                        <div class="validation-error">{{registerCharactersError}}</div>-->
-<!--                    </template>-->
-<!--                </TransitionGroup>-->
-<!--            </div>-->
+            <div class="validation-errors">
+                <TransitionGroup name="errors">
+                    <template v-for="settingsCharactersError in settingsValidationErrors.characters" :key="settingsCharactersError" class="validation-errors">
+                        <div class="validation-error">{{settingsCharactersError}}</div>
+                    </template>
+                </TransitionGroup>
+            </div>
 
-            <div class="p-float-label modal-input-container">
+            <div class="setting-input-container">
+                <Checkbox v-model="settings.isModder" :binary="true"  input-id="settings-is-moder"/>
+                <label for="settings-is-moder" class="ml-10"> I am a controller modder </label>
+            </div>
+            <div class="validation-errors">
+                <TransitionGroup name="errors">
+                    <template v-for="settingsIsModder in settingsValidationErrors.isModder" :key="settingsIsModder" class="validation-errors">
+                        <div class="validation-error">{{settingsIsModder}}</div>
+                    </template>
+                </TransitionGroup>
+            </div>
+
+            <div class="p-float-label setting-input-container">
                 <GoogleAddressAutocomplete
                     :apiKey="googleMapApiKey"
-                    v-model="settings.address"
-                    @callback="RegisterUserAddressInputSelect"
-                    @keyup="setRegisterUserAddressNameToTheAddressInput"
-                    id="register-address"
-                    :class="{ 'p-filled': settings.addressName !== ''}"
-                    class="p-inputtext p-component modal-input"
+                    v-model="settings.address.name"
+                    :value="settings.address.name"
+                    @callback="addressInputSelect"
+                    @keyup="addressNameToTheAddressInput"
+                    id="settings-address"
+                    :class="{ 'p-filled': settings.address.name !== ''}"
+                    class="p-inputtext p-component setting-input"
                 />
-                <label for="register-address">Address</label>
-<!--            </div>-->
-<!--            <div class="validation-errors">-->
-<!--                <TransitionGroup name="errors">-->
-<!--                    <template v-for="registerAddressNameError in registerValidationErrors.addressName" :key="registerAddressNameError" class="validation-errors">-->
-<!--                        <div class="validation-error">{{registerAddressNameError}}</div>-->
-<!--                    </template>-->
-<!--                </TransitionGroup>-->
+                <label for="settings-address">Address</label>
+            </div>
+            <div class="validation-errors">
+                <TransitionGroup name="errors">
+                    <template v-for="settingsAddressNameError in settingsValidationErrors.addressName" :key="settingsAddressNameError" class="validation-errors">
+                        <div class="validation-error">{{settingsAddressNameError}}</div>
+                    </template>
+                </TransitionGroup>
+            </div>
+
+            <div class="setting-input-container">
+                <Checkbox v-model="settings.isOnMap" :binary="true"  input-id="settings-is-on-map"/>
+                <label for="settings-is-on-map" class="ml-10"> I want to appear on the map </label>
+            </div>
+            <div class="validation-errors">
+                <TransitionGroup name="errors">
+                    <template v-for="settingsIsModder in settingsValidationErrors.isModder" :key="settingsIsModder" class="validation-errors">
+                        <div class="validation-error">{{settingsIsModder}}</div>
+                    </template>
+                </TransitionGroup>
+            </div>
+
+            <div class="setting-input-container">
+                <MultiSelect :options="optionsStore.notificationOptions" v-model="settings.notifications" optionLabel="name" optionValue="value" :maxSelectedLabels="3" placeholder="Notifications"/>
+            </div>
+
+            <div>
+                <Button label="Save" severity="success" icon="pi pi-check" plain text></Button>
             </div>
         </div>
-    </template>
-    <template v-else>
-        <LoaderComponent></LoaderComponent>
-    </template>
+    <LoaderComponent v-else></LoaderComponent>
+
+<!--    <template v-else>-->
+<!--        <LoaderComponent></LoaderComponent>-->
+<!--    </template>-->
 </template>
 
 <style scoped>
-#settings-inputs-container {
+#settings-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -217,7 +252,7 @@ onMounted(function(){
     width: 100%;
 }
 
-.settings-input-container{
+.setting-input-container{
     min-width: 300px;
     margin: 10px 20px;
 }
@@ -225,5 +260,36 @@ onMounted(function(){
 .setting-input,
 .setting-input :deep(input){
     width: 100%;
+}
+
+.setting-input{
+    display: flex;
+}
+
+.character-option{
+    display: flex;
+}
+
+.character-option-image{
+    width: 18px;
+    margin-right: 5px;
+}
+
+.errors-enter-active,
+.errors-leave-active {
+    transition: opacity 0.5s ease;}
+.errors-enter-from,
+.errors-leave-to {
+    opacity: 0;
+}
+
+.validation-errors{
+    min-height: 1em;
+}
+
+.validation-error{
+    margin-left: 20px;
+    font-size: 12px;
+    color: red;
 }
 </style>
