@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->string('color')->nullable();
             $table->boolean('distance_notifications')->default(true);
+            $table->unsignedInteger('distance_notifications_radius')->default(500);
             $table->boolean('attendees_notifications')->default(true);
             $table->boolean('time_notifications')->default(true);
             $table->boolean('is_modder')->default(false);

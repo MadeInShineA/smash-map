@@ -7,6 +7,7 @@ use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\ResetPasswordRequest;
+use App\Http\Requests\SettingsUpdateRequest;
 use App\Http\Resources\Character\CharacterResource;
 use App\Http\Resources\Game\GameResource;
 use App\Http\Resources\User\SettingsUserResource;
@@ -141,6 +142,22 @@ class UserController extends Controller
         }catch (\Error $error){
             return $this->sendError('An error occurred while retrieving the user E 011', [$error], 500);
         }
+    }
+
+    public function update_settings(SettingsUpdateRequest $request, User $user):JsonResponse
+    {
+        try{
+            if ($user->id != $request->user('sanctum')->id){
+                return $this->sendError('You are not authorized to update this settings', [], 401);
+            }
+
+            return $this->sendResponse([], 'Settings updated with success');
+
+        }catch (\Error $error){
+            return $this->sendError('An error occurred while retrieving the user E 012', [$error], 500);
+        }
+
+
     }
 
     public function is_authenticated(Request $request): JsonResponse

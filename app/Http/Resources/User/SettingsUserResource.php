@@ -11,14 +11,15 @@ class SettingsUserResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'email'         => $this->email,
-            'username'      => $this->username,
-            'games'         => $this->games->pluck('id'),
-            'characters'    => $this->characters->pluck('id'),
-            'isModder'      => boolval($this->is_modder),
-            'address'       => new SettingsAddressResource($this->address),
-            'isOnMap'       => boolval($this->is_on_map),
-            'notifications' => $this->notification_settings()
+            'email'                         => $this->email,
+            'username'                      => $this->username,
+            'games'                         => $this->games->pluck('id'),
+            'characters'                    => $this->characters->pluck('id'),
+            'isModder'                      => boolval($this->is_modder),
+            'address'                       => new SettingsAddressResource($this->address),
+            'isOnMap'                       => boolval($this->is_on_map),
+            'notifications'                 => $this->notification_settings(),
+            'distanceNotificationsRadius' => $this->distance_notifications_radius,
         ];
     }
 

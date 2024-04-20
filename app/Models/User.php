@@ -34,6 +34,7 @@ class User extends Authenticatable
         'description',
         'color',
         'distance_notifications',
+        'distance_notifications_radius',
         'attendees_notifications',
         'time_notifications',
         'is_modder',

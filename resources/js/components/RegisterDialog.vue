@@ -102,13 +102,6 @@ function setRegisterUserAddressNameToTheAddressInput(){
 function register(){
     registerValidationErrors.value.register = []
 
-    const header = {
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-        },
-    }
-
     axios.get('/sanctum/csrf-cookie').then(async () => {
         try {
             await userStore.register(registerUser).then(async function (response) {

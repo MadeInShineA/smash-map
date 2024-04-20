@@ -133,6 +133,17 @@ export const useUserStore = defineStore('user', function (){
         return axios.post('/api/reset-password', resetData, header)
     }
 
+    async function saveSettings(settings){
+        const header = {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+        }
+        return axios.post('/api/users/' + user.value.id + '/settings', settings, header)
+
+    }
+
     return {
         user,
         notificationsCount,
@@ -143,6 +154,7 @@ export const useUserStore = defineStore('user', function (){
         register,
         logout,
         forgotPassword,
-        resetPassword
+        resetPassword,
+        saveSettings
     }
 })

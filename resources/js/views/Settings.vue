@@ -10,6 +10,8 @@ import {useOptionsStore} from "../stores/OptionsStore.js";
 import {useAxios} from "@vueuse/integrations/useAxios";
 import Button from "primevue/button";
 import FloatLabel from "primevue/floatlabel";
+import Slider from "primevue/slider";
+import Swal from "sweetalert2";
 
 const props = defineProps({
     darkMode: Boolean
@@ -97,6 +99,56 @@ function addressNameToTheAddressInput(){
 onMounted(function(){
     console.log('Settings Mounted')
 })
+
+async function saveSettings() {
+    try {
+        settingsValidationErrors.value = {
+            username: [],
+            email: [],
+            password: [],
+            passwordConfirmation: [],
+            games: [],
+            characters: [],
+            isModder: [],
+            addressName: [],
+            notifications: []
+        }
+
+        await userStore.saveSettings(settings.value).then(async function (response) {
+
+            const alertBackground = props.darkMode ? '#1C1B22' : '#FFFFFF'
+            const alertColor = props.darkMode ? '#FFFFFF' : '#1C1B22'
+            await Swal.fire({
+                title: 'Settings saved!',
+                text: response.data.message,
+                icon: 'success',
+                background: alertBackground,
+                color: alertColor,
+                timer: 2000,
+                showConfirmButton: false
+            })
+        })
+
+    } catch (error) {
+        if (error.response.data.errors === undefined && error.response.data.message && error.response.status === 500) {
+            const alertBackground = props.darkMode ? '#1C1B22' : '#FFFFFF'
+            const alertColor = props.darkMode ? '#FFFFFF' : '#1C1B22'
+            await Swal.fire({
+                title: 'Error',
+                text: error.response.data.message,
+                icon: 'error',
+                background: alertBackground,
+                color: alertColor,
+                timer: 2000,
+                showConfirmButton: false
+            })
+        } else if (error.response.data.errors) {
+            settingsValidationErrors.value = error.response.data.errors
+        } else {
+            console.log(error)
+        }
+    }
+}
 
 </script>
 
@@ -240,11 +292,31 @@ onMounted(function(){
                     <MultiSelect class="setting-input" id="settings-notifications" :options="optionsStore.notificationOptions" v-model="settings.notifications" optionLabel="name" optionValue="value" :maxSelectedLabels="3" placeholder="Notifications"/>
                     <label for="settings-notifications">Notifications</label>
                 </FloatLabel>
-
+            </div>
+            <div class="validation-errors">
+                <TransitionGroup name="errors">
+                    <template v-for="settingsNotifications in settingsValidationErrors.notifications" :key="settingsNotifications" class="validation-errors">
+                        <div class="validation-error">{{settingsNotifications}}</div>
+                    </template>
+                </TransitionGroup>
+            </div>
+            <div class="setting-input-container" v-if="settings.notifications.includes('distanceNotifications')">
+                <FloatLabel>
+                    <InputText id="settings-distance-notifications-radius" class="setting-input" v-model.number="settings.distanceNotificationsRadius" />
+                    <Slider class="setting-input" v-model="settings.distanceNotificationsRadius" :min="1" :max="2000" />
+                    <label for="settings-distance-notifications-radius">Distance Notifications Radius (KM)</label>
+                </FloatLabel>
+            </div>
+            <div class="validation-errors">
+                <TransitionGroup name="errors">
+                    <template v-for="settingsDistanceNotificationsRadius in settingsValidationErrors.distanceNotificationsRadius" :key="settingsDistanceNotificationsRadius" class="validation-errors">
+                        <div class="validation-error">{{settingsDistanceNotificationsRadius}}</div>
+                    </template>
+                </TransitionGroup>
             </div>
 
             <div>
-                <Button label="Save" severity="success" icon="pi pi-check" plain text></Button>
+                <Button label="Save" severity="success" icon="pi pi-check" plain text @click="saveSettings"></Button>
             </div>
         </div>
     <LoaderComponent v-else></LoaderComponent>

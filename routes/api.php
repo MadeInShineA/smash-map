@@ -31,6 +31,7 @@ Route::post('/reset-password', [UserController::class, 'reset_password']);
 Route::get('events/statistics', [EventController::class, 'get_statistics']);
 
 Route::get('/users/{user}/settings', [UserController::class, 'get_settings']);
+Route::post('/users/{user}/settings', [UserController::class, 'update_settings']);
 
 Route::middleware(['auth:sanctum'])->group(function (){
     Route::post('/logout', [UserController::class, 'logout']);
