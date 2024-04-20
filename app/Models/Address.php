@@ -47,26 +47,28 @@ class Address extends Model
     public function getIconAttribute(): string
     {
         $users = $this->users()->where('is_on_map', true)->get();
-        $events = $this->events()->get();
+        $event_games = $this->events->pluck('game.slug')->unique()->toArray();
+
 
         if(sizeof($users) === 0 ){
-            $event_games = $this->events->pluck('game.slug')->unique()->toArray();
             if (sizeof($event_games) == 1){
                 return URL::to('/storage/map-icons/' . $event_games[0] . '.png');
             }else{
                 return URL::to('/storage/map-icons/events.png');
             }
-        }elseif (sizeof($events) === 0 && sizeof($users) === 1){
+        }elseif (sizeof($event_games) === 0 && sizeof($users) === 1){
             $user = $users[0];
             return $user->profile_picture;
-        }elseif(sizeof($events) === 0){
+        }elseif(sizeof($event_games) === 0){
             return URL::to('/storage/map-icons/users.svg');
-        }elseif (sizeof($users) === 1){
-            $event_games = $this->events->pluck('game.slug')->unique()->toArray();
+        }elseif (sizeof($users) === 1 && sizeof($event_games) === 1){
             return URL::to('/storage/map-icons/' . $event_games[0] . '-user.png');
+        }elseif (sizeof($users) === 1 && sizeof($event_games) > 1){
+            return URL::to('/storage/map-icons/events-user.png');
+        }elseif (sizeof($users) > 1 && sizeof($event_games) === 1){
+            return URL::to('/storage/map-icons/' .$event_games[0] .'-users.png');
         }else{
-            $event_games = $this->events->pluck('game.slug')->unique()->toArray();
-            return URL::to('/storage/map-icons/' . $event_games[0] . '-users.png');
+            return URL::to('/storage/map-icons/events-users.png');
         }
     }
 

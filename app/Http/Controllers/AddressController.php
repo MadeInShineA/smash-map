@@ -15,9 +15,13 @@ class AddressController extends Controller
     {
         try {
             $addresses = Address::query();
-            $addresses->whereHas('users', function ($query){
-                $query->where('is_on_map', true);
-            })->orWhereHas('events');
+
+            $addresses->where(function ($query) {
+                $query->whereHas('users', function ($subQuery) {
+                    $subQuery->where('is_on_map', true);
+                })->orWhereHas('events');
+            });
+
 
             if($request->has('games')){
                 $games = $request->input('games');
