@@ -237,7 +237,7 @@ onMounted(function(){
 
             <div class="setting-input-container">
                 <FloatLabel>
-                    <MultiSelect id="settings-notifications" :options="optionsStore.notificationOptions" v-model="settings.notifications" optionLabel="name" optionValue="value" :maxSelectedLabels="3" placeholder="Notifications"/>
+                    <MultiSelect class="setting-input" id="settings-notifications" :options="optionsStore.notificationOptions" v-model="settings.notifications" optionLabel="name" optionValue="value" :maxSelectedLabels="3" placeholder="Notifications"/>
                     <label for="settings-notifications">Notifications</label>
                 </FloatLabel>
 
@@ -260,12 +260,11 @@ onMounted(function(){
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100%;
-    width: 100%;
+    margin-top:20px
 }
 
 .setting-input-container{
-    min-width: 300px;
+    width: 300px;
     margin: 10px 20px;
 }
 
