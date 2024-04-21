@@ -18,6 +18,13 @@ export const useOptionsStore = defineStore('option', function (){
         {name: 'Offline', value: 'offline'}
     ]);
 
+    const connectedUserEventTypeOptions = ref([
+        {name: 'All event types', value: 'default'},
+        {name: 'Online', value: 'online'},
+        {name: 'Offline', value: 'offline'},
+        {name: 'Followed', value: 'followed'}
+    ]);
+
     const eventOrderByOptions = ref([
         {name: 'Sort by ID', value: 'default'},
         {name: 'Attendees ascending', value: 'attendeesASC'},
@@ -29,6 +36,14 @@ export const useOptionsStore = defineStore('option', function (){
     const addressTypeOptions = ref([
         {name: 'All marker types', value: 'default'},
         {name: 'Events', value: 'events'},
+        {name: 'Users', value: 'users'},
+        {name: 'Modders', value: 'modders'},
+    ]);
+
+    const connectedUserAddressTypeOptions = ref([
+        {name: 'All marker types', value: 'default'},
+        {name: 'Events', value: 'events'},
+        {name: 'Followed Events', value: 'followedEvents'},
         {name: 'Users', value: 'users'},
         {name: 'Modders', value: 'modders'},
     ]);
@@ -53,8 +68,10 @@ export const useOptionsStore = defineStore('option', function (){
     return {
         gameOptions,
         eventTypeOptions,
+        connectedUserEventTypeOptions,
         eventOrderByOptions,
         addressTypeOptions,
+        connectedUserAddressTypeOptions,
         continentOptions,
         notificationOptions
     }

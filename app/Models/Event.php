@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Http\Request;
 
@@ -45,6 +46,11 @@ class Event extends Model
     public function images(): MorphMany
     {
         return $this->morphMany(Image::class, 'parentable')->orderByRaw("FIELD(type ,'".ImageTypeEnum::EVENT_PROFILE . "', '" . ImageTypeEnum::EVENT_BANNER . "') ASC");
+    }
+
+    public function subscribed_users(): BelongsToMany
+    {
+        return  $this->belongsToMany(Event::class, 'relation_event_user', 'event_id', 'user_id');
     }
 
     public function notifications(): BelongsTo

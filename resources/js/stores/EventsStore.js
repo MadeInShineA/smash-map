@@ -12,8 +12,8 @@ export const useEventsStore = defineStore('events', function (){
 
 
     function handleEventSubscription(event, darkMode){
-        const title = event.user_subscribed ? 'Unsubscribed!' : 'Subscribed!'
-        const message = event.user_subscribed ? 'You are successfully unsubscribed' : 'You are successfully subscribed'
+        const title = event.user_subscribed ? 'Unfollowed!' : 'Followed!'
+        const message = event.user_subscribed ? 'Event unfollowed with success!' : 'Event followed with success!'
         const alertBackground = darkMode ? '#1C1B22' : '#FFFFFF'
         const alertColor = darkMode ? '#FFFFFF' : '#1C1B22'
         Swal.fire({

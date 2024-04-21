@@ -71,6 +71,11 @@ class EventController extends Controller
                         break;
                     case 'offline':
                         $events->where('is_online', false);
+                        break;
+                    case 'followed':
+                        $events->whereHas('subscribed_users', function ($query) use ($request){
+                            $query->where('user_id', $request->user('sanctum')->id);
+                        });
                 }
             }
 

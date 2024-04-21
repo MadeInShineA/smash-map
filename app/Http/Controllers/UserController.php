@@ -161,6 +161,7 @@ class UserController extends Controller
                 ]);
             $old_address = $user->address;
             if($old_address->id != $address->id && $old_address->users->count() == 1 && $old_address->events->count() == 0){
+                $user->update(['address_id' => $address->id]);
                 $old_address->delete();
             }
 
@@ -229,14 +230,14 @@ class UserController extends Controller
     {
         $user =request()->user();
         $user->subscribed_events()->attach($event);
-        return $this->sendResponse([], 'Event subscribed with success');
+        return $this->sendResponse([], 'Event followed with success');
     }
 
     public function event_unsubscribe(Request $request, Event $event): JsonResponse
     {
         $user = Auth::user();
         $user->subscribed_events()->detach($event);
-        return $this->sendResponse([], 'Event unsubscribed with success');
+        return $this->sendResponse([], 'Event unfollowed with success');
     }
 
     public function get_notifications_count(Request $request, User $user): JsonResponse

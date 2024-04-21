@@ -7,6 +7,7 @@ import Dropdown from "primevue/dropdown";
 import InputText from "primevue/inputtext";
 import {useAddressFiltersStore} from '../stores/AddressFiltersStore.js'
 import {useOptionsStore} from "../stores/OptionsStore.js";
+import {useUserStore} from "../stores/UserStore.js";
 
 const addressFiltersStore = useAddressFiltersStore()
 
@@ -14,6 +15,8 @@ addressFiltersStore.fetchCountries()
 addressFiltersStore.fetchCharacters()
 
 const optionsStore = useOptionsStore()
+
+const userStore = useUserStore()
 
 const props = defineProps({
     sideBarVisible: Boolean
@@ -34,7 +37,7 @@ const emit = defineEmits(['switchSideBarVisible'])
                              placeholder="Select Games"/>
             </div>
             <div class="event-filter">
-                <Dropdown v-model="addressFiltersStore.selectedAddressTypes" :options="optionsStore.addressTypeOptions"
+                <Dropdown v-model="addressFiltersStore.selectedAddressTypes" :options="userStore.user.value ? optionsStore.addressTypeOptions : optionsStore.connectedUserAddressTypeOptions"
                           optionLabel="name" optionValue="value" placeholder="All markers types"/>
             </div>
             <div class="event-filter">

@@ -7,9 +7,11 @@ import Dropdown from "primevue/dropdown";
 import InputText from "primevue/inputtext";
 import { useEventFiltersStore } from '../stores/EventFiltersStore.js'
 import {useOptionsStore} from "../stores/OptionsStore.js";
+import {useUserStore} from "../stores/UserStore.js";
 
 const filtersStore = useEventFiltersStore()
 const optionsStore = useOptionsStore()
+const userStore = useUserStore()
 
 const props = defineProps({
     sideBarVisible:Boolean
@@ -27,7 +29,7 @@ const emit = defineEmits(['switchSideBarVisible'])
                 <MultiSelect v-model="filtersStore.selectedEventGames" :options="optionsStore.gameOptions" display="chip" :maxSelectedLabels="2" optionLabel="name" optionValue="id" placeholder="Select Games"/>
             </div>
             <div class="event-filter">
-                <Dropdown v-model="filtersStore.selectedEventTypes" :options="optionsStore.eventTypeOptions" optionLabel="name" optionValue="value" placeholder="All event types"/>
+                <Dropdown v-model="filtersStore.selectedEventTypes" :options="userStore.user.value ? optionsStore.eventTypeOptions : optionsStore.connectedUserEventTypeOptions" optionLabel="name" optionValue="value" placeholder="All event types"/>
             </div>
             <div class="event-filter">
                 <Calendar v-model=filtersStore.selectedEventDates :minDate="new Date()" placeholder="Event date range (UTC)" selectionMode="range" :manualInput="false" showButtonBar dateFormat="dd/mm/yy"></Calendar>

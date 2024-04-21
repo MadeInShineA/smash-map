@@ -94,6 +94,13 @@ class AddressController extends Controller
                     case 'events':
                         $addresses->whereHas('events');
                         break;
+                    case 'followedEvents':
+                        $addresses->whereHas('events', function ($query) use ($request){
+                            $query->whereHas('subscribed_users', function ($query) use ($request){
+                                $query->where('user_id', $request->user('sanctum')->id);
+                            });
+                        });
+                        break;
                     case 'users':
                         $addresses->whereHas('users');
                         break;
