@@ -274,8 +274,9 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
 
                                     if($distance <= $distance_notifications_radius){
                                         var_dump('User: ' . $user->username . ' notified for event: ' . $event_object->name . ' User to event distance: ' . $distance . ' User distance notifications radius: ' . $distance_notifications_radius);
-                                        Notification::create(['event_id' =>$event_object->id, 'user_id' =>$user->id, 'type' =>NotificationTypeEnum::DISTANCE]);
-                                        broadcast(new NotificationEvent($user));
+                                        $message = 'The Event: <a href="' . $event_object->link  .'"target="blank">' . $event_object->name . '</a> is happening near you, it\'s only ' . round($distance, 2) . ' kilometers away';
+                                        Notification::create(['event_id' =>$event_object->id, 'user_id' =>$user->id, 'message' => $message, 'type' =>NotificationTypeEnum::DISTANCE]);
+                                        broadcast(new NotificationEvent($user, NotificationTypeEnum::LABELS[NotificationTypeEnum::DISTANCE], GameEnum::GAMES[$event_object->game_id], $message));
                                     }
                                 }
                             }
@@ -397,5 +398,5 @@ Artisan::command('test-broadcast', function(){
 Artisan::command('setup', function(){
    Artisan::call('import-countries-images');
    Artisan::call('import-characters-images');
-   Artisan::call('import-100-events-all-games');
+//   Artisan::call('import-100-events-all-games');
 });

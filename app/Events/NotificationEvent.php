@@ -17,18 +17,27 @@ class NotificationEvent implements ShouldBroadcast
      * Create a new event instance.
      */
 
-    public User $user;
+    private User $user;
+    private string $notification_type;
+    private string $message;
+    private string $game_name;
 
 
-    public function __construct(User $user)
+    public function __construct(User $user, string $notification_type, string $game_name, string $message)
     {
         $this->user = $user;
+        $this->notification_type = $notification_type;
+        $this->game_name = $game_name;
+        $this->message = $message;
     }
 
     public function broadcastWith()
     {
         return [
-            'message' => 'Hello'
+            'message' => $this->message,
+            'notificationType' => $this->notification_type,
+            'gameName' => $this->game_name,
+
         ];
     }
 

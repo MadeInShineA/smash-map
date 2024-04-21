@@ -13,4 +13,10 @@ abstract class NotificationTypeEnum
         self::ATTENDEES,
         self::TIME
     ];
+
+    const LABELS = [
+        self::DISTANCE => 'Distance notification',
+        self::ATTENDEES => 'Attendees notification',
+        self::TIME => 'Time notification'
+    ];
 }

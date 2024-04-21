@@ -9,6 +9,7 @@ import PrimeVue from 'primevue/config';
 import {Qalendar} from "qalendar";
 import { createPinia } from 'pinia'
 import BadgeDirective from 'primevue/badgedirective';
+import ToastService from 'primevue/toastservice';
 
 const app = createApp(App);
 
@@ -141,6 +142,8 @@ app.use(Qalendar)
 
 const pinia = createPinia()
 app.use(pinia)
+
+app.use(ToastService)
 
 app.directive('badge', BadgeDirective);
 

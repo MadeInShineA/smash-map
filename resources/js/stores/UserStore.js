@@ -4,21 +4,20 @@ import {useAddressFiltersStore} from "../stores/AddressFiltersStore.js";
 import {useEventFiltersStore} from "../stores/EventFiltersStore.js";
 import axios from "axios";
 import {router} from "@/router.js";
-import {useAxios} from "@vueuse/integrations/useAxios";
 import Swal from "sweetalert2";
+
 
 export const useUserStore = defineStore('user', function (){
 
     const addressesFilterStore = useAddressFiltersStore()
     const eventsFilterStore = useEventFiltersStore()
 
-    // TODO Sync the notifications count with the server
     const user = ref(JSON.parse(window.localStorage.getItem('userData')))
     const notificationsCount = ref(0)
     const notificationsCountFetched = ref(false)
+    const userIsSubscribed = ref(false)
     //
     if (user.value) {
-        // subscribeToNotifications()
         fetchNotificationsCount()
     }
 
@@ -61,9 +60,14 @@ export const useUserStore = defineStore('user', function (){
         localStorage.setItem('userData', JSON.stringify(userData));
     }
 
+
+    const toast = ref()
     function subscribeToNotifications(){
         Echo.private(`notifications.` + user.value.id).listen('NotificationEvent', (e) => {
             console.log("Notification received", e)
+            const audio = new Audio('/storage/audios/notification-sound.mp3');
+            audio.play()
+            toast.value.add({severity: 'info', summary: e.notificationType + " for : " + e.gameName, detail: e.message, life: 7000});
             notificationsCount.value = notificationsCount.value + 1
         });
     }
@@ -171,6 +175,7 @@ export const useUserStore = defineStore('user', function (){
         setUser,
         getSettings,
         subscribeToNotifications,
+        toast,
         login,
         register,
         logout,

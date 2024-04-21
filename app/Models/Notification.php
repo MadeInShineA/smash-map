@@ -14,6 +14,7 @@ class Notification extends Model
         'event_id',
         'user_id',
         'type',
+        'message',
         'seen'
     ];
 
