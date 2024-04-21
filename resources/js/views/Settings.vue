@@ -114,7 +114,13 @@ async function saveSettings() {
             notifications: []
         }
 
+        if(!settings.value.notifications.includes('distanceNotifications')){
+            settings.value.distanceNotificationsRadius = null
+        }
+
         await userStore.saveSettings(settings.value).then(async function (response) {
+
+            userStore.user.profilePicture = userStore.user.profilePicture + '?time=' + new Date().getTime()
 
             const alertBackground = props.darkMode ? '#1C1B22' : '#FFFFFF'
             const alertColor = props.darkMode ? '#FFFFFF' : '#1C1B22'
@@ -269,8 +275,8 @@ async function saveSettings() {
             </div>
             <div class="validation-errors">
                 <TransitionGroup name="errors">
-                    <template v-for="settingsAddressNameError in settingsValidationErrors.addressName" :key="settingsAddressNameError" class="validation-errors">
-                        <div class="validation-error">{{settingsAddressNameError}}</div>
+                    <template v-for="settingsAddressError in settingsValidationErrors.address" :key="settingsAddressError" class="validation-errors">
+                        <div class="validation-error">{{settingsAddressError}}</div>
                     </template>
                 </TransitionGroup>
             </div>
@@ -332,7 +338,7 @@ async function saveSettings() {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-top:20px
+    margin: 20px 0;
 }
 
 .setting-input-container{

@@ -28,36 +28,37 @@ class SettingsUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'username'              => ['required', 'max:20', 'unique:', 'alpha_dash:ascii', Rule::unique('users', 'username')->ignore($this->user('sanctum')->id, 'id')] ,
-            'email'                 => 'required|email:rfc,dns|max:255|unique:' . User::class . ',email' .$this->id . ',id',
+            'username'              => 'required|max:20|alpha_dash:ascii|'. Rule::unique('users', 'username')->ignore($this->user->id) ,
+            'email'                 => 'required|email:rfc,dns|max:255|' . Rule::unique('users', 'email')->ignore($this->user->id),
             'password'              => 'nullable|string',
             'passwordConfirmation'  => 'nullable|required_with:password|string|same:password',
             'games'                 => 'required|exists:' . Game::class . ',id',
             'characters'            => ['required', 'exists:' .Character::class . ',id', new AtLeastOneCharacterPerGame],
-            'addressName'           => 'required',
-            'latitude'              => ['required','regex:/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?)$/'],
-            'longitude'             => ['required','regex:/^[-]?((((1[0-7][0-9])|([0-9]?[0-9]))\.(\d+))|180(\.0+)?)$/'],
-            'countryCode'           => 'required',
+            'address'               => 'required|array',
+            'address.name'          => 'required',
+            'address.latitude'      => ['required','regex:/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?)$/'],
+            'address.longitude'     => ['required','regex:/^[-]?((((1[0-7][0-9])|([0-9]?[0-9]))\.(\d+))|180(\.0+)?)$/'],
+            'address.countryCode'   => 'required',
             'isModder'              => 'required|boolean',
             'isOnMap'               => 'required|boolean',
             'notifications'         => 'required|array',
             'notifications.*'       => 'required|in:distanceNotifications,timeNotifications,attendeesNotifications',
-            'distanceNotificationsRadius' => ['required_if:notifications.*,distanceNotifications', 'numeric', 'min:1', 'max:2000'],
+            'distanceNotificationsRadius' => ['nullable','required_if:notifications.*,distanceNotifications', 'numeric', 'min:1', 'max:2000'],
         ];
     }
 
     public function withValidator(Validator $validator)
     {
         $validator->after(function ($validator) {
-            $addressNameError = $validator->errors()->get('addressName');
-            $latitudeError = $validator->errors()->get('latitude');
-            $longitudeError = $validator->errors()->get('longitude');
-            $countryCodeError = $validator->errors()->get('countryCode');
+            $addressNameError = $validator->errors()->get('address.name');
+            $latitudeError = $validator->errors()->get('address.latitude');
+            $longitudeError = $validator->errors()->get('address.longitude');
+            $countryCodeError = $validator->errors()->get('address.countryCode');
 
 
             // Check if there's an error for 'latitude' or 'longitude'
             if (empty($addressNameError) && (!empty($latitudeError) || !empty($longitudeError) || !empty($countryCodeError))) {
-                $validator->errors()->add('addressName', 'Please use the Google Autocomplete');
+                $validator->errors()->add('address', 'Please use the Google Autocomplete');
             }
         });
     }

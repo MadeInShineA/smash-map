@@ -21,6 +21,7 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
             $table->foreignId('address_id')->nullable()->constrained('addresses');
+            $table->boolean('has_default_profile_picture')->default(true);
             $table->string('discord')->nullable();
             $table->string('twitter')->nullable();
             $table->string('description')->nullable();

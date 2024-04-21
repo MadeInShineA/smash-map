@@ -10,6 +10,7 @@ use App\Http\Requests\ResetPasswordRequest;
 use App\Http\Requests\SettingsUpdateRequest;
 use App\Http\Resources\Character\CharacterResource;
 use App\Http\Resources\Game\GameResource;
+use App\Http\Resources\User\LocalStorageUser;
 use App\Http\Resources\User\SettingsUserResource;
 use App\Models\Address;
 use App\Models\Country;
@@ -57,7 +58,7 @@ class UserController extends Controller
             Storage::put($user_directory_path . '/' . ImageTypeEnum::USER_PROFILE . '.png', $profile_picture);
 
 
-            return $this->sendResponse(['user' => $user, 'token' => $user->createToken('API Token')->plainTextToken], 'You are registered and connected!');
+            return $this->sendResponse(['user' => new LocalStorageUser($user), 'token' => $user->createToken('API Token')->plainTextToken], 'You are registered and connected!');
         }catch (\Error $error){
             return $this->sendError('An error occurred while registering E 001', [$error], 500);
         }
@@ -72,7 +73,7 @@ class UserController extends Controller
                     ],
                     401);
             }
-            return $this->sendResponse(['user' => auth::user(), 'token' => auth::user()->createToken('API Token')->plainTextToken], 'You are connected');
+            return $this->sendResponse(['user' => new LocalStorageUser(auth::user()), 'token' => auth::user()->createToken('API Token')->plainTextToken], 'You are connected');
         }catch (\Error $error) {
             return $this->sendError($error, ['login' => ['An error occurred while logging in E 003']], 500);
         }
@@ -150,6 +151,62 @@ class UserController extends Controller
             if ($user->id != $request->user('sanctum')->id){
                 return $this->sendError('You are not authorized to update this settings', [], 401);
             }
+
+            $country = Country::where('code',$request->input('address.countryCode'))->first();
+            $address = Address::firstOrCreate([
+                'latitude' =>$request->input('address.latitude'),
+                'longitude' =>$request->input('address.longitude')],
+                ['name'=>$request->input('address.name'),
+                    'country_id' =>$country->id
+                ]);
+            $old_address = $user->address;
+            if($old_address->id != $address->id && $old_address->users->count() == 1 && $old_address->events->count() == 0){
+                $old_address->delete();
+            }
+
+            $distance_notifications_radius = $request->input('distanceNotificationsRadius');
+            if(!$distance_notifications_radius){
+                $distance_notifications_radius = $user->distance_notifications_radius;
+            }
+
+            $old_username = $user->username;
+
+            if($request->input('password') != null) {
+                $user->update([
+                    'username' => $request->input('username'),
+                    'email' => $request->input('email'),
+                    'password' => Hash::make($request->input('password')),
+                    'address_id' => $address->id,
+                    'is_modder' => $request->input('isModder'),
+                    'is_on_map' => $request->input('isOnMap'),
+                    'distance_notifications' => in_array('distanceNotifications', $request->input('notifications')),
+                    'distance_notifications_radius' => $distance_notifications_radius,
+                    'time_notifications' => in_array('timeNotifications', $request->input('notifications')),
+                    'attendees_notifications' => in_array('attendeesNotifications', $request->input('notifications')),
+                ]);
+            }else{
+                $user->update([
+                    'username' => $request->input('username'),
+                    'email' => $request->input('email'),
+                    'address_id' => $address->id,
+                    'is_modder' => $request->input('isModder'),
+                    'is_on_map' => $request->input('isOnMap'),
+                    'distance_notifications' => in_array('distanceNotifications', $request->input('notifications')),
+                    'distance_notifications_radius' => $distance_notifications_radius,
+                    'time_notifications' => in_array('timeNotifications', $request->input('notifications')),
+                    'attendees_notifications' => in_array('attendeesNotifications', $request->input('notifications')),
+                ]);
+            }
+
+            $user->games()->sync($request->input('games'));
+            $user->characters()->sync($request->input('characters'));
+
+            if ($user->has_default_profile_picture && $old_username[0] != $user->username[0]){
+                $profile_picture = file_get_contents('https://ui-avatars.com/api/?name=' . $user->username . '&rounded=true&length=1&background=random');
+                $user_directory_path = '/users-images/' . $user->uuid;
+                Storage::put($user_directory_path . '/' . ImageTypeEnum::USER_PROFILE . '.png', $profile_picture);
+            }
+
 
             return $this->sendResponse([], 'Settings updated with success');
 

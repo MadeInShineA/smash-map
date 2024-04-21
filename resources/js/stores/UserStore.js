@@ -44,6 +44,10 @@ export const useUserStore = defineStore('user', function (){
         user.value = JSON.parse(window.localStorage.getItem('userData'));
     }
 
+    function setUserDataInLocalStorage(userData){
+        localStorage.setItem('userData', JSON.stringify(userData));
+    }
+
     function subscribeToNotifications(){
         Echo.private(`notifications.` + user.value.id).listen('NotificationEvent', (e) => {
             console.log("Notification received", e)
@@ -63,7 +67,7 @@ export const useUserStore = defineStore('user', function (){
             },
         }
         const response = await axios.post('/api/login', loginUser, header)
-        localStorage.setItem('userData', JSON.stringify(response.data.data.user));
+        setUserDataInLocalStorage(response.data.data.user)
         localStorage.setItem('accessToken', response.data.data.token)
         localStorage.setItem('tokenTime', new Date().toString());
         setUser()
@@ -88,7 +92,7 @@ export const useUserStore = defineStore('user', function (){
         }
 
         const response = await axios.post('/api/register', registerUser, header)
-        localStorage.setItem('userData', JSON.stringify(response.data.data.user));
+        setUserDataInLocalStorage(response.data.data.user)
         localStorage.setItem('accessToken', response.data.data.token)
         localStorage.setItem('tokenTime', new Date().toString());
         setUser()

@@ -183,7 +183,7 @@ onMounted(()=>{
                 </template>
                 <template v-else>
                     <Button id="profile-avatar-button" plain text rounded @click="toggleProfileMenu">
-                        <Avatar :image="userStore.user.profile_picture" shape="circle"  />
+                        <Avatar :image="userStore.user.profilePicture" shape="circle"  />
                     </Button>
                     <Menu :model="profileItems" :popup="true" ref="profileMenu">
                         <template #item="{ item, props }">
@@ -247,7 +247,7 @@ onMounted(()=>{
                         <Button plain text icon="pi pi-bell" label="Notifications" :badge="userStore.notificationsCount" badgeClass="p-badge-success"/>
                     </router-link>
                     <Button id="profile-avatar-button" plain text rounded @click="toggleProfileMenu">
-                        <Avatar :image="userStore.user.profile_picture" shape="circle"  />
+                        <Avatar :image="userStore.user.profilePicture" shape="circle"  />
                     </Button>
                     <Menu :model="profileItems" :popup="true" ref="profileMenu">
                         <template #item="{ item, props }">
