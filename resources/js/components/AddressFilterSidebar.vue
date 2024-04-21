@@ -42,7 +42,7 @@ const emit = defineEmits(['switchSideBarVisible'])
             </div>
             <div class="event-filter">
                 <Calendar v-model=addressFiltersStore.selectedAddressDates :minDate="new Date()"
-                          :disabled="addressFiltersStore.selectedAddressTypes === 'users' || addressFiltersStore.selectedAddressCharacters.length > 0"
+                          :disabled="addressFiltersStore.selectedAddressTypes === 'users' || addressFiltersStore.selectedAddressTypes === 'modders' || addressFiltersStore.selectedAddressCharacters.length > 0"
                           placeholder="Event date range (UTC)" selectionMode="range" :manualInput="false" showButtonBar
                           dateFormat="dd/mm/yy"></Calendar>
             </div>
