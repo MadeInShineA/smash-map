@@ -13,6 +13,7 @@ use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
@@ -265,22 +266,6 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                         $address = Address::firstOrCreate(['latitude' =>$latitude, 'longitude' =>$longitude],['name'=>$address_name, 'country_id' =>$country?->id]);
                         $event_object->address_id = $address->id;
                         $event_object->save();
-
-                        if($event_object->wasRecentlyCreated){
-                            foreach (User::where('distance_notifications', true)->get() as $user){
-                                if($user->games->contains($event_object->game_id)){
-                                    $distance_notifications_radius = $user->distance_notifications_radius;
-                                    $distance = $address->distanceToKM($user->address);
-
-                                    if($distance <= $distance_notifications_radius){
-                                        var_dump('User: ' . $user->username . ' notified for event: ' . $event_object->name . ' User to event distance: ' . $distance . ' User distance notifications radius: ' . $distance_notifications_radius);
-                                        $message = 'The Event: <a href="' . $event_object->link  .'"target="blank">' . $event_object->name . '</a> is happening near you, it\'s only ' . round($distance, 2) . ' kilometers away';
-                                        Notification::create(['event_id' =>$event_object->id, 'user_id' =>$user->id, 'message' => $message, 'type' =>NotificationTypeEnum::DISTANCE]);
-                                        broadcast(new NotificationEvent($user, NotificationTypeEnum::LABELS[NotificationTypeEnum::DISTANCE], GameEnum::GAMES[$event_object->game_id], $message));
-                                    }
-                                }
-                            }
-                        }
                     }
                 }
 
@@ -316,6 +301,31 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                         }
                     }
                 #TODO Delete the unused images (inside event_db_md5s but not in event_md5s)
+                }
+
+                if($event_object->wasRecentlyCreated && !$event_object->is_online){
+                    foreach (User::where('distance_notifications', true)->get() as $user){
+                        if($user->games->contains($event_object->game_id)){
+                            $distance_notifications_radius = $user->distance_notifications_radius;
+                            $distance = $address->distanceToKM($user->address);
+
+                            if($distance <= $distance_notifications_radius){
+                                var_dump('User: ' . $user->username . ' notified for event: ' . $event_object->name . ' User to event distance: ' . $distance . ' User distance notifications radius: ' . $distance_notifications_radius);
+                                $message = 'The Event: <a href="' . $event_object->link  .'"target="blank">' . $event_object->name . '</a> is happening near you, it\'s only ' . round($distance, 2) . ' kilometers away';
+                                $event_images = $event_object->images();
+                                if($event_images){
+                                    $image = $event_images->first()->url;
+                                    var_dump('Image for event: ' . $event_object->name . ' found');
+                                }
+
+                                if(!isset($image)){
+                                    $image = URL::to('/storage/map-icons/' . $event_object->game->name . '.png');
+                                }
+                                Notification::create(['event_id' =>$event_object->id, 'user_id' =>$user->id, 'message' => $message, 'type' =>NotificationTypeEnum::DISTANCE]);
+                                broadcast(new NotificationEvent($user, NotificationTypeEnum::LABELS[NotificationTypeEnum::DISTANCE], $image, GameEnum::GAMES[$event_object->game_id], $message));
+                            }
+                        }
+                    }
                 }
             }
         }
