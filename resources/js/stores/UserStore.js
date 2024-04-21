@@ -13,8 +13,21 @@ export const useUserStore = defineStore('user', function (){
     const eventsFilterStore = useEventFiltersStore()
 
     // TODO Sync the notifications count with the server
-    const notificationsCount = ref(0)
     const user = ref(JSON.parse(window.localStorage.getItem('userData')))
+    const notificationsCount = ref(0)
+    const notificationsCountFetched = ref(false)
+    //
+    if (user.value) {
+        // subscribeToNotifications()
+        fetchNotificationsCount()
+    }
+
+    function fetchNotificationsCount(){
+        axios.get('/api/users/' + user.value.id + '/notifications/count').then((response) => {
+            notificationsCount.value = parseInt(response.data.data)
+            notificationsCountFetched.value = true
+        })
+    }
 
     function getSettings(userId, darkMode){
         return axios.get('/api/users/' + userId + '/settings').then((response) =>{
@@ -51,7 +64,7 @@ export const useUserStore = defineStore('user', function (){
     function subscribeToNotifications(){
         Echo.private(`notifications.` + user.value.id).listen('NotificationEvent', (e) => {
             console.log("Notification received", e)
-            notificationsCount.value = (parseInt(notificationsCount.value) + 1).toString()
+            notificationsCount.value = notificationsCount.value + 1
         });
     }
 
@@ -71,6 +84,7 @@ export const useUserStore = defineStore('user', function (){
         localStorage.setItem('accessToken', response.data.data.token)
         localStorage.setItem('tokenTime', new Date().toString());
         setUser()
+        fetchNotificationsCount()
         subscribeToNotifications()
         if (router.currentRoute.value.path === '/map') {
             addressesFilterStore.fetchAddressesWithFilters()
@@ -97,6 +111,7 @@ export const useUserStore = defineStore('user', function (){
         localStorage.setItem('tokenTime', new Date().toString());
         setUser()
         subscribeToNotifications()
+        fetchNotificationsCount()
         if(router.currentRoute.value.path === '/map'){
             addressesFilterStore.fetchAddressesWithFilters()
         }
@@ -111,6 +126,7 @@ export const useUserStore = defineStore('user', function (){
         unsubscribeToNotifications()
         localStorage.removeItem('userData');
         user.value = null;
+        notificationsCount.value = 0
         if(router.currentRoute.value.path === '/settings'){
             router.push('/')
         }
@@ -151,6 +167,7 @@ export const useUserStore = defineStore('user', function (){
     return {
         user,
         notificationsCount,
+        notificationsCountFetched,
         setUser,
         getSettings,
         subscribeToNotifications,

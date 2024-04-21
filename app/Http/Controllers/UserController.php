@@ -238,4 +238,10 @@ class UserController extends Controller
         $user->subscribed_events()->detach($event);
         return $this->sendResponse([], 'Event unsubscribed with success');
     }
+
+    public function get_notifications_count(Request $request, User $user): JsonResponse
+    {
+        $notifications_count = $user->notifications()->where('seen', false)->count();
+        return $this->sendResponse([$notifications_count], 'Notifications count retrieved with success');
+    }
 }

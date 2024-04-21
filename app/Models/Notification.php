@@ -12,12 +12,18 @@ class Notification extends Model
 
     protected $fillable = [
         'event_id',
+        'user_id',
         'type',
-        'content'
+        'seen'
     ];
 
     public function event(): HasOne
     {
         return $this->hasOne(Event::class);
+    }
+
+    public function user(): HasOne
+    {
+        return $this->hasOne(User::class);
     }
 }

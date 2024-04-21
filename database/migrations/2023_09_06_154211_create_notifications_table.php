@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\NotificationTypeEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,8 +16,9 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->foreignId('event_id')->constrained('events')->cascadeOnDelete();
-            $table->smallInteger('type');
-            $table->string('content');
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->enum('type', NotificationTypeEnum::TYPES);
+            $table->boolean('seen')->default(false);
         });
     }
 

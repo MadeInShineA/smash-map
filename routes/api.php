@@ -37,4 +37,5 @@ Route::middleware(['auth:sanctum'])->group(function (){
     Route::post('/logout', [UserController::class, 'logout']);
     Route::post('/events/{event}/subscribe', [UserController::class, 'event_subscribe']);
     Route::post('/events/{event}/unsubscribe', [UserController::class, 'event_unsubscribe']);
+    Route::get('/users/{user}/notifications/count', [UserController::class, 'get_notifications_count']);
 });

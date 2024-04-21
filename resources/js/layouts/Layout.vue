@@ -200,7 +200,7 @@ onMounted(()=>{
                         </template>
                     </Menu>
                     <router-link to="/notifications">
-                        <Button plain text icon="pi pi-bell" label="Notifications" :badge="userStore.notificationsCount" badgeClass="p-badge-success"/>
+                        <Button v-if="userStore.notificationsCountFetched" plain text icon="pi pi-bell" :badge="userStore.notificationsCount.toString()" badgeClass="p-badge-success"/>
                     </router-link>
                 </template>
                 <Button v-if="!darkMode" id="sun-icon" @click="switch_theme(true)" icon="pi pi-sun" severity="secondary" text rounded aria-label="Sun"/>
@@ -244,7 +244,7 @@ onMounted(()=>{
                 </template>
                 <template v-else>
                     <router-link to="/notifications">
-                        <Button plain text icon="pi pi-bell" label="Notifications" :badge="userStore.notificationsCount" badgeClass="p-badge-success"/>
+                        <Button v-if="userStore.notificationsCountFetched" plain text icon="pi pi-bell" label="Notifications" :badge="userStore.notificationsCount.toString()" badgeClass="p-badge-success"/>
                     </router-link>
                     <Button id="profile-avatar-button" plain text rounded @click="toggleProfileMenu">
                         <Avatar :image="userStore.user.profilePicture" shape="circle"  />

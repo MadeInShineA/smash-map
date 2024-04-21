@@ -2,11 +2,15 @@
 
 use App\Enums\GameEnum;
 use App\Enums\ImageTypeEnum;
+use App\Enums\NotificationTypeEnum;
+use App\Events\NotificationEvent;
 use App\Models\Address;
 use App\Models\Character;
 use App\Models\Country;
 use App\Models\Event;
 use App\Models\Image;
+use App\Models\Notification;
+use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -261,6 +265,21 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                         $address = Address::firstOrCreate(['latitude' =>$latitude, 'longitude' =>$longitude],['name'=>$address_name, 'country_id' =>$country?->id]);
                         $event_object->address_id = $address->id;
                         $event_object->save();
+
+                        if($event_object->wasRecentlyCreated){
+                            foreach (User::where('distance_notifications', true)->get() as $user){
+                                if($user->games->contains($event_object->game_id)){
+                                    $distance_notifications_radius = $user->distance_notifications_radius;
+                                    $distance = $address->distanceToKM($user->address);
+
+                                    if($distance <= $distance_notifications_radius){
+                                        var_dump('User: ' . $user->username . ' notified for event: ' . $event_object->name . ' User to event distance: ' . $distance . ' User distance notifications radius: ' . $distance_notifications_radius);
+                                        Notification::create(['event_id' =>$event_object->id, 'user_id' =>$user->id, 'type' =>NotificationTypeEnum::DISTANCE]);
+                                        broadcast(new NotificationEvent($user));
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -296,7 +315,6 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                         }
                     }
                 #TODO Delete the unused images (inside event_db_md5s but not in event_md5s)
-
                 }
             }
         }
@@ -374,7 +392,6 @@ Artisan::command('import-countries-images', function (){
 
 Artisan::command('test-broadcast', function(){
     broadcast(new \App\Events\NotificationEvent(\App\Models\User::where('username', 'misa')->first()));
-    var_dump("yay");
 });
 
 Artisan::command('setup', function(){
