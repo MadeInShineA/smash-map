@@ -37,11 +37,18 @@ class User extends Authenticatable
         'distance_notifications',
         'distance_notifications_radius',
         'attendees_notifications',
+        'attendees_notifications_thresholds',
         'time_notifications',
+        'time_notifications_thresholds',
         'is_modder',
         'is_on_map',
         'is_admin',
         'is_subscribed'
+    ];
+
+    protected $attributes = [
+        'attendees_notifications_thresholds' => '[50, 100, 200, 500, 1000]',
+        'time_notifications_thresholds' => '[7, 3, 1, 0]',
     ];
 
     /**
@@ -67,6 +74,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'attendees_notifications_thresholds' => 'array',
+        'time_notifications_thresholds' => 'array',
     ];
 
     public function address():BelongsTo

@@ -29,7 +29,11 @@ return new class extends Migration
             $table->boolean('distance_notifications')->default(true);
             $table->unsignedInteger('distance_notifications_radius')->default(500);
             $table->boolean('attendees_notifications')->default(true);
+            // Default value is set inside the User model
+            $table->json('attendees_notifications_thresholds')->nullable();
             $table->boolean('time_notifications')->default(true);
+            // Default value is set inside the User model
+            $table->json('time_notifications_thresholds')->nullable();
             $table->boolean('is_modder')->default(false);
             $table->boolean('is_on_map')->default(false);
             $table->boolean('is_admin')->default(false);

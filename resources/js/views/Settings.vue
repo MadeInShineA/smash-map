@@ -321,9 +321,19 @@ async function saveSettings() {
                 </TransitionGroup>
             </div>
 
+
+            <div class="setting-input-container" v-if="settings.notifications.includes('attendeesNotifications')">
+                <FloatLabel>
+                    <InputText id="attendees-notifications-thresholds" class="setting-input" v-model="settings.attendeesNotificationsThresholds" />
+                    <label for="attendees-notifications-thresholds">Attendees Notifications Thresholds</label>
+                </FloatLabel>
+            </div>
+
             <div>
                 <Button label="Save" severity="success" icon="pi pi-check" plain text @click="saveSettings"></Button>
             </div>
+
+            {{settings}}
         </div>
     <LoaderComponent v-else></LoaderComponent>
 
