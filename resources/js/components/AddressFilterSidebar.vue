@@ -47,7 +47,7 @@ const emit = defineEmits(['switchSideBarVisible'])
                           dateFormat="dd/mm/yy"></Calendar>
             </div>
             <div class="event-filter">
-                <MultiSelect :disabled="addressFiltersStore.selectedAddressDates != null && (addressFiltersStore.selectedAddressTypes ==='events' || addressFiltersStore.selectedAddressDates.length !== 0)" :loading="!addressFiltersStore.charactersFetched" v-model="addressFiltersStore.selectedAddressCharacters" :maxSelectedLabels="2" :options="addressFiltersStore.addressesCharacterOptions.data" optionLabel="name" optionValue="id" data-key="id" filter optionGroupLabel="game" optionGroupChildren="characters" placeholder="Users characters">
+                <MultiSelect :disabled="addressFiltersStore.selectedAddressDates != null && (addressFiltersStore.selectedAddressTypes ==='events' || addressFiltersStore.selectedAddressTypes ==='followedEvents' || addressFiltersStore.selectedAddressDates.length !== 0)" :loading="!addressFiltersStore.charactersFetched" v-model="addressFiltersStore.selectedAddressCharacters" :maxSelectedLabels="2" :options="addressFiltersStore.addressesCharacterOptions.data" optionLabel="name" optionValue="id" data-key="id" filter optionGroupLabel="game" optionGroupChildren="characters" placeholder="Users characters">
                     <template #option="slotProps">
                         <div class="character-option">
                             <img :alt="slotProps.option.name" :src="slotProps.option.image.url" class="character-option-image" width="30" />

@@ -393,7 +393,7 @@ const showTimeNotificationsThresholdsHelp = ref(false)
                 </small>
 
                 <div v-if="showTimeNotificationsThresholdsHelp" class="thresholds-help-text-container">
-                    <small>You will be notified when one of your followed event's days count reaches one of the threshold</small>
+                    <small>You will be notified when one of your followed event's day count reaches one of the threshold</small>
                 </div>
             </div>
             <div class="validation-errors">

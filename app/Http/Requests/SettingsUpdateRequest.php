@@ -43,6 +43,7 @@ class SettingsUpdateRequest extends FormRequest
             'isOnMap'               => 'required|boolean',
             'notifications'         => 'required|array',
             'notifications.*'       => 'required|in:distanceNotifications,timeNotifications,attendeesNotifications',
+            // TODO Fix the distanceNotifications... not being required properly
             'distanceNotificationsRadius' => ['nullable','required_if:notifications.*,distanceNotifications', 'numeric', 'min:1', 'max:2000'],
             'attendeesNotificationsThresholds' => ['nullable','required_if:notifications.*,attendeesNotifications', 'array', 'min:1'],
             'attendeesNotificationsThresholds.*' => 'numeric|min:1|distinct',
