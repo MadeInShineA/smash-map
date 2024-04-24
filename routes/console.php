@@ -314,7 +314,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                                 $message = 'The Event: <a href="' . $event_object->link  .'"target="blank">' . $event_object->name . '</a> is happening near you, it\'s only ' . round($distance, 2) . ' kilometers away!';
                                 $event_images = $event_object->images();
                                 if($event_images){
-                                    $image = $event_images->first()->url;
+                                    $image = $event_images->first()?->url;
                                     var_dump('Image for event: ' . $event_object->name . ' found');
                                 }
 

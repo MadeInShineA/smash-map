@@ -12,7 +12,7 @@ import Button from "primevue/button";
 import FloatLabel from "primevue/floatlabel";
 import Slider from "primevue/slider";
 import Swal from "sweetalert2";
-
+import Panel from "primevue/panel";
 const props = defineProps({
     darkMode: Boolean
 })
@@ -47,8 +47,12 @@ const settingsValidationErrors = ref({
     games: [],
     characters: [],
     isModder: [],
-    addressName: [],
-    notifications: []
+    address: [],
+    isOnMap: [],
+    notifications: [],
+    distanceNotificationsRadius: [],
+    attendeesNotificationsThresholds: [],
+    timeNotificationsThresholds: []
 })
 
 
@@ -110,12 +114,28 @@ async function saveSettings() {
             games: [],
             characters: [],
             isModder: [],
-            addressName: [],
-            notifications: []
+            address: [],
+            isOnMap: [],
+            notifications: [],
+            distanceNotificationsRadius: [],
+            attendeesNotificationsThresholds: [],
+            timeNotificationsThresholds: []
         }
 
         if(!settings.value.notifications.includes('distanceNotifications')){
             settings.value.distanceNotificationsRadius = null
+        }
+
+        if(!settings.value.notifications.includes('attendeesNotifications')){
+            settings.value.attendeesNotificationsThresholds = null
+        }else if(typeof(settings.value.attendeesNotificationsThresholds) === 'string'){
+            settings.value.attendeesNotificationsThresholds = settings.value.attendeesNotificationsThresholds.split(',')
+        }
+
+        if(!settings.value.notifications.includes('timeNotifications')){
+            settings.value.timeNotificationsThresholds = null
+        }else if(typeof(settings.value.timeNotificationsThresholds) === 'string'){
+            settings.value.timeNotificationsThresholds = settings.value.timeNotificationsThresholds.split(',')
         }
 
         await userStore.saveSettings(settings.value).then(async function (response) {
@@ -136,6 +156,7 @@ async function saveSettings() {
         })
 
     } catch (error) {
+        console.log(error)
         if (error.response.data.errors === undefined && error.response.data.message && error.response.status === 500) {
             const alertBackground = props.darkMode ? '#1C1B22' : '#FFFFFF'
             const alertColor = props.darkMode ? '#FFFFFF' : '#1C1B22'
@@ -156,6 +177,11 @@ async function saveSettings() {
     }
 }
 
+const showAttendeesNotificationsThresholdsHelp = ref(false)
+
+const showTimeNotificationsThresholdsHelp = ref(false)
+
+
 </script>
 
 <template>
@@ -163,7 +189,7 @@ async function saveSettings() {
 <!--        {{settings}}-->
         <div  v-if="settings && characterOptions" id="settings-container">
             <div class="p-float-label setting-input-container">
-                <InputText id="settings-username" class="setting-input" v-model="settings.username" required/>
+                <InputText id="settings-username" class="setting-input" v-model="settings.username" required @click="settingsValidationErrors.username = []"/>
                 <label for="settings-username">Username</label>
             </div>
             <div class="validation-errors">
@@ -175,7 +201,7 @@ async function saveSettings() {
             </div>
 
             <div class="p-float-label setting-input-container">
-                <InputText id="settings-email" class="setting-input" v-model="settings.email"/>
+                <InputText id="settings-email" class="setting-input" v-model="settings.email" @click="settingsValidationErrors.email = []"/>
                 <label for="settings-email">Email</label>
             </div>
             <div class="validation-errors">
@@ -187,7 +213,7 @@ async function saveSettings() {
             </div>
 
             <div class="p-float-label setting-input-container">
-                <Password id="settings-password" class="setting-input" v-model="settings.password" :feedback="false" toggleMask/>
+                <Password id="settings-password" class="setting-input" v-model="settings.password" :feedback="false" toggleMask @click="settingsValidationErrors.password = []"/>
                 <label for="settings-password">New password</label>
             </div>
             <div class="validation-errors">
@@ -199,7 +225,7 @@ async function saveSettings() {
             </div>
 
             <div class="p-float-label setting-input-container">
-                <Password id="settings-password-confirmation" class="setting-input" v-model="settings.passwordConfirmation" :feedback="false" toggleMask/>
+                <Password id="settings-password-confirmation" class="setting-input" v-model="settings.passwordConfirmation" :feedback="false" toggleMask @click="settingsValidationErrors.passwordConfirmation = []"/>
                 <label for="settings-password">New password confirmation</label>
             </div>
             <div class="validation-errors">
@@ -213,7 +239,7 @@ async function saveSettings() {
             <!-- TODO Fix the placeholder / empty item bug -->
             <div class="setting-input-container">
                 <FloatLabel>
-                    <MultiSelect id="settings-games" class="setting-input" v-model="settings.games" :options="optionsStore.gameOptions" optionLabel="name" optionValue="id" :maxSelectedLabels="3" placeholder="Games"/>
+                    <MultiSelect id="settings-games" class="setting-input" v-model="settings.games" :options="optionsStore.gameOptions" optionLabel="name" optionValue="id" :maxSelectedLabels="3" placeholder="Games" @click="settingsValidationErrors.games = []"/>
                     <label for="settings-games">Games</label>
                 </FloatLabel>
             </div>
@@ -228,7 +254,7 @@ async function saveSettings() {
             <!-- TODO Fix the placeholder / empty item bug -->
             <div class="setting-input-container">
                 <FloatLabel>
-                    <MultiSelect id="settings-characters" class="setting-input" :disabled="settings.games.length === 0" :loading="!charactersFetched" v-model="settings.characters" :maxSelectedLabels="2" :options="characterOptions.data" optionLabel="name" optionValue="id" data-key="id" filter optionGroupLabel="game" optionGroupChildren="characters" placeholder="Characters" showClear>
+                    <MultiSelect id="settings-characters" class="setting-input" :disabled="settings.games.length === 0" :loading="!charactersFetched" v-model="settings.characters" :maxSelectedLabels="2" :options="characterOptions.data" optionLabel="name" optionValue="id" data-key="id" filter optionGroupLabel="game" optionGroupChildren="characters" placeholder="Characters" showClear @click="settingsValidationErrors.characters = []">
                         <template #option="slotProps">
                             <div class="character-option">
                                 <img :alt="slotProps.option.name" :src="slotProps.option.image.url" class="character-option-image" width="30" />
@@ -249,7 +275,7 @@ async function saveSettings() {
             </div>
 
             <div class="setting-input-container">
-                <Checkbox v-model="settings.isModder" :binary="true"  input-id="settings-is-moder"/>
+                <Checkbox v-model="settings.isModder" :binary="true"  input-id="settings-is-moder" @click="settingsValidationErrors.isModder = []"/>
                 <label for="settings-is-moder" class="ml-10"> I am a controller modder </label>
             </div>
             <div class="validation-errors">
@@ -270,6 +296,7 @@ async function saveSettings() {
                     id="settings-address"
                     :class="{ 'p-filled': settings.address.name !== ''}"
                     class="p-inputtext p-component setting-input"
+                    @click="settingsValidationErrors.address = []"
                 />
                 <label for="settings-address">Address</label>
             </div>
@@ -282,20 +309,20 @@ async function saveSettings() {
             </div>
 
             <div class="setting-input-container">
-                <Checkbox v-model="settings.isOnMap" :binary="true"  input-id="settings-is-on-map"/>
+                <Checkbox v-model="settings.isOnMap" :binary="true"  input-id="settings-is-on-map" @click="settingsValidationErrors.isOnMap = []"/>
                 <label for="settings-is-on-map" class="ml-10"> I want to appear on the map </label>
             </div>
             <div class="validation-errors">
                 <TransitionGroup name="errors">
-                    <template v-for="settingsIsModder in settingsValidationErrors.isModder" :key="settingsIsModder" class="validation-errors">
-                        <div class="validation-error">{{settingsIsModder}}</div>
+                    <template v-for="settingsIsOnMap in settingsValidationErrors.isOnMap" :key="settingsIsOnMap" class="validation-errors">
+                        <div class="validation-error">{{settingsIsOnMap}}</div>
                     </template>
                 </TransitionGroup>
             </div>
 
             <div class="setting-input-container">
                 <FloatLabel>
-                    <MultiSelect class="setting-input" id="settings-notifications" :options="optionsStore.notificationOptions" v-model="settings.notifications" optionLabel="name" optionValue="value" :maxSelectedLabels="3" placeholder="Notifications"/>
+                    <MultiSelect class="setting-input" id="settings-notifications" :options="optionsStore.notificationOptions" v-model="settings.notifications" optionLabel="name" optionValue="value" :maxSelectedLabels="3" placeholder="Notifications" @click="settingsValidationErrors.notifications = []"/>
                     <label for="settings-notifications">Notifications</label>
                 </FloatLabel>
             </div>
@@ -306,10 +333,16 @@ async function saveSettings() {
                     </template>
                 </TransitionGroup>
             </div>
+
+<!--            <template v-for="notification in settings.notifications" :key="notification">-->
+<!--                <component :is="getComponent(notification)"/>-->
+<!--            </template>-->
+
+
             <div class="setting-input-container" v-if="settings.notifications.includes('distanceNotifications')">
                 <FloatLabel>
-                    <InputText id="settings-distance-notifications-radius" class="setting-input" v-model.number="settings.distanceNotificationsRadius" />
-                    <Slider class="setting-input" v-model="settings.distanceNotificationsRadius" :min="1" :max="2000" />
+                    <InputText id="settings-distance-notifications-radius" class="setting-input" v-model.number="settings.distanceNotificationsRadius" @click="settingsValidationErrors.distanceNotificationsRadius = []"/>
+                    <Slider class="setting-input" v-model="settings.distanceNotificationsRadius" :min="1" :max="2000" @click="settingsValidationErrors.distanceNotificationsRadius = []"/>
                     <label for="settings-distance-notifications-radius">Distance Notifications Radius (KM)</label>
                 </FloatLabel>
             </div>
@@ -324,16 +357,56 @@ async function saveSettings() {
 
             <div class="setting-input-container" v-if="settings.notifications.includes('attendeesNotifications')">
                 <FloatLabel>
-                    <InputText id="attendees-notifications-thresholds" class="setting-input" v-model="settings.attendeesNotificationsThresholds" />
+                    <InputText id="attendees-notifications-thresholds" class="setting-input" v-model="settings.attendeesNotificationsThresholds" @click="settingsValidationErrors.attendeesNotificationsThresholds = []" />
                     <label for="attendees-notifications-thresholds">Attendees Notifications Thresholds</label>
                 </FloatLabel>
+            </div>
+            <div class="thresholds-help-container">
+                <small>
+                    Thresholds must be separated by comas.
+                    <i class="pi pi-question-circle thresholds-help-question-mark" @click="showAttendeesNotificationsThresholdsHelp =! showAttendeesNotificationsThresholdsHelp" />
+                </small>
+
+                <div v-if="showAttendeesNotificationsThresholdsHelp" class="thresholds-help-text-container">
+                    <small>You will be notified when one of your followed event's attendee count reaches one of the threshold</small>
+                </div>
+            </div>
+            <div class="validation-errors">
+                <TransitionGroup name="errors">
+                    <template v-for="settingsAttendeesNotificationsThresholds in settingsValidationErrors.attendeesNotificationsThresholds" :key="settingsAttendeesNotificationsThresholds" class="validation-errors">
+                        <div class="validation-error">{{settingsAttendeesNotificationsThresholds}}</div>
+                    </template>
+                </TransitionGroup>
+            </div>
+
+            <div class="setting-input-container" v-if="settings.notifications.includes('timeNotifications')">
+                <FloatLabel>
+                    <InputText id="time-notifications-thresholds" class="setting-input" v-model="settings.timeNotificationsThresholds" @click="settingsValidationErrors.timeNotificationsThresholds = []" />
+                    <label for="time-notifications-thresholds">Time Notifications Thresholds (days)</label>
+                </FloatLabel>
+            </div>
+
+            <div class="thresholds-help-container">
+                <small>
+                    Thresholds must be separated by comas.
+                    <i class="pi pi-question-circle thresholds-help-question-mark" @click="showTimeNotificationsThresholdsHelp =! showTimeNotificationsThresholdsHelp" />
+                </small>
+
+                <div v-if="showTimeNotificationsThresholdsHelp" class="thresholds-help-text-container">
+                    <small>You will be notified when one of your followed event's days count reaches one of the threshold</small>
+                </div>
+            </div>
+            <div class="validation-errors">
+                <TransitionGroup name="errors">
+                    <template v-for="settingsTimeNotificationsThresholds in settingsValidationErrors.timeNotificationsThresholds" :key="settingsTimeNotificationsThresholds" class="validation-errors">
+                        <div class="validation-error">{{settingsTimeNotificationsThresholds}}</div>
+                    </template>
+                </TransitionGroup>
             </div>
 
             <div>
                 <Button label="Save" severity="success" icon="pi pi-check" plain text @click="saveSettings"></Button>
             </div>
-
-            {{settings}}
         </div>
     <LoaderComponent v-else></LoaderComponent>
 
@@ -383,12 +456,27 @@ async function saveSettings() {
 }
 
 .validation-errors{
+    margin-top: 10px;
     min-height: 1em;
+    width: 300px;
 }
 
 .validation-error{
-    margin-left: 20px;
     font-size: 12px;
     color: red;
+}
+
+.thresholds-help-container{
+    width: 300px;
+}
+
+.thresholds-help-text-container{
+    margin-top: 10px;
+}
+
+.thresholds-help-question-mark{
+    cursor: pointer;
+    color: #007ad9;
+    vertical-align: middle;
 }
 </style>

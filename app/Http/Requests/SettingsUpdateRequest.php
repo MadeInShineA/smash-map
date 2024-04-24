@@ -44,6 +44,10 @@ class SettingsUpdateRequest extends FormRequest
             'notifications'         => 'required|array',
             'notifications.*'       => 'required|in:distanceNotifications,timeNotifications,attendeesNotifications',
             'distanceNotificationsRadius' => ['nullable','required_if:notifications.*,distanceNotifications', 'numeric', 'min:1', 'max:2000'],
+            'attendeesNotificationsThresholds' => ['nullable','required_if:notifications.*,attendeesNotifications', 'array', 'min:1'],
+            'attendeesNotificationsThresholds.*' => 'numeric|min:1|distinct',
+            'timeNotificationsThresholds' => ['nullable','required_if:notifications.*,timeNotifications', 'array', 'min:1'],
+            'timeNotificationsThresholds.*' => 'numeric|min:0|distinct',
         ];
     }
 
@@ -59,6 +63,16 @@ class SettingsUpdateRequest extends FormRequest
             // Check if there's an error for 'latitude' or 'longitude'
             if (empty($addressNameError) && (!empty($latitudeError) || !empty($longitudeError) || !empty($countryCodeError))) {
                 $validator->errors()->add('address', 'Please use the Google Autocomplete');
+            }
+
+            $attendeesNotificationsThresholdsError = $validator->errors()->get('attendeesNotificationsThresholds.*');
+            $timeNotificationsThresholdsError = $validator->errors()->get('timeNotificationsThresholds.*');
+
+            if($attendeesNotificationsThresholdsError){
+                $validator->errors()->add('attendeesNotificationsThresholds', 'Please provide valid numbers for thresholds');
+            }
+            if($timeNotificationsThresholdsError){
+                $validator->errors()->add('timeNotificationsThresholds', 'Please provide valid numbers for thresholds');
             }
         });
     }
