@@ -15,8 +15,6 @@ export const useUserStore = defineStore('user', function (){
     const user = ref(JSON.parse(window.localStorage.getItem('userData')))
     const notificationsCount = ref(0)
     const notificationsCountFetched = ref(false)
-    const userIsSubscribed = ref(false)
-    //
     if (user.value) {
         fetchNotificationsCount()
     }
@@ -66,6 +64,7 @@ export const useUserStore = defineStore('user', function (){
         Echo.private(`notifications.` + user.value.id).listen('NotificationEvent', (e) => {
             console.log("Notification received", e)
             const audio = new Audio('/storage/audios/notification-sound.mp3');
+            audio.volume = 0.2
             audio.play()
             toast.value.add({severity: 'info', icon: e.gameImage , summary: e.notificationType + " for : " + e.gameName, detail: e.message, life: 7000});
             notificationsCount.value = notificationsCount.value + 1

@@ -17,6 +17,7 @@ import Toast from "primevue/toast";
 
 const { width, height } = useWindowSize()
 const responsiveMenuDisplayed = ref(false)
+const notificationLabelDisplayed = ref(false)
 
 const userStore = useUserStore()
 
@@ -24,6 +25,7 @@ const toast = ref()
 
 watch(width, function (width){
     responsiveMenuDisplayed.value = width <= 960
+    notificationLabelDisplayed.value = width >= 400
 }, {immediate: true})
 
 const menuItems = ref([
@@ -202,7 +204,7 @@ onMounted(()=>{
                         </template>
                     </Menu>
                     <router-link to="/notifications">
-                        <Button v-if="userStore.notificationsCountFetched" plain text icon="pi pi-bell" :badge="userStore.notificationsCount.toString()" badgeClass="p-badge-success"/>
+                        <Button v-if="userStore.notificationsCountFetched" plain text icon="pi pi-bell" :badge="userStore.notificationsCount.toString()" badgeClass="p-badge-success" :label="notificationLabelDisplayed ? 'Notifications' : null"/>
                     </router-link>
                 </template>
                 <Button v-if="!darkMode" id="sun-icon" @click="switch_theme(true)" icon="pi pi-sun" severity="secondary" text rounded aria-label="Sun"/>

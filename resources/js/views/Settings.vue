@@ -361,7 +361,7 @@ const showTimeNotificationsThresholdsHelp = ref(false)
                     <label for="attendees-notifications-thresholds">Attendees Notifications Thresholds</label>
                 </FloatLabel>
             </div>
-            <div class="thresholds-help-container">
+            <div v-if="settings.notifications.includes('attendeesNotifications')" class="thresholds-help-container">
                 <small>
                     Thresholds must be separated by comas.
                     <i class="pi pi-question-circle thresholds-help-question-mark" @click="showAttendeesNotificationsThresholdsHelp =! showAttendeesNotificationsThresholdsHelp" />
@@ -386,7 +386,7 @@ const showTimeNotificationsThresholdsHelp = ref(false)
                 </FloatLabel>
             </div>
 
-            <div class="thresholds-help-container">
+            <div v-if="settings.notifications.includes('timeNotifications')" class="thresholds-help-container">
                 <small>
                     Thresholds must be separated by comas.
                     <i class="pi pi-question-circle thresholds-help-question-mark" @click="showTimeNotificationsThresholdsHelp =! showTimeNotificationsThresholdsHelp" />

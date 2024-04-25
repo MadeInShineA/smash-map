@@ -170,6 +170,19 @@ class UserController extends Controller
                 $distance_notifications_radius = $user->distance_notifications_radius;
             }
 
+            $attendees_notifications_thresholds = $request->input('attendeesNotificationsThresholds');
+            sort($attendees_notifications_thresholds);
+            if(!$attendees_notifications_thresholds){
+                $attendees_notifications_thresholds = $user->attendees_notifications_thresholds;
+            }
+
+            $time_notifications_thresholds = $request->input('timeNotificationsThresholds');
+            sort($time_notifications_thresholds);
+            $time_notifications_thresholds = array_reverse($time_notifications_thresholds);
+            if(!$time_notifications_thresholds){
+                $time_notifications_thresholds = $user->time_notifications_thresholds;
+            }
+
             $old_username = $user->username;
 
             if($request->input('password') != null) {
@@ -182,8 +195,10 @@ class UserController extends Controller
                     'is_on_map' => $request->input('isOnMap'),
                     'distance_notifications' => in_array('distanceNotifications', $request->input('notifications')),
                     'distance_notifications_radius' => $distance_notifications_radius,
-                    'time_notifications' => in_array('timeNotifications', $request->input('notifications')),
                     'attendees_notifications' => in_array('attendeesNotifications', $request->input('notifications')),
+                    'attendees_notifications_thresholds' => $attendees_notifications_thresholds,
+                    'time_notifications' => in_array('timeNotifications', $request->input('notifications')),
+                    'time_notifications_thresholds' => $time_notifications_thresholds,
                 ]);
             }else{
                 $user->update([
@@ -194,8 +209,10 @@ class UserController extends Controller
                     'is_on_map' => $request->input('isOnMap'),
                     'distance_notifications' => in_array('distanceNotifications', $request->input('notifications')),
                     'distance_notifications_radius' => $distance_notifications_radius,
-                    'time_notifications' => in_array('timeNotifications', $request->input('notifications')),
                     'attendees_notifications' => in_array('attendeesNotifications', $request->input('notifications')),
+                    'attendees_notifications_thresholds' => $attendees_notifications_thresholds,
+                    'time_notifications' => in_array('timeNotifications', $request->input('notifications')),
+                    'time_notifications_thresholds' => $time_notifications_thresholds,
                 ]);
             }
 

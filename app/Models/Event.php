@@ -50,7 +50,7 @@ class Event extends Model
 
     public function subscribed_users(): BelongsToMany
     {
-        return  $this->belongsToMany(Event::class, 'relation_event_user', 'event_id', 'user_id');
+        return  $this->belongsToMany(User::class, 'relation_event_user', 'event_id', 'user_id');
     }
 
     public function notifications(): BelongsTo
