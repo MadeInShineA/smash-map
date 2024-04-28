@@ -181,6 +181,39 @@ const showAttendeesNotificationsThresholdsHelp = ref(false)
 
 const showTimeNotificationsThresholdsHelp = ref(false)
 
+function deleteAccount(){
+
+    const alertBackground = props.darkMode ? '#1C1B22' : '#FFFFFF'
+    const alertColor = props.darkMode ? '#FFFFFF' : '#1C1B22'
+
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!',
+        background: alertBackground,
+        color: alertColor
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            // await userStore.deleteAccount().then(async function (response) {
+                await Swal.fire({
+                    title: 'Account deleted!',
+                    text: response.data.message,
+                    icon: 'success',
+                    background: alertBackground,
+                    color: alertColor,
+                    timer: 2000,
+                    showConfirmButton: false
+                })
+                window.location.href = '/logout'
+            // })
+        }
+    })
+
+}
 
 </script>
 
@@ -405,6 +438,7 @@ const showTimeNotificationsThresholdsHelp = ref(false)
             </div>
 
             <div>
+                <Button label="Delete account" severity="danger" icon="pi pi-trash" plain text @click="deleteAccount"></Button>
                 <Button label="Save" severity="success" icon="pi pi-check" plain text @click="saveSettings"></Button>
             </div>
         </div>

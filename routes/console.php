@@ -207,8 +207,8 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                 $event_model_instance->attendees = $event_attendees;
                 $event_model_instance->save();
 
-                $days_until_event = Carbon::parse($event_model_instance->start_date_time);
-                $days_until_event = $days_until_event->diffInDays(Carbon::now());
+                $event_date = Carbon::parse($event_model_instance->start_date_time);
+                $days_until_event = $event_date->diffInDays(Carbon::now());
 
                 foreach($event_model_instance->subscribed_users()->get() as $user){
                     if($user->attendees_notifications){
@@ -238,15 +238,26 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                         $user_time_notifications_thresholds = $user->time_notifications_thresholds;
 
                         $last_notification = $user->notifications()->where('event_id', $event_model_instance->id)->where('type', NotificationTypeEnum::TIME)->orderBy('created_at', 'desc')->first();
-                        if($last_notification){
-                            $last_notification_date = Carbon::parse($last_notification->created_at);
-                            $last_notification_date = $last_notification_date->diffInDays(Carbon::now());
-                            if($last_notification_date === 0){
-                                continue;
-                            }
-                        }
+//                        if($last_notification){
+//                            $last_notification_date = Carbon::parse($last_notification->created_at);
+//                            $last_notification_date = $last_notification_date->diffInDays(Carbon::now());
+//                            if($last_notification_date === 0){
+//                                continue;
+//                            }
+//                        }
                         foreach ($user_time_notifications_thresholds as $user_time_notifications_threshold){
-                            if($days_until_event <= $user_time_notifications_threshold){
+                            $send_notification = false;
+                            if($last_notification){
+                                $last_notification_date = Carbon::parse($last_notification->created_at);
+                                $days_between_last_notification_data_and_event_date = $last_notification_date->diffInDays($event_date);
+                                if($days_between_last_notification_data_and_event_date < $user_time_notifications_threshold && $days_until_event >= $user_time_notifications_threshold){
+                                    $send_notification = true;
+                                }
+                            }elseif($days_until_event <= $user_time_notifications_threshold){
+                                $send_notification = true;
+                            }
+
+                            if($send_notification){
                                 var_dump('User: ' . $user->username . ' notified for event: ' . $event_model_instance->name . ' User days until event: ' . $days_until_event . ' User time notifications thresholds: ' . $user_time_notifications_threshold);
 
                                 $message = null;
