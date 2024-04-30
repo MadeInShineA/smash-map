@@ -34,11 +34,11 @@ class User extends Authenticatable
         'twitter',
         'description',
         'color',
-        'distance_notifications',
+        'has_distance_notifications',
         'distance_notifications_radius',
-        'attendees_notifications',
+        'has_attendees_notifications',
         'attendees_notifications_thresholds',
-        'time_notifications',
+        'has_time_notifications',
         'time_notifications_thresholds',
         'is_modder',
         'is_on_map',
@@ -131,16 +131,16 @@ class User extends Authenticatable
     public function notification_settings(): array
     {
         $res = [];
-        if($this->distance_notifications){
-            $res[] = 'distanceNotifications';
+        if($this->has_distance_notifications){
+            $res[] = 'hasDistanceNotifications';
         }
 
-        if($this->attendees_notifications){
-            $res[] = 'attendeesNotifications';
+        if($this->has_attendees_notifications){
+            $res[] = 'hasAttendeesNotifications';
         }
 
-        if($this->time_notifications){
-            $res[] = 'timeNotifications';
+        if($this->has_time_notifications){
+            $res[] = 'hasTimeNotifications';
         }
 
         return $res;

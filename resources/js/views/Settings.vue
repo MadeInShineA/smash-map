@@ -122,25 +122,43 @@ async function saveSettings() {
             timeNotificationsThresholds: []
         }
 
-        if(!settings.value.notifications.includes('distanceNotifications')){
-            settings.value.distanceNotificationsRadius = null
+        let sentDistanceNotificationsRadius = settings.value.distanceNotificationsRadius
+        if(!settings.value.notifications.includes('hasDistanceNotifications')){
+            sentDistanceNotificationsRadius = null
         }
 
-        if(!settings.value.notifications.includes('attendeesNotifications')){
-            settings.value.attendeesNotificationsThresholds = null
+        let sentAttendeesNotificationsThresholds = settings.value.attendeesNotificationsThresholds
+        if(!settings.value.notifications.includes('hasAttendeesNotifications')){
+            sentAttendeesNotificationsThresholds = null
         }else if(typeof(settings.value.attendeesNotificationsThresholds) === 'string'){
-            settings.value.attendeesNotificationsThresholds = settings.value.attendeesNotificationsThresholds.split(',')
+            sentAttendeesNotificationsThresholds = settings.value.attendeesNotificationsThresholds.split(',')
         }
 
-        if(!settings.value.notifications.includes('timeNotifications')){
-            settings.value.timeNotificationsThresholds = null
+        let sentTimeNotificationsThresholds = settings.value.timeNotificationsThresholds
+
+        if(!settings.value.notifications.includes('hasTimeNotifications')){
+            sentTimeNotificationsThresholds = null
         }else if(typeof(settings.value.timeNotificationsThresholds) === 'string'){
-            settings.value.timeNotificationsThresholds = settings.value.timeNotificationsThresholds.split(',')
+            sentTimeNotificationsThresholds = settings.value.timeNotificationsThresholds.split(',')
         }
 
-        await userStore.saveSettings(settings.value).then(async function (response) {
+        const sentSettings = {
+            username: settings.value.username,
+            email: settings.value.email,
+            password: settings.value.password,
+            passwordConfirmation: settings.value.passwordConfirmation,
+            games: settings.value.games,
+            characters: settings.value.characters,
+            isModder: settings.value.isModder,
+            address: settings.value.address,
+            isOnMap: settings.value.isOnMap,
+            notifications: settings.value.notifications,
+            distanceNotificationsRadius: sentDistanceNotificationsRadius,
+            attendeesNotificationsThresholds: sentAttendeesNotificationsThresholds,
+            timeNotificationsThresholds: sentTimeNotificationsThresholds
+        }
 
-            userStore.user.profilePicture = userStore.user.profilePicture + '?time=' + new Date().getTime()
+        await userStore.saveSettings(sentSettings).then(async function (response){
 
             const alertBackground = props.darkMode ? '#1C1B22' : '#FFFFFF'
             const alertColor = props.darkMode ? '#FFFFFF' : '#1C1B22'
@@ -372,70 +390,78 @@ function deleteAccount(){
 <!--            </template>-->
 
 
-            <div class="setting-input-container" v-if="settings.notifications.includes('distanceNotifications')">
-                <FloatLabel>
-                    <InputText id="settings-distance-notifications-radius" class="setting-input" v-model.number="settings.distanceNotificationsRadius" @click="settingsValidationErrors.distanceNotificationsRadius = []"/>
-                    <Slider class="setting-input" v-model="settings.distanceNotificationsRadius" :min="1" :max="2000" @click="settingsValidationErrors.distanceNotificationsRadius = []"/>
-                    <label for="settings-distance-notifications-radius">Distance Notifications Radius (KM)</label>
-                </FloatLabel>
-            </div>
-            <div class="validation-errors">
-                <TransitionGroup name="errors">
-                    <template v-for="settingsDistanceNotificationsRadius in settingsValidationErrors.distanceNotificationsRadius" :key="settingsDistanceNotificationsRadius" class="validation-errors">
-                        <div class="validation-error">{{settingsDistanceNotificationsRadius}}</div>
-                    </template>
-                </TransitionGroup>
-            </div>
-
-
-            <div class="setting-input-container" v-if="settings.notifications.includes('attendeesNotifications')">
-                <FloatLabel>
-                    <InputText id="attendees-notifications-thresholds" class="setting-input" v-model="settings.attendeesNotificationsThresholds" @click="settingsValidationErrors.attendeesNotificationsThresholds = []" />
-                    <label for="attendees-notifications-thresholds">Attendees Notifications Thresholds</label>
-                </FloatLabel>
-            </div>
-            <div v-if="settings.notifications.includes('attendeesNotifications')" class="thresholds-help-container">
-                <small>
-                    Thresholds must be separated by comas.
-                    <i class="pi pi-question-circle thresholds-help-question-mark" @click="showAttendeesNotificationsThresholdsHelp =! showAttendeesNotificationsThresholdsHelp" />
-                </small>
-
-                <div v-if="showAttendeesNotificationsThresholdsHelp" class="thresholds-help-text-container">
-                    <small>You will be notified when one of your followed event's attendee count reaches one of the threshold</small>
+            <template v-if="settings.notifications.includes('hasDistanceNotifications')">
+                <div class="setting-input-container" >
+                    <FloatLabel>
+                        <InputText id="settings-distance-notifications-radius" class="setting-input" v-model.number="settings.distanceNotificationsRadius" @click="settingsValidationErrors.distanceNotificationsRadius = []"/>
+                        <Slider class="setting-input" v-model="settings.distanceNotificationsRadius" :min="1" :max="2000" @click="settingsValidationErrors.distanceNotificationsRadius = []"/>
+                        <label for="settings-distance-notifications-radius">Distance Notifications Radius (KM)</label>
+                    </FloatLabel>
                 </div>
-            </div>
-            <div class="validation-errors">
-                <TransitionGroup name="errors">
-                    <template v-for="settingsAttendeesNotificationsThresholds in settingsValidationErrors.attendeesNotificationsThresholds" :key="settingsAttendeesNotificationsThresholds" class="validation-errors">
-                        <div class="validation-error">{{settingsAttendeesNotificationsThresholds}}</div>
-                    </template>
-                </TransitionGroup>
-            </div>
-
-            <div class="setting-input-container" v-if="settings.notifications.includes('timeNotifications')">
-                <FloatLabel>
-                    <InputText id="time-notifications-thresholds" class="setting-input" v-model="settings.timeNotificationsThresholds" @click="settingsValidationErrors.timeNotificationsThresholds = []" />
-                    <label for="time-notifications-thresholds">Time Notifications Thresholds (days)</label>
-                </FloatLabel>
-            </div>
-
-            <div v-if="settings.notifications.includes('timeNotifications')" class="thresholds-help-container">
-                <small>
-                    Thresholds must be separated by comas.
-                    <i class="pi pi-question-circle thresholds-help-question-mark" @click="showTimeNotificationsThresholdsHelp =! showTimeNotificationsThresholdsHelp" />
-                </small>
-
-                <div v-if="showTimeNotificationsThresholdsHelp" class="thresholds-help-text-container">
-                    <small>You will be notified when one of your followed event's day count reaches one of the threshold</small>
+                <div class="validation-errors">
+                    <TransitionGroup name="errors">
+                        <template v-for="settingsDistanceNotificationsRadius in settingsValidationErrors.distanceNotificationsRadius" :key="settingsDistanceNotificationsRadius" class="validation-errors">
+                            <div class="validation-error">{{settingsDistanceNotificationsRadius}}</div>
+                        </template>
+                    </TransitionGroup>
                 </div>
-            </div>
-            <div class="validation-errors">
-                <TransitionGroup name="errors">
-                    <template v-for="settingsTimeNotificationsThresholds in settingsValidationErrors.timeNotificationsThresholds" :key="settingsTimeNotificationsThresholds" class="validation-errors">
-                        <div class="validation-error">{{settingsTimeNotificationsThresholds}}</div>
-                    </template>
-                </TransitionGroup>
-            </div>
+            </template>
+
+            <template v-if="settings.notifications.includes('hasAttendeesNotifications')">
+                <div class="setting-input-container" >
+                    <FloatLabel>
+                        <InputText id="attendees-notifications-thresholds" class="setting-input" v-model="settings.attendeesNotificationsThresholds" @click="settingsValidationErrors.attendeesNotificationsThresholds = []" />
+                        <label for="attendees-notifications-thresholds">Attendees Notifications Thresholds</label>
+                    </FloatLabel>
+                </div>
+                <div class="thresholds-help-container">
+                    <small>
+                        Thresholds must be separated by comas.
+                        <i class="pi pi-question-circle thresholds-help-question-mark" @click="showAttendeesNotificationsThresholdsHelp =! showAttendeesNotificationsThresholdsHelp" />
+                    </small>
+
+                    <div v-if="showAttendeesNotificationsThresholdsHelp" class="thresholds-help-text-container">
+                        <small>You will be notified when one of your followed event's attendee count reaches one of the threshold</small>
+                    </div>
+                </div>
+                <div class="validation-errors">
+                    <TransitionGroup name="errors">
+                        <template v-for="settingsAttendeesNotificationsThresholds in settingsValidationErrors.attendeesNotificationsThresholds" :key="settingsAttendeesNotificationsThresholds" class="validation-errors">
+                            <div class="validation-error">{{settingsAttendeesNotificationsThresholds}}</div>
+                        </template>
+                    </TransitionGroup>
+                </div>
+            </template>
+
+
+            <template v-if="settings.notifications.includes('hasTimeNotifications')">
+                <div class="setting-input-container">
+                    <FloatLabel>
+                        <InputText id="time-notifications-thresholds" class="setting-input" v-model="settings.timeNotificationsThresholds" @click="settingsValidationErrors.timeNotificationsThresholds = []" />
+                        <label for="time-notifications-thresholds">Time Notifications Thresholds (days)</label>
+                    </FloatLabel>
+                </div>
+                <div class="thresholds-help-container">
+                    <small>
+                        Thresholds must be separated by comas.
+                        <i class="pi pi-question-circle thresholds-help-question-mark" @click="showTimeNotificationsThresholdsHelp =! showTimeNotificationsThresholdsHelp" />
+                    </small>
+
+                    <div v-if="showTimeNotificationsThresholdsHelp" class="thresholds-help-text-container">
+                        <small>You will be notified when one of your followed event's day count reaches one of the threshold</small>
+                    </div>
+                </div>
+                <div class="validation-errors">
+                    <TransitionGroup name="errors">
+                        <template v-for="settingsTimeNotificationsThresholds in settingsValidationErrors.timeNotificationsThresholds" :key="settingsTimeNotificationsThresholds" class="validation-errors">
+                            <div class="validation-error">{{settingsTimeNotificationsThresholds}}</div>
+                        </template>
+                    </TransitionGroup>
+                </div>
+            </template>
+
+
+
 
             <div>
                 <Button label="Delete account" severity="danger" icon="pi pi-trash" plain text @click="deleteAccount"></Button>

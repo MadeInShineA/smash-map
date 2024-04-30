@@ -3,7 +3,7 @@ export default { name:'map'}
 </script>
 
 <script setup>
-import {GoogleMap, CustomControl, Marker, MarkerCluster, InfoWindow} from "vue3-google-map";
+import {GoogleMap, CustomControl, Marker, MarkerCluster, InfoWindow ,Circle} from "vue3-google-map";
 import {onMounted, ref, watch} from "vue";
 import AddressFilterSidebar from "@/components/AddressFilterSidebar.vue";
 import Button from "primevue/button";
@@ -14,6 +14,11 @@ import Tag from "primevue/tag";
 import { useAddressesStore } from '../stores/AddressesStore.js'
 import { useEventsStore } from "../stores/EventsStore.js";
 import { useUserStore } from "../stores/UserStore.js";
+import FloatLabel from "primevue/floatlabel";
+import Slider from "primevue/slider";
+import InputText from "primevue/inputtext";
+import {watchDebounced} from "@vueuse/core";
+import Swal from "sweetalert2";
 
 const props = defineProps({
     responsiveMenuDisplayed: Boolean,
@@ -34,33 +39,29 @@ const switchSideBarVisible = function (){
     sideBarVisible.value = !sideBarVisible.value
 }
 
-const center = ref({ lat: 40.713956, lng: -38.716136 });
+const center = userStore.user ? ref(userStore.user.settings.address) : ref({ lat: 40.713956, lng: -38.716136 });
+
+
 const zoom = ref(4);
 const infoWindows = ref([]);
 const mapRef = ref();
 
-//TODO Understand why this watch works but not this one
-// watch(addressStore.addressesFetched, function([addresses, oldAddresses]){
-//     console.log('Addresses changed')
-// })
+const closeInfoWindows = (i) => {
+    infoWindows.value.forEach(
+        (ref, index) => {
+            if (index !== i) {
+                ref.infoWindow.close();
+                }
+            }
+        );
 
-
-
-const closeInfoWindows = (i) => { infoWindows.value.forEach((ref, index) => { if (index !== i) { ref.infoWindow.close(); } }); };
+    circleInfoWindowRef.value.infoWindow.close()
+};
 
 
 
 //TODO Fix the Zooming on marker click
 
-
-function clickMarkerEvent(i) {
-    // console.log(zoom.value)
-    // if(zoom.value < 6){
-    //     console.log('Zooming')
-    //     zoom.value = 8;
-    closeInfoWindows(i);
-
-}
 
 const legendsVisible = ref(false)
 
@@ -79,9 +80,82 @@ onMounted(()=>{
             zoom.value = mapRef.value.map.getZoom()
         }
     });
+
 })
 
 const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
+
+const distanceNotificationsRadius = userStore.user?.settings.distanceNotificationsRadius ? ref(userStore.user.settings.distanceNotificationsRadius)  : ref(0)
+
+const circleParameters = ref({
+    center: center.value,
+    fillColor: 'aqua',
+    radius: distanceNotificationsRadius.value * 1000,
+    clickable: true
+    }
+)
+
+console.log(circleParameters.value)
+
+const circleInfoWindowRef = ref()
+
+function clickCircleEvent (i){
+    closeInfoWindows(i)
+    circleInfoWindowRef.value.infoWindow.open(mapRef.value.map)
+    circleInfoWindowRef.value.infoWindow.setPosition(center.value)
+}
+
+const validationErrors = ref({
+    distanceNotificationsRadius: []
+})
+
+const circleRef = ref()
+
+
+
+watch(distanceNotificationsRadius, (value) => {
+    circleParameters.value.radius = value * 1000
+    circleRef.value.circle.setRadius(value * 1000)
+  }, {immediate: false})
+
+async function updateDistanceNotificationsRadius() {
+    try {
+        validationErrors.value.distanceNotificationsRadius = []
+        await userStore.updateDistanceNotificationsRadius(distanceNotificationsRadius.value).then(async function (response){
+            const alertBackground = props.darkMode ? '#1C1B22' : '#FFFFFF'
+            const alertColor = props.darkMode ? '#FFFFFF' : '#1C1B22'
+            await Swal.fire({
+                title: 'Distance notifications radius saved!',
+                text: response.data.message,
+                icon: 'success',
+                background: alertBackground,
+                color: alertColor,
+                timer: 2000,
+                showConfirmButton: false
+            })
+        })
+
+    }catch (error) {
+        console.log(error)
+        if (error.response.data.errors === undefined && error.response.data.message && error.response.status === 500) {
+            const alertBackground = props.darkMode ? '#1C1B22' : '#FFFFFF'
+            const alertColor = props.darkMode ? '#FFFFFF' : '#1C1B22'
+            await Swal.fire({
+                title: 'Error',
+                text: error.response.data.message,
+                icon: 'error',
+                background: alertBackground,
+                color: alertColor,
+                timer: 2000,
+                showConfirmButton: false
+            })
+        } else if (error.response.data.errors) {
+            validationErrors.value = error.response.data.errors
+        } else {
+            console.log(error)
+        }
+    }
+}
 
 </script>
 
@@ -89,14 +163,41 @@ const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
     <AddressFilterSidebar :sideBarVisible="sideBarVisible" @switchSideBarVisible="switchSideBarVisible"></AddressFilterSidebar>
     <template v-if="addressStore.addressesFetched">
         <GoogleMap ref="mapRef" :api-key="googleMapApiKey" language="en" :map-type-control-options="{ mapTypeIds: ['roadmap','satellite',]}" style="width: 100%; height: 100%" :center="center" :zoom="zoom" :min-zoom="4" @click="closeInfoWindows" :clickableIcons="false" :fullscreen-control="false">
+            <template v-if="userStore.user && userStore.user.settings.hasDistanceNotifications">
+                <Circle ref="circleRef" :options="circleParameters" @click="clickCircleEvent">
+
+                </Circle>
+
+                <InfoWindow ref="circleInfoWindowRef" class="info-window">
+                    <h3 class="info-window-title">Distance Notification Radius</h3>
+                    <div id="distance-notifications-radius-input-container">
+                        <FloatLabel>
+                            <InputText id="distance-notifications-radius" class="input" v-model.number="distanceNotificationsRadius" @click="validationErrors.distanceNotificationsRadius = []"/>
+                            <Slider class="input" v-model="distanceNotificationsRadius" :min="1" :max="2000" @click="validationErrors.distanceNotificationsRadius = []"/>
+                            <label for="distance-notifications-radius">Distance Notifications Radius (KM)</label>
+                        </FloatLabel>
+                    </div>
+                    <div class="validation-errors">
+                        <TransitionGroup name="errors">
+                            <template v-for="distanceNotificationsRadius in validationErrors.distanceNotificationsRadius" :key="distanceNotificationsRadius" class="validation-errors">
+                                <div class="validation-error">{{distanceNotificationsRadius}}</div>
+                            </template>
+                        </TransitionGroup>
+                    </div>
+
+                    <div>
+                        <Button label="Save" severity="success" icon="pi pi-check" plain text @click="updateDistanceNotificationsRadius"></Button>
+                    </div>
+                </InfoWindow>
+            </template>
             <CustomControl :position="responsiveMenuDisplayed ? 'LEFT_TOP' : 'TOP_CENTER'">
                 <Button class="map-button margin-top-15-important" @click="sideBarVisible = true" icon="pi pi-filter" rounded label="Filters"/>
             </CustomControl>
             <MarkerCluster>
-                <Marker v-for="(address, i) in addressStore.addresses.data" @click="clickMarkerEvent" :options="{position: address.position, icon: {url: address.icon,  scaledSize: { width: 30, height: 30 }}}">
+                <Marker v-for="(address, i) in addressStore.addresses.data" @click="closeInfoWindows" :options="{position: address.position, icon: {url: address.icon,  scaledSize: { width: 30, height: 30 }}}">
                     <InfoWindow :ref="(el) => (infoWindows[i] = el)" class="info-window">
                         <template v-if="address.users.length > 0">
-                            <h3 class="category-holder">Users</h3>
+                            <h3 class="info-window-title">Users</h3>
                             <template v-for="user in address.users">
                                 <div class = user-image-container>
                                     <img :src="user.profilePicture"  alt="User Image">
@@ -120,7 +221,7 @@ const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
                             </template>
                         </template>
                         <template v-if="address.events.length > 0">
-                            <h3 class="category-holder">Events</h3>
+                            <h3 class="info-window-title">Events</h3>
                             <template v-for="event in address.events">
                                 <div class="event-image-container">
                                     <img v-if="event.images[0]" :src="event.images[0].url" alt="Event Image" class="event-image">
@@ -293,7 +394,7 @@ const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
     height: 80px;
 }
 
-.dark .category-holder,
+.dark .info-window-title,
 .dark .user-username{
     color: white;
 }
@@ -335,6 +436,39 @@ const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
 
 .user-character-image {
     margin: 5px;
+}
+
+.errors-enter-active,
+.errors-leave-active {
+    transition: opacity 0.5s ease;}
+.errors-enter-from,
+.errors-leave-to {
+    opacity: 0;
+}
+
+.validation-errors{
+    margin-top: 10px;
+    min-height: 1em;
+    width: 300px;
+}
+
+.validation-error{
+    font-size: 12px;
+    color: red;
+}
+
+#distance-notifications-radius-input-container{
+    width: 300px;
+    margin: 10px 20px;
+}
+
+.input,
+.input{
+    width: 100%;
+}
+
+.input{
+    display: flex;
 }
 
 

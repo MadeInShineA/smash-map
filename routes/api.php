@@ -30,12 +30,14 @@ Route::post('/forgot-password', [UserController::class, 'forgot_password']);
 Route::post('/reset-password', [UserController::class, 'reset_password']);
 Route::get('events/statistics', [EventController::class, 'get_statistics']);
 
-Route::get('/users/{user}/settings', [UserController::class, 'get_settings']);
-Route::post('/users/{user}/settings', [UserController::class, 'update_settings']);
 
 Route::middleware(['auth:sanctum'])->group(function (){
     Route::post('/logout', [UserController::class, 'logout']);
     Route::post('/events/{event}/subscribe', [UserController::class, 'event_subscribe']);
     Route::post('/events/{event}/unsubscribe', [UserController::class, 'event_unsubscribe']);
     Route::get('/users/{user}/notifications/count', [UserController::class, 'get_notifications_count']);
+    Route::get('/users/{user}/settings', [UserController::class, 'get_settings']);
+    Route::post('/users/{user}/settings', [UserController::class, 'update_settings']);
+    Route::post('/users/{user}/settings/update-distance-notifications-radius', [UserController::class, 'update_distance_notifications_radius']);
+
 });

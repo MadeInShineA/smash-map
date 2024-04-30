@@ -27,12 +27,12 @@ return new class extends Migration
             $table->string('twitter')->nullable();
             $table->string('description')->nullable();
             $table->string('color')->nullable();
-            $table->boolean('distance_notifications')->default(true);
+            $table->boolean('has_distance_notifications')->default(true);
             $table->unsignedInteger('distance_notifications_radius')->default(500);
-            $table->boolean('attendees_notifications')->default(true);
+            $table->boolean('has_attendees_notifications')->default(true);
             // Default value is set inside the User model
             $table->json('attendees_notifications_thresholds')->nullable();
-            $table->boolean('time_notifications')->default(true);
+            $table->boolean('has_time_notifications')->default(true);
             // Default value is set inside the User model
             $table->json('time_notifications_thresholds')->nullable();
             $table->boolean('is_modder')->default(false);

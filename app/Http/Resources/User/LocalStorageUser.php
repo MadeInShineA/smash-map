@@ -12,6 +12,10 @@ class LocalStorageUser extends JsonResource
         return [
             'id'                => $this->id,
             'profilePicture'    => $this->profile_picture,
+            'settings'        => [
+                'hasDistanceNotifications' => $this->has_distance_notifications,
+                'distanceNotificationsRadius' => $this->distance_notifications_radius
+            ],
         ];
     }
 }

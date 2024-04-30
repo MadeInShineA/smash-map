@@ -60,9 +60,9 @@ export const useOptionsStore = defineStore('option', function (){
     ])
 
     const notificationOptions = ref([
-        {name: 'Distance notifications', value: 'distanceNotifications'},
-        {name: 'Attendees notifications', value: 'attendeesNotifications'},
-        {name: 'Time notifications', value: 'timeNotifications'},
+        {name: 'Distance notifications', value: 'hasDistanceNotifications'},
+        {name: 'Attendees notifications', value: 'hasAttendeesNotifications'},
+        {name: 'Time notifications', value: 'hasTimeNotifications'},
     ]);
 
     return {

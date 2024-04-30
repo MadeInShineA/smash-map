@@ -22,7 +22,7 @@ export const useEventsStore = defineStore('events', function (){
             icon: 'success',
             background: alertBackground,
             color: alertColor,
-            timer: 1500,
+            timer: 2000,
             showConfirmButton: false
         })
         subscriptionLoading.value = true

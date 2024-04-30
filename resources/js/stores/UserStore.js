@@ -28,6 +28,7 @@ export const useUserStore = defineStore('user', function (){
 
     function getSettings(userId, darkMode){
         return axios.get('/api/users/' + userId + '/settings').then((response) =>{
+            // user.value.settings = response.data.data
             return response.data
          }).catch((error) => {
             console.log(error)
@@ -163,8 +164,31 @@ export const useUserStore = defineStore('user', function (){
                 'Content-Type': 'application/json',
             },
         }
-        return axios.post('/api/users/' + user.value.id + '/settings', settings, header)
+        const response = await axios.post('/api/users/' + user.value.id + '/settings', settings, header)
+        if(response.status === 200){
+            user.profilePicture = user.value.profilePicture.substring(0, user.value.profilePicture.indexOf('?')) + '?time=' + new Date().getTime()
+            user.value.settings.hasDistanceNotifications = settings.notifications.includes('hasDistanceNotifications')
+            user.value.settings.distanceNotificationsRadius = settings.distanceNotificationsRadius
+            user.value.settings.address = {lat: settings.address.latitude, lng: settings.address.longitude}
+            localStorage.setItem('userData', JSON.stringify(user.value))
 
+        }
+        return response
+    }
+
+    async function updateDistanceNotificationsRadius(distanceNotificationsRadius){
+        const header = {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+        }
+        const response = await axios.post('/api/users/' + user.value.id + '/settings/update-distance-notifications-radius', {distanceNotificationsRadius: distanceNotificationsRadius}, header)
+        if(response.status === 200){
+            user.value.settings.distanceNotificationsRadius = distanceNotificationsRadius
+            localStorage.setItem('userData', JSON.stringify(user.value))
+        }
+        return response
     }
 
     return {
@@ -180,6 +204,7 @@ export const useUserStore = defineStore('user', function (){
         logout,
         forgotPassword,
         resetPassword,
-        saveSettings
+        saveSettings,
+        updateDistanceNotificationsRadius
     }
 })

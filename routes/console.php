@@ -211,7 +211,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                 $days_until_event = $event_date->diffInDays(Carbon::now());
 
                 foreach($event_model_instance->subscribed_users()->get() as $user){
-                    if($user->attendees_notifications){
+                    if($user->has_attendees_notifications){
                         $user_attendees_notifications_thresholds = $user->attendees_notifications_thresholds;
                         foreach ($user_attendees_notifications_thresholds as $user_attendees_notifications_threshold){
                             if($event_old_attendees < $user_attendees_notifications_threshold && $event_attendees >= $user_attendees_notifications_threshold){
@@ -233,7 +233,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                     }
 
 
-                    if ($user->time_notifications){
+                    if ($user->has_time_notifications){
 
                         $user_time_notifications_thresholds = $user->time_notifications_thresholds;
 
@@ -386,7 +386,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                 }
 
                 if($event_model_instance->wasRecentlyCreated && !$event_model_instance->is_online){
-                    foreach (User::where('distance_notifications', true)->get() as $user){
+                    foreach (User::where('has_distance_notifications', true)->get() as $user){
                         if($user->games->contains($event_model_instance->game_id)){
                             $distance_notifications_radius = $user->distance_notifications_radius;
                             $distance = $address->distanceToKM($user->address);
