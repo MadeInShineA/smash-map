@@ -29,7 +29,7 @@ const emit = defineEmits(['switchSideBarVisible'])
                 <MultiSelect v-model="filtersStore.selectedEventGames" :options="optionsStore.gameOptions" display="chip" :maxSelectedLabels="2" optionLabel="name" optionValue="id" placeholder="Select Games"/>
             </div>
             <div class="event-filter">
-                <Dropdown v-model="filtersStore.selectedEventTypes" :options="userStore.user.value ? optionsStore.eventTypeOptions : optionsStore.connectedUserEventTypeOptions" optionLabel="name" optionValue="value" placeholder="All event types"/>
+                <Dropdown v-model="filtersStore.selectedEventTypes" :options="userStore.user ? optionsStore.eventTypeOptions : optionsStore.connectedUserEventTypeOptions" optionLabel="name" optionValue="value" placeholder="All event types"/>
             </div>
             <div class="event-filter">
                 <Calendar v-model=filtersStore.selectedEventDates :minDate="new Date()" placeholder="Event date range (UTC)" selectionMode="range" :manualInput="false" showButtonBar dateFormat="dd/mm/yy"></Calendar>

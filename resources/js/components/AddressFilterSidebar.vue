@@ -37,7 +37,7 @@ const emit = defineEmits(['switchSideBarVisible'])
                              placeholder="Select Games"/>
             </div>
             <div class="event-filter">
-                <Dropdown v-model="addressFiltersStore.selectedAddressTypes" :options="userStore.user.value ? optionsStore.addressTypeOptions : optionsStore.connectedUserAddressTypeOptions"
+                <Dropdown v-model="addressFiltersStore.selectedAddressTypes" :options="userStore.user ? optionsStore.addressTypeOptions : optionsStore.connectedUserAddressTypeOptions"
                           optionLabel="name" optionValue="value" placeholder="All markers types"/>
             </div>
             <div class="event-filter">
