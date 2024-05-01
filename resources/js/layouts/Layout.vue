@@ -146,7 +146,7 @@ const profileItems = ref([{
                         })
                     })
                 } catch (error) {
-                    if (error.response.data.message && error.response.status === 500) {
+                    if (error.response && error.response.data.message && error.response.status === 500) {
                         const alertBackground = darkMode ? '#1C1B22' : '#FFFFFF'
                         const alertColor = darkMode ? '#FFFFFF' : '#1C1B22'
                         await Swal.fire({

@@ -52,7 +52,7 @@ const login = async function () {
                 })
             })
         } catch (error) {
-            if(error.response.data.errors === undefined && error.response.data.message && error.response.status === 500){
+            if(error.response && error.response.data.errors === undefined && error.response.data.message && error.response.status === 500){
                 emit('switchShowLoginModal')
                 const alertBackground = props.darkMode ? '#1C1B22' : '#FFFFFF'
                 const alertColor = props.darkMode ? '#FFFFFF' : '#1C1B22'
@@ -65,7 +65,7 @@ const login = async function () {
                     timer: 2000,
                     showConfirmButton: false
                 })
-            }else if(error.response.data.errors){
+            }else if(error.response && error.response.data.errors){
                 loginValidationErrors.value = error.response.data.errors
             }else {
                 console.log(error)

@@ -132,7 +132,7 @@ function register(){
             })
 
         } catch (error) {
-            if(error.response.data.errors === undefined && error.response.data.message && error.response.status === 500){
+            if(error.response && error.response.data.errors === undefined && error.response.data.message && error.response.status === 500){
                 emit('switchShowRegisterModal')
                 const alertBackground = props.darkMode ? '#1C1B22' : '#FFFFFF'
                 const alertColor = props.darkMode ? '#FFFFFF' : '#1C1B22'
@@ -145,7 +145,7 @@ function register(){
                     timer: 2000,
                     showConfirmButton: false
                 })
-            }else if(error.response.data.errors){
+            }else if(error.response && error.response.data.errors){
                 registerValidationErrors.value = error.response.data.errors
             }else {
                 console.log(error)
