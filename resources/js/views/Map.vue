@@ -54,8 +54,9 @@ const closeInfoWindows = (i) => {
                 }
             }
         );
-
-    circleInfoWindowRef.value.infoWindow.close()
+    if(circleInfoWindowRef.value){
+        circleInfoWindowRef.value.infoWindow.close()
+    }
 };
 
 
