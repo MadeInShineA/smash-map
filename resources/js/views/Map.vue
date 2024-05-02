@@ -51,6 +51,13 @@ watch(() => userStore.user.data.settings.distanceNotificationsRadius, (value) =>
     distanceNotificationsRadius.value = value
 }, {immediate: false})
 
+const circleRef = ref()
+
+watch(distanceNotificationsRadius, (value) => {
+    circleParameters.value.radius = value * 1000
+    circleRef.value.circle.setRadius(value * 1000)
+}, {immediate: false})
+
 const zoom = ref(4);
 const infoWindows = ref([]);
 const mapRef = ref();
@@ -68,45 +75,6 @@ const closeInfoWindows = (i) => {
     }
 };
 
-
-
-//TODO Fix the Zooming on marker click
-
-
-const legendsVisible = ref(false)
-
-onMounted(()=>{
-    console.log('Map Mounted')
-    if(navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function(position) {
-       center.value = {lat: position.coords.latitude, lng: position.coords.longitude};
-       zoom.value = 10;
-      })
-    }
-    watch(() => addressStore.addressesFetched, () => {
-        infoWindows.value = [];
-        if (mapRef.value) {
-            center.value = mapRef.value.map.getCenter()
-            zoom.value = mapRef.value.map.getZoom()
-        }
-    });
-})
-
-const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
-
-// const distanceNotificationsRadius = ref(1000)
-// const distanceNotificationsRadius = userStore.user?.settings.distanceNotificationsRadius ? ref(userStore.user.settings.distanceNotificationsRadius)  : ref(0)
-
-const circleParameters = ref({
-    center: circleCenter,
-    fillColor: 'aqua',
-    radius: distanceNotificationsRadius.value * 1000,
-    clickable: true
-    }
-)
-
-console.log(circleParameters.value)
-
 const circleInfoWindowRef = ref()
 
 function clickCircleEvent (i){
@@ -115,18 +83,23 @@ function clickCircleEvent (i){
     circleInfoWindowRef.value.infoWindow.setPosition(circleCenter.value)
 }
 
+const circleParameters = ref({
+    center: circleCenter,
+    fillColor: 'aqua',
+    radius: distanceNotificationsRadius.value * 1000,
+    clickable: true
+})
+
+//TODO Fix the Zooming on marker click
+
+
+const legendsVisible = ref(false)
+
+const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
+
 const validationErrors = ref({
     distanceNotificationsRadius: []
 })
-
-const circleRef = ref()
-
-
-
-watch(distanceNotificationsRadius, (value) => {
-    circleParameters.value.radius = value * 1000
-    circleRef.value.circle.setRadius(value * 1000)
-  }, {immediate: false})
 
 async function updateDistanceNotificationsRadius() {
     try {
@@ -166,6 +139,24 @@ async function updateDistanceNotificationsRadius() {
         }
     }
 }
+
+onMounted(()=>{
+    console.log('Map Mounted')
+    if(navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            center.value = {lat: position.coords.latitude, lng: position.coords.longitude};
+            zoom.value = 10;
+        })
+    }
+    watch(() => addressStore.addressesFetched, () => {
+        infoWindows.value = [];
+        if (mapRef.value) {
+            center.value = mapRef.value.map.getCenter()
+            zoom.value = mapRef.value.map.getZoom()
+        }
+    });
+})
+
 
 </script>
 
