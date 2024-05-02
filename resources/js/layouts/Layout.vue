@@ -93,7 +93,7 @@ const header = ref()
 
 const headerHeight = ref()
 
-if (userStore.user) {
+if (userStore.user.data.id) {
     userStore.subscribeToNotifications()
 }
 
@@ -181,13 +181,13 @@ onMounted(()=>{
         <Menubar v-if="responsiveMenuDisplayed" id="responsive-menu" :model="menuItems">
             <template #start>
                 <router-link to="/"><img alt="logo" src="../../images/logo-no-text-no-bg.png" height="40" class="mr-2"/></router-link>
-                <template v-if="!userStore.user">
+                <template v-if="!userStore.user.data.id">
                     <Button @click="showLoginModal = true" icon="pi pi-user" text plain label="Login"/>
                     <Button @click="showRegisterModal = true" icon="pi pi-save" text plain label="Register"/>
                 </template>
                 <template v-else>
                     <Button id="profile-avatar-button" plain text rounded @click="toggleProfileMenu">
-                        <Avatar :image="userStore.user.profilePicture" shape="circle"  />
+                        <Avatar :image="userStore.user.data.profilePicture" shape="circle"  />
                     </Button>
                     <Menu :model="profileItems" :popup="true" ref="profileMenu">
                         <template #item="{ item, props }">
@@ -242,7 +242,7 @@ onMounted(()=>{
                 </a>
             </template>
             <template #end>
-                <template v-if="!userStore.user">
+                <template v-if="!userStore.user.data.id">
                     <Button @click="showLoginModal = true" icon="pi pi-user" text plain label="Login"/>
                     <Button @click="showRegisterModal = true" icon="pi pi-save" text plain label="Register"/>
                 </template>
@@ -251,7 +251,7 @@ onMounted(()=>{
                         <Button v-if="userStore.notificationsCountFetched" plain text icon="pi pi-bell" label="Notifications" :badge="userStore.notificationsCount.toString()" badgeClass="p-badge-success"/>
                     </router-link>
                     <Button id="profile-avatar-button" plain text rounded @click="toggleProfileMenu">
-                        <Avatar :image="userStore.user.profilePicture" shape="circle"  />
+                        <Avatar :image="userStore.user.data.profilePicture" shape="circle"  />
                     </Button>
                     <Menu :model="profileItems" :popup="true" ref="profileMenu">
                         <template #item="{ item, props }">

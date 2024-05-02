@@ -17,7 +17,6 @@ import { useUserStore } from "../stores/UserStore.js";
 import FloatLabel from "primevue/floatlabel";
 import Slider from "primevue/slider";
 import InputText from "primevue/inputtext";
-import {watchDebounced} from "@vueuse/core";
 import Swal from "sweetalert2";
 
 const props = defineProps({
@@ -39,8 +38,18 @@ const switchSideBarVisible = function (){
     sideBarVisible.value = !sideBarVisible.value
 }
 
-const center = userStore.user ? ref(userStore.user.settings.address) : ref({ lat: 40.713956, lng: -38.716136 });
+const center = ref(userStore.user.data.settings.address)
+const circleCenter = ref(userStore.user.data.settings.address)
+const distanceNotificationsRadius = ref(userStore.user.data.settings.distanceNotificationsRadius)
 
+
+watch(() => userStore.user.data.settings.address, (value) => {
+    circleCenter.value = value
+}, {immediate: false})
+
+watch(() => userStore.user.data.settings.distanceNotificationsRadius, (value) => {
+    distanceNotificationsRadius.value = value
+}, {immediate: false})
 
 const zoom = ref(4);
 const infoWindows = ref([]);
@@ -81,15 +90,15 @@ onMounted(()=>{
             zoom.value = mapRef.value.map.getZoom()
         }
     });
-
 })
 
 const googleMapApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
 
-const distanceNotificationsRadius = userStore.user?.settings.distanceNotificationsRadius ? ref(userStore.user.settings.distanceNotificationsRadius)  : ref(0)
+// const distanceNotificationsRadius = ref(1000)
+// const distanceNotificationsRadius = userStore.user?.settings.distanceNotificationsRadius ? ref(userStore.user.settings.distanceNotificationsRadius)  : ref(0)
 
 const circleParameters = ref({
-    center: center.value,
+    center: circleCenter,
     fillColor: 'aqua',
     radius: distanceNotificationsRadius.value * 1000,
     clickable: true
@@ -103,7 +112,7 @@ const circleInfoWindowRef = ref()
 function clickCircleEvent (i){
     closeInfoWindows(i)
     circleInfoWindowRef.value.infoWindow.open(mapRef.value.map)
-    circleInfoWindowRef.value.infoWindow.setPosition(center.value)
+    circleInfoWindowRef.value.infoWindow.setPosition(circleCenter.value)
 }
 
 const validationErrors = ref({
@@ -164,7 +173,7 @@ async function updateDistanceNotificationsRadius() {
     <AddressFilterSidebar :sideBarVisible="sideBarVisible" @switchSideBarVisible="switchSideBarVisible"></AddressFilterSidebar>
     <template v-if="addressStore.addressesFetched">
         <GoogleMap ref="mapRef" :api-key="googleMapApiKey" language="en" :map-type-control-options="{ mapTypeIds: ['roadmap','satellite',]}" style="width: 100%; height: 100%" :center="center" :zoom="zoom" :min-zoom="4" @click="closeInfoWindows" :clickableIcons="false" :fullscreen-control="false">
-            <template v-if="userStore.user && userStore.user.settings.hasDistanceNotifications">
+            <template v-if="userStore.user.data.settings.hasDistanceNotifications">
                 <Circle ref="circleRef" :options="circleParameters" @click="clickCircleEvent">
 
                 </Circle>
@@ -235,7 +244,7 @@ async function updateDistanceNotificationsRadius() {
                                     <Tag :value="event.game.name" rounded :style="{background: event.game.color, marginRight: '5px'}"></Tag>
                                     <Chip :label="event.attendees || event.attendees === 0 ? event.attendees.toString() : 'Private'" icon="pi pi-users"></Chip>
                                     <Button
-                                        v-if='userStore.user'
+                                        v-if='userStore.user.data.id'
                                         class="event-bell-button"
                                         @click="eventsStore.handleEventSubscription(event, darkMode)"
                                         :loading="eventsStore.subscriptionLoading"

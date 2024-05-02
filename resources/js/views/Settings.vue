@@ -27,7 +27,7 @@ const optionsStore = useOptionsStore()
 const { data: characterOptions, isFinished: charactersFetched, execute: fetchCharacters } = useAxios('/api/characters', {}, {immediate: false})
 
 const settings = ref()
-userStore.getSettings(userStore.user.id, props.darkMode).then((response)=>{
+userStore.getSettings(userStore.user.data.id, props.darkMode).then((response)=>{
     settings.value = response.data
     fetchCharacters({params: {games: settings.value.games.join(',')}})
 

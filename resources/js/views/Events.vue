@@ -70,7 +70,7 @@ onMounted(()=>{
                             <Tag :value="event.game.name" rounded :style="{background: event.game.color, marginRight: '5px'}"></Tag>
                             <Chip :label="event.attendees || event.attendees === 0 ? event.attendees.toString() : 'Private'" icon="pi pi-users"></Chip>
                             <Button
-                                v-if='userStore.user'
+                                v-if='userStore.user.data.id'
                                 class="event-bell-button"
                                 @click="eventsStore.handleEventSubscription(event, props.darkMode)"
                                 :loading="eventsStore.subscriptionLoading"

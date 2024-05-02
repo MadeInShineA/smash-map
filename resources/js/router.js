@@ -55,7 +55,7 @@ const routes = [
 
                     // TODO Make the user connected == session user check here or inside Settings.vue ?
                     const userStore = useUserStore();
-                    if (userStore.user == null){
+                    if (userStore.user.data == null){
                         return next('/')
                     }
                     return next()

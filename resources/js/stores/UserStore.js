@@ -1,5 +1,5 @@
 import {defineStore} from "pinia"
-import {ref} from "vue";
+import {reactive, ref} from "vue";
 import {useAddressFiltersStore} from "../stores/AddressFiltersStore.js";
 import {useEventFiltersStore} from "../stores/EventFiltersStore.js";
 import axios from "axios";
@@ -12,15 +12,28 @@ export const useUserStore = defineStore('user', function (){
     const addressesFilterStore = useAddressFiltersStore()
     const eventsFilterStore = useEventFiltersStore()
 
-    const user = ref(JSON.parse(window.localStorage.getItem('userData')))
+    const initialUserState = {
+        id: null,
+        profilePicture: '',
+        settings: {
+            hasDistanceNotifications: true,
+            distanceNotificationsRadius: 0,
+            address: { lat: 40.713956, lng: -38.716136 }
+        }
+    }
+
+    const user = reactive({
+        data: JSON.parse(localStorage.getItem('userData')) || initialUserState
+    })
+
     const notificationsCount = ref(0)
     const notificationsCountFetched = ref(false)
-    if (user.value) {
+    if (user.data.id) {
         fetchNotificationsCount()
     }
 
     function fetchNotificationsCount(){
-        axios.get('/api/users/' + user.value.id + '/notifications/count').then((response) => {
+        axios.get('/api/users/' + user.data.id + '/notifications/count').then((response) => {
             notificationsCount.value = parseInt(response.data.data)
             notificationsCountFetched.value = true
         })
@@ -51,18 +64,16 @@ export const useUserStore = defineStore('user', function (){
         })
     }
 
-    function setUser(){
-        user.value = JSON.parse(window.localStorage.getItem('userData'));
-    }
-
-    function setUserDataInLocalStorage(userData){
+    function setUser(userData){
+        console.log("Setting user data", userData)
         localStorage.setItem('userData', JSON.stringify(userData));
+        user.data = userData
     }
 
 
     const toast = ref()
     function subscribeToNotifications(){
-        Echo.private(`notifications.` + user.value.id).listen('NotificationEvent', (e) => {
+        Echo.private(`notifications.` + user.data.id).listen('NotificationEvent', (e) => {
             console.log("Notification received", e)
             const audio = new Audio('/storage/audios/notification-sound.mp3');
             audio.volume = 0.2
@@ -73,7 +84,7 @@ export const useUserStore = defineStore('user', function (){
     }
 
     function unsubscribeToNotifications(){
-        Echo.leave(`notifications.` + user.value.id)
+        Echo.leave(`notifications.` + user.data.id)
     }
     async function login(loginUser) {
 
@@ -84,10 +95,9 @@ export const useUserStore = defineStore('user', function (){
             },
         }
         const response = await axios.post('/api/login', loginUser, header)
-        setUserDataInLocalStorage(response.data.data.user)
+        setUser(response.data.data.user)
         localStorage.setItem('accessToken', response.data.data.token)
         localStorage.setItem('tokenTime', new Date().toString());
-        setUser()
         fetchNotificationsCount()
         subscribeToNotifications()
         if (router.currentRoute.value.path === '/map') {
@@ -110,10 +120,9 @@ export const useUserStore = defineStore('user', function (){
         }
 
         const response = await axios.post('/api/register', registerUser, header)
-        setUserDataInLocalStorage(response.data.data.user)
+        setUser(response.data.data.user)
         localStorage.setItem('accessToken', response.data.data.token)
         localStorage.setItem('tokenTime', new Date().toString());
-        setUser()
         subscribeToNotifications()
         fetchNotificationsCount()
         if(router.currentRoute.value.path === '/map'){
@@ -129,7 +138,7 @@ export const useUserStore = defineStore('user', function (){
         const response = await axios.post('/api/logout');
         unsubscribeToNotifications()
         localStorage.removeItem('userData');
-        user.value = null;
+        user.data = initialUserState
         notificationsCount.value = 0
         if(router.currentRoute.value.path === '/settings'){
             router.push('/')
@@ -164,13 +173,13 @@ export const useUserStore = defineStore('user', function (){
                 'Content-Type': 'application/json',
             },
         }
-        const response = await axios.post('/api/users/' + user.value.id + '/settings', settings, header)
+        const response = await axios.post('/api/users/' + user.data.id + '/settings', settings, header)
         if(response.status === 200){
-            user.profilePicture = user.value.profilePicture.substring(0, user.value.profilePicture.indexOf('?')) + '?time=' + new Date().getTime()
-            user.value.settings.hasDistanceNotifications = settings.notifications.includes('hasDistanceNotifications')
-            user.value.settings.distanceNotificationsRadius = settings.distanceNotificationsRadius
-            user.value.settings.address = {lat: settings.address.latitude, lng: settings.address.longitude}
-            localStorage.setItem('userData', JSON.stringify(user.value))
+            user.data.profilePicture = user.data.profilePicture.substring(0, user.data.profilePicture.indexOf('?')) + '?time=' + new Date().getTime()
+            user.data.settings.hasDistanceNotifications = settings.notifications.includes('hasDistanceNotifications')
+            user.data.settings.distanceNotificationsRadius = settings.distanceNotificationsRadius
+            user.data.settings.address = {lat: settings.address.latitude, lng: settings.address.longitude}
+            localStorage.setItem('userData', JSON.stringify(user.data))
 
         }
         return response
@@ -183,10 +192,10 @@ export const useUserStore = defineStore('user', function (){
                 'Content-Type': 'application/json',
             },
         }
-        const response = await axios.post('/api/users/' + user.value.id + '/settings/update-distance-notifications-radius', {distanceNotificationsRadius: distanceNotificationsRadius}, header)
+        const response = await axios.post('/api/users/' + user.data.id + '/settings/update-distance-notifications-radius', {distanceNotificationsRadius: distanceNotificationsRadius}, header)
         if(response.status === 200){
-            user.value.settings.distanceNotificationsRadius = distanceNotificationsRadius
-            localStorage.setItem('userData', JSON.stringify(user.value))
+            user.data.settings.distanceNotificationsRadius = distanceNotificationsRadius
+            localStorage.setItem('userData', JSON.stringify(user.data))
         }
         return response
     }
