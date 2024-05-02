@@ -10,6 +10,7 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class EventController extends Controller
@@ -196,6 +197,19 @@ class EventController extends Controller
             return $this->sendError($error, ['An error occurred while retrieving the events statistics E 010'], 500);
         }
 
+    }
 
+    public function event_subscribe(Request $request, Event $event): JsonResponse
+    {
+        $user =request()->user();
+        $user->subscribed_events()->attach($event);
+        return $this->sendResponse([], 'Event followed with success');
+    }
+
+    public function event_unsubscribe(Request $request, Event $event): JsonResponse
+    {
+        $user = Auth::user();
+        $user->subscribed_events()->detach($event);
+        return $this->sendResponse([], 'Event unfollowed with success');
     }
 }

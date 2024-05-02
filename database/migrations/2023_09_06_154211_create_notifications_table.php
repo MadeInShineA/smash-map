@@ -18,7 +18,9 @@ return new class extends Migration
             $table->foreignId('event_id')->constrained('events')->cascadeOnDelete();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->enum('type', NotificationTypeEnum::TYPES);
+            $table->string('title');
             $table->text('message');
+            $table->string('image_url');
             $table->boolean('seen')->default(false);
         });
     }

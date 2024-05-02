@@ -24,11 +24,11 @@ class NotificationEvent implements ShouldBroadcast
     private string $game_name;
 
 
-    public function __construct(User $user, string $notification_type, string $game_image, string $game_name, string $message)
+    public function __construct(User $user, string $notification_type, string $image_url, string $game_name, string $message)
     {
         $this->user = $user;
         $this->notification_type = $notification_type;
-        $this->game_image = $game_image;
+        $this->game_image = $image_url;
         $this->game_name = $game_name;
         $this->message = $message;
     }

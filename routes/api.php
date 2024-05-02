@@ -4,6 +4,8 @@ use App\Http\Controllers\AddressController;
 use App\Http\Controllers\CharacterController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -33,11 +35,12 @@ Route::get('events/statistics', [EventController::class, 'get_statistics']);
 
 Route::middleware(['auth:sanctum'])->group(function (){
     Route::post('/logout', [UserController::class, 'logout']);
-    Route::post('/events/{event}/subscribe', [UserController::class, 'event_subscribe']);
-    Route::post('/events/{event}/unsubscribe', [UserController::class, 'event_unsubscribe']);
-    Route::get('/users/{user}/notifications/count', [UserController::class, 'get_notifications_count']);
-    Route::get('/users/{user}/settings', [UserController::class, 'get_settings']);
-    Route::post('/users/{user}/settings', [UserController::class, 'update_settings']);
-    Route::post('/users/{user}/settings/update-distance-notifications-radius', [UserController::class, 'update_distance_notifications_radius']);
+    Route::post('/events/{event}/subscribe', [EventController::class, 'event_subscribe']);
+    Route::post('/events/{event}/unsubscribe', [EventController::class, 'event_unsubscribe']);
+    Route::get('/users/{user}/notifications/count', [NotificationController::class, 'get_notifications_count']);
+    Route::get('/users/{user}/notifications', [NotificationController::class, 'get_notifications']);
+    Route::get('/users/{user}/settings', [SettingsController::class, 'get_settings']);
+    Route::post('/users/{user}/settings', [SettingsController::class, 'update_settings']);
+    Route::post('/users/{user}/settings/update-distance-notifications-radius', [SettingsController::class, 'update_distance_notifications_radius']);
 
 });

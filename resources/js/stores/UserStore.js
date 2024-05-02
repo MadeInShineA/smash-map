@@ -175,7 +175,11 @@ export const useUserStore = defineStore('user', function (){
         }
         const response = await axios.post('/api/users/' + user.data.id + '/settings', settings, header)
         if(response.status === 200){
-            user.data.profilePicture = user.data.profilePicture.substring(0, user.data.profilePicture.indexOf('?')) + '?time=' + new Date().getTime()
+            if(user.data.profilePicture.includes('?')){
+                user.data.profilePicture = user.data.profilePicture.substring(0, user.data.profilePicture.indexOf('?')) + '?time=' + new Date().getTime()
+            }else{
+                user.data.profilePicture = user.data.profilePicture + '?time=' + new Date().getTime()
+            }
             user.data.settings.hasDistanceNotifications = settings.notifications.includes('hasDistanceNotifications')
             user.data.settings.distanceNotificationsRadius = settings.distanceNotificationsRadius
             user.data.settings.address = {lat: settings.address.latitude, lng: settings.address.longitude}
@@ -200,6 +204,36 @@ export const useUserStore = defineStore('user', function (){
         return response
     }
 
+    function getNotifications(userId, darkMode){
+        return axios.get('/api/users/' + userId + '/notifications').then((response) =>{
+            if(response.status === 200){
+                notificationsCount.value = 0
+            }
+            return response.data
+        }).catch((error) => {
+            console.log(error)
+            const alertBackground = darkMode ? '#1C1B22' : '#FFFFFF'
+            const alertColor = darkMode ? '#FFFFFF' : '#1C1B22'
+            Swal.fire({
+                title: 'Error',
+                text: error.response.data.message,
+                icon: 'error',
+                background: alertBackground,
+                color: alertColor,
+                timer: 2000,
+                showConfirmButton: false
+            }).then(() => {
+                if (error.response.status === 401) {
+                    router.push('/')
+                }
+            })
+
+        })
+    }
+
+
+
+
     return {
         user,
         notificationsCount,
@@ -214,6 +248,7 @@ export const useUserStore = defineStore('user', function (){
         forgotPassword,
         resetPassword,
         saveSettings,
-        updateDistanceNotificationsRadius
+        updateDistanceNotificationsRadius,
+        getNotifications,
     }
 })
