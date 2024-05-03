@@ -1,6 +1,9 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import {useUserStore} from "../stores/userStore";
+import {defineProps} from "vue";
+import Divider from 'primevue/divider';
+import VirtualScroller from 'primevue/virtualscroller';
 
 const userStore = useUserStore()
 
@@ -11,6 +14,7 @@ const props = defineProps({
 const notifications = ref()
 userStore.getNotifications(userStore.user.data.id, props.darkMode).then((response)=>{
     notifications.value = response.data
+    console.log(response.data)
 })
 
 onMounted(()=>{
@@ -19,17 +23,55 @@ onMounted(()=>{
 </script>
 
 <template>
-    <div v-if="notifications">
-        <div v-for="notification in notifications" :key="notification.id">
-            <span>
-                <img :src="notification.imageUrl" alt="Notification's icon"/>
-            </span>
-            <p  v-html="notification.message"></p>
+    <div v-if="notifications" id="notifications-container">
+        <div v-for="notification in notifications" class="notification">
+            <div class="notification-image-container">
+                <img :src="notification.imageUrl" alt="Notification's image" width="50px">
+            </div>
+            <div class="notification-text-container">
+                <h3>{{notification.notificationType}} for {{ notification.gameName}}</h3>
+                <p v-html="notification.message" class="notification-message"></p>
+            </div>
+            <Divider />
         </div>
     </div>
     <LoaderComponent v-else></LoaderComponent>
 </template>
 
 <style scoped>
+#notifications-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 20px;
+}
+
+.notification{
+    width: 50%;
+}
+
+@media (max-width: 960px) {
+    .notification{
+        width: 100%
+    }
+}
+
+
+
+.notification-text-container{
+    text-align: center;
+}
+
+.notification-message :deep(a){
+    color: inherit;
+    text-decoration: none;
+    font-weight: 600
+}
+
+.notification-image-container{
+    display: flex;
+    justify-content: center;
+}
 
 </style>
