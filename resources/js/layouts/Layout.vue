@@ -204,7 +204,7 @@ onMounted(()=>{
                         </template>
                     </Menu>
                     <router-link to="/notifications">
-                        <Button v-if="userStore.notificationsCountFetched" plain text icon="pi pi-bell" :badge="userStore.notificationsCount.toString()" badgeClass="p-badge-success" :label="notificationLabelDisplayed ? 'Notifications' : null"/>
+                        <Button v-if="userStore.notificationsCountFetched" plain text icon="pi pi-bell" :badge="userStore.notificationsCount > 0 ? userStore.notificationsCount.toString() : null" badgeClass="p-badge-success" :label="notificationLabelDisplayed ? 'Notifications' : null"/>
                     </router-link>
                 </template>
                 <Button v-if="!darkMode" id="sun-icon" @click="switch_theme(true)" icon="pi pi-sun" severity="secondary" text rounded aria-label="Sun"/>
@@ -248,7 +248,7 @@ onMounted(()=>{
                 </template>
                 <template v-else>
                     <router-link to="/notifications">
-                        <Button v-if="userStore.notificationsCountFetched" plain text icon="pi pi-bell" label="Notifications" :badge="userStore.notificationsCount.toString()" badgeClass="p-badge-success"/>
+                        <Button v-if="userStore.notificationsCountFetched" plain text icon="pi pi-bell" label="Notifications" :badge="userStore.notificationsCount > 0 ? userStore.notificationsCount.toString() : null" badgeClass="p-badge-success"/>
                     </router-link>
                     <Button id="profile-avatar-button" plain text rounded @click="toggleProfileMenu">
                         <Avatar :image="userStore.user.data.profilePicture" shape="circle"  />

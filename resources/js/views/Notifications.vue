@@ -23,7 +23,7 @@ onMounted(()=>{
 </script>
 
 <template>
-    <div v-if="notifications" id="notifications-container">
+    <div v-if="notifications && notifications.length > 0" id="notifications-container">
         <div v-for="notification in notifications" class="notification">
             <div class="notification-image-container">
                 <img :src="notification.imageUrl" alt="Notification's image" width="50px">
@@ -34,6 +34,9 @@ onMounted(()=>{
             </div>
             <Divider />
         </div>
+    </div>
+    <div v-else-if="notifications && notifications.length === 0" id="notifications-container">
+        <h1>No notifications</h1>
     </div>
     <LoaderComponent v-else></LoaderComponent>
 </template>

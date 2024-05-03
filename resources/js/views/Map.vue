@@ -41,14 +41,13 @@ const switchSideBarVisible = function (){
 const center = ref(userStore.user.data.settings.address)
 const circleCenter = ref(userStore.user.data.settings.address)
 const distanceNotificationsRadius = ref(userStore.user.data.settings.distanceNotificationsRadius)
+const isCircleVisible = ref(userStore.user.data.settings.hasDistanceNotifications)
 
 
-watch(() => userStore.user.data.settings.address, (value) => {
-    circleCenter.value = value
-}, {immediate: false})
-
-watch(() => userStore.user.data.settings.distanceNotificationsRadius, (value) => {
-    distanceNotificationsRadius.value = value
+watch(() => userStore.user.data, (value) => {
+    circleCenter.value = value.settings.address
+    distanceNotificationsRadius.value = value.settings.distanceNotificationsRadius
+    isCircleVisible.value = value.settings.hasDistanceNotifications
 }, {immediate: false})
 
 const circleRef = ref()
@@ -70,9 +69,7 @@ const closeInfoWindows = (i) => {
                 }
             }
         );
-    if(circleInfoWindowRef.value){
-        circleInfoWindowRef.value.infoWindow.close()
-    }
+    circleInfoWindowRef.value.infoWindow.close()
 };
 
 const circleInfoWindowRef = ref()
@@ -87,11 +84,11 @@ const circleParameters = ref({
     center: circleCenter,
     fillColor: 'aqua',
     radius: distanceNotificationsRadius.value * 1000,
-    clickable: true
+    clickable: true,
+    visible: isCircleVisible
 })
 
 //TODO Fix the Zooming on marker click
-
 
 const legendsVisible = ref(false)
 
@@ -154,7 +151,7 @@ onMounted(()=>{
             center.value = mapRef.value.map.getCenter()
             zoom.value = mapRef.value.map.getZoom()
         }
-    });
+    }, {immediate: false})
 })
 
 
@@ -164,34 +161,29 @@ onMounted(()=>{
     <AddressFilterSidebar :sideBarVisible="sideBarVisible" @switchSideBarVisible="switchSideBarVisible"></AddressFilterSidebar>
     <template v-if="addressStore.addressesFetched">
         <GoogleMap ref="mapRef" :api-key="googleMapApiKey" language="en" :map-type-control-options="{ mapTypeIds: ['roadmap','satellite',]}" style="width: 100%; height: 100%" :center="center" :zoom="zoom" :min-zoom="4" @click="closeInfoWindows" :clickableIcons="false" :fullscreen-control="false">
-            <template v-if="userStore.user.data.settings.hasDistanceNotifications">
-                <Circle ref="circleRef" :options="circleParameters" @click="clickCircleEvent">
-
-                </Circle>
-
-                <InfoWindow ref="circleInfoWindowRef" class="info-window">
-                    <h3 class="info-window-title">Distance Notification Radius</h3>
-                    <div id="distance-notifications-radius-input-container">
-                        <FloatLabel>
-                            <InputText id="distance-notifications-radius" class="input" v-model.number="distanceNotificationsRadius" @click="validationErrors.distanceNotificationsRadius = []"/>
-                            <Slider class="input" v-model="distanceNotificationsRadius" :min="1" :max="2000" @click="validationErrors.distanceNotificationsRadius = []"/>
-                            <label for="distance-notifications-radius">Distance Notifications Radius (KM)</label>
-                        </FloatLabel>
-                    </div>
-                    <div class="validation-errors">
-                        <TransitionGroup name="errors">
-                            <template v-for="distanceNotificationsRadius in validationErrors.distanceNotificationsRadius" :key="distanceNotificationsRadius" class="validation-errors">
-                                <div class="validation-error">{{distanceNotificationsRadius}}</div>
-                            </template>
-                        </TransitionGroup>
-                    </div>
-
-                    <div>
-                        <Button label="Save" severity="success" icon="pi pi-check" plain text @click="updateDistanceNotificationsRadius"></Button>
-                    </div>
-                </InfoWindow>
-            </template>
-            <CustomControl :position="responsiveMenuDisplayed ? 'LEFT_TOP' : 'TOP_CENTER'">
+            <Circle ref="circleRef" :options="circleParameters" @click="clickCircleEvent"></Circle>
+            <InfoWindow ref="circleInfoWindowRef" class="info-window">
+                <h3 class="info-window-title">Distance Notification Radius</h3>
+                <div id="distance-notifications-radius-input-container">
+                    <FloatLabel>
+                        <InputText id="distance-notifications-radius" class="input" v-model.number="distanceNotificationsRadius" @click="validationErrors.distanceNotificationsRadius = []"/>
+                        <Slider class="input" v-model="distanceNotificationsRadius" :min="1" :max="2000" @click="validationErrors.distanceNotificationsRadius = []"/>
+                        <label for="distance-notifications-radius">Distance Notifications Radius (KM)</label>
+                    </FloatLabel>
+                </div>
+                <div class="validation-errors">
+                    <TransitionGroup name="errors">
+                        <template v-for="distanceNotificationsRadius in validationErrors.distanceNotificationsRadius" :key="distanceNotificationsRadius" class="validation-errors">
+                            <div class="validation-error">{{distanceNotificationsRadius}}</div>
+                        </template>
+                    </TransitionGroup>
+                </div>
+                <div>
+                    <Button label="Save" severity="success" icon="pi pi-check" plain text @click="updateDistanceNotificationsRadius"></Button>
+                </div>
+            </InfoWindow>
+            <CustomControl
+                :position="responsiveMenuDisplayed ? 'LEFT_TOP' : 'TOP_CENTER'">
                 <Button class="map-button margin-top-15-important" @click="sideBarVisible = true" icon="pi pi-filter" rounded label="Filters"/>
             </CustomControl>
             <MarkerCluster>

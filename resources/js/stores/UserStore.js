@@ -16,7 +16,7 @@ export const useUserStore = defineStore('user', function (){
         id: null,
         profilePicture: '',
         settings: {
-            hasDistanceNotifications: true,
+            hasDistanceNotifications: false,
             distanceNotificationsRadius: 0,
             address: { lat: 40.713956, lng: -38.716136 }
         }
@@ -65,7 +65,6 @@ export const useUserStore = defineStore('user', function (){
     }
 
     function setUser(userData){
-        console.log("Setting user data", userData)
         localStorage.setItem('userData', JSON.stringify(userData));
         user.data = userData
     }
