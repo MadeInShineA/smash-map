@@ -175,7 +175,7 @@ async function saveSettings() {
 
     } catch (error) {
         console.log(error)
-        if (error.response.data.errors === undefined && error.response.data.message && error.response.status === 500) {
+        if (error.response && error.response.data.errors === undefined && error.response.data.message && error.response.status === 500) {
             const alertBackground = props.darkMode ? '#1C1B22' : '#FFFFFF'
             const alertColor = props.darkMode ? '#FFFFFF' : '#1C1B22'
             await Swal.fire({
@@ -187,7 +187,7 @@ async function saveSettings() {
                 timer: 2000,
                 showConfirmButton: false
             })
-        } else if (error.response.data.errors) {
+        } else if (error.response && error.response.data.errors) {
             settingsValidationErrors.value = error.response.data.errors
         } else {
             console.log(error)
@@ -201,35 +201,55 @@ const showTimeNotificationsThresholdsHelp = ref(false)
 
 function deleteAccount(){
 
-    const alertBackground = props.darkMode ? '#1C1B22' : '#FFFFFF'
-    const alertColor = props.darkMode ? '#FFFFFF' : '#1C1B22'
+    try{
+        const alertBackground = props.darkMode ? '#1C1B22' : '#FFFFFF'
+        const alertColor = props.darkMode ? '#FFFFFF' : '#1C1B22'
 
-    Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Yes, delete it!',
-        background: alertBackground,
-        color: alertColor
-    }).then(async (result) => {
-        if (result.isConfirmed) {
-            // await userStore.deleteAccount().then(async function (response) {
-                await Swal.fire({
-                    title: 'Account deleted!',
-                    text: response.data.message,
-                    icon: 'success',
-                    background: alertBackground,
-                    color: alertColor,
-                    timer: 2000,
-                    showConfirmButton: false
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!',
+            background: alertBackground,
+            color: alertColor
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                await userStore.deleteAccount().then(async function (response) {
+                    await Swal.fire({
+                        title: 'Account deleted!',
+                        text: response.data.message,
+                        icon: 'success',
+                        background: alertBackground,
+                        color: alertColor,
+                        timer: 2000,
+                        showConfirmButton: false
+                    })
                 })
-                window.location.href = '/logout'
-            // })
+            }
+        })
+    }catch (error) {
+        if ( error.response && error.response.data.errors === undefined && error.response.data.message && error.response.status === 500) {
+            const alertBackground = props.darkMode ? '#1C1B22' : '#FFFFFF'
+            const alertColor = props.darkMode ? '#FFFFFF' : '#1C1B22'
+            Swal.fire({
+                title: 'Error',
+                text: error.response.data.message,
+                icon: 'error',
+                background: alertBackground,
+                color: alertColor,
+                timer: 2000,
+                showConfirmButton: false
+            })
+        } else {
+            console.log(error)
         }
-    })
+    }
+
+
+
 
 }
 
@@ -459,20 +479,12 @@ function deleteAccount(){
                     </TransitionGroup>
                 </div>
             </template>
-
-
-
-
             <div>
                 <Button label="Delete account" severity="danger" icon="pi pi-trash" plain text @click="deleteAccount"></Button>
                 <Button label="Save" severity="success" icon="pi pi-check" plain text @click="saveSettings"></Button>
             </div>
         </div>
     <LoaderComponent v-else></LoaderComponent>
-
-<!--    <template v-else>-->
-<!--        <LoaderComponent></LoaderComponent>-->
-<!--    </template>-->
 </template>
 
 <style scoped>

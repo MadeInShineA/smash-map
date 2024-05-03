@@ -93,6 +93,21 @@ class UserController extends Controller
         }
     }
 
+    public function destroy(Request $request, User $user): JsonResponse
+    {
+        try{
+            if ($user->id != $request->user('sanctum')->id) {
+                return $this->sendError('You are not authorized to delete this account', [], 401);
+            }
+            $user->delete();
+            return $this->sendResponse([], 'Account deleted with success');
+        }catch (\Error $error) {
+            return $this->sendError('An error occurred while deleting the account E 014', [$error], 500);
+        }
+
+
+    }
+
     public function forgot_password(ForgotPasswordRequest $request): JsonResponse
     {
         try {

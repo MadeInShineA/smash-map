@@ -140,7 +140,7 @@ export const useUserStore = defineStore('user', function (){
         localStorage.removeItem('userData');
         user.data = initialUserState
         notificationsCount.value = 0
-        if(router.currentRoute.value.path === '/settings'){
+        if(router.currentRoute.value.path === '/settings' || router.currentRoute.value.path === '/notifications'){
             router.push('/')
         }
         return response
@@ -231,6 +231,25 @@ export const useUserStore = defineStore('user', function (){
         })
     }
 
+    async function deleteAccount() {
+        const header = {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+        }
+        const response = await axios.delete('/api/users/' + user.data.id, header)
+        if(response.status === 200){
+            localStorage.removeItem('userData');
+            user.data = initialUserState
+            notificationsCount.value = 0
+        }
+        if(router.currentRoute.value.path === '/settings' || router.currentRoute.value.path === '/notifications'){
+            router.push('/')
+        }
+        return response
+    }
+
 
 
 
@@ -245,6 +264,7 @@ export const useUserStore = defineStore('user', function (){
         login,
         register,
         logout,
+        deleteAccount,
         forgotPassword,
         resetPassword,
         saveSettings,
