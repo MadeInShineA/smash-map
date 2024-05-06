@@ -16,7 +16,7 @@ class EventResource extends JsonResource
             'id'                        => $this->id,
             'game'                      => new GameResource($this->game),
             'address'                   => new AddressResource($this->address),
-            'images'                    => ImageResource::collection($this->images),
+            'image'                     => $this->image ? new ImageResource($this->image) : null,
             'is_online'                 => $this->is_online,
             'name'                      => $this->name,
             'timezone_start_date_time'  => $this->timezone_start_date_time,

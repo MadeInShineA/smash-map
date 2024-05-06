@@ -217,7 +217,7 @@ onMounted(()=>{
                             <h3 class="info-window-title">Events</h3>
                             <template v-for="event in address.events">
                                 <div class="event-image-container">
-                                    <img v-if="event.images[0]" :src="event.images[0].url" alt="Event Image" class="event-image">
+                                    <img v-if="event.image" :src="event.image.url" alt="Event Image" class="event-image">
                                     <img v-else src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png" alt="Event Image" class="event-image">
                                 </div>
                                 <div class="event-title">

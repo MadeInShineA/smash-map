@@ -21,7 +21,7 @@ class MapEventResource extends JsonResource
             'timezone'                  => $this->timezone_label,
             'attendees'                 => $this->attendees,
             'link'                      => $this->link,
-            'images'                    => ImageResource::collection($this->images),
+            'image'                     => $this->image ? new ImageResource($this->image) : null,
             'user_subscribed'           => $this->user_subscribed($request),
 
         ];

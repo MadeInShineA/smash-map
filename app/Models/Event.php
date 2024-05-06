@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Http\Request;
 
 
@@ -43,10 +44,10 @@ class Event extends Model
         return $this->belongsTo(Address::class);
     }
 
-    public function images(): MorphMany
-    {
-        return $this->morphMany(Image::class, 'parentable')->orderByRaw("FIELD(type ,'".ImageTypeEnum::EVENT_PROFILE . "', '" . ImageTypeEnum::EVENT_BANNER . "') ASC");
-    }
+      public function image(): MorphOne
+      {
+          return $this->morphOne(Image::class, 'parentable');
+      }
 
     public function subscribed_users(): BelongsToMany
     {

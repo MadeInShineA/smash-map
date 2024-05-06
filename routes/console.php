@@ -49,9 +49,9 @@ Artisan::command('delete-events', function(){
     $current_time = date('Y-m-d H:i:s');
     foreach ($events as $event){
         if ($event->end_date_time < $current_time){
-            $images = $event->images;
+            $image = $event->image;
             $base_directory_path = base_path(). '/storage/app/public/events-images/' . Str::slug($event->name);
-            foreach ($images as $image) {
+            if($image){
                 $image_directory_path = $base_directory_path . '/' . $image->type .'.png';
                 if(file_exists($image_directory_path)){
                     unlink($image_directory_path);
@@ -69,7 +69,7 @@ Artisan::command('delete-events', function(){
                 rmdir($base_directory_path);
             }
 
-            var_dump('Images for:' . $event->name . ' deleted');
+            var_dump('Image for:' . $event->name . ' deleted');
             $event->delete();
             var_dump('Event: ' . $event->name . ' deleted');
         }
@@ -217,12 +217,9 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                             if($event_old_attendees < $user_attendees_notifications_threshold && $event_attendees >= $user_attendees_notifications_threshold){
                                 var_dump('User: ' . $user->username . ' notified for event: ' . $event_model_instance->name . ' User old attendees: ' . $event_old_attendees . ' User new attendees: ' . $event_attendees . ' User attendees notifications thresholds: ' . $user_attendees_notifications_threshold);
                                 $message = 'The Event: <a href="' . $event_model_instance->link  .'"target="blank">' . $event_model_instance->name . '</a> has reached ' . $event_attendees . ' attendees!';
-                                $event_images = $event_model_instance->images();
-                                if($event_images){
-                                    $image = $event_images->first()?->url;
-                                }
+                                $image = $event_model_instance->image?->url;
 
-                                if(!isset($image)){
+                                if(!$image){
                                     $image = URL::to('/storage/map-icons/' . $event_model_instance->game->name . '.png');
                                 }
                                 Notification::create(['event_id' =>$event_model_instance->id, 'user_id' =>$user->id, 'message' => $message, 'type' =>NotificationTypeEnum::ATTENDEES, 'image_url' =>$image]);
@@ -268,14 +265,13 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                                 }else{
                                     $message = 'The Event: <a href="' . $event_model_instance->link  .'"target="blank">' . $event_model_instance->name . '</a> is happening in ' . $days_until_event . ' days!';
                                 }
-                                $event_images = $event_model_instance->images();
-                                if($event_images){
-                                    $image = $event_images->first()?->url;
-                                }
 
-                                if(!isset($image)){
+                                $image = $event_model_instance->image()?->url;
+
+                                if(!$image){
                                     $image = URL::to('/storage/map-icons/' . $event_model_instance->game->name . '.png');
                                 }
+
                                 Notification::create(['event_id' =>$event_model_instance->id, 'user_id' =>$user->id, 'message' => $message, 'type' =>NotificationTypeEnum::TIME, 'image_url' =>$image]);
                                 broadcast(new NotificationEvent($user, NotificationTypeEnum::LABELS[NotificationTypeEnum::TIME], $image, GameEnum::GAMES[$event_model_instance->game_id], $message));
                                 break;
@@ -358,7 +354,17 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
 
                 $images = $event->images;
 
-                foreach ($images as $image) {
+                $image = null;
+                foreach ($images as $event_image) {
+                    if($event_image->type === 'profile'){
+                        $image = $event_image;
+                        break;
+                    }elseif($event_image->type === 'banner'){
+                        $image = $event_image;
+                    }
+                }
+
+                if($image){
                     $image_type = $image->type == 'profile'? ImageTypeEnum::EVENT_PROFILE : ImageTypeEnum::EVENT_BANNER;
 
                     $image_file = file_get_contents($image->url);
@@ -368,8 +374,8 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                         die();
                     }else{
                         $image_md5 = md5($image_file);
-                        $event__model_instance_old_image = $event_model_instance->images()->where('type', $image_type)->first();
-                        if($event__model_instance_old_image && $event__model_instance_old_image->md5 === $image_md5){
+                        $event_model_instance_old_image = $event_model_instance->image;
+                        if($event_model_instance_old_image && $event_model_instance_old_image->md5 === $image_md5){
                             continue;
                         }
                         $isImageStored = Storage::put($event_directory_path . '/' . $image_type . '.png', $image_file);
@@ -382,7 +388,6 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                             die();
                         }
                     }
-                #TODO Delete the unused images (inside event_db_md5s but not in event_md5s)
                 }
 
                 if($event_model_instance->wasRecentlyCreated && !$event_model_instance->is_online){
@@ -394,12 +399,9 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                             if($distance <= $distance_notifications_radius){
                                 var_dump('User: ' . $user->username . ' notified for event: ' . $event_model_instance->name . ' User to event distance: ' . round($distance) . ' User distance notifications radius: ' . $distance_notifications_radius);
                                 $message = 'The Event: <a href="' . $event_model_instance->link  .'"target="blank">' . $event_model_instance->name . '</a> is happening near you, it\'s only ' . round($distance) . ' kilometers away!';
-                                $event_images = $event_model_instance->images();
-                                if($event_images){
-                                    $image = $event_images->first()?->url;
-                                }
+                                $image = $event_model_instance->image()->first()?->url;
 
-                                if(!isset($image)){
+                                if(!$image){
                                     $image = URL::to('/storage/map-icons/' . $event_model_instance->game->name . '.png');
                                 }
                                 Notification::create(['event_id' =>$event_model_instance->id, 'user_id' =>$user->id, 'message' => $message, 'type' =>NotificationTypeEnum::DISTANCE, 'image_url' =>$image]);
