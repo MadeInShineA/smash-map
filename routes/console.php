@@ -266,7 +266,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                                     $message = 'The Event: <a href="' . $event_model_instance->link  .'"target="blank">' . $event_model_instance->name . '</a> is happening in ' . $days_until_event . ' days!';
                                 }
 
-                                $image = $event_model_instance->image()?->url;
+                                $image = $event_model_instance->image?->url;
 
                                 if(!$image){
                                     $image = URL::to('/storage/map-icons/' . $event_model_instance->game->name . '.png');
@@ -399,7 +399,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                             if($distance <= $distance_notifications_radius){
                                 var_dump('User: ' . $user->username . ' notified for event: ' . $event_model_instance->name . ' User to event distance: ' . round($distance) . ' User distance notifications radius: ' . $distance_notifications_radius);
                                 $message = 'The Event: <a href="' . $event_model_instance->link  .'"target="blank">' . $event_model_instance->name . '</a> is happening near you, it\'s only ' . round($distance) . ' kilometers away!';
-                                $image = $event_model_instance->image()->first()?->url;
+                                $image = $event_model_instance->image?->url;
 
                                 if(!$image){
                                     $image = URL::to('/storage/map-icons/' . $event_model_instance->game->name . '.png');
