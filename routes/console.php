@@ -235,13 +235,6 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                         $user_time_notifications_thresholds = $user->time_notifications_thresholds;
 
                         $last_notification = $user->notifications()->where('event_id', $event_model_instance->id)->where('type', NotificationTypeEnum::TIME)->orderBy('created_at', 'desc')->first();
-//                        if($last_notification){
-//                            $last_notification_date = Carbon::parse($last_notification->created_at);
-//                            $last_notification_date = $last_notification_date->diffInDays(Carbon::now());
-//                            if($last_notification_date === 0){
-//                                continue;
-//                            }
-//                        }
                         foreach ($user_time_notifications_thresholds as $user_time_notifications_threshold){
                             $send_notification = false;
                             if($last_notification){
@@ -399,8 +392,10 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                             if($distance <= $distance_notifications_radius){
                                 var_dump('User: ' . $user->username . ' notified for event: ' . $event_model_instance->name . ' User to event distance: ' . round($distance) . ' User distance notifications radius: ' . $distance_notifications_radius);
                                 $message = 'The Event: <a href="' . $event_model_instance->link  .'"target="blank">' . $event_model_instance->name . '</a> is happening near you, it\'s only ' . round($distance) . ' kilometers away!';
-                                $image = $event_model_instance->image?->url;
 
+                                // Load the image relationship, it's not available it the event was recently created
+                                $event_model_instance->load('image');
+                                $image = $event_model_instance->image?->url;
                                 if(!$image){
                                     $image = URL::to('/storage/map-icons/' . $event_model_instance->game->name . '.png');
                                 }
