@@ -12,7 +12,7 @@ class Notification extends Model
     use HasFactory;
 
     protected $fillable = [
-        'event_id',
+        'game_id',
         'user_id',
         'type',
         'message',
@@ -20,9 +20,9 @@ class Notification extends Model
         'seen'
     ];
 
-    public function event(): BelongsTo
+    public function game(): BelongsTo
     {
-        return $this->belongsTo(Event::class);
+        return $this->belongsTo(Game::class);
     }
 
     public function user(): BelongsTo

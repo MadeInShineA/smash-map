@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreignId('event_id')->constrained('events')->cascadeOnDelete();
+            $table->foreignId('game_id')->constrained('games')->cascadeOnDelete();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->enum('type', NotificationTypeEnum::TYPES);
             $table->text('message');

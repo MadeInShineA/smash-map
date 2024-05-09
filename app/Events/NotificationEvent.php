@@ -39,7 +39,7 @@ class NotificationEvent implements ShouldBroadcast
             'message' => $this->message,
             'notificationType' => $this->notification_type,
             'gameImage' => $this->game_image,
-            'gameName' => $this->game_name,
+            'gameTitle' => $this->game_name,
 
         ];
     }

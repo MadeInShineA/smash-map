@@ -29,7 +29,7 @@ onMounted(()=>{
                 <img :src="notification.imageUrl" alt="Notification's image" width="50px">
             </div>
             <div class="notification-text-container">
-                <h3>{{notification.notificationType}} for {{ notification.gameName}}</h3>
+                <h3>{{notification.notificationType}} for {{ notification.gameTitle}}</h3>
                 <p v-html="notification.message" class="notification-message"></p>
             </div>
             <Divider />
