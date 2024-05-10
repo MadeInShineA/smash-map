@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreignId('creator_id')->nullable()->constrained('users')->nullOnDelete();
             $table->boolean('is_online')->default(false);
             $table->string('name');
-            $table->string('timezone')->default('UTC');
+            $table->string('timezone')->default('+00:00');
             $table->dateTime('start_date_time');
             $table->dateTime('end_date_time');
             $table->integer('attendees')->nullable();

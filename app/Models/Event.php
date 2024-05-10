@@ -79,10 +79,11 @@ class Event extends Model
 
     public function getTimezoneLabelAttribute()
     {
-        if($this->address?->country?->timezone){
-            return $this->address?->country?->timezone;
+        if($this->timezone === '+00:00'){
+            return 'UTC';
+        }else{
+            return 'UTC '.$this->timezone;
         }
-        return $this->timezone;
     }
 
     #FIXME Find a way to access the logged in user inside this funciton

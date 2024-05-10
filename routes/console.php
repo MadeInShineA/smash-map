@@ -277,8 +277,11 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                 $is_online = $game_event->isOnline;
                 $name = $event->name;
                 $timezone = $event->timezone;
+                if ($timezone){
+                    $timezone = Carbon::now(new DateTimeZone($timezone))->format('P');
+                }
                 if(!$timezone){
-                    $timezone = 'UTC';
+                    $timezone = '+00:00';
                 }
 
                 $start_date = new DateTime();
