@@ -8,21 +8,26 @@ import InputText from "primevue/inputtext";
 import {useAddressFiltersStore} from '../stores/AddressFiltersStore.js'
 import {useOptionsStore} from "../stores/OptionsStore.js";
 import {useUserStore} from "../stores/UserStore.js";
-
-const addressFiltersStore = useAddressFiltersStore()
-
-addressFiltersStore.fetchCountries()
-addressFiltersStore.fetchCharacters()
+import {onMounted, watch} from "vue";
 
 const optionsStore = useOptionsStore()
-
 const userStore = useUserStore()
+const filtersStore = useAddressFiltersStore()
+
+filtersStore.fetchCountries({params: {continents: filtersStore.selectedAddressCountries.length > 0 ? filtersStore.selectedAddressCountries.join(',') : 'default'}})
+filtersStore.fetchCharacters({params: {games: filtersStore.selectedAddressGames.length > 0 ? filtersStore.selectedAddressGames.join(',') : 'default'}})
+filtersStore.fetchAddressesWithFilters()
+
 
 const props = defineProps({
     sideBarVisible: Boolean
 })
 
 const emit = defineEmits(['switchSideBarVisible'])
+
+onMounted(()=>{
+    console.log('AddressFilterSidebar Mounted')
+})
 
 </script>
 
@@ -32,22 +37,22 @@ const emit = defineEmits(['switchSideBarVisible'])
         <h2>Filters</h2>
         <div id="event-filters">
             <div class="event-filter">
-                <MultiSelect v-model="addressFiltersStore.selectedAddressGames" :options="optionsStore.gameOptions"
+                <MultiSelect v-model="filtersStore.selectedAddressGames" :options="optionsStore.gameOptions"
                              display="chip" :maxSelectedLabels="2" optionLabel="name" optionValue="id"
                              placeholder="Select Games"/>
             </div>
             <div class="event-filter">
-                <Dropdown v-model="addressFiltersStore.selectedAddressTypes" :options="userStore.user.data.id ? optionsStore.connectedUserAddressTypeOptions : optionsStore.addressTypeOptions"
+                <Dropdown v-model="filtersStore.selectedAddressTypes" :options="userStore.user.data.id ? optionsStore.connectedUserAddressTypeOptions : optionsStore.addressTypeOptions"
                           optionLabel="name" optionValue="value" placeholder="All markers types"/>
             </div>
             <div class="event-filter">
-                <Calendar v-model=addressFiltersStore.selectedAddressDates :minDate="new Date()"
-                          :disabled="addressFiltersStore.selectedAddressTypes === 'users' || addressFiltersStore.selectedAddressTypes === 'modders' || addressFiltersStore.selectedAddressCharacters.length > 0"
+                <Calendar v-model=filtersStore.selectedAddressDates :minDate="new Date()"
+                          :disabled="filtersStore.selectedAddressTypes === 'users' || filtersStore.selectedAddressTypes === 'modders' || filtersStore.selectedAddressCharacters.length > 0"
                           placeholder="Event date range (UTC)" selectionMode="range" :manualInput="false" showButtonBar
                           dateFormat="dd/mm/yy"></Calendar>
             </div>
             <div class="event-filter">
-                <MultiSelect :disabled="addressFiltersStore.selectedAddressDates != null && (addressFiltersStore.selectedAddressTypes ==='events' || addressFiltersStore.selectedAddressTypes ==='followedEvents' || addressFiltersStore.selectedAddressDates.length !== 0)" :loading="!addressFiltersStore.charactersFetched" v-model="addressFiltersStore.selectedAddressCharacters" :maxSelectedLabels="2" :options="addressFiltersStore.addressesCharacterOptions.data" optionLabel="name" optionValue="id" data-key="id" filter optionGroupLabel="game" optionGroupChildren="characters" placeholder="Users characters">
+                <MultiSelect :disabled="filtersStore.selectedAddressDates != null && (filtersStore.selectedAddressTypes ==='events' || filtersStore.selectedAddressTypes ==='followedEvents' || filtersStore.selectedAddressDates.length !== 0)" :loading="!filtersStore.charactersFetched" v-model="filtersStore.selectedAddressCharacters" :maxSelectedLabels="2" :options="filtersStore.addressesCharacterOptions.data" optionLabel="name" optionValue="id" data-key="id" filter optionGroupLabel="game" optionGroupChildren="characters" placeholder="Users characters">
                     <template #option="slotProps">
                         <div class="character-option">
                             <img :alt="slotProps.option.name" :src="slotProps.option.image.url" class="character-option-image" width="30" />
@@ -57,13 +62,13 @@ const emit = defineEmits(['switchSideBarVisible'])
                 </MultiSelect>
             </div>
             <div class="event-filter">
-                <MultiSelect v-model="addressFiltersStore.selectedAddressContinents"
+                <MultiSelect v-model="filtersStore.selectedAddressContinents"
                              :options="optionsStore.continentOptions" display="chip" :maxSelectedLabels="2"
                              optionLabel="name" optionValue="code" placeholder="Select Continents"/>
             </div>
             <div class="event-filter">
-                <MultiSelect :loading="!addressFiltersStore.countriesFetched" :disabled="!addressFiltersStore.countriesFetched" v-model="addressFiltersStore.selectedAddressCountries"
-                             :options="addressFiltersStore.addressesCountryOptions.data" filter display="chip"
+                <MultiSelect :loading="!filtersStore.countriesFetched" :disabled="!filtersStore.countriesFetched" v-model="filtersStore.selectedAddressCountries"
+                             :options="filtersStore.addressesCountryOptions.data" filter display="chip"
                              :maxSelectedLabels="2" optionLabel="name" optionValue="code"
                              placeholder="Select Countries">
                     <template #option="slotProps">
@@ -76,7 +81,7 @@ const emit = defineEmits(['switchSideBarVisible'])
                 </MultiSelect>
             </div>
             <div class="event-filter">
-                <InputText v-model="addressFiltersStore.selectedAddressName" placeholder="Name"></InputText>
+                <InputText v-model="filtersStore.selectedAddressName" placeholder="Name"></InputText>
             </div>
         </div>
     </Sidebar>

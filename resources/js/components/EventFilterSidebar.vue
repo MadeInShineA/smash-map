@@ -13,6 +13,9 @@ const filtersStore = useEventFiltersStore()
 const optionsStore = useOptionsStore()
 const userStore = useUserStore()
 
+filtersStore.fetchCountries({params: {continents: filtersStore.selectedEventContinents.length > 0 ? filtersStore.selectedEventContinents.join(',') : 'default'}})
+filtersStore.fetchEventsWithFilters()
+
 const props = defineProps({
     sideBarVisible:Boolean
 })

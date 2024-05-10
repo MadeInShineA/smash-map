@@ -91,10 +91,9 @@ export const useAddressFiltersStore = defineStore('addressFilters', function (){
     watch([selectedAddressContinents], function([continents]){
         continents = continents.length > 0 ? continents.join(',') : 'default'
 
-        // TODO Find how to avoid the double fetch + not have the old countries when removing a continent
-        // countriesWatch.pause()
+        countriesWatch.pause()
         fetchCountries({params: {continents}}).then(() => {
-            // countriesWatch.resume()
+            countriesWatch.resume()
         })
 
 
@@ -135,10 +134,9 @@ export const useAddressFiltersStore = defineStore('addressFilters', function (){
     watch([selectedAddressGames], function([games]){
         games = games.length > 0 ? games.join(',') : 'default'
 
-        // TODO Find how to avoid the double fetch + not have the old characters when removing a game
-        // charactersWatch.pause()
+        charactersWatch.pause()
         fetchCharacters({params: {games}}).then(() => {
-            // charactersWatch.resume()
+            charactersWatch.resume()
         })
 
         let startDate
@@ -264,7 +262,8 @@ export const useAddressFiltersStore = defineStore('addressFilters', function (){
 
     // TODO Use this function in the different watch functions
     function fetchAddressesWithFilters() {
-
+        countriesWatch.pause()
+        charactersWatch.pause()
         let startDate
         let endDate
         if(selectedAddressDates.value && selectedAddressTypes.value !== 'users'){
@@ -294,7 +293,10 @@ export const useAddressFiltersStore = defineStore('addressFilters', function (){
         const countries = selectedAddressCountries.value.length > 0 ? selectedAddressCountries.value.join(',') : 'default'
         const name = selectedAddressName.value !== '' ? selectedAddressName.value : 'default'
         const characters = selectedAddressCharacters.value.length > 0 ? selectedAddressCharacters.value.join(',') : 'default'
-        addressesStore.fetchAddresses({ params: {games, type, continents, countries, name, startDate, endDate, characters}})
+        addressesStore.fetchAddresses({ params: {games, type, continents, countries, name, startDate, endDate, characters}}).then(() => {
+            countriesWatch.resume()
+            charactersWatch.resume()
+        })
     }
 
     return {

@@ -99,10 +99,9 @@ export const useEventFiltersStore = defineStore('eventFilters', function (){
     watch([selectedEventContinents], function([continents]){
         continents = continents.length > 0 ? continents.join(',') : 'default'
 
-        // TODO How to avoid the double fetch without having the old countries when changing continents?
-        // countriesWatch.pause()
+        countriesWatch.pause()
         fetchCountries({params: {continents}}).then(() => {
-            // countriesWatch.resume()
+            countriesWatch.resume()
         })
 
         let startDate
@@ -226,6 +225,8 @@ export const useEventFiltersStore = defineStore('eventFilters', function (){
 
     // TODO Use this function in the different watch functions
     function fetchEventsWithFilters(){
+
+        countriesWatch.pause()
         let startDate
         let endDate
         if(selectedEventDates.value){
@@ -257,7 +258,12 @@ export const useEventFiltersStore = defineStore('eventFilters', function (){
         const countries = selectedEventCountries.value.length > 0 ? selectedEventCountries.value.join(',') : 'default'
         const name = selectedEventName.value !== '' ? selectedEventName.value : 'default'
 
-        eventsStore.fetchEvents({ params: { page, games, type, orderBy, continents, countries, name, startDate, endDate}})
+        eventsStore.fetchEvents({ params: { page, games, type, orderBy, continents, countries, name, startDate, endDate}}).then(() => {
+            if(eventsStore.eventsFetched){
+                countriesWatch.resume()
+            }
+        })
+
     }
 
     return {

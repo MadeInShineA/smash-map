@@ -19,9 +19,7 @@ import {useOptionsStore} from "../stores/OptionsStore.js";
 
 
 const eventsFiltersStore = useEventFiltersStore()
-eventsFiltersStore.fetchCountries()
 const eventsStore = useEventsStore()
-eventsStore.fetchEvents()
 const userStore = useUserStore()
 
 const optionsStore = useOptionsStore()

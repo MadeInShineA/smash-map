@@ -3,7 +3,7 @@ import {onMounted, ref} from "vue";
 import {useUserStore} from "../stores/userStore";
 import {defineProps} from "vue";
 import Divider from 'primevue/divider';
-import VirtualScroller from 'primevue/virtualscroller';
+import { useScroll } from '@vueuse/core'
 
 const userStore = useUserStore()
 
@@ -14,8 +14,10 @@ const props = defineProps({
 const notifications = ref()
 userStore.getNotifications(userStore.user.data.id, props.darkMode).then((response)=>{
     notifications.value = response.data
-    console.log(response.data)
 })
+
+const notificationsContainer = ref()
+const { x, y, isScrolling, arrivedState, directions } = useScroll(notificationsContainer)
 
 onMounted(()=>{
     console.log('Notifications Mounted')
@@ -23,8 +25,10 @@ onMounted(()=>{
 </script>
 
 <template>
-    <div v-if="notifications && notifications.length > 0" id="notifications-container">
+    <div ref="notificationsContainer" v-if="notifications && notifications.length > 0" id="notifications-container" >
         <div v-for="notification in notifications" class="notification">
+            {{y}}
+            {{isScrolling}}
             <div class="notification-image-container">
                 <img :src="notification.imageUrl" alt="Notification's image" width="50px">
             </div>

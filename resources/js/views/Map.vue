@@ -26,8 +26,6 @@ const props = defineProps({
 
 const addressStore = useAddressesStore()
 
-addressStore.fetchAddresses()
-
 const eventsStore = useEventsStore()
 
 const userStore = useUserStore()
