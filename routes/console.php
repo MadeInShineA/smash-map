@@ -222,7 +222,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                                 if(!$image){
                                     $image = URL::to('/storage/map-icons/' . $event_model_instance->game->name . '.png');
                                 }
-                                Notification::create(['game_id' =>$event_model_instance->game_id, 'user_id' =>$user->id, 'message' => $message, 'type' =>NotificationTypeEnum::ATTENDEES, 'image_url' =>$image]);
+                                Notification::create(['event_id' => $event_model_instance->id, 'game_id' => $event_model_instance->game_id, 'user_id' => $user->id, 'message' => $message, 'type' => NotificationTypeEnum::ATTENDEES, 'image_url' => $image]);
                                 broadcast(new NotificationEvent($user, NotificationTypeEnum::LABELS[NotificationTypeEnum::ATTENDEES], $image, GameEnum::GAMES[$event_model_instance->game_id], $message));
                                 break;
                             }
@@ -265,7 +265,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                                     $image = URL::to('/storage/map-icons/' . $event_model_instance->game->name . '.png');
                                 }
 
-                                Notification::create(['game_id' =>$event_model_instance->game_id, 'user_id' =>$user->id, 'message' => $message, 'type' =>NotificationTypeEnum::TIME, 'image_url' =>$image]);
+                                Notification::create(['event_id' => $event_model_instance->id, 'game_id' => $event_model_instance->game_id, 'user_id' => $user->id, 'message' => $message, 'type' => NotificationTypeEnum::TIME, 'image_url' => $image]);
                                 broadcast(new NotificationEvent($user, NotificationTypeEnum::LABELS[NotificationTypeEnum::TIME], $image, GameEnum::GAMES[$event_model_instance->game_id], $message));
                                 break;
                             }
@@ -300,10 +300,10 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
 
 
                 if($event_model_instance){
-                    $event_model_instance->update(['start_gg_updated_at' =>$start_gg_updated_at, 'is_online' =>$is_online, 'name' =>$name, 'timezone' =>$timezone, 'start_date_time' =>$start_date, 'end_date_time' =>$end_date, 'attendees' =>$attendees, 'link' =>$link]);
+                    $event_model_instance->update(['start_gg_updated_at' => $start_gg_updated_at, 'is_online' => $is_online, 'name' => $name, 'timezone' => $timezone, 'start_date_time' => $start_date, 'end_date_time' => $end_date, 'attendees' => $attendees, 'link' => $link]);
                     var_dump('Event: ' . $event->name . ' updated');
                 }else{
-                    $event_model_instance = Event::create(['start_gg_id' =>$start_gg_id, 'game_id'=>$game_id, 'start_gg_updated_at' =>$start_gg_updated_at, 'is_online' =>$is_online, 'name' =>$name, 'timezone' =>$timezone, 'start_date_time' =>$start_date, 'end_date_time' =>$end_date, 'attendees' =>$attendees, 'link' =>$link]);
+                    $event_model_instance = Event::create(['start_gg_id' => $start_gg_id, 'game_id'=> $game_id, 'start_gg_updated_at' => $start_gg_updated_at, 'is_online' => $is_online, 'name' => $name, 'timezone' => $timezone, 'start_date_time' => $start_date, 'end_date_time' => $end_date, 'attendees' => $attendees, 'link' => $link]);
                     var_dump('Event: ' . $event->name . ' created');
                 }
                 if(!$event_model_instance->is_online){
@@ -330,7 +330,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                     if(!$address){
 
                         //FIXME Doesn't work if we add the latitude and longitude => php float vs SQL float ?
-                        $address = Address::firstOrCreate(['latitude' =>$latitude, 'longitude' =>$longitude],['name'=>$address_name, 'country_id' =>$country?->id]);
+                        $address = Address::firstOrCreate(['latitude' => $latitude, 'longitude' => $longitude],['name'=> $address_name, 'country_id' => $country?->id]);
                         $event_model_instance->address_id = $address->id;
                         $event_model_instance->save();
                     }
@@ -373,7 +373,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                         }
                         $isImageStored = Storage::put($event_directory_path . '/' . $image_type . '.png', $image_file);
                         if ($isImageStored){
-                            Image::Create(['parentable_type' =>Event::class, 'parentable_id' =>$event_model_instance->id, 'type' =>$image_type,'md5' => $image_md5]);
+                            Image::Create(['parentable_type' => Event::class, 'parentable_id' => $event_model_instance->id, 'type' => $image_type,'md5' => $image_md5]);
                             var_dump($image_type .' image for:' . $event->name . ' created');
                         }else{
                             var_dump("Image ". $image->url . " couldn't be stored stored");
@@ -399,7 +399,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                                 if(!$image){
                                     $image = URL::to('/storage/map-icons/' . $event_model_instance->game->name . '.png');
                                 }
-                                Notification::create(['game_id' =>$event_model_instance->game_id, 'user_id' =>$user->id, 'message' => $message, 'type' =>NotificationTypeEnum::DISTANCE, 'image_url' =>$image]);
+                                Notification::create(['event_id' => $event_model_instance->id, 'game_id' => $event_model_instance->game_id, 'user_id' => $user->id, 'message' => $message, 'type' => NotificationTypeEnum::DISTANCE, 'image_url' => $image]);
                                 broadcast(new NotificationEvent($user, NotificationTypeEnum::LABELS[NotificationTypeEnum::DISTANCE], $image, GameEnum::GAMES[$event_model_instance->game_id], $message));
                             }
                         }
