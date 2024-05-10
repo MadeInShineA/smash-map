@@ -288,7 +288,9 @@ onMounted(()=>{
         <LoginDialog :darkMode="darkMode" :showLoginModal="showLoginModal" @switchShowLoginModal="switchShowLoginModal"/>
         <RegisterDialog :darkMode="darkMode" :showRegisterModal="showRegisterModal" @switchShowRegisterModal="switchShowRegisterModal"/>
         <router-view  v-slot="{ Component }">
+<!--            <keep-alive :include="['map', 'calendar']">-->
             <component :darkMode="darkMode" :is="Component" :responsiveMenuDisplayed="responsiveMenuDisplayed"/>
+<!--            </keep-alive>-->
         </router-view>
 
     </main>
