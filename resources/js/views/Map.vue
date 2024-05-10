@@ -160,7 +160,7 @@ onMounted(()=>{
     <template v-if="addressStore.addressesFetched">
         <GoogleMap ref="mapRef" :api-key="googleMapApiKey" language="en" :map-type-control-options="{ mapTypeIds: ['roadmap','satellite',]}" style="width: 100%; height: 100%" :center="center" :zoom="zoom" :min-zoom="4" @click="closeInfoWindows" :clickableIcons="false" :fullscreen-control="false">
             <Circle ref="circleRef" :options="circleParameters" @click="clickCircleEvent"></Circle>
-            <InfoWindow ref="circleInfoWindowRef" class="info-window">
+            <InfoWindow ref="circleInfoWindowRef" class="info-window" id="circle-info-window">
                 <h3 class="info-window-title">Distance Notification Radius</h3>
                 <div id="distance-notifications-radius-input-container">
                     <FloatLabel>
@@ -460,6 +460,24 @@ onMounted(()=>{
 
 .input{
     display: flex;
+}
+
+@media(max-width: 480px){
+    #circle-info-window {
+        width: 280px;
+    }
+    #distance-notifications-radius-input-container {
+        width: 250px;
+    }
+
+    #circle-info-window .validation-errors {
+        width: 280px;
+        min-height: 2.3em
+    }
+    .gm-style-iw:has(#circle-info-window){
+        max-width: none !important;
+    }
+
 }
 
 
