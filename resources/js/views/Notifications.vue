@@ -1,9 +1,9 @@
 <script setup>
-import {onMounted, ref} from "vue";
+import {onMounted, ref, toRef, toRefs, watch} from "vue";
 import {useUserStore} from "../stores/userStore";
 import {defineProps} from "vue";
 import Divider from 'primevue/divider';
-import { useScroll } from '@vueuse/core'
+import {useScroll, watchDebounced} from '@vueuse/core'
 
 const userStore = useUserStore()
 
@@ -11,24 +11,46 @@ const props = defineProps({
     darkMode: Boolean
 })
 
+const lastNotificationId = ref(null)
+
 const notifications = ref()
-userStore.getNotifications(userStore.user.data.id, props.darkMode).then((response)=>{
-    notifications.value = response.data
+userStore.getNotifications(userStore.user.data.id, lastNotificationId.value, props.darkMode).then((response)=>{
+    notifications.value = response.data.notifications
+    lastNotificationId.value = response.data.lastNotificationId
+
 })
 
 const notificationsContainer = ref()
-const { x, y, isScrolling, arrivedState, directions } = useScroll(notificationsContainer)
+const { arrivedState: scrollStates} = useScroll(notificationsContainer, {
+    offset: {bottom: 500}
+})
+
+const { bottom: hasScrolledDown } = toRefs(scrollStates)
+
+const fetchingNotifications = ref(false)
+
+watchDebounced(hasScrolledDown, function(isArrived){
+    if(isArrived && !fetchingNotifications.value){
+        fetchingNotifications.value = true
+        userStore.getNotifications(userStore.user.data.id, lastNotificationId.value, props.darkMode).then((response)=>{
+            notifications.value = notifications.value.concat(response.data.notifications)
+            lastNotificationId.value = response.data.lastNotificationId
+            fetchingNotifications.value = false
+        })
+
+    }
+})
 
 onMounted(()=>{
     console.log('Notifications Mounted')
 })
+
+
 </script>
 
 <template>
     <div ref="notificationsContainer" v-if="notifications && notifications.length > 0" id="notifications-container" >
         <div v-for="notification in notifications" class="notification">
-            {{y}}
-            {{isScrolling}}
             <div class="notification-image-container">
                 <img :src="notification.imageUrl" alt="Notification's image" width="50px">
             </div>
@@ -47,11 +69,12 @@ onMounted(()=>{
 
 <style scoped>
 #notifications-container{
+    height:100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    margin: 20px;
+    padding: 20px;
+    overflow-y:scroll;
 }
 
 .notification{
@@ -80,5 +103,6 @@ onMounted(()=>{
     display: flex;
     justify-content: center;
 }
+
 
 </style>

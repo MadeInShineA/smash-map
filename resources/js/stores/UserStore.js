@@ -203,8 +203,11 @@ export const useUserStore = defineStore('user', function (){
         return response
     }
 
-    function getNotifications(userId, darkMode){
-        return axios.get('/api/users/' + userId + '/notifications').then((response) =>{
+    function getNotifications(userId, lastNotificationId, darkMode){
+        if(lastNotificationId === null){
+            lastNotificationId = ''
+        }
+        return axios.get('/api/users/' + userId + '/notifications?lastNotificationId=' + lastNotificationId).then((response) =>{
             if(response.status === 200){
                 notificationsCount.value = 0
             }
