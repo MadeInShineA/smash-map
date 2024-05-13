@@ -1,9 +1,10 @@
 <script setup>
-import {onMounted, ref, toRef, toRefs, watch} from "vue";
+import {onMounted, ref, toRefs, watch} from "vue";
 import {useUserStore} from "../stores/userStore";
 import {defineProps} from "vue";
 import Divider from 'primevue/divider';
-import {useScroll, watchDebounced} from '@vueuse/core'
+import {useScroll} from '@vueuse/core'
+import LoaderComponent from "@/components/LoaderComponent.vue";
 
 const userStore = useUserStore()
 
@@ -29,7 +30,7 @@ const { bottom: hasScrolledDown } = toRefs(scrollStates)
 
 const fetchingNotifications = ref(false)
 
-watchDebounced(hasScrolledDown, function(isArrived){
+watch(hasScrolledDown, function(isArrived){
     if(isArrived && !fetchingNotifications.value){
         fetchingNotifications.value = true
         userStore.getNotifications(userStore.user.data.id, lastNotificationId.value, props.darkMode).then((response)=>{
@@ -37,7 +38,6 @@ watchDebounced(hasScrolledDown, function(isArrived){
             lastNotificationId.value = response.data.lastNotificationId
             fetchingNotifications.value = false
         })
-
     }
 })
 
@@ -60,6 +60,7 @@ onMounted(()=>{
             </div>
             <Divider />
         </div>
+        <loader-component v-if="fetchingNotifications"></loader-component>
     </div>
     <div v-else-if="notifications && notifications.length === 0" id="notifications-container">
         <h1>No notifications</h1>
