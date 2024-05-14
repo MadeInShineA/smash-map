@@ -222,8 +222,8 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                                 if(!$image){
                                     $image = URL::to('/storage/map-icons/' . $event_model_instance->game->name . '.png');
                                 }
-                                Notification::create(['event_id' => $event_model_instance->id, 'game_id' => $event_model_instance->game_id, 'user_id' => $user->id, 'message' => $message, 'type' => NotificationTypeEnum::ATTENDEES, 'image_url' => $image]);
-                                broadcast(new NotificationEvent($user, NotificationTypeEnum::LABELS[NotificationTypeEnum::ATTENDEES], $image, GameEnum::GAMES[$event_model_instance->game_id], $message));
+                                $notification = Notification::create(['event_id' => $event_model_instance->id, 'game_id' => $event_model_instance->game_id, 'user_id' => $user->id, 'message' => $message, 'type' => NotificationTypeEnum::ATTENDEES, 'image_url' => $image]);
+                                broadcast(new NotificationEvent($notification, $user));
                                 break;
                             }
                         }
@@ -265,8 +265,8 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                                     $image = URL::to('/storage/map-icons/' . $event_model_instance->game->name . '.png');
                                 }
 
-                                Notification::create(['event_id' => $event_model_instance->id, 'game_id' => $event_model_instance->game_id, 'user_id' => $user->id, 'message' => $message, 'type' => NotificationTypeEnum::TIME, 'image_url' => $image]);
-                                broadcast(new NotificationEvent($user, NotificationTypeEnum::LABELS[NotificationTypeEnum::TIME], $image, GameEnum::GAMES[$event_model_instance->game_id], $message));
+                                $notification = Notification::create(['event_id' => $event_model_instance->id, 'game_id' => $event_model_instance->game_id, 'user_id' => $user->id, 'message' => $message, 'type' => NotificationTypeEnum::TIME, 'image_url' => $image]);
+                                broadcast(new NotificationEvent($notification, $user));
                                 break;
                             }
                         }
@@ -402,8 +402,8 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                                 if(!$image){
                                     $image = URL::to('/storage/map-icons/' . $event_model_instance->game->name . '.png');
                                 }
-                                Notification::create(['event_id' => $event_model_instance->id, 'game_id' => $event_model_instance->game_id, 'user_id' => $user->id, 'message' => $message, 'type' => NotificationTypeEnum::DISTANCE, 'image_url' => $image]);
-                                broadcast(new NotificationEvent($user, NotificationTypeEnum::LABELS[NotificationTypeEnum::DISTANCE], $image, GameEnum::GAMES[$event_model_instance->game_id], $message));
+                                $notification = Notification::create(['event_id' => $event_model_instance->id, 'game_id' => $event_model_instance->game_id, 'user_id' => $user->id, 'message' => $message, 'type' => NotificationTypeEnum::DISTANCE, 'image_url' => $image]);
+                                broadcast(new NotificationEvent($notification, $user));
                             }
                         }
                     }

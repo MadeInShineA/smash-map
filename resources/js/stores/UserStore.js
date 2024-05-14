@@ -75,12 +75,13 @@ export const useUserStore = defineStore('user', function (){
     const toast = ref()
     function subscribeToNotifications(){
         Echo.private(`notifications.` + user.data.id).listen('NotificationEvent', (e) => {
-            console.log("Notification received", e)
             const audio = new Audio('/storage/audios/notification-sound.mp3');
             audio.volume = 0.2
             audio.play()
-            toast.value.add({severity: 'info', icon: e.gameImage , summary: e.notificationType + " for : " + e.gameTitle, detail: e.message, life: 7000});
-            notificationsCount.value = notificationsCount.value + 1
+            toast.value.add({severity: 'info', icon: e.imageUrl , summary: e.notificationType + " for : " + e.gameTitle, detail: e.message, life: 7000});
+            if(router.currentRoute.value.path !== '/notifications') {
+                notificationsCount.value = notificationsCount.value + 1
+            }
         });
     }
 
@@ -177,7 +178,7 @@ export const useUserStore = defineStore('user', function (){
         const response = await axios.post('/api/users/' + user.data.id + '/settings', settings, header)
         if(response.status === 200){
             if(user.data.profilePicture.url.includes('?')){
-                user.data.profilePicture.url = user.data.profilePicture.url.substring(0, user.data.profilePicture.indexOf('?')) + '?time=' + new Date().getTime()
+                user.data.profilePicture.url = user.data.profilePicture.url.substring(0, user.data.profilePicture.url.indexOf('?')) + '?time=' + new Date().getTime()
             }else{
                 user.data.profilePicture.url = user.data.profilePicture.url + '?time=' + new Date().getTime()
             }
