@@ -293,6 +293,10 @@ onMounted(()=>{
     color: black;
 }
 
+.gm-style-iw-d{
+    overflow: auto !important
+}
+
 .dark .map-button{
     color: white !important;
     background-color: #1E1E1E !important;
