@@ -14,7 +14,9 @@ export const useUserStore = defineStore('user', function (){
 
     const initialUserState = {
         id: null,
-        profilePicture: '',
+        profilePicture: {
+            url: ''
+        },
         settings: {
             hasDistanceNotifications: false,
             distanceNotificationsRadius: 0,
@@ -174,10 +176,10 @@ export const useUserStore = defineStore('user', function (){
         }
         const response = await axios.post('/api/users/' + user.data.id + '/settings', settings, header)
         if(response.status === 200){
-            if(user.data.profilePicture.includes('?')){
-                user.data.profilePicture = user.data.profilePicture.substring(0, user.data.profilePicture.indexOf('?')) + '?time=' + new Date().getTime()
+            if(user.data.profilePicture.url.includes('?')){
+                user.data.profilePicture.url = user.data.profilePicture.url.substring(0, user.data.profilePicture.indexOf('?')) + '?time=' + new Date().getTime()
             }else{
-                user.data.profilePicture = user.data.profilePicture + '?time=' + new Date().getTime()
+                user.data.profilePicture.url = user.data.profilePicture.url + '?time=' + new Date().getTime()
             }
             user.data.settings.hasDistanceNotifications = settings.notifications.includes('hasDistanceNotifications')
             user.data.settings.distanceNotificationsRadius = settings.distanceNotificationsRadius

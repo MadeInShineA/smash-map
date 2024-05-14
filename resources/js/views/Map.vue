@@ -191,7 +191,7 @@ onMounted(()=>{
                             <h3 class="info-window-title">Users</h3>
                             <template v-for="user in address.users">
                                 <div class = user-image-container>
-                                    <img :src="user.profilePicture"  alt="User Image">
+                                    <img :src="user.profilePicture.url"  alt="User Image">
                                 </div>
                                 <div class="user-username">
                                     {{ user.username }}

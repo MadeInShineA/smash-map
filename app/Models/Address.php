@@ -58,7 +58,7 @@ class Address extends Model
             }
         }elseif (sizeof($event_games) === 0 && sizeof($users) === 1){
             $user = $users[0];
-            return $user->profile_picture;
+            return $user->profile_picture->url;
         }elseif(sizeof($event_games) === 0){
             return URL::to('/storage/map-icons/users.svg');
         }elseif (sizeof($users) === 1 && sizeof($event_games) === 1){
