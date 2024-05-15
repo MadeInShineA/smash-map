@@ -11,6 +11,7 @@ import Notifications from "./views/Notifications.vue";
 import Settings from "./views/Settings.vue";
 import ResetPassword from "./views/ResetPassword.vue";
 import {useUserStore} from "./stores/UserStore.js";
+import Profile from "./views/Profile.vue";
 
 const routes = [
     {
@@ -66,6 +67,11 @@ const routes = [
                 path: 'notifications',
                 component: Notifications,
                 name:'notifications'
+            },
+            {
+                path: 'profile',
+                component: Profile,
+                name:'profile'
             },
             {
                 path: 'reset-password/:token',
