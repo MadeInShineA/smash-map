@@ -13,11 +13,14 @@ const props = defineProps({
 })
 
 const lastNotificationId = ref(null)
+const fetchingNotifications = ref(true)
 
-const notifications = ref()
+
+const notifications = ref([])
 userStore.getNotifications(userStore.user.data.id, lastNotificationId.value, props.darkMode).then((response)=>{
     notifications.value = response.data.notifications
     lastNotificationId.value = response.data.lastNotificationId
+    fetchingNotifications.value = false
 
 })
 
@@ -28,7 +31,6 @@ const { arrivedState: scrollStates} = useScroll(notificationsContainer, {
 
 const { bottom: hasScrolledDown } = toRefs(scrollStates)
 
-const fetchingNotifications = ref(false)
 
 watch(hasScrolledDown, function(isArrived){
     if(isArrived && !fetchingNotifications.value){
@@ -41,8 +43,8 @@ watch(hasScrolledDown, function(isArrived){
     }
 })
 
-Echo.private(`notifications.` + userStore.user.data.id).listen('NotificationEvent', (e) => {
-    notifications.value.unshift(e)
+Echo.private(`notifications.` + userStore.user.data.id).listen('NotificationEvent', (notification) => {
+    notifications.value.unshift(notification)
 })
 
 
@@ -67,7 +69,7 @@ onMounted(()=>{
         </div>
         <loader-component v-if="fetchingNotifications"></loader-component>
     </div>
-    <div v-else-if="notifications && notifications.length === 0" id="notifications-container">
+    <div v-else-if="!fetchingNotifications && notifications && notifications.length === 0" id="notifications-container">
         <h1>No notifications</h1>
     </div>
     <LoaderComponent v-else></LoaderComponent>
