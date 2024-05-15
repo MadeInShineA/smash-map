@@ -35,9 +35,6 @@ class SettingsController extends Controller
     public function update_settings(SettingsUpdateRequest $request, User $user):JsonResponse
     {
         try {
-//            if ($user->id != $request->user('sanctum')->id) {
-//                return $this->sendError('You are not authorized to update this settings', [], 401);
-//            }
 
             $country = Country::where('code', $request->input('address.countryCode'))->first();
             $address = Address::firstOrCreate([
@@ -72,8 +69,6 @@ class SettingsController extends Controller
                 sort($time_notifications_thresholds);
                 $time_notifications_thresholds = array_reverse($time_notifications_thresholds);
             }
-
-
 
             $old_username = $user->username;
 
@@ -117,7 +112,6 @@ class SettingsController extends Controller
                 Storage::put($user_directory_path . '/' . ImageTypeEnum::USER_PROFILE . '.png', $profile_picture);
             }
 
-
             return $this->sendResponse([], 'Settings updated with success');
 
         } catch (\Error $error) {
@@ -128,9 +122,6 @@ class SettingsController extends Controller
     public function update_distance_notifications_radius(SettingsDistanceNotificationsRadiusUpdateRequest $request, User $user): JsonResponse
     {
         try {
-            if ($user->id != $request->user('sanctum')->id) {
-                return $this->sendError('You are not authorized to update this settings', [], 401);
-            }
 
             $user->update(['distance_notifications_radius' => $request->input('distanceNotificationsRadius')]);
 
