@@ -51,25 +51,14 @@ Artisan::command('delete-events', function(){
         if ($event->end_date_time < $current_time){
             $image = $event->image;
             $base_directory_path = base_path(). '/storage/app/public/events-images/' . Str::slug($event->name);
-            if($image){
+            if($image && !$event->notifications()->exists()){
                 $image_directory_path = $base_directory_path . '/' . $image->type .'.png';
-                if(file_exists($image_directory_path)){
-                    unlink($image_directory_path);
-                }
-                $image->delete();
-            }
-            #TODO Is there a better way to do it ?
-            if (file_exists($base_directory_path . '/' . ImageTypeEnum::EVENT_PROFILE)){
-                rmdir($base_directory_path . '/' . ImageTypeEnum::EVENT_PROFILE);
-            }
-            if (file_exists($base_directory_path . '/' . ImageTypeEnum::EVENT_BANNER)){
-                rmdir($base_directory_path . '/' . ImageTypeEnum::EVENT_BANNER);
-            }
-            if (file_exists($base_directory_path)){
+                unlink($image_directory_path);
                 rmdir($base_directory_path);
-            }
+                $image->delete();
+                var_dump('Image for:' . $event->name . ' deleted');
 
-            var_dump('Image for:' . $event->name . ' deleted');
+            }
             $event->delete();
             var_dump('Event: ' . $event->name . ' deleted');
         }

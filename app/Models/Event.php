@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Http\Request;
@@ -54,9 +55,9 @@ class Event extends Model
         return  $this->belongsToMany(User::class, 'relation_event_user', 'event_id', 'user_id');
     }
 
-    public function notifications(): BelongsTo
+    public function notifications(): HasMany
     {
-        return $this->belongsTo(Notification::class);
+        return $this->hasMany(Notification::class);
     }
 
     ##TODO Check if the date time from the start gg api are in UTC or in the timezone of the event
