@@ -41,36 +41,10 @@ export const useUserStore = defineStore('user', function (){
         })
     }
 
-    function getSettings(userId, darkMode){
-        return axios.get('/api/users/' + userId + '/settings').then((response) =>{
-            // user.value.settings = response.data.data
-            return response.data
-         }).catch((error) => {
-            console.log(error)
-            const alertBackground = darkMode ? '#1C1B22' : '#FFFFFF'
-            const alertColor = darkMode ? '#FFFFFF' : '#1C1B22'
-            Swal.fire({
-                title: 'Error',
-                text: error.response.data.message,
-                icon: 'error',
-                background: alertBackground,
-                color: alertColor,
-                timer: 2000,
-                showConfirmButton: false
-            }).then(() => {
-                if (error.response.status === 401) {
-                    router.push('/')
-                }
-            })
-
-        })
-    }
-
     function setUser(userData){
         localStorage.setItem('userData', JSON.stringify(userData));
         user.data = userData
     }
-
 
     const toast = ref()
     function subscribeToNotifications(){
@@ -168,6 +142,29 @@ export const useUserStore = defineStore('user', function (){
         return axios.post('/api/reset-password', resetData, header)
     }
 
+    function getSettings(darkMode){
+        return axios.get('/api/users/' + user.data.id + '/settings').then((response) =>{
+            return response.data
+        }).catch((error) => {
+            console.log(error)
+            const alertBackground = darkMode ? '#1C1B22' : '#FFFFFF'
+            const alertColor = darkMode ? '#FFFFFF' : '#1C1B22'
+            Swal.fire({
+                title: 'Error',
+                text: error.response.data.message,
+                icon: 'error',
+                background: alertBackground,
+                color: alertColor,
+                timer: 2000,
+                showConfirmButton: false
+            }).then(() => {
+                if (error.response.status === 401) {
+                    router.push('/')
+                }
+            })
+        })
+    }
+
     async function saveSettings(settings){
         const header = {
             headers: {
@@ -206,11 +203,11 @@ export const useUserStore = defineStore('user', function (){
         return response
     }
 
-    function getNotifications(userId, lastNotificationId, darkMode){
+    function getNotifications(lastNotificationId, darkMode){
         if(lastNotificationId === null){
             lastNotificationId = ''
         }
-        return axios.get('/api/users/' + userId + '/notifications?lastNotificationId=' + lastNotificationId).then((response) =>{
+        return axios.get('/api/users/' + user.data.id + '/notifications?lastNotificationId=' + lastNotificationId).then((response) =>{
             if(response.status === 200){
                 notificationsCount.value = 0
             }
@@ -236,6 +233,24 @@ export const useUserStore = defineStore('user', function (){
         })
     }
 
+    function getProfileInformation(userId, darkMode){
+        return axios.get('/api/users/' + userId + '/profile').then((response) =>{
+            return response.data
+        }).catch((error) => {
+            const alertBackground = darkMode ? '#1C1B22' : '#FFFFFF'
+            const alertColor = darkMode ? '#FFFFFF' : '#1C1B22'
+            Swal.fire({
+                title: 'Error',
+                text: error.response.data.message,
+                icon: 'error',
+                background: alertBackground,
+                color: alertColor,
+                timer: 2000,
+                showConfirmButton: false
+            })
+        })
+    }
+
     async function deleteAccount() {
         const header = {
             headers: {
@@ -255,6 +270,31 @@ export const useUserStore = defineStore('user', function (){
         return response
     }
 
+    async function checkAuthentication(darkMode){
+        return axios.get('/api/users/' + user.data.id + '/check-authentication').then((response) => {
+            return true
+        }).catch((error) => {
+            console.log(error)
+            const alertBackground = darkMode ? '#1C1B22' : '#FFFFFF'
+            const alertColor = darkMode ? '#FFFFFF' : '#1C1B22'
+            Swal.fire({
+                title: 'Error',
+                text: error.response.data.message,
+                icon: 'error',
+                background: alertBackground,
+                color: alertColor,
+                timer: 2000,
+                showConfirmButton: false
+            })
+            if (error.response.status === 401) {
+                router.push('/').then(t => {
+                    return error.response
+                })
+            }
+            return false
+        })
+    }
+
 
 
 
@@ -263,7 +303,6 @@ export const useUserStore = defineStore('user', function (){
         notificationsCount,
         notificationsCountFetched,
         setUser,
-        getSettings,
         subscribeToNotifications,
         toast,
         login,
@@ -272,8 +311,11 @@ export const useUserStore = defineStore('user', function (){
         deleteAccount,
         forgotPassword,
         resetPassword,
+        getSettings,
         saveSettings,
         updateDistanceNotificationsRadius,
         getNotifications,
+        getProfileInformation,
+        checkAuthentication
     }
 })

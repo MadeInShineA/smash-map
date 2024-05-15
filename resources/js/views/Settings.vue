@@ -12,7 +12,7 @@ import Button from "primevue/button";
 import FloatLabel from "primevue/floatlabel";
 import Slider from "primevue/slider";
 import Swal from "sweetalert2";
-import Panel from "primevue/panel";
+
 const props = defineProps({
     darkMode: Boolean
 })
@@ -20,17 +20,13 @@ const props = defineProps({
 const userStore = useUserStore()
 const optionsStore = useOptionsStore()
 
-
-// TODO Make the user connected == session user check here or inside router.js (beforeEnter) ?
-
-
+const settings = ref()
 const { data: characterOptions, isFinished: charactersFetched, execute: fetchCharacters } = useAxios('/api/characters', {}, {immediate: false})
 
-const settings = ref()
-userStore.getSettings(userStore.user.data.id, props.darkMode).then((response)=>{
+
+userStore.getSettings(props.darkMode).then((response)=>{
     settings.value = response.data
     fetchCharacters({params: {games: settings.value.games.join(',')}})
-
 
     watch(() => settings.value.games, function(games){
         games = games.length > 0 ? games.join(',') : 'default'

@@ -147,11 +147,16 @@ class UserController extends Controller
 
     }
 
-    public function is_authenticated(Request $request): JsonResponse
+    public function check_authentication(Request $request, User $user): JsonResponse
     {
-        if(Auth::check()){
-            return $this->sendResponse([], 'You are authenticated');
+        if ($user->id != $request->user('sanctum')->id){
+            return $this->sendError('You are not authorized to access this page', [], 401);
         }
-        return $this->sendError('You are not authenticated', [], 401);
+        return $this->sendResponse([], 'You are authenticated');
+    }
+
+    public function get_profile(Request $request, User $user): JsonResponse
+    {
+        return $this->sendResponse(['user' => new LocalStorageUserResource($user)], 'User retrieved with success');
     }
 }

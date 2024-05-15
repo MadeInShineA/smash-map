@@ -22,7 +22,6 @@ class NotificationController extends Controller
             }else{
                 $notifications = $notifications->where('id', '<', $last_notification_id)->get()->slice(0, 10);
             }
-//            $notifications = $notifications->where('id', '<', $last_notification_id)->get();
             $data = ['notifications' => NotificationResource::collection($notifications->all()), 'lastNotificationId' => $notifications->last()? $notifications->last()->id : $last_notification_id];
             return $this->sendResponse($data, 'Notifications retrieved with success');
         }catch (Error $error){

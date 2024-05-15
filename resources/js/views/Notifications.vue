@@ -15,13 +15,12 @@ const props = defineProps({
 const lastNotificationId = ref(null)
 const fetchingNotifications = ref(true)
 
-
 const notifications = ref([])
-userStore.getNotifications(userStore.user.data.id, lastNotificationId.value, props.darkMode).then((response)=>{
+
+userStore.getNotifications(lastNotificationId.value, props.darkMode).then((response)=>{
     notifications.value = response.data.notifications
     lastNotificationId.value = response.data.lastNotificationId
     fetchingNotifications.value = false
-
 })
 
 const notificationsContainer = ref()

@@ -35,9 +35,9 @@ class SettingsController extends Controller
     public function update_settings(SettingsUpdateRequest $request, User $user):JsonResponse
     {
         try {
-            if ($user->id != $request->user('sanctum')->id) {
-                return $this->sendError('You are not authorized to update this settings', [], 401);
-            }
+//            if ($user->id != $request->user('sanctum')->id) {
+//                return $this->sendError('You are not authorized to update this settings', [], 401);
+//            }
 
             $country = Country::where('code', $request->input('address.countryCode'))->first();
             $address = Address::firstOrCreate([
