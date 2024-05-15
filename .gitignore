@@ -17,3 +17,7 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+.htaccess
+infomaniak-maintenance.html
+.user.ini
+index.html
