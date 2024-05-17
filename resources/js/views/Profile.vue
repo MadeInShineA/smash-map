@@ -87,7 +87,7 @@ const profileInformationValidationError = ref({
         <div class="profile-information-input-container">
             <IconField iconPosition="left">
                 <InputIcon class="pi pi-twitter"> </InputIcon>
-                <InputText v-model="profileInformation.twitter" placeholder="Twitter username" />
+                <InputText v-model="profileInformation.twitter" placeholder="X username" />
             </IconField>
         </div>
         <div class="validation-errors">

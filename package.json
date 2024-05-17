@@ -19,7 +19,7 @@
         "@vueuse/integrations": "^10.2.1",
         "chart.js": "^4.4.2",
         "pinia": "^2.1.6",
-        "primeicons": "^6.0.1",
+        "primeicons": "^7.0.0",
         "primevue": "^3.29.1",
         "qalendar": "^2.5.0",
         "sweetalert2": "^11.7.16",
