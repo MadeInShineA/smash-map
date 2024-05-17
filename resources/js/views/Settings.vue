@@ -243,17 +243,11 @@ function deleteAccount(){
             console.log(error)
         }
     }
-
-
-
-
 }
 
 </script>
 
 <template>
-<!--    <template v-if="settings && characterOptions">-->
-<!--        {{settings}}-->
         <div  v-if="settings && characterOptions" id="settings-container">
             <div class="p-float-label setting-input-container">
                 <InputText id="settings-username" class="setting-input" v-model="settings.username" required @click="settingsValidationErrors.username = []"/>
@@ -400,11 +394,6 @@ function deleteAccount(){
                     </template>
                 </TransitionGroup>
             </div>
-
-<!--            <template v-for="notification in settings.notifications" :key="notification">-->
-<!--                <component :is="getComponent(notification)"/>-->
-<!--            </template>-->
-
 
             <template v-if="settings.notifications.includes('hasDistanceNotifications')">
                 <div class="setting-input-container" >
