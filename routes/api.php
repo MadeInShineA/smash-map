@@ -20,7 +20,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::get('/timezone', [Controller::class, 'getVisitorTimezone']);
 Route::get('/events', [EventController::class, 'index']);
 Route::get('/countries', [CountryController::class, 'countries_filter']);
 Route::get('/calendar/events', [EventController::class, 'calendar_index']);

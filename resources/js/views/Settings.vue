@@ -321,7 +321,7 @@ function deleteAccount(){
             <!-- TODO Fix the placeholder / empty item bug -->
             <div class="setting-input-container">
                 <FloatLabel>
-                    <MultiSelect id="settings-characters" class="setting-input" :disabled="settings.games.length === 0" :loading="!charactersFetched" v-model="settings.characters" :maxSelectedLabels="2" :options="characterOptions.data" optionLabel="name" optionValue="id" data-key="id" filter optionGroupLabel="game" optionGroupChildren="characters" placeholder="Characters" showClear @click="settingsValidationErrors.characters = []">
+                    <MultiSelect id="settings-characters" class="setting-input" :disabled="settings.games.length === 0 || !charactersFetched" :loading="!charactersFetched" v-model="settings.characters" :maxSelectedLabels="2" :options="characterOptions.data" optionLabel="name" optionValue="id" data-key="id" filter optionGroupLabel="game" optionGroupChildren="characters" placeholder="Characters" showClear @click="settingsValidationErrors.characters = []">
                         <template #option="slotProps">
                             <div class="character-option">
                                 <img :alt="slotProps.option.name" :src="slotProps.option.image.url" class="character-option-image" width="30" />

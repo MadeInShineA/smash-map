@@ -252,7 +252,7 @@ onMounted(()=>{
                         <Button v-if="userStore.notificationsCountFetched" plain text icon="pi pi-bell" label="Notifications" :badge="userStore.notificationsCount > 0 ? userStore.notificationsCount.toString() : null" badgeClass="p-badge-success"/>
                     </router-link>
                     <Button id="profile-avatar-button" plain text rounded @click="toggleProfileMenu">
-                        <Avatar :image="userStore.user.data.profilePicture.url" shape="circle"  />
+                        <Avatar :image="userStore.user.data.profilePicture.url" shape="circle" />
                     </Button>
                     <Menu :model="profileItems" :popup="true" ref="profileMenu">
                         <template #item="{ item, props }">

@@ -13,6 +13,7 @@ use App\Http\Resources\Character\CharacterResource;
 use App\Http\Resources\Game\GameResource;
 use App\Http\Resources\Notification\NotificationResource;
 use App\Http\Resources\User\LocalStorageUserResource;
+use App\Http\Resources\User\ProfileUserResource;
 use App\Http\Resources\User\SettingsUserResource;
 use App\Models\Address;
 use App\Models\Country;
@@ -157,6 +158,6 @@ class UserController extends Controller
 
     public function get_profile(Request $request, User $user): JsonResponse
     {
-        return $this->sendResponse(['user' => new LocalStorageUserResource($user)], 'User retrieved with success');
+        return $this->sendResponse(new ProfileUserResource($user), 'User retrieved with success');
     }
 }
