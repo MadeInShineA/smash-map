@@ -165,14 +165,14 @@ export const useUserStore = defineStore('user', function (){
         })
     }
 
-    async function saveSettings(settings){
+    async function updateSettings(settings){
         const header = {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             },
         }
-        const response = await axios.post('/api/users/' + user.data.id + '/settings', settings, header)
+        const response = await axios.put('/api/users/' + user.data.id + '/settings', settings, header)
         if(response.status === 200){
             if(user.data.profilePicture.url.includes('?')){
                 user.data.profilePicture.url = user.data.profilePicture.url.substring(0, user.data.profilePicture.url.indexOf('?')) + '?time=' + new Date().getTime()
@@ -195,7 +195,7 @@ export const useUserStore = defineStore('user', function (){
                 'Content-Type': 'application/json',
             },
         }
-        const response = await axios.post('/api/users/' + user.data.id + '/settings/update-distance-notifications-radius', {distanceNotificationsRadius: distanceNotificationsRadius}, header)
+        const response = await axios.put('/api/users/' + user.data.id + '/settings/update-distance-notifications-radius', {distanceNotificationsRadius: distanceNotificationsRadius}, header)
         if(response.status === 200){
             user.data.settings.distanceNotificationsRadius = distanceNotificationsRadius
             localStorage.setItem('userData', JSON.stringify(user.data))
@@ -249,6 +249,19 @@ export const useUserStore = defineStore('user', function (){
                 showConfirmButton: false
             })
         })
+    }
+
+    function updateProfileInformation(profileInformation){
+        const header = {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+        }
+
+        // TODO update user Profile picture if it changes
+        const response = axios.put('/api/users/' + user.data.id + '/profile', profileInformation, header)
+        return response
     }
 
     async function deleteAccount() {
@@ -312,10 +325,11 @@ export const useUserStore = defineStore('user', function (){
         forgotPassword,
         resetPassword,
         getSettings,
-        saveSettings,
+        saveSettings: updateSettings,
         updateDistanceNotificationsRadius,
         getNotifications,
         getProfileInformation,
+        updateProfileInformation,
         checkAuthentication
     }
 })

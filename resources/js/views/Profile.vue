@@ -52,7 +52,20 @@ const handleFileChange = (event) => {
 }
 
 function saveProfileInformation(){
-
+    const sentProfileInformation = {
+        profilePicture: profileInformation.value.profilePicture,
+        description: profileInformation.value.description,
+        discord: profileInformation.value.discord,
+        twitter: profileInformation.value.twitter,
+        connectCode: profileInformation.value.connectCode
+    }
+    userStore.updateProfileInformation(sentProfileInformation, props.darkMode).then((response) => {
+        if (response.status === 200) {
+            console.log('Profile information saved successfully');
+        } else {
+            profileInformationValidationError.value = response.data.errors;
+        }
+    });
 }
 
 </script>
@@ -164,6 +177,8 @@ function saveProfileInformation(){
     width: 80px;
     height: 80px;
     border-radius: 50%;
+    object-fit: cover;
+
 }
 
 #profile-picture-container {
@@ -186,6 +201,7 @@ function saveProfileInformation(){
     opacity: 0;
     border-radius: 50%;
     text-align: center;
+    color: white;
 }
 
 #profile-picture-container:hover #profile-picture-overlay {

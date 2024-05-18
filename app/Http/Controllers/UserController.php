@@ -160,4 +160,9 @@ class UserController extends Controller
     {
         return $this->sendResponse(new ProfileUserResource($user), 'User retrieved with success');
     }
+
+    public function update_profile(Request $request, User $user): JsonResponse
+    {
+        return $this->sendResponse([], 'Profile updated with success');
+    }
 }

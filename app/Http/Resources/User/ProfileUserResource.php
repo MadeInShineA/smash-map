@@ -22,5 +22,4 @@ class ProfileUserResource extends JsonResource
             'twitter'           => $this->twitter,
         ];
     }
-
 }
