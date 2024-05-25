@@ -10,6 +10,7 @@ export const useEventsStore = defineStore('events', function (){
 
     const subscriptionLoading = ref(false)
 
+    // TODO Handle the display of potential errors (undefined ...)
 
     function handleEventSubscription(event, darkMode){
         const title = event.user_subscribed ? 'Unfollowed!' : 'Followed!'

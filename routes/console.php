@@ -50,11 +50,15 @@ Artisan::command('delete-events', function(){
     foreach ($events as $event){
         if ($event->end_date_time < $current_time){
             $image = $event->image;
-            $base_directory_path = base_path(). '/storage/app/public/events-images/' . Str::slug($event->name);
+            $image_directory_path = base_path(). '/storage/app/public/events-images/' . Str::slug($event->name);
             if($image && !$event->notifications()->exists()){
-                $image_directory_path = $base_directory_path . '/' . $image->type .'.png';
-                unlink($image_directory_path);
-                rmdir($base_directory_path);
+                $image_path = $image_directory_path . '/' . $image->type .'.png';
+                if(file_exists($image_path)){
+                    unlink($image_path);
+                }
+                if(is_dir($image_directory_path)){
+                    rmdir($image_directory_path);
+                }
                 $image->delete();
                 var_dump('Image for:' . $event->name . ' deleted');
 

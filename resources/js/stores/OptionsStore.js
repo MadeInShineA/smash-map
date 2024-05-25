@@ -26,7 +26,7 @@ export const useOptionsStore = defineStore('option', function (){
     ]);
 
     const eventOrderByOptions = ref([
-        {name: 'Sort by ID', value: 'default'},
+        {name: 'Sort by default', value: 'default'},
         {name: 'Attendees ascending', value: 'attendeesASC'},
         {name: 'Attendees descending', value: 'attendeesDESC'},
         {name: 'Date ascending', value: 'dateASC'},

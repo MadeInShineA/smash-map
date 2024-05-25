@@ -263,7 +263,16 @@ export const useEventFiltersStore = defineStore('eventFilters', function (){
                 countriesWatch.resume()
             }
         })
+    }
 
+    function clearFilters(){
+        selectedEventGames.value = []
+        selectedEventTypes.value = 'default'
+        selectedEventDates.value = []
+        selectedEventContinents.value = []
+        selectedEventCountries.value = []
+        selectedEventName.value = ''
+        selectedOrderBy.value = 'default'
     }
 
     return {
@@ -278,6 +287,7 @@ export const useEventFiltersStore = defineStore('eventFilters', function (){
         selectedEventContinents,
         selectedEventCountries,
         selectedEventName,
-        fetchEventsWithFilters
+        fetchEventsWithFilters,
+        clearFilters
     }
 })

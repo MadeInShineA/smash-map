@@ -42,11 +42,15 @@ onMounted(()=>{
 </script>
 
 <template>
-    <div id="event-filters-container">
-        <div class="event-filter">
-            <Dropdown v-model="eventsFiltersStore.selectedOrderBy" :options="optionsStore.eventOrderByOptions" optionLabel="name" optionValue="value" placeholder="Sort by ID"/>
+    <div id="event-controls-container">
+        <div class="event-control">
+            <Dropdown id="event-sort-by-dropdown" v-model="eventsFiltersStore.selectedOrderBy" :options="optionsStore.eventOrderByOptions" optionLabel="name" optionValue="value" placeholder="Sort by ID"/>
         </div>
-        <Button id="filters-button" @click="sideBarVisible = true" icon="pi pi-filter" text rounded outlined plain label="Filters"/>
+        <Button class="event-control" id="filters-button" @click="sideBarVisible = true" icon="pi pi-filter" text rounded outlined plain label="Filters"/>
+        <Button class="event-control" @click="eventsFiltersStore.clearFilters" icon="pi pi-filter-slash" plain text rounded aria-label="Clear filters"/>
+        <Button class="event-control" id="refresh-button" @click="eventsFiltersStore.fetchEventsWithFilters" icon="pi pi-refresh" plain text rounded aria-label="Refresh"/>
+
+
     </div>
     <EventFilterSidebar :sideBarVisible="sideBarVisible" @switchSideBarVisible="switchSideBarVisible"></EventFilterSidebar>
     <template v-if="eventsFiltersStore.countriesFetched && eventsStore.eventsFetched">
@@ -94,23 +98,25 @@ onMounted(()=>{
 
 <style scoped>
 
-#filters-button{
-    height: min-content;
-    align-self: center;
+
+#event-sort-by-dropdown{
+    width: 175px;
 }
 
-.event-filter{
-    margin:20px 10px;
+.event-control{
+    margin:0 10px;
+    align-self: center;
 }
 
 #events-total{
     text-align: center;
 }
 
-#event-filters-container{
+#event-controls-container{
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
+    margin: 10px 0
 }
 
 #event-container {

@@ -299,6 +299,16 @@ export const useAddressFiltersStore = defineStore('addressFilters', function (){
         })
     }
 
+    function clearFilters(){
+        selectedAddressGames.value = []
+        selectedAddressTypes.value = 'default'
+        selectedAddressDates.value = []
+        selectedAddressContinents.value = []
+        selectedAddressCountries.value = []
+        selectedAddressName.value = ''
+        selectedAddressCharacters.value = []
+    }
+
     return {
         addressesCountryOptions,
         countriesFetched,
@@ -313,6 +323,7 @@ export const useAddressFiltersStore = defineStore('addressFilters', function (){
         charactersFetched,
         fetchCharacters,
         fetchCountries,
-        fetchAddressesWithFilters
+        fetchAddressesWithFilters,
+        clearFilters
     }
 })

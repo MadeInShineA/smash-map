@@ -11,6 +11,7 @@ import LoaderComponent from "@/components/LoaderComponent.vue";
 import Sidebar from "primevue/sidebar";
 import Chip from "primevue/chip";
 import Tag from "primevue/tag";
+import { useAddressFiltersStore} from "../stores/AddressFiltersStore.js";
 import { useAddressesStore } from '../stores/AddressesStore.js'
 import { useEventsStore } from "../stores/EventsStore.js";
 import { useUserStore } from "../stores/UserStore.js";
@@ -29,6 +30,8 @@ const addressStore = useAddressesStore()
 const eventsStore = useEventsStore()
 
 const userStore = useUserStore()
+
+const addressFiltersStore = useAddressFiltersStore()
 
 const sideBarVisible = ref(false)
 
@@ -182,7 +185,9 @@ onMounted(()=>{
             </InfoWindow>
             <CustomControl
                 :position="responsiveMenuDisplayed ? 'LEFT_TOP' : 'TOP_CENTER'">
-                <Button class="map-button margin-top-15-important" @click="sideBarVisible = true" icon="pi pi-filter" rounded label="Filters"/>
+                <Button class="map-button-top" @click="sideBarVisible = true" icon="pi pi-filter" rounded label="Filters"/>
+                <Button class="map-button-top" @click="addressFiltersStore.clearFilterszz" icon="pi pi-filter-slash" rounded aria-label="Clear filters"/>
+                <Button class="map-button-top" @click="addressFiltersStore.fetchAddressesWithFilters" icon="pi pi-refresh" rounded aria-label="Refresh"/>
             </CustomControl>
             <MarkerCluster>
                 <Marker v-for="(address, i) in addressStore.addresses.data" @click="closeInfoWindows" :options="{position: address.position, icon: {url: address.icon,  scaledSize: { width: 30, height: 30 }}}">
@@ -242,7 +247,7 @@ onMounted(()=>{
                 </Marker>
             </MarkerCluster>
             <CustomControl :position="responsiveMenuDisplayed ? 'LEFT_BOTTOM' : 'BOTTOM_CENTER'">
-                <Button class="map-button margin-bottom-15-important" @click="legendsVisible = true" icon="pi pi-filter"  rounded label="Legends"/>
+                <Button class="map-button-bottom margin-bottom-15-important" @click="legendsVisible = true" icon="pi pi-filter"  rounded label="Legends"/>
                 <Sidebar v-model:visible="legendsVisible" position="bottom" style="height: min-content;">
                     <div id="games-legend">
                         <div class="game-legend">
@@ -297,29 +302,32 @@ onMounted(()=>{
     overflow: auto !important
 }
 
-.dark .map-button{
+.dark .map-button-top, .dark .map-button-bottom{
     color: white !important;
     background-color: #1E1E1E !important;
 }
 
-.map-button{
+.map-button-top, .map-button-bottom{
     color: #1E1E1E !important;
     background-color: white !important;
-
 }
+
+.map-button-top {
+    margin-top: 15px;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+.map-button-bottom{
+    margin-bottom: 15px;
+}
+
+
 
 @media(max-width: 960px){
-    .map-button{
+    .map-button-top, .map-button-bottom{
         margin-left:8px !important;
     }
-}
-
-.margin-top-15-important{
-    margin-top:15px !important;
-}
-
-.margin-bottom-15-important{
-    margin-bottom:15px !important;
 }
 
 #games-legend{
