@@ -183,8 +183,7 @@ onMounted(()=>{
                     <Button label="Save" severity="success" icon="pi pi-check" plain text @click="updateDistanceNotificationsRadius"></Button>
                 </div>
             </InfoWindow>
-            <CustomControl
-                :position="responsiveMenuDisplayed ? 'LEFT_TOP' : 'TOP_CENTER'">
+            <CustomControl :position="responsiveMenuDisplayed ? 'LEFT_TOP' : 'TOP_CENTER'">
                 <Button class="map-button-top" @click="sideBarVisible = true" icon="pi pi-filter" rounded label="Filters"/>
                 <Button class="map-button-top" @click="addressFiltersStore.clearFilterszz" icon="pi pi-filter-slash" rounded aria-label="Clear filters"/>
                 <Button class="map-button-top" @click="addressFiltersStore.fetchAddressesWithFilters" icon="pi pi-refresh" rounded aria-label="Refresh"/>

@@ -10,31 +10,41 @@ export const useEventsStore = defineStore('events', function (){
 
     const subscriptionLoading = ref(false)
 
-    // TODO Handle the display of potential errors (undefined ...)
-
     function handleEventSubscription(event, darkMode){
         const title = event.user_subscribed ? 'Unfollowed!' : 'Followed!'
         const message = event.user_subscribed ? 'Event unfollowed with success!' : 'Event followed with success!'
         const alertBackground = darkMode ? '#1C1B22' : '#FFFFFF'
         const alertColor = darkMode ? '#FFFFFF' : '#1C1B22'
-        Swal.fire({
-            title: title,
-            text: message,
-            icon: 'success',
-            background: alertBackground,
-            color: alertColor,
-            timer: 2000,
-            showConfirmButton: false
-        })
+        const url = event.user_subscribed ? '/api/events/' + event.id + '/unsubscribe' : '/api/events/' + event.id + '/subscribe'
         subscriptionLoading.value = true
-        if (event.user_subscribed){
-            axios.post('/api/events/' + event.id + '/unsubscribe')
-            event.user_subscribed = false
-        }else{
-            axios.post('/api/events/' + event.id + '/subscribe')
-            event.user_subscribed = true
-        }
-        subscriptionLoading.value = false
+        axios.post(url)
+            .then(() => {
+                event.user_subscribed = !event.user_subscribed
+                subscriptionLoading.value = false
+                Swal.fire({
+                    title: title,
+                    text: message,
+                    icon: 'success',
+                    background: alertBackground,
+                    color: alertColor,
+                    timer: 2000,
+                    showConfirmButton: false
+                })
+            })
+            .catch((error) => {
+                Swal.fire({
+                    title: 'Error',
+                    text: error.response.data.message,
+                    icon: 'error',
+                    background: alertBackground,
+                    color: alertColor,
+                    timer: 2000,
+                    showConfirmButton: false
+                })
+                subscriptionLoading.value = false
+                console.log(event.user_subscribed)
+            })
+
     }
 
     const {data: gamesStatistics, isFinished: gamesStatisticsFetched, execute: fetchGameStatistics} = useAxios('/api/events/statistics?type=games', {}, {immediate: false})

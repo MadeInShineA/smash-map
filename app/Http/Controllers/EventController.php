@@ -201,15 +201,24 @@ class EventController extends Controller
 
     public function event_subscribe(Request $request, Event $event): JsonResponse
     {
-        $user =request()->user();
-        $user->subscribed_events()->attach($event);
-        return $this->sendResponse([], 'Event followed with success');
+        try{
+            $user =request()->user();
+            $user->subscribed_events()->attach($event);
+            return $this->sendResponse([], 'Event followed with success');
+        }catch (\Error $error) {
+            return $this->sendError($error, ['An error occurred while following the event E 016'], 500);
+        }
     }
 
     public function event_unsubscribe(Request $request, Event $event): JsonResponse
     {
-        $user = Auth::user();
-        $user->subscribed_events()->detach($event);
-        return $this->sendResponse([], 'Event unfollowed with success');
+        try{
+            $user = Auth::user();
+            $user->subscribed_events()->detach($event);
+            return $this->sendResponse([], 'Event unfollowed with success');
+        }catch (\Error $error) {
+            return $this->sendError($error, ['An error occurred while unfollowing the event E 017'], 500);
+        }
+
     }
 }
