@@ -34,7 +34,7 @@ const { bottom: hasScrolledDown } = toRefs(scrollStates)
 watch(hasScrolledDown, function(isArrived){
     if(isArrived && !fetchingNotifications.value){
         fetchingNotifications.value = true
-        userStore.getNotifications(userStore.user.data.id, lastNotificationId.value, props.darkMode).then((response)=>{
+        userStore.getNotifications(lastNotificationId.value, props.darkMode).then((response)=>{
             notifications.value = notifications.value.concat(response.data.notifications)
             lastNotificationId.value = response.data.lastNotificationId
             fetchingNotifications.value = false
