@@ -251,16 +251,20 @@ export const useUserStore = defineStore('user', function (){
         })
     }
 
-    function updateProfileInformation(profileInformation){
+    async function updateProfileInformation(profileInformation){
+        console.log(profileInformation)
+
         const header = {
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json',
+                'Content-Type': profileInformation.profilePicture ? 'multipart/form-data' : 'application/json',
             },
         }
 
+        profileInformation['_method'] = 'PUT'
+
         // TODO update user Profile picture if it changes
-        const response = axios.put('/api/users/' + user.data.id + '/profile', profileInformation, header)
+        const response = axios.post('/api/users/' + user.data.id + '/profile', profileInformation, header)
         return response
     }
 

@@ -8,6 +8,7 @@ import InputIcon from "primevue/inputicon";
 import InputText from "primevue/inputtext";
 import Textarea from "primevue/textarea";
 import Button from "primevue/button";
+import Swal from "sweetalert2";
 
 const userStore = useUserStore()
 
@@ -26,9 +27,10 @@ userStore.checkAuthentication(props.darkMode).then(response => {
 })
 
 const profileInformationValidationError = ref({
+    profilePicture: [],
     description: [],
     discord: [],
-    twitter: [],
+    x: [],
     connectCode: []
 })
 
@@ -38,34 +40,65 @@ const handleAvatarClick = () => {
 
 const handleFileChange = (event) => {
     const file = event.target.files[0];
+    profileInformation.value.profilePicture = file;
+
     if (file) {
-        // Handle the file upload process
-        console.log(file);
-        // Example: Update profile picture URL (you will replace this with actual upload logic)
+        console.log(file)
+        if(file.size > 2048 * 1024){
+            profileInformationValidationError.value.profilePicture.push('The file size is too large. Max file size is 2MB')
+        }
         const reader = new FileReader();
         reader.onload = (e) => {
-            profileInformation.value.profilePicture.url = e.target.result;
             document.getElementById('profile-picture').src = e.target.result;
         };
         reader.readAsDataURL(file);
     }
 }
 
-function saveProfileInformation(){
-    const sentProfileInformation = {
-        profilePicture: profileInformation.value.profilePicture,
-        description: profileInformation.value.description,
-        discord: profileInformation.value.discord,
-        twitter: profileInformation.value.twitter,
-        connectCode: profileInformation.value.connectCode
-    }
-    userStore.updateProfileInformation(sentProfileInformation, props.darkMode).then((response) => {
-        if (response.status === 200) {
-            console.log('Profile information saved successfully');
-        } else {
-            profileInformationValidationError.value = response.data.errors;
+async function saveProfileInformation() {
+    try {
+        const sentProfileInformation = {
+            profilePicture: profileInformation.value.profilePicture ?? null,
+            description: profileInformation.value.description,
+            discord: profileInformation.value.discord,
+            x: profileInformation.value.x,
+            connectCode: profileInformation.value.connectCode
         }
-    });
+        await userStore.updateProfileInformation(sentProfileInformation, props.darkMode).then(async function (response) {
+
+            const alertBackground = props.darkMode ? '#1C1B22' : '#FFFFFF'
+            const alertColor = props.darkMode ? '#FFFFFF' : '#1C1B22'
+            await Swal.fire({
+                title: 'Profile saved!',
+                text: response.data.message,
+                icon: 'success',
+                background: alertBackground,
+                color: alertColor,
+                timer: 2000,
+                showConfirmButton: false
+            })
+        })
+    } catch (error) {
+        console.log(error)
+        if (error.response && error.response.data.errors === undefined && error.response.data.message && error.response.status === 500) {
+            const alertBackground = props.darkMode ? '#1C1B22' : '#FFFFFF'
+            const alertColor = props.darkMode ? '#FFFFFF' : '#1C1B22'
+            Swal.fire({
+                title: 'Error',
+                text: error.response.data.message,
+                icon: 'error',
+                background: alertBackground,
+                color: alertColor,
+                timer: 2000,
+                showConfirmButton: false
+            })
+        } else if (error.response && error.response.data.errors) {
+            profileInformationValidationError.value = error.response.data.errors
+        } else {
+            console.log(error)
+        }
+    }
+
 }
 
 </script>
@@ -78,7 +111,15 @@ function saveProfileInformation(){
                 <span>Click to upload</span>
             </div>
         </div>
-        <input type="file" accept="image/*" id="profile-picture-upload" style="display: none;" @change="handleFileChange">
+        <input type="file" accept=".png, .jpg, .jpeg" id="profile-picture-upload" style="display: none;" @change="handleFileChange">
+        <div class="validation-errors text-align-center">
+            <TransitionGroup name="errors">
+                <template v-for="profileInformationProfilePictureError in profileInformationValidationError.profilePicture"
+                          :key="profileInformationProfilePictureError" class="validation-errors">
+                    <div class="validation-error">{{ profileInformationProfilePictureError }}</div>
+                </template>
+            </TransitionGroup>
+        </div>
         <div>
             {{ profileInformation.username }}
         </div>
@@ -99,7 +140,7 @@ function saveProfileInformation(){
 
         <div class="profile-information-input-container">
             <Textarea v-model="profileInformation.description" autoResize placeholder="Description"
-                      id="description-text-area"/>
+                      id="description-text-area" maxlength="255"/>
         </div>
         <div class="validation-errors">
             <TransitionGroup name="errors">
@@ -113,7 +154,7 @@ function saveProfileInformation(){
         <div class="profile-information-input-container">
             <IconField iconPosition="left">
                 <InputIcon class="pi pi-discord"></InputIcon>
-                <InputText v-model="profileInformation.discord" placeholder="Discord username"/>
+                <InputText v-model="profileInformation.discord" placeholder="Discord username" maxlength="32"/>
             </IconField>
         </div>
         <div class="validation-errors">
@@ -128,14 +169,14 @@ function saveProfileInformation(){
         <div class="profile-information-input-container">
             <IconField iconPosition="left">
                 <InputIcon class="pi pi-twitter"></InputIcon>
-                <InputText v-model="profileInformation.twitter" placeholder="X username"/>
+                <InputText v-model="profileInformation.x" placeholder="X username" maxlength="15"/>
             </IconField>
         </div>
         <div class="validation-errors">
             <TransitionGroup name="errors">
-                <template v-for="profileInformationTwitterError in profileInformationValidationError.twitter"
-                          :key="profileInformationTwitterError" class="validation-errors">
-                    <div class="validation-error">{{ profileInformationTwitterError }}</div>
+                <template v-for="profileInformationXError in profileInformationValidationError.x"
+                          :key="profileInformationXError" class="validation-errors">
+                    <div class="validation-error">{{ profileInformationXError }}</div>
                 </template>
             </TransitionGroup>
         </div>
@@ -143,7 +184,7 @@ function saveProfileInformation(){
         <div v-if="'Melee' in profileInformation.games" class="profile-information-input-container">
             <IconField iconPosition="left">
                 <InputIcon class="pi pi-globe"/>
-                <InputText v-model="profileInformation.connectCode" placeholder="Slippi connect code"/>
+                <InputText v-model="profileInformation.connectCode" placeholder="Slippi connect code" maxlength="8"/>
             </IconField>
         </div>
         <div class="validation-errors">
@@ -254,5 +295,9 @@ function saveProfileInformation(){
 .validation-error {
     font-size: 12px;
     color: red;
+}
+
+.text-align-center{
+    text-align: center;
 }
 </style>

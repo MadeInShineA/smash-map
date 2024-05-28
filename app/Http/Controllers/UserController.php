@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\ImageTypeEnum;
 use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\LoginRequest;
+use App\Http\Requests\ProfileUpdateRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\ResetPasswordRequest;
 use App\Http\Requests\SettingsDistanceNotificationsRadiusUpdateRequest;
@@ -161,7 +162,7 @@ class UserController extends Controller
         return $this->sendResponse(new ProfileUserResource($user), 'User retrieved with success');
     }
 
-    public function update_profile(Request $request, User $user): JsonResponse
+    public function update_profile(ProfileUpdateRequest $request, User $user): JsonResponse
     {
         return $this->sendResponse([], 'Profile updated with success');
     }

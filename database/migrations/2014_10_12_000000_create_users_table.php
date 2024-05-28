@@ -24,7 +24,7 @@ return new class extends Migration
             $table->boolean('has_default_profile_picture')->default(true);
             $table->string('connect_code')->nullable();
             $table->string('discord')->nullable();
-            $table->string('twitter')->nullable();
+            $table->string('x')->nullable();
             $table->string('description')->nullable();
             $table->string('color')->nullable();
             $table->boolean('has_distance_notifications')->default(true);

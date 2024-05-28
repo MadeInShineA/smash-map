@@ -31,7 +31,7 @@ class User extends Authenticatable
         'password',
         'address_id',
         'discord',
-        'twitter',
+        'x',
         'description',
         'color',
         'has_distance_notifications',

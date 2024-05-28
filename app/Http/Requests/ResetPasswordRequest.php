@@ -22,10 +22,10 @@ class ResetPasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'token'                 => 'required|string',
-            'email'                 => 'required|email|exists:users,email',
-            'password'              => 'required|string',
-            'passwordConfirmation' => 'required|string|same:password'
+            'token'                 => ['required', 'string'],
+            'email'                 => ['required', 'email', 'exists:users,email'],
+            'password'              => ['required', 'string'],
+            'passwordConfirmation'  => ['required' ,'string', 'same:password']
         ];
     }
 

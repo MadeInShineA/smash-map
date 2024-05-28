@@ -28,27 +28,27 @@ class SettingsUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'username'              => 'required|max:20|alpha_dash:ascii|'. Rule::unique('users', 'username')->ignore($this->user->id) ,
-            'email'                 => 'required|email:rfc,dns|max:255|' . Rule::unique('users', 'email')->ignore($this->user->id),
-            'password'              => 'nullable|string',
-            'passwordConfirmation'  => 'nullable|required_with:password|string|same:password',
-            'games'                 => 'required|exists:' . Game::class . ',id',
+            'username'              => ['required', 'max:20', 'alpha_dash:ascii', Rule::unique('users', 'username')->ignore($this->user->id)],
+            'email'                 => ['required', 'email:rfc,dns', 'max:255', Rule::unique('users', 'email')->ignore($this->user->id)],
+            'password'              => ['nullable' ,'string'],
+            'passwordConfirmation'  => ['nullable', 'required_with:password', 'string', 'same:password'],
+            'games'                 => ['required', 'exists:' . Game::class . ',id'],
             'characters'            => ['required', 'exists:' .Character::class . ',id', new AtLeastOneCharacterPerGame],
-            'address'               => 'required|array',
-            'address.name'          => 'required',
+            'address'               => ['required', 'array'],
+            'address.name'          => ['required'],
             'address.latitude'      => ['required','regex:/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?)$/'],
             'address.longitude'     => ['required','regex:/^[-]?((((1[0-7][0-9])|([0-9]?[0-9]))\.(\d+))|180(\.0+)?)$/'],
-            'address.countryCode'   => 'required',
-            'isModder'              => 'required|boolean',
-            'isOnMap'               => 'required|boolean',
-            'notifications'         => 'required|array',
-            'notifications.*'       => 'required|in:hasDistanceNotifications,hasTimeNotifications,hasAttendeesNotifications',
+            'address.countryCode'   => ['required'],
+            'isModder'              => ['required', 'boolean'],
+            'isOnMap'               => ['required', 'boolean'],
+            'notifications'         => ['required', 'array'],
+            'notifications.*'       => ['required', 'in:hasDistanceNotifications,hasTimeNotifications,hasAttendeesNotifications'],
             // TODO Fix the distanceNotifications... not being required properly
             'distanceNotificationsRadius' => ['nullable','required_if:notifications.*,hasDistanceNotifications', 'numeric', 'min:1', 'max:2000'],
             'attendeesNotificationsThresholds' => ['nullable','required_if:notifications.*,hasAttendeesNotifications', 'array', 'min:1'],
             'attendeesNotificationsThresholds.*' => 'numeric|min:1|distinct',
             'timeNotificationsThresholds' => ['nullable','required_if:notifications.*,hasTimeNotifications', 'array', 'min:1'],
-            'timeNotificationsThresholds.*' => 'numeric|min:0|distinct',
+            'timeNotificationsThresholds.*' => ['numeric', 'min:0', 'distinct'],
         ];
     }
 

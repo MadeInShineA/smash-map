@@ -28,7 +28,7 @@ class SettingsDistanceNotificationsRadiusUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'distanceNotificationsRadius' => ['required', 'numeric', 'min:1', 'max:2000'],
+            'distanceNotificationsRadius' => ['required', 'numeric', 'min:1', 'max:2000']
         ];
     }
 
