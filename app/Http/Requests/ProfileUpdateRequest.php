@@ -22,8 +22,7 @@ class ProfileUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // TODO Check the profilePicture extension and fix the error message when the file's size > upload_max_filesize inside php.ini
-            'profilePicture'    => ['nullable', 'mimes:jpeg,png,jpg', 'max:1'],
+            'profilePicture'    => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
             'description'       => ['nullable', 'string', 'max:255'],
             'discord'           => ['nullable', 'string', 'max:32'],
             'x'                 => ['nullable', 'string', 'max:15'],

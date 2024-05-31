@@ -33,6 +33,7 @@ class User extends Authenticatable
         'discord',
         'x',
         'description',
+        'connect_code',
         'color',
         'has_distance_notifications',
         'distance_notifications_radius',

@@ -183,7 +183,6 @@ export const useUserStore = defineStore('user', function (){
             user.data.settings.distanceNotificationsRadius = settings.distanceNotificationsRadius
             user.data.settings.address = {lat: settings.address.latitude, lng: settings.address.longitude}
             localStorage.setItem('userData', JSON.stringify(user.data))
-
         }
         return response
     }
@@ -202,6 +201,8 @@ export const useUserStore = defineStore('user', function (){
         }
         return response
     }
+
+    // TODO Move the Swal to the Notifications component
 
     function getNotifications(lastNotificationId, darkMode){
         if(lastNotificationId === null){
@@ -263,8 +264,14 @@ export const useUserStore = defineStore('user', function (){
 
         profileInformation['_method'] = 'PUT'
 
-        // TODO update user Profile picture if it changes
-        const response = axios.post('/api/users/' + user.data.id + '/profile', profileInformation, header)
+        const response = await axios.post('/api/users/' + user.data.id + '/profile', profileInformation, header)
+        if(response.status === 200) {
+            if (user.data.profilePicture.url.includes('?')) {
+                user.data.profilePicture.url = user.data.profilePicture.url.substring(0, user.data.profilePicture.url.indexOf('?')) + '?time=' + new Date().getTime()
+            } else {
+                user.data.profilePicture.url = user.data.profilePicture.url + '?time=' + new Date().getTime()
+            }
+        }
         return response
     }
 
@@ -329,7 +336,7 @@ export const useUserStore = defineStore('user', function (){
         forgotPassword,
         resetPassword,
         getSettings,
-        saveSettings: updateSettings,
+        updateSettings,
         updateDistanceNotificationsRadius,
         getNotifications,
         getProfileInformation,

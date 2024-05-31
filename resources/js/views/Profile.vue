@@ -2,7 +2,7 @@
 import {useUserStore} from "../stores/UserStore.js";
 import {ref} from "vue";
 import Tag from "primevue/tag";
-import LoaderComponent from "@/components/LoaderComponent.vue";
+import LoaderComponent from "../components/LoaderComponent.vue";
 import IconField from "primevue/iconfield";
 import InputIcon from "primevue/inputicon";
 import InputText from "primevue/inputtext";
@@ -39,19 +39,24 @@ const handleAvatarClick = () => {
 }
 
 const handleFileChange = (event) => {
+    profileInformationValidationError.value.profilePicture = []
     const file = event.target.files[0];
     profileInformation.value.profilePicture = file;
 
     if (file) {
-        console.log(file)
         if(file.size > 2048 * 1024){
             profileInformationValidationError.value.profilePicture.push('The file size is too large. Max file size is 2MB')
+        }else if(!['image/png', 'image/jpg', 'image/jpeg'].includes(file.type)){
+            profileInformationValidationError.value.profilePicture.push('The file type is not supported. Supported file types are png, jpg and jpeg')
         }
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            document.getElementById('profile-picture').src = e.target.result;
-        };
-        reader.readAsDataURL(file);
+        else{
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById('profile-picture').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
     }
 }
 
@@ -140,7 +145,7 @@ async function saveProfileInformation() {
 
         <div class="profile-information-input-container">
             <Textarea v-model="profileInformation.description" autoResize placeholder="Description"
-                      id="description-text-area" maxlength="255"/>
+                      id="description-text-area" maxlength="255" @click="profileInformationValidationError.description = []"/>
         </div>
         <div class="validation-errors">
             <TransitionGroup name="errors">
@@ -154,7 +159,7 @@ async function saveProfileInformation() {
         <div class="profile-information-input-container">
             <IconField iconPosition="left">
                 <InputIcon class="pi pi-discord"></InputIcon>
-                <InputText v-model="profileInformation.discord" placeholder="Discord username" maxlength="32"/>
+                <InputText v-model="profileInformation.discord" placeholder="Discord username" maxlength="32" @click="profileInformationValidationError.discord = []"/>
             </IconField>
         </div>
         <div class="validation-errors">
@@ -169,7 +174,7 @@ async function saveProfileInformation() {
         <div class="profile-information-input-container">
             <IconField iconPosition="left">
                 <InputIcon class="pi pi-twitter"></InputIcon>
-                <InputText v-model="profileInformation.x" placeholder="X username" maxlength="15"/>
+                <InputText v-model="profileInformation.x" placeholder="X username" maxlength="15"  @click="profileInformationValidationError.x = []"/>
             </IconField>
         </div>
         <div class="validation-errors">
@@ -184,7 +189,7 @@ async function saveProfileInformation() {
         <div v-if="'Melee' in profileInformation.games" class="profile-information-input-container">
             <IconField iconPosition="left">
                 <InputIcon class="pi pi-globe"/>
-                <InputText v-model="profileInformation.connectCode" placeholder="Slippi connect code" maxlength="8"/>
+                <InputText v-model="profileInformation.connectCode" placeholder="Slippi connect code" maxlength="8" @click="profileInformationValidationError.connectCode = []"/>
             </IconField>
         </div>
         <div class="validation-errors">

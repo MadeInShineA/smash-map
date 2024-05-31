@@ -21,6 +21,7 @@ userStore.getNotifications(lastNotificationId.value, props.darkMode).then((respo
     notifications.value = response.data.notifications
     lastNotificationId.value = response.data.lastNotificationId
     fetchingNotifications.value = false
+
 })
 
 const notificationsContainer = ref()

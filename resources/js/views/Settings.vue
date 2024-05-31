@@ -154,11 +154,11 @@ async function saveSettings() {
             timeNotificationsThresholds: sentTimeNotificationsThresholds
         }
 
-        await userStore.saveSettings(sentSettings).then(async function (response){
+         userStore.updateSettings(sentSettings).then(function (response){
 
             const alertBackground = props.darkMode ? '#1C1B22' : '#FFFFFF'
             const alertColor = props.darkMode ? '#FFFFFF' : '#1C1B22'
-            await Swal.fire({
+            Swal.fire({
                 title: 'Settings saved!',
                 text: response.data.message,
                 icon: 'success',
@@ -272,7 +272,6 @@ function deleteAccount(){
                     </template>
                 </TransitionGroup>
             </div>
-
             <div class="p-float-label setting-input-container">
                 <Password id="settings-password" class="setting-input" v-model="settings.password" :feedback="false" toggleMask @click="settingsValidationErrors.password = []"/>
                 <label for="settings-password">New password</label>
