@@ -167,15 +167,22 @@ class UserController extends Controller
             $data = [];
             $profile_picture = $request->file('profilePicture');
             if($profile_picture){
-                $user_directory_path = '/users-images/' . $user->uuid;
+
+                $image_directory_path = '/users-images/' . $user->uuid;
+
+
+                $previous_image = $user->images()->where('type', ImageTypeEnum::USER_PROFILE)->first();
+
+                $previous_image_path = base_path(). '/storage/app/public' . $image_directory_path . '/' . ImageTypeEnum::USER_PROFILE .'.' . $previous_image->extension;
+                unlink($previous_image_path);
+
+                $previous_image->delete();
 
                 $image_extension = $profile_picture->extension();
 
-                // TODO Make it work for the different image types
 
-                $user->images()->where('type', ImageTypeEnum::USER_PROFILE)->delete();
 
-                Storage::put($user_directory_path . '/' . ImageTypeEnum::USER_PROFILE . '.' . $image_extension, file_get_contents($profile_picture));
+                Storage::put($image_directory_path . '/' . ImageTypeEnum::USER_PROFILE . '.' . $image_extension, file_get_contents($profile_picture));
                 Image::Create(['parentable_type' =>User::class, 'parentable_id' =>$user->id, 'type' =>ImageTypeEnum::USER_PROFILE, 'extension' => $image_extension]);
 
                 $user->has_default_profile_picture = false;
