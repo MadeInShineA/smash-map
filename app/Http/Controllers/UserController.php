@@ -26,6 +26,7 @@ use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Storage;
@@ -105,6 +106,7 @@ class UserController extends Controller
             }
             $user->delete();
             // TODO Remove the users directory
+            File::deleteDirectory(base_path() . '/storage/app/public/users-images/' . $user->uuid);
             return $this->sendResponse([], 'Account deleted with success');
         }catch (\Error $error) {
             return $this->sendError('An error occurred while deleting the account E 014', [$error], 500);

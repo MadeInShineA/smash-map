@@ -13,6 +13,7 @@ use App\Models\Notification;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
@@ -50,15 +51,9 @@ Artisan::command('delete-events', function(){
     foreach ($events as $event){
         if ($event->end_date_time < $current_time){
             $image = $event->image;
-            $image_directory_path = base_path(). '/storage/app/public/events-images/' . Str::slug($event->name);
             if($image && !$event->notifications()->exists()){
-                $image_path = $image_directory_path . '/' . $image->type .'.' . $image->extension;
-                if(file_exists($image_path)){
-                    unlink($image_path);
-                }
-                if(is_dir($image_directory_path)){
-                    rmdir($image_directory_path);
-                }
+                $image_directory_path = base_path(). '/storage/app/public/events-images/' . Str::slug($event->name);
+                File::deleteDirectory($image_directory_path);
                 $image->delete();
                 var_dump('Image for:' . $event->name . ' deleted');
 
