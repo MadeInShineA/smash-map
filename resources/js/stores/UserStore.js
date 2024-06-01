@@ -175,8 +175,9 @@ export const useUserStore = defineStore('user', function (){
         const response = await axios.put('/api/users/' + user.data.id + '/settings', settings, header)
         if(response.status === 200){
             if(response.data.data.profilePicture){
+                console.log(response.data.data.profilePicture)
                 user.data.profilePicture = response.data.data.profilePicture
-                localStorage.setItem('userData', JSON.stringify(user.data))
+                console.log(user.data.profilePicture)
             }
             user.data.settings.hasDistanceNotifications = settings.notifications.includes('hasDistanceNotifications')
             user.data.settings.distanceNotificationsRadius = settings.distanceNotificationsRadius

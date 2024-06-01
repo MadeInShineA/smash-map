@@ -195,7 +195,7 @@ onMounted(()=>{
                             <h3 class="info-window-title">Users</h3>
                             <template v-for="user in address.users">
                                 <div class = user-image-container>
-                                    <img :src="user.profilePicture.url"  alt="User Image">
+                                    <img class="user-image" :src="user.profilePicture.url"  alt="User Image">
                                 </div>
                                 <div class="user-username">
                                     {{ user.username }}
@@ -420,6 +420,13 @@ onMounted(()=>{
     margin-bottom: 10px;
 }
 
+.user-image{
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
 .user-username{
     margin-top: 5px
 }
@@ -488,11 +495,11 @@ onMounted(()=>{
     .gm-style-iw:has(#circle-info-window){
         max-width: none !important;
     }
-
 }
 
-
-
-
+/* TODO Query the Marker's image in a batter way */
+.gm-style > div > div > div > div > img{
+    border-radius: 50%;
+}
 
 </style>

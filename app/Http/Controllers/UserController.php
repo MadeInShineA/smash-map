@@ -30,6 +30,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Geometry\Factories\CircleFactory;
+use Intervention\Image\ImageManager;
 
 class UserController extends Controller
 {
@@ -101,6 +104,7 @@ class UserController extends Controller
                 return $this->sendError('You are not authorized to delete this account', [], 401);
             }
             $user->delete();
+            // TODO Remove the users directory
             return $this->sendResponse([], 'Account deleted with success');
         }catch (\Error $error) {
             return $this->sendError('An error occurred while deleting the account E 014', [$error], 500);
@@ -179,13 +183,20 @@ class UserController extends Controller
                 $previous_image->delete();
 
                 $image_extension = $profile_picture->extension();
+                $image_file_url = $image_directory_path . '/' . ImageTypeEnum::USER_PROFILE . '.' . $image_extension;
 
+                $image_manager = new ImageManager(new Driver());
+                $image = $image_manager->read($profile_picture->path());
 
+                $image->cover(640, 640, 'center');
+                $image->save(base_path() . '/storage/app/public' . $image_file_url);
 
-                Storage::put($image_directory_path . '/' . ImageTypeEnum::USER_PROFILE . '.' . $image_extension, file_get_contents($profile_picture));
                 Image::Create(['parentable_type' =>User::class, 'parentable_id' =>$user->id, 'type' =>ImageTypeEnum::USER_PROFILE, 'extension' => $image_extension]);
 
+
+
                 $user->has_default_profile_picture = false;
+                $user->refresh();
                 $data['profilePicture'] = new ImageResource($user->getProfilePictureAttribute());
             }
             $user->update([
