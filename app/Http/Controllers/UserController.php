@@ -59,7 +59,7 @@ class UserController extends Controller
             $profile_picture = file_get_contents('https://ui-avatars.com/api/?name=' . $user->username . '&rounded=true&length=1&background=random');
             $user_directory_path = '/users-images/' . $user->uuid;
             Storage::put($user_directory_path . '/' . ImageTypeEnum::USER_PROFILE . '.png', $profile_picture);
-            Image::Create(['parentable_type' =>User::class, 'parentable_id' =>$user->id, 'type' =>ImageTypeEnum::USER_PROFILE]);
+            Image::Create(['parentable_type' =>User::class, 'parentable_id' =>$user->id, 'type' =>ImageTypeEnum::USER_PROFILE, 'extension' => 'png']);
 
             return $this->sendResponse(['user' => new LocalStorageUserResource($user->fresh()), 'token' => $user->createToken('API Token')->plainTextToken], 'You are registered and connected!');
         }catch (\Error $error){
@@ -164,14 +164,22 @@ class UserController extends Controller
     public function update_profile(ProfileUpdateRequest $request, User $user): JsonResponse
     {
         try{
+            $data = [];
             $profile_picture = $request->file('profilePicture');
             if($profile_picture){
                 $user_directory_path = '/users-images/' . $user->uuid;
 
+                $image_extension = $profile_picture->extension();
+
                 // TODO Make it work for the different image types
-                Storage::put($user_directory_path . '/' . ImageTypeEnum::USER_PROFILE . '.png', file_get_contents($profile_picture));
+
                 $user->images()->where('type', ImageTypeEnum::USER_PROFILE)->delete();
-                Image::Create(['parentable_type' =>User::class, 'parentable_id' =>$user->id, 'type' =>ImageTypeEnum::USER_PROFILE]);
+
+                Storage::put($user_directory_path . '/' . ImageTypeEnum::USER_PROFILE . '.' . $image_extension, file_get_contents($profile_picture));
+                Image::Create(['parentable_type' =>User::class, 'parentable_id' =>$user->id, 'type' =>ImageTypeEnum::USER_PROFILE, 'extension' => $image_extension]);
+
+                $user->has_default_profile_picture = false;
+                $data['profilePicture'] = new ImageResource($user->getProfilePictureAttribute());
             }
             $user->update([
                 'description'       => $request->input('description'),
@@ -180,7 +188,7 @@ class UserController extends Controller
                 'connect_code'      => $request->input('connectCode'),
             ]);
 
-            return $this->sendResponse([], 'Profile updated with success');
+            return $this->sendResponse($data, 'Profile updated with success');
 
         }catch (\Error $error) {
             return $this->sendError('An error occurred while updating the profile E 018', [$error], 500);

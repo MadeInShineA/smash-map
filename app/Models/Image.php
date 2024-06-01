@@ -17,7 +17,8 @@ class Image extends Model
         'type',
         'parentable_type',
         'uuid',
-        'md5'
+        'md5',
+        'extension'
     ];
 
     /**
@@ -31,13 +32,15 @@ class Image extends Model
 
     public function getUrlAttribute(){
         if($this->parentable_type === Event::class){
-            $directory_path = '/storage/events-images/' . Str::slug($this->parentable->name) . '/' . $this->type . '.png';
+            $directory_path = '/storage/events-images/' . Str::slug($this->parentable->name) . '/' . $this->type . '.' . $this->extension;
         }elseif($this->parentable_type === Character::class){
-            $directory_path = '/storage/characters-images/' . $this->parentable->game->slug . '/' . Str::slug($this->parentable->name) . '.png';
+            $directory_path = '/storage/characters-images/' . $this->parentable->game->slug . '/' . Str::slug($this->parentable->name) . '.' . $this->extension;
         }elseif ($this->parentable_type === Country::class){
-            $directory_path = '/storage/countries-images/' . $this->parentable->code . '.png';
+            $directory_path = '/storage/countries-images/' . $this->parentable->code . '.' . $this->extension;
         }elseif ($this->parentable_type === User::class) {
-            $directory_path = '/storage/users-images/' . $this->parentable->uuid . '/' . $this->type . '.png';
+            $directory_path = '/storage/users-images/' . $this->parentable->uuid . '/' . $this->type . '.' . $this->extension;
+            $timestamp = '?time=' . $this->updated_at->timestamp;
+            return URL::to(urlencode($directory_path)) . $timestamp;
         }
         return URL::to(urlencode($directory_path));
     }

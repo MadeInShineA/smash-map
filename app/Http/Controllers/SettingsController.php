@@ -6,6 +6,7 @@ use App\Enums\ImageTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SettingsDistanceNotificationsRadiusUpdateRequest;
 use App\Http\Requests\SettingsUpdateRequest;
+use App\Http\Resources\Image\ImageResource;
 use App\Http\Resources\User\SettingsUserResource;
 use App\Models\Address;
 use App\Models\Country;
@@ -106,13 +107,17 @@ class SettingsController extends Controller
             $user->games()->sync($request->input('games'));
             $user->characters()->sync($request->input('characters'));
 
+            $data = [];
+
             if ($user->has_default_profile_picture && $old_username[0] != $user->username[0]) {
                 $profile_picture = file_get_contents('https://ui-avatars.com/api/?name=' . $user->username . '&rounded=true&length=1&background=random');
                 $user_directory_path = '/users-images/' . $user->uuid;
                 Storage::put($user_directory_path . '/' . ImageTypeEnum::USER_PROFILE . '.png', $profile_picture);
+
+                $data['profilePicture'] = new ImageResource($user->getProfilePictureAttribute());
             }
 
-            return $this->sendResponse([], 'Settings updated with success');
+            return $this->sendResponse($data, 'Settings updated with success');
 
         } catch (\Error $error) {
             return $this->sendError('An error occurred updating the settings E 012', [$error], 500);

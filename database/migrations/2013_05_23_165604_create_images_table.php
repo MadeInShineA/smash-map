@@ -17,6 +17,7 @@ return new class extends Migration
             $table->morphs('parentable');
             $table->string('type');
             $table->string('md5')->nullable();
+            $table->string('extension')->default('png');
         });
     }
 

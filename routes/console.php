@@ -52,7 +52,7 @@ Artisan::command('delete-events', function(){
             $image = $event->image;
             $image_directory_path = base_path(). '/storage/app/public/events-images/' . Str::slug($event->name);
             if($image && !$event->notifications()->exists()){
-                $image_path = $image_directory_path . '/' . $image->type .'.png';
+                $image_path = $image_directory_path . '/' . $image->type .'.' . $image->extension;
                 if(file_exists($image_path)){
                     unlink($image_path);
                 }
@@ -167,236 +167,240 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
     curl_close($ch);
     $events = $response?->data->tournaments->nodes;
 
-    foreach ($events as $event){
+    if(!$events){
+        var_dump('No events found');
+    }else{
+        foreach ($events as $event){
 
-        $start_gg_id = $event->id;
-        $start_gg_updated_at = new DateTime();
-        $start_gg_updated_at->setTimestamp($event->updatedAt);
-        $start_gg_updated_at = $start_gg_updated_at->format('Y-m-d H:i:s');
+            $start_gg_id = $event->id;
+            $start_gg_updated_at = new DateTime();
+            $start_gg_updated_at->setTimestamp($event->updatedAt);
+            $start_gg_updated_at = $start_gg_updated_at->format('Y-m-d H:i:s');
 
-        $game_event = null;
-        if ($event->events){
-            $single_events = array_values(array_filter($event->events, function($event) {
-                return $event->type === 1;
+            $game_event = null;
+            if ($event->events){
+                $single_events = array_values(array_filter($event->events, function($event) {
+                    return $event->type === 1;
                 }));
 
-            if ($single_events){
-                $game_event = array_reduce($single_events, function ($carry, $event){
-                    if ($event->numEntrants > $carry->numEntrants) {
-                        return $event;
-                    }
-                    return $carry;
-                }, $single_events[0]);
+                if ($single_events){
+                    $game_event = array_reduce($single_events, function ($carry, $event){
+                        if ($event->numEntrants > $carry->numEntrants) {
+                            return $event;
+                        }
+                        return $carry;
+                    }, $single_events[0]);
+                }
             }
-        }
 
-        if($game_event){
+            if($game_event){
 
-            $event_model_instance = Event::where('start_gg_id', $start_gg_id)->where('game_id', $game_id)->first();
-            $event_old_attendees = null;
-            if($event_model_instance){
-                $event_old_attendees = $event_model_instance->attendees;
-                $event_attendees = $game_event->numEntrants;
-                $event_model_instance->attendees = $event_attendees;
-                $event_model_instance->save();
+                $event_model_instance = Event::where('start_gg_id', $start_gg_id)->where('game_id', $game_id)->first();
+                $event_old_attendees = null;
+                if($event_model_instance){
+                    $event_old_attendees = $event_model_instance->attendees;
+                    $event_attendees = $game_event->numEntrants;
+                    $event_model_instance->attendees = $event_attendees;
+                    $event_model_instance->save();
 
-                $event_date = Carbon::parse($event_model_instance->start_date_time);
-                $days_until_event = $event_date->diffInDays(Carbon::now());
+                    $event_date = Carbon::parse($event_model_instance->start_date_time);
+                    $days_until_event = $event_date->diffInDays(Carbon::now());
 
-                foreach($event_model_instance->subscribed_users()->get() as $user){
-                    if($user->has_attendees_notifications){
-                        $user_attendees_notifications_thresholds = $user->attendees_notifications_thresholds;
-                        foreach ($user_attendees_notifications_thresholds as $user_attendees_notifications_threshold){
-                            if($event_old_attendees < $user_attendees_notifications_threshold && $event_attendees >= $user_attendees_notifications_threshold){
-                                var_dump('User: ' . $user->username . ' notified for event: ' . $event_model_instance->name . ' User old attendees: ' . $event_old_attendees . ' User new attendees: ' . $event_attendees . ' User attendees notifications thresholds: ' . $user_attendees_notifications_threshold);
-                                $message = 'The Event: <a href="' . $event_model_instance->link  .'"target="blank">' . $event_model_instance->name . '</a> has reached ' . $event_attendees . ' attendees!';
-                                $image = $event_model_instance->image?->url;
+                    foreach($event_model_instance->subscribed_users()->get() as $user){
+                        if($user->has_attendees_notifications){
+                            $user_attendees_notifications_thresholds = $user->attendees_notifications_thresholds;
+                            foreach ($user_attendees_notifications_thresholds as $user_attendees_notifications_threshold){
+                                if($event_old_attendees < $user_attendees_notifications_threshold && $event_attendees >= $user_attendees_notifications_threshold){
+                                    var_dump('User: ' . $user->username . ' notified for event: ' . $event_model_instance->name . ' User old attendees: ' . $event_old_attendees . ' User new attendees: ' . $event_attendees . ' User attendees notifications thresholds: ' . $user_attendees_notifications_threshold);
+                                    $message = 'The Event: <a href="' . $event_model_instance->link  .'"target="blank">' . $event_model_instance->name . '</a> has reached ' . $event_attendees . ' attendees!';
+                                    $image = $event_model_instance->image?->url;
 
-                                if(!$image){
-                                    $image = URL::to('/storage/map-icons/' . $event_model_instance->game->name . '.png');
+                                    if(!$image){
+                                        $image = URL::to('/storage/map-icons/' . $event_model_instance->game->name . '.png');
+                                    }
+                                    $notification = Notification::create(['event_id' => $event_model_instance->id, 'game_id' => $event_model_instance->game_id, 'user_id' => $user->id, 'message' => $message, 'type' => NotificationTypeEnum::ATTENDEES, 'image_url' => $image]);
+                                    broadcast(new NotificationEvent($notification, $user));
+                                    break;
                                 }
-                                $notification = Notification::create(['event_id' => $event_model_instance->id, 'game_id' => $event_model_instance->game_id, 'user_id' => $user->id, 'message' => $message, 'type' => NotificationTypeEnum::ATTENDEES, 'image_url' => $image]);
-                                broadcast(new NotificationEvent($notification, $user));
-                                break;
                             }
                         }
-                    }
 
 
-                    if ($user->has_time_notifications){
+                        if ($user->has_time_notifications){
 
-                        $user_time_notifications_thresholds = $user->time_notifications_thresholds;
+                            $user_time_notifications_thresholds = $user->time_notifications_thresholds;
 
-                        $last_notification = $user->notifications()->where('event_id', $event_model_instance->id)->where('type', NotificationTypeEnum::TIME)->orderBy('created_at', 'desc')->first();
-                        foreach ($user_time_notifications_thresholds as $user_time_notifications_threshold){
-                            $send_notification = false;
-                            if($last_notification){
-                                $last_notification_date = Carbon::parse($last_notification->created_at);
-                                $days_between_last_notification_data_and_event_date = $last_notification_date->diffInDays($event_date);
-                                if($days_between_last_notification_data_and_event_date < $user_time_notifications_threshold && $days_until_event >= $user_time_notifications_threshold){
+                            $last_notification = $user->notifications()->where('event_id', $event_model_instance->id)->where('type', NotificationTypeEnum::TIME)->orderBy('created_at', 'desc')->first();
+                            foreach ($user_time_notifications_thresholds as $user_time_notifications_threshold){
+                                $send_notification = false;
+                                if($last_notification){
+                                    $last_notification_date = Carbon::parse($last_notification->created_at);
+                                    $days_between_last_notification_data_and_event_date = $last_notification_date->diffInDays($event_date);
+                                    if($days_between_last_notification_data_and_event_date < $user_time_notifications_threshold && $days_until_event >= $user_time_notifications_threshold){
+                                        $send_notification = true;
+                                    }
+                                }elseif($days_until_event <= $user_time_notifications_threshold){
                                     $send_notification = true;
                                 }
-                            }elseif($days_until_event <= $user_time_notifications_threshold){
-                                $send_notification = true;
-                            }
 
-                            if($send_notification){
-                                var_dump('User: ' . $user->username . ' notified for event: ' . $event_model_instance->name . ' User days until event: ' . $days_until_event . ' User time notifications thresholds: ' . $user_time_notifications_threshold);
+                                if($send_notification){
+                                    var_dump('User: ' . $user->username . ' notified for event: ' . $event_model_instance->name . ' User days until event: ' . $days_until_event . ' User time notifications thresholds: ' . $user_time_notifications_threshold);
 
-                                $message = null;
-                                if($days_until_event === 0) {
-                                    $message = 'The Event: <a href="' . $event_model_instance->link . '"target="blank">' . $event_model_instance->name . '</a> is happening today!';
-                                }elseif ($days_until_event === 1){
-                                    $message = 'The Event: <a href="' . $event_model_instance->link  .'"target="blank">' . $event_model_instance->name . '</a> is happening in ' . $days_until_event . ' day!';
-                                }else{
-                                    $message = 'The Event: <a href="' . $event_model_instance->link  .'"target="blank">' . $event_model_instance->name . '</a> is happening in ' . $days_until_event . ' days!';
+                                    $message = null;
+                                    if($days_until_event === 0) {
+                                        $message = 'The Event: <a href="' . $event_model_instance->link . '"target="blank">' . $event_model_instance->name . '</a> is happening today!';
+                                    }elseif ($days_until_event === 1){
+                                        $message = 'The Event: <a href="' . $event_model_instance->link  .'"target="blank">' . $event_model_instance->name . '</a> is happening in ' . $days_until_event . ' day!';
+                                    }else{
+                                        $message = 'The Event: <a href="' . $event_model_instance->link  .'"target="blank">' . $event_model_instance->name . '</a> is happening in ' . $days_until_event . ' days!';
+                                    }
+
+                                    $image = $event_model_instance->image?->url;
+
+                                    if(!$image){
+                                        $image = URL::to('/storage/map-icons/' . $event_model_instance->game->name . '.png');
+                                    }
+
+                                    $notification = Notification::create(['event_id' => $event_model_instance->id, 'game_id' => $event_model_instance->game_id, 'user_id' => $user->id, 'message' => $message, 'type' => NotificationTypeEnum::TIME, 'image_url' => $image]);
+                                    broadcast(new NotificationEvent($notification, $user));
+                                    break;
                                 }
-
-                                $image = $event_model_instance->image?->url;
-
-                                if(!$image){
-                                    $image = URL::to('/storage/map-icons/' . $event_model_instance->game->name . '.png');
-                                }
-
-                                $notification = Notification::create(['event_id' => $event_model_instance->id, 'game_id' => $event_model_instance->game_id, 'user_id' => $user->id, 'message' => $message, 'type' => NotificationTypeEnum::TIME, 'image_url' => $image]);
-                                broadcast(new NotificationEvent($notification, $user));
-                                break;
                             }
                         }
                     }
                 }
-            }
-            if(!$event_model_instance || $event_model_instance->start_gg_updated_at < $start_gg_updated_at){
-                $is_online = $game_event->isOnline;
-                $name = $event->name;
-                $timezone = $event->timezone;
-                if ($timezone){
-                    $timezone = Carbon::now(new DateTimeZone($timezone))->format('P');
-                }
-                if(!$timezone){
-                    $timezone = '+00:00';
-                }
-
-                $start_date = new DateTime();
-                $start_date->format('Y-m-d H:i:s');
-
-                $start_date->setTimestamp($game_event->startAt);
-
-                $end_date = new DateTime();
-                $end_date->format('Y-m-d H:i:s');
-                $end_date->setTimestamp($event->endAt);
-
-                if ($start_date > $end_date){
-                    continue;
-                }
-
-                $attendees = $game_event->numEntrants;
-
-                $link = 'https://www.start.gg' . $event->url;
-
-
-                if($event_model_instance){
-                    $event_model_instance->update(['start_gg_updated_at' => $start_gg_updated_at, 'is_online' => $is_online, 'name' => $name, 'timezone' => $timezone, 'start_date_time' => $start_date, 'end_date_time' => $end_date, 'attendees' => $attendees, 'link' => $link]);
-                    var_dump('Event: ' . $event->name . ' updated');
-                }else{
-                    $event_model_instance = Event::create(['start_gg_id' => $start_gg_id, 'game_id'=> $game_id, 'start_gg_updated_at' => $start_gg_updated_at, 'is_online' => $is_online, 'name' => $name, 'timezone' => $timezone, 'start_date_time' => $start_date, 'end_date_time' => $end_date, 'attendees' => $attendees, 'link' => $link]);
-                    var_dump('Event: ' . $event->name . ' created');
-                }
-                if(!$event_model_instance->is_online){
-                    $latitude = $event->lat;
-                    $latitude = round($latitude, 7);
-
-                    $longitude = $event->lng;
-                    $longitude = round($longitude, 7);
-
-                    $address_name = $event->venueAddress;
-                    $country_code = $event->countryCode;
-
-                    $country = Country::where('code',$country_code)->first();
-
-                    # Handle the Oceania case
-                    if(!$country){
-                        var_dump('Country not found : ' . $country_code . ' for event: ' . $event->name .' with start gg id: ' . $start_gg_id);
-                        Log::error('Country not found : ' . $country_code . ' for event: ' . $event->name .' with start gg id: ' . $start_gg_id);
-                        die();
+                if(!$event_model_instance || $event_model_instance->start_gg_updated_at < $start_gg_updated_at){
+                    $is_online = $game_event->isOnline;
+                    $name = $event->name;
+                    $timezone = $event->timezone;
+                    if ($timezone){
+                        $timezone = Carbon::now(new DateTimeZone($timezone))->format('P');
+                    }
+                    if(!$timezone){
+                        $timezone = '+00:00';
                     }
 
-                    $address = $event_model_instance->address;
+                    $start_date = new DateTime();
+                    $start_date->format('Y-m-d H:i:s');
 
-                    if(!$address){
+                    $start_date->setTimestamp($game_event->startAt);
 
-                        //FIXME Doesn't work if we add the latitude and longitude => php float vs SQL float ?
-                        $address = Address::firstOrCreate(['latitude' => $latitude, 'longitude' => $longitude],['name'=> $address_name, 'country_id' => $country?->id]);
-                        $event_model_instance->address_id = $address->id;
-                        $event_model_instance->save();
+                    $end_date = new DateTime();
+                    $end_date->format('Y-m-d H:i:s');
+                    $end_date->setTimestamp($event->endAt);
+
+                    if ($start_date > $end_date){
+                        continue;
                     }
-                }
 
-                $event_directory_path = '/events-images/' . Str::slug($event->name);
+                    $attendees = $game_event->numEntrants;
+
+                    $link = 'https://www.start.gg' . $event->url;
+
+
+                    if($event_model_instance){
+                        $event_model_instance->update(['start_gg_updated_at' => $start_gg_updated_at, 'is_online' => $is_online, 'name' => $name, 'timezone' => $timezone, 'start_date_time' => $start_date, 'end_date_time' => $end_date, 'attendees' => $attendees, 'link' => $link]);
+                        var_dump('Event: ' . $event->name . ' updated');
+                    }else{
+                        $event_model_instance = Event::create(['start_gg_id' => $start_gg_id, 'game_id'=> $game_id, 'start_gg_updated_at' => $start_gg_updated_at, 'is_online' => $is_online, 'name' => $name, 'timezone' => $timezone, 'start_date_time' => $start_date, 'end_date_time' => $end_date, 'attendees' => $attendees, 'link' => $link]);
+                        var_dump('Event: ' . $event->name . ' created');
+                    }
+                    if(!$event_model_instance->is_online){
+                        $latitude = $event->lat;
+                        $latitude = round($latitude, 7);
+
+                        $longitude = $event->lng;
+                        $longitude = round($longitude, 7);
+
+                        $address_name = $event->venueAddress;
+                        $country_code = $event->countryCode;
+
+                        $country = Country::where('code',$country_code)->first();
+
+                        # Handle the Oceania case
+                        if(!$country){
+                            var_dump('Country not found : ' . $country_code . ' for event: ' . $event->name .' with start gg id: ' . $start_gg_id);
+                            Log::error('Country not found : ' . $country_code . ' for event: ' . $event->name .' with start gg id: ' . $start_gg_id);
+                            die();
+                        }
+
+                        $address = $event_model_instance->address;
+
+                        if(!$address){
+
+                            //FIXME Doesn't work if we add the latitude and longitude => php float vs SQL float ?
+                            $address = Address::firstOrCreate(['latitude' => $latitude, 'longitude' => $longitude],['name'=> $address_name, 'country_id' => $country?->id]);
+                            $event_model_instance->address_id = $address->id;
+                            $event_model_instance->save();
+                        }
+                    }
+
+                    $event_directory_path = '/events-images/' . Str::slug($event->name);
 
 //                $event_db_md5s = $event_model_instance->images->pluck('md5')->toArray();
 
-                #TODO Delete the unused images (inside event_db_md5s but not in event_md5s)
+                    #TODO Delete the unused images (inside event_db_md5s but not in event_md5s)
 
 //            $event_md5s = [];
 
 
-                $images = $event->images;
+                    $images = $event->images;
 
-                $image = null;
-                foreach ($images as $event_image) {
-                    if($event_image->type === 'profile'){
-                        $image = $event_image;
-                        break;
-                    }elseif($event_image->type === 'banner'){
-                        $image = $event_image;
-                    }
-                }
-
-                if($image){
-                    $image_type = $image->type == 'profile'? ImageTypeEnum::EVENT_PROFILE : ImageTypeEnum::EVENT_BANNER;
-
-                    $image_file = file_get_contents($image->url);
-                    if (!$image_file){
-                        var_dump("Event" . $event->name . " : Image ". $image->url . " couldn't be retrieved");
-                        Log::error("Event" . $event->name . " : Image ". $image->url . " couldn't be retrieved");
-                        die();
-                    }else{
-                        $image_md5 = md5($image_file);
-                        $event_model_instance_old_image = $event_model_instance->image;
-                        if($event_model_instance_old_image && $event_model_instance_old_image->md5 === $image_md5){
-                            continue;
+                    $image = null;
+                    foreach ($images as $event_image) {
+                        if($event_image->type === 'profile'){
+                            $image = $event_image;
+                            break;
+                        }elseif($event_image->type === 'banner'){
+                            $image = $event_image;
                         }
-                        $isImageStored = Storage::put($event_directory_path . '/' . $image_type . '.png', $image_file);
-                        if ($isImageStored){
-                            Image::Create(['parentable_type' => Event::class, 'parentable_id' => $event_model_instance->id, 'type' => $image_type,'md5' => $image_md5]);
-                            var_dump($image_type .' image for:' . $event->name . ' created');
-                        }else{
-                            var_dump("Image ". $image->url . " couldn't be stored stored");
-                            Log::error("Image ". $image->url . " couldn't be stored stored");
+                    }
+
+                    if($image){
+                        $image_type = $image->type == 'profile'? ImageTypeEnum::EVENT_PROFILE : ImageTypeEnum::EVENT_BANNER;
+
+                        $image_file = file_get_contents($image->url);
+                        if (!$image_file){
+                            var_dump("Event" . $event->name . " : Image ". $image->url . " couldn't be retrieved");
+                            Log::error("Event" . $event->name . " : Image ". $image->url . " couldn't be retrieved");
                             die();
+                        }else{
+                            $image_md5 = md5($image_file);
+                            $event_model_instance_old_image = $event_model_instance->image;
+                            if($event_model_instance_old_image && $event_model_instance_old_image->md5 === $image_md5){
+                                continue;
+                            }
+                            $isImageStored = Storage::put($event_directory_path . '/' . $image_type . '.png', $image_file);
+                            if ($isImageStored){
+                                Image::Create(['parentable_type' => Event::class, 'parentable_id' => $event_model_instance->id, 'type' => $image_type,'md5' => $image_md5, 'extension' => 'png']);
+                                var_dump($image_type .' image for:' . $event->name . ' created');
+                            }else{
+                                var_dump("Image ". $image->url . " couldn't be stored stored");
+                                Log::error("Image ". $image->url . " couldn't be stored stored");
+                                die();
+                            }
                         }
                     }
-                }
 
-                if($event_model_instance->wasRecentlyCreated && !$event_model_instance->is_online){
-                    foreach (User::where('has_distance_notifications', true)->get() as $user){
-                        if($user->games->contains($event_model_instance->game_id)){
-                            $distance_notifications_radius = $user->distance_notifications_radius;
-                            $distance = $address->distanceToKM($user->address);
+                    if($event_model_instance->wasRecentlyCreated && !$event_model_instance->is_online){
+                        foreach (User::where('has_distance_notifications', true)->get() as $user){
+                            if($user->games->contains($event_model_instance->game_id)){
+                                $distance_notifications_radius = $user->distance_notifications_radius;
+                                $distance = $address->distanceToKM($user->address);
 
-                            if($distance <= $distance_notifications_radius){
-                                var_dump('User: ' . $user->username . ' notified for event: ' . $event_model_instance->name . ' User to event distance: ' . round($distance) . ' User distance notifications radius: ' . $distance_notifications_radius);
-                                $message = 'The Event: <a href="' . $event_model_instance->link  .'"target="blank">' . $event_model_instance->name . '</a> is happening near you, it\'s only ' . round($distance) . ' kilometers away!';
+                                if($distance <= $distance_notifications_radius){
+                                    var_dump('User: ' . $user->username . ' notified for event: ' . $event_model_instance->name . ' User to event distance: ' . round($distance) . ' User distance notifications radius: ' . $distance_notifications_radius);
+                                    $message = 'The Event: <a href="' . $event_model_instance->link  .'"target="blank">' . $event_model_instance->name . '</a> is happening near you, it\'s only ' . round($distance) . ' kilometers away!';
 
-                                // Load the image relationship, it's not available it the event was recently created
-                                $event_model_instance->load('image');
-                                $image = $event_model_instance->image?->url;
-                                if(!$image){
-                                    $image = URL::to('/storage/map-icons/' . $event_model_instance->game->name . '.png');
+                                    // Load the image relationship, it's not available it the event was recently created
+                                    $event_model_instance->load('image');
+                                    $image = $event_model_instance->image?->url;
+                                    if(!$image){
+                                        $image = URL::to('/storage/map-icons/' . $event_model_instance->game->name . '.png');
+                                    }
+                                    $notification = Notification::create(['event_id' => $event_model_instance->id, 'game_id' => $event_model_instance->game_id, 'user_id' => $user->id, 'message' => $message, 'type' => NotificationTypeEnum::DISTANCE, 'image_url' => $image]);
+                                    broadcast(new NotificationEvent($notification, $user));
                                 }
-                                $notification = Notification::create(['event_id' => $event_model_instance->id, 'game_id' => $event_model_instance->game_id, 'user_id' => $user->id, 'message' => $message, 'type' => NotificationTypeEnum::DISTANCE, 'image_url' => $image]);
-                                broadcast(new NotificationEvent($notification, $user));
                             }
                         }
                     }
@@ -450,7 +454,7 @@ Artisan::command('import-characters-images',function(){
     $characters = Character::all();
 
     foreach ($characters as $character){
-        Image::Create(['parentable_type' =>Character::class, 'parentable_id' =>$character->id, 'type' => ImageTypeEnum::ICON]);
+        Image::Create(['parentable_type' =>Character::class, 'parentable_id' =>$character->id, 'type' => ImageTypeEnum::ICON, 'extension' => 'png']);
         var_dump('Image for: ' . $character->name . ' created');
     }
 });
@@ -469,7 +473,7 @@ Artisan::command('import-countries-images', function (){
     $countries = Country::where('has_image', true)->get();
 
     foreach ($countries as $country){
-        Image::Create(['parentable_type' =>Country::class, 'parentable_id' =>$country->id, 'type' => ImageTypeEnum::ICON]);
+        Image::Create(['parentable_type' =>Country::class, 'parentable_id' =>$country->id, 'type' => ImageTypeEnum::ICON, 'extension' => 'png']);
         var_dump('Image for: ' . $country->name . ' created');
     }
 
