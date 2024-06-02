@@ -4,7 +4,10 @@ import {onMounted, ref, watch} from "vue";
     import Chart from 'primevue/chart';
 
 const props = defineProps({
-    darkMode: Boolean
+    darkMode: {
+        type: Boolean,
+        required: true
+    }
 })
 
 

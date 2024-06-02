@@ -252,6 +252,26 @@ export const useUserStore = defineStore('user', function (){
         })
     }
 
+    function getProfileInformationByUsername(username, darkMode){
+        return axios.get('/api/users/user-profile?username=' + username ).then((response) =>{
+            return response.data
+        }).catch((error) => {
+            const alertBackground = darkMode ? '#1C1B22' : '#FFFFFF'
+            const alertColor = darkMode ? '#FFFFFF' : '#1C1B22'
+            Swal.fire({
+                title: 'Error',
+                text: error.response.data.message,
+                icon: 'error',
+                background: alertBackground,
+                color: alertColor,
+                timer: 2000,
+                showConfirmButton: false
+            })
+            if(error.response.status === 404){
+                router.push('/')
+            }
+        })
+    }
     async function updateProfileInformation(profileInformation){
         console.log(profileInformation)
 
@@ -339,6 +359,7 @@ export const useUserStore = defineStore('user', function (){
         updateDistanceNotificationsRadius,
         getNotifications,
         getProfileInformation,
+        getProfileInformationByUsername,
         updateProfileInformation,
         checkAuthentication
     }

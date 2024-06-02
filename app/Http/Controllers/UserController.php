@@ -164,7 +164,27 @@ class UserController extends Controller
 
     public function get_profile(Request $request, User $user): JsonResponse
     {
-        return $this->sendResponse(new ProfileUserResource($user), 'User retrieved with success');
+        try{
+            return $this->sendResponse(new ProfileUserResource($user), 'User retrieved with success');
+        }catch (\Error $error) {
+            return $this->sendError('An error occurred while retrieving the profile E 020', [$error], 500);
+        }
+    }
+
+    public function get_user_profile(Request $request): JsonResponse
+    {
+        try{
+            $username = $request->input('username');
+            $user = User::where('username', $username)->first();
+
+            if(!$user){
+                return $this->sendError('Profile not found', [], 404);
+            }
+            return $this->sendResponse(new ProfileUserResource($user), 'Profile retrieved with success');
+        }catch (\Error $error) {
+            return $this->sendError('An error occurred while retrieving the profile E 019', [$error], 500);
+        }
+
     }
 
     public function update_profile(ProfileUpdateRequest $request, User $user): JsonResponse

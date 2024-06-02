@@ -20,7 +20,10 @@ filtersStore.fetchAddressesWithFilters()
 
 
 const props = defineProps({
-    sideBarVisible: Boolean
+    sideBarVisible: {
+        type :Boolean,
+        required: true
+    }
 })
 
 const emit = defineEmits(['switchSideBarVisible'])

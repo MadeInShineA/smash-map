@@ -13,7 +13,10 @@ import Swal from "sweetalert2";
 const userStore = useUserStore()
 
 const props = defineProps({
-    darkMode: Boolean
+    darkMode: {
+        type: Boolean,
+        required: true
+    }
 })
 
 const profileInformation = ref(null)
@@ -21,7 +24,6 @@ userStore.checkAuthentication(props.darkMode).then(response => {
     if (response) {
         userStore.getProfileInformation(userStore.user.data.id, props.darkMode).then((response) => {
             profileInformation.value = response.data
-            console.log(profileInformation.value)
         })
     }
 })
@@ -41,7 +43,6 @@ const handleAvatarClick = () => {
 const handleFileChange = (event) => {
     profileInformationValidationError.value.profilePicture = []
     const file = event.target.files[0];
-    profileInformation.value.profilePicture = file;
 
     if (file) {
         if(file.size > 2048 * 1024){
@@ -54,6 +55,7 @@ const handleFileChange = (event) => {
             reader.onload = (e) => {
                 document.getElementById('profile-picture').src = e.target.result;
             };
+            profileInformation.value.profilePicture = file;
             reader.readAsDataURL(file);
         }
 

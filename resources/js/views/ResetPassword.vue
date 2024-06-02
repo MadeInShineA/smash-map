@@ -9,8 +9,14 @@ import Swal from "sweetalert2";
 import FloatLabel from "primevue/floatlabel";
 
 const props = defineProps({
-    token: String,
-    darkMode: Boolean
+    token: {
+        type: String,
+        required: true
+    },
+    darkMode: {
+        type: Boolean,
+        required: true
+    }
 
 })
 

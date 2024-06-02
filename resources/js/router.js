@@ -12,6 +12,7 @@ import Settings from "./views/Settings.vue";
 import ResetPassword from "./views/ResetPassword.vue";
 import {useUserStore} from "./stores/UserStore.js";
 import Profile from "./views/Profile.vue";
+import UserProfile from "@/views/UserProfile.vue";
 
 const routes = [
     {
@@ -52,16 +53,6 @@ const routes = [
                 path: 'settings',
                 component: Settings,
                 name:'settings',
-                beforeEnter: (to, from, next) => {
-
-                    // TODO Make the user connected == session user check here or inside Settings.vue ?
-                    const userStore = useUserStore();
-                    if (userStore.user.data == null){
-                        return next('/')
-                    }
-                    return next()
-                }
-
             },
             {
                 path: 'notifications',
@@ -72,6 +63,12 @@ const routes = [
                 path: 'profile',
                 component: Profile,
                 name:'profile'
+            },
+            {
+                path:'profile/:username',
+                component: UserProfile,
+                name:'user-profile',
+                props: true
             },
             {
                 path: 'reset-password/:token',

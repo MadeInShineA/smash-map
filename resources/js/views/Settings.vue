@@ -14,7 +14,10 @@ import Slider from "primevue/slider";
 import Swal from "sweetalert2";
 
 const props = defineProps({
-    darkMode: Boolean
+    darkMode: {
+        type: Boolean,
+        required: true
+    }
 })
 
 const userStore = useUserStore()

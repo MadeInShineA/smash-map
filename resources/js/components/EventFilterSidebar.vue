@@ -17,7 +17,10 @@ filtersStore.fetchCountries({params: {continents: filtersStore.selectedEventCont
 filtersStore.fetchEventsWithFilters()
 
 const props = defineProps({
-    sideBarVisible:Boolean
+    sideBarVisible: {
+        type: Boolean,
+        required: true
+    }
 })
 
 const emit = defineEmits(['switchSideBarVisible'])

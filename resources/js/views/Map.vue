@@ -197,9 +197,9 @@ onMounted(()=>{
                                 <div class = user-image-container>
                                     <img class="user-image" :src="user.profilePicture.url"  alt="User Image">
                                 </div>
-                                <div class="user-username">
+                                <router-link class="user-username" :to="{name: 'user-profile', params: {username: user.username}}">
                                     {{ user.username }}
-                                </div>
+                                </router-link>
                                 <div v-if="user.isModder" class="user-is-modder-container">
                                     <Tag value="Modder" rounded :style="{background: 'aqua', marginRight: '5px'}"></Tag>
                                 </div>

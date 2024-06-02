@@ -60,6 +60,17 @@ const menuItems = ref([
             },
         ]
     },
+    {
+        label: 'About',
+        icon: 'pi pi-fw pi-question-circle',
+        route: '/about'
+    },
+    {
+        label: 'Donate',
+        icon: 'pi pi-fw pi-heart',
+        url: 'https://ko-fi.com/madeinshinea',
+        target: '_blank'
+    }
 ]);
 
 

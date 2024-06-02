@@ -25,7 +25,10 @@ const userStore = useUserStore()
 const optionsStore = useOptionsStore()
 
 const props = defineProps({
-    darkMode: Boolean
+    darkMode: {
+        type: Boolean,
+        required: true
+    }
 })
 
 

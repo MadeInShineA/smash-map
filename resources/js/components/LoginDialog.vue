@@ -13,8 +13,14 @@ import FloatLabel from "primevue/floatlabel";
 const userStore = useUserStore()
 
 const props = defineProps({
-    darkMode: Boolean,
-    showLoginModal:Boolean
+    darkMode: {
+        type: Boolean,
+        required: true
+    },
+    showLoginModal:{
+        type: Boolean,
+        required: true
+    }
 })
 
 const emit = defineEmits(['switchShowLoginModal', 'setUser'])

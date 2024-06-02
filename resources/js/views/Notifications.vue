@@ -9,7 +9,10 @@ import LoaderComponent from "@/components/LoaderComponent.vue";
 const userStore = useUserStore()
 
 const props = defineProps({
-    darkMode: Boolean
+    darkMode: {
+        type: Boolean,
+        required: true
+    }
 })
 
 const lastNotificationId = ref(null)
