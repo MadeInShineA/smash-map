@@ -281,6 +281,7 @@ async function saveProfileInformation() {
 #description-text-area {
     resize: none;
     width: 100%;
+    text-align: center;
 }
 
 .errors-enter-active,

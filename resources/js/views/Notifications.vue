@@ -107,7 +107,7 @@ onMounted(()=>{
 .notification-message :deep(a){
     color: inherit;
     text-decoration: none;
-    font-weight: 600
+    font-weight: bold;
 }
 
 .notification-image-container{

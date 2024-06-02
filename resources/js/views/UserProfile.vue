@@ -29,10 +29,10 @@ userStore.getProfileInformationByUsername(props.username, props.darkMode).then((
 
 <template>
     <div v-if="profileInformation" id="profile-information-container">
-        <div id="profile-picture-container">
+        <div>
             <img :src="userStore.user.data.profilePicture.url" id="profile-picture" alt="Profile picture image"/>
         </div>
-        <div>
+        <div class="profile-element">
             {{ profileInformation.username }}
         </div>
         <div v-if="profileInformation.isModder" class="tag">
@@ -49,21 +49,21 @@ userStore.getProfileInformationByUsername(props.username, props.darkMode).then((
             </div>
         </template>
 
-        <div v-if="profileInformation.description">
+        <div v-if="profileInformation.description" class="profile-element" id="profile-description">
             {{ profileInformation.description }}
         </div>
 
-        <div v-if="profileInformation.discord">
+        <div v-if="profileInformation.discord" class="profile-element">
             <i class="pi pi-discord"></i>
             {{ profileInformation.discord }}
         </div>
 
-        <div v-if="profileInformation.x">
+        <div v-if="profileInformation.x" class="profile-element">
             <i class="pi pi-twitter"></i>
            {{ profileInformation.x}}
         </div>
 
-        <div v-if="profileInformation.connectCode">
+        <div v-if="profileInformation.connectCode" class="profile-element">
             <i class="pi pi-globe"></i>
            {{ profileInformation.connectCode}}
         </div>
@@ -79,6 +79,7 @@ userStore.getProfileInformationByUsername(props.username, props.darkMode).then((
     justify-content: center;
     align-items: center;
     margin: 20px 0;
+    text-align: center;
 }
 
 #profile-picture {
@@ -86,7 +87,31 @@ userStore.getProfileInformationByUsername(props.username, props.darkMode).then((
     height: 80px;
     border-radius: 50%;
     object-fit: cover;
+}
 
+.tag {
+    margin: 10px;
+}
+
+.characters-container {
+    width: 300px;
+    text-align: center;
+}
+
+.character-image {
+    margin: 5px;
+}
+
+.profile-element {
+    margin: 10px;
+    width: 300px;
+    word-break: break-all;
+
+}
+
+#profile-description {
+    white-space: break-spaces;
+    word-break: break-word;
 }
 
 </style>

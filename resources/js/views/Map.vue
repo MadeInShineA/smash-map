@@ -194,11 +194,14 @@ onMounted(()=>{
                         <template v-if="address.users.length > 0">
                             <h3 class="info-window-title">Users</h3>
                             <template v-for="user in address.users">
-                                <div class = user-image-container>
-                                    <img class="user-image" :src="user.profilePicture.url"  alt="User Image">
-                                </div>
-                                <router-link class="user-username" :to="{name: 'user-profile', params: {username: user.username}}">
-                                    {{ user.username }}
+                                <router-link class="user-profile-link" :to="{name: 'user-profile', params: {username: user.username}}" target="_blank">
+
+                                    <div class = user-image-container>
+                                        <img class="user-image" :src="user.profilePicture.url"  alt="User Image">
+                                    </div>
+                                    <div class="user-username">
+                                        {{ user.username }}
+                                    </div>
                                 </router-link>
                                 <div v-if="user.isModder" class="user-is-modder-container">
                                     <Tag value="Modder" rounded :style="{background: 'aqua', marginRight: '5px'}"></Tag>
@@ -420,6 +423,10 @@ onMounted(()=>{
     margin-bottom: 10px;
 }
 
+.user-profile-link{
+    text-decoration: none;
+}
+
 .user-image{
     width: 80px;
     height: 80px;
@@ -428,7 +435,8 @@ onMounted(()=>{
 }
 
 .user-username{
-    margin-top: 5px
+    margin-top: 5px;
+    font-weight: bold;
 }
 
 .user-is-modder-container{

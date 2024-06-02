@@ -53,6 +53,7 @@ class AddressController extends Controller
                                 $query->whereRaw("UPPER(name) LIKE ?", ['%' . strtoupper($name) . '%']);
                             })->orWhereHas('users', function ($query) use ($name){
                                 $query->whereRaw("UPPER(username) LIKE ?", ['%' . strtoupper($name) . '%']);
+                                $query->orWhereRaw("UPPER(connect_code) LIKE ?", ['%' . strtoupper($name) . '%']);
                             });
                         });
                 }

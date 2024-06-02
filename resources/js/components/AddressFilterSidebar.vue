@@ -84,7 +84,7 @@ onMounted(()=>{
                 </MultiSelect>
             </div>
             <div class="event-filter">
-                <InputText v-model="filtersStore.selectedAddressName" placeholder="Name"></InputText>
+                <InputText v-model="filtersStore.selectedAddressName" placeholder="Name | Connect code"></InputText>
             </div>
         </div>
     </Sidebar>

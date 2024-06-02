@@ -171,7 +171,7 @@ onMounted(function(){
         <div  v-if="characterOptions">
             <div class="modal-input-container">
                 <FloatLabel>
-                    <InputText id="register-username" class="modal-input" v-model="registerUser.username" required  autofocus @focus="registerValidationErrors.username = []" />
+                    <InputText id="register-username" class="modal-input" v-model="registerUser.username" required  autofocus @focus="registerValidationErrors.username = []" maxlength="20" />
                     <label for="register-username">Username</label>
                 </FloatLabel>
             </div>

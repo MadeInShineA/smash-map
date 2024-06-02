@@ -134,12 +134,12 @@ const profileItems = ref([{
         {
             label: 'Profile',
             icon: 'pi pi-fw pi-user',
-            route: 'profile'
+            route: '/profile'
         },
         {
             label: 'Settings',
             icon: 'pi pi-fw pi-cog',
-            route: 'settings'
+            route: '/settings'
         },
         {
             label: 'Log Out', icon: 'pi pi-sign-out', command: async function () {
@@ -397,6 +397,10 @@ main{
 
 .notification-icon{
     height:45px;
+}
+
+.pi-fw {
+    margin-right: 0.5rem
 }
 
 
