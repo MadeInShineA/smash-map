@@ -10,9 +10,9 @@ import DefaultLayout from "./layouts/Layout.vue";
 import Notifications from "./views/Notifications.vue";
 import Settings from "./views/Settings.vue";
 import ResetPassword from "./views/ResetPassword.vue";
-import {useUserStore} from "./stores/UserStore.js";
 import Profile from "./views/Profile.vue";
-import UserProfile from "@/views/UserProfile.vue";
+import UserProfile from "./views/UserProfile.vue";
+import About from "./views/About.vue";
 
 const routes = [
     {
@@ -43,6 +43,12 @@ const routes = [
                 path: 'create-event',
                 component: CreateEvent,
                 name:'create-event'
+            },
+            {
+                path: 'about',
+                component: About,
+                name:'about'
+
             },
             {
                 path: 'login',

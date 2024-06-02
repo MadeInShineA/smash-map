@@ -425,6 +425,7 @@ onMounted(()=>{
 
 .user-profile-link{
     text-decoration: none;
+    color: inherit;
 }
 
 .user-image{
