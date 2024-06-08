@@ -94,9 +94,61 @@ watch(() => props.darkMode, (newValue) => {
 
 <template>
     <template v-if="eventsStore.gamesStatisticsFetched && eventsStore.monthsStatisticsFetched">
-        <h1> Welcome to Smash Map !</h1>
-        <Chart ref="gamesStatisticsChart" type="doughnut" :data="eventsStore.gamesStatistics.data" id="events-games-chart" :options="doughnutPlotOptions" />
-        <Chart ref="monthsStatisticsChart" type="bar" :data="eventsStore.monthsStatistics.data" id="events-months-chart" :options="barPlotOptions" />
+        <div id="home-container">
+            <h1 id="home-title"> Welcome to Smash Map !</h1>
+            <h2>What is Smash Map?</h2>
+            <p>
+                Smash Map is an open source website that lists all the events happening in the competitive Super Smash Bros. scene.
+            </p>
+            <div>
+                Featuring the following games:
+                <ul>
+                    <li v-for="game in eventsStore.gamesStatistics.data.labels">
+                        {{ game }}
+                    </li>
+                </ul>
+            </div>
+            <p>
+                It also provides a platform for players to create their profile and share their information with the community.
+            </p>
+
+            <h2>How does Smash Map work?</h2>
+            <p>
+                Smash Map fetches the <a href="https://www.start.gg/" target="_blank">start.gg</a> data for the next 500 events in the different games.
+            </p>
+            <p>
+                Website users can then find events directly on the <router-link to="/map">map page</router-link> or on the <router-link to="/events">events page</router-link>.
+                <br>
+                They can also create an account to be displayed on the <router-link to="/map">map page</router-link>, follow events and receive notifications.
+            </p>
+
+            <h2> What are notifications? </h2>
+            <p>
+                There are 3 types of notifications:
+            </p>
+            <h3>Distance notifications</h3>
+            <p>
+                By accessing their setting page, users can set a distance radius from their location to receive notifications for events appearing on the site in that range.
+            </p>
+
+            <h3>Attendees notifications</h3>
+            <p>
+                Users can set different attendees thresholds to receive notifications when one of their followed events reaches that number of attendees.
+            </p>
+            <h3>Time notifications</h3>
+            <p>
+                Users can also set some time thresholds to receive notifications when one of their followed events is happening in less then a certain number of days.
+            </p>
+
+
+            <h2>Statistics</h2>
+
+
+            <Chart ref="gamesStatisticsChart" type="doughnut" :data="eventsStore.gamesStatistics.data" id="events-games-chart" :options="doughnutPlotOptions" />
+            <Chart ref="monthsStatisticsChart" type="bar" :data="eventsStore.monthsStatistics.data" id="events-months-chart" :options="barPlotOptions" />
+        </div>
+<!--        <Chart ref="gamesStatisticsChart" type="doughnut" :data="eventsStore.gamesStatistics.data" id="events-games-chart" :options="doughnutPlotOptions" />-->
+<!--        <Chart ref="monthsStatisticsChart" type="bar" :data="eventsStore.monthsStatistics.data" id="events-months-chart" :options="barPlotOptions" />-->
     </template>
     <template v-else>
         <LoaderComponent></LoaderComponent>
@@ -106,16 +158,36 @@ watch(() => props.darkMode, (newValue) => {
 
 <style scoped>
 
-#events-games-chart{
-    max-height: 60%;
+#home-container {
     display: flex;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
+    margin: 20px 20px;
+    text-align: center;
 }
 
-#events-months-chart{
-    max-height: 100%;
-    display: flex;
-    justify-content: center;
+#home-title {
+    margin-top: 0;
+    margin-bottom: 1rem
 }
+
+h2{
+   margin: 1rem 0;
+}
+
+h3{
+    margin: 1em 0;
+}
+
+p {
+    margin: 0.5rem 0;
+}
+
+a{
+    color: inherit;
+    text-decoration: none;
+}
+
 
 </style>

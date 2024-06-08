@@ -19,7 +19,7 @@
             </p>
             <p>
                 I have been working on the Smash Map since May 2023.
-                <br>Before that, I developed the formerly known Melee Map website as part of the Harvard CS50 web online course
+                <br>Before that, I developed the formerly known Melee Map website as part of the Harvard CS50 web online course.
             </p>
             <p>
                 I love computer science and learning new things, whatever the field. I'm always looking for new projects to work on and improve my skills!
@@ -79,11 +79,6 @@
     margin-top: 0;
     margin-bottom: 1rem
 }
-
-h1{
-    margin:0;
-}
-
 
 #about-image {
     width: 200px;
