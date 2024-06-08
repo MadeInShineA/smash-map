@@ -119,7 +119,8 @@ onMounted(()=>{
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    margin: 10px 0
+    row-gap: 20px;
+    margin: 20px
 }
 
 #event-container {

@@ -4,7 +4,7 @@
 
 <template>
     <div class="loader">
-        <img alt="loading-logo" src="../../images/logo-no-text-white-globe.gif" height="40" class="mr-2"/>
+        <img alt="loading-logo" src="/resources/images/logo-no-text-white-globe.gif" height="40" class="mr-2"/>
     </div>
 </template>
 

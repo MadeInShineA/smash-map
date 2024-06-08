@@ -192,7 +192,7 @@ onMounted(()=>{
     <header ref="header" id="header">
         <Menubar v-if="responsiveMenuDisplayed" id="responsive-menu" :model="menuItems">
             <template #start>
-                <router-link to="/"><img alt="logo" src="../../images/logo-no-text-no-bg.png" height="40" class="mr-2"/></router-link>
+                <router-link to="/"><img alt="logo" src="/resources/images/logo-no-text-no-bg.png" height="40" class="mr-2"/></router-link>
                 <template v-if="!userStore.user.data.id">
                     <Button @click="showLoginModal = true" icon="pi pi-user" text plain label="Login"/>
                     <Button @click="showRegisterModal = true" icon="pi pi-save" text plain label="Register"/>
@@ -238,7 +238,7 @@ onMounted(()=>{
         </Menubar>
         <Menubar v-else :model="menuItems">
             <template #start>
-                <router-link to="/"><img alt="logo" src="../../images/logo-no-text-no-bg.png" height="40" class="mr-2"/></router-link>
+                <router-link to="/"><img alt="logo" src="/resources/images/logo-no-text-no-bg.png" height="40" class="mr-2"/></router-link>
             </template>
             <template #item="{ item, props, hasSubmenu }">
                 <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
