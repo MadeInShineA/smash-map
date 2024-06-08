@@ -69,7 +69,7 @@ const menuItems = ref([
         label: 'Donate',
         icon: 'pi pi-fw pi-heart',
         url: 'https://ko-fi.com/madeinshinea',
-        target: '_blank'
+        target: '_blank',
     }
 ]);
 

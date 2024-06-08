@@ -59,13 +59,9 @@ const barPlotOptions = ref({
                 color: props.darkMode ? 'white' : 'black'
             }
         },
-        // title: {
-        //     color: props.darkMode ? 'FFFFFF' : '000000'
-        // }
     },
     plugins: {
         legend: {
-            // display: false
             display: true,
             labels: {
                 color: props.darkMode ? 'white' : 'black'
@@ -98,6 +94,7 @@ watch(() => props.darkMode, (newValue) => {
 
 <template>
     <template v-if="eventsStore.gamesStatisticsFetched && eventsStore.monthsStatisticsFetched">
+        <h1> Welcome to Smash Map !</h1>
         <Chart ref="gamesStatisticsChart" type="doughnut" :data="eventsStore.gamesStatistics.data" id="events-games-chart" :options="doughnutPlotOptions" />
         <Chart ref="monthsStatisticsChart" type="bar" :data="eventsStore.monthsStatistics.data" id="events-months-chart" :options="barPlotOptions" />
     </template>

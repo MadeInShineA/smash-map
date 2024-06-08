@@ -177,7 +177,6 @@ export const useUserStore = defineStore('user', function (){
             if(response.data.data.profilePicture){
                 console.log(response.data.data.profilePicture)
                 user.data.profilePicture = response.data.data.profilePicture
-                console.log(user.data.profilePicture)
             }
             user.data.settings.hasDistanceNotifications = settings.notifications.includes('hasDistanceNotifications')
             user.data.settings.distanceNotificationsRadius = settings.distanceNotificationsRadius
@@ -273,7 +272,6 @@ export const useUserStore = defineStore('user', function (){
         })
     }
     async function updateProfileInformation(profileInformation){
-        console.log(profileInformation)
 
         const header = {
             headers: {

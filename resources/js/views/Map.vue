@@ -194,7 +194,7 @@ onMounted(()=>{
                         <template v-if="address.users.length > 0">
                             <h3 class="info-window-title">Users</h3>
                             <template v-for="user in address.users">
-                                <router-link class="user-profile-link" :to="{name: 'user-profile', params: {username: user.username}}" target="_blank">
+                                <router-link class="user-profile-link" :to="{name: 'user-profile', params: {username: user.username}}">
 
                                     <div class = user-image-container>
                                         <img class="user-image" :src="user.profilePicture.url"  alt="User Image">
