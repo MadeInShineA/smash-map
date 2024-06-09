@@ -203,7 +203,6 @@ watch(() => props.darkMode, (newValue) => {
 #home-image {
     width: 200px;
     height: 200px;
-    border-radius: 50%;
 }
 
 h2{
