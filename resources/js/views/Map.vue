@@ -229,8 +229,8 @@ onMounted(()=>{
                                     <a :href="event.link" target="_blank"><i class="pi pi-external-link"/> {{ event.title }}</a>
                                 </div>
                                 <div class="event-game-attendees">
-                                    <Tag :value="event.game.name" rounded :style="{background: event.game.color, marginRight: '5px'}"></Tag>
-                                    <Chip :label="event.attendees || event.attendees === 0 ? event.attendees.toString() : 'Private'" icon="pi pi-users"></Chip>
+                                    <Tag :value="event.game.name" rounded :style="{background: event.game.color, marginRight: '1rem'}"></Tag>
+                                    <Chip :label="event.attendees || event.attendees === 0 ? event.attendees.toString() : 'Private'" icon="pi pi-users" :style="{marginRight: '1rem'}"></Chip>
                                     <Button
                                         v-if='userStore.user.data.id'
                                         class="event-bell-button"
@@ -503,6 +503,10 @@ onMounted(()=>{
     }
     .gm-style-iw:has(#circle-info-window){
         max-width: none !important;
+    }
+
+    .gm-style-iw{
+        max-width: 280px !important;
     }
 }
 

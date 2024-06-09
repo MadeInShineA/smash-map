@@ -72,8 +72,8 @@ onMounted(()=>{
                     </template>
                     <template #content>
                         <div class="event-game-attendees">
-                            <Tag :value="event.game.name" rounded :style="{background: event.game.color, marginRight: '5px'}"></Tag>
-                            <Chip :label="event.attendees || event.attendees === 0 ? event.attendees.toString() : 'Private'" icon="pi pi-users"></Chip>
+                            <Tag :value="event.game.name" rounded :style="{background: event.game.color, marginRight: '1rem'}"></Tag>
+                            <Chip :label="event.attendees || event.attendees === 0 ? event.attendees.toString() : 'Private'" icon="pi pi-users" :style="{marginRight: '1rem'}"></Chip>
                             <Button
                                 v-if='userStore.user.data.id'
                                 class="event-bell-button"
