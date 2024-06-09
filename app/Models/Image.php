@@ -40,8 +40,10 @@ class Image extends Model
         }elseif ($this->parentable_type === User::class) {
             $directory_path = '/storage/users-images/' . $this->parentable->uuid . '/' . $this->type . '.' . $this->extension;
             $timestamp = '?time=' . $this->updated_at->timestamp;
-            return URL::to(urlencode($directory_path)) . $timestamp;
+//            return URL::to(urlencode($directory_path)) . $timestamp;
+            return URL::to($directory_path) . $timestamp;
         }
-        return URL::to(urlencode($directory_path));
+//        return URL::to(urlencode($directory_path));
+        return URL::to($directory_path);
     }
 }
