@@ -38,6 +38,7 @@ Artisan::command('delete-addresses', function (){
         $user_count = $address->users->count();
 
         if ($event_count === 0 && $user_count === 0){
+            Log::info('Address: ' . $address->name . ' deleted');
             var_dump('Address: ' . $address->name . ' deleted');
             $address->delete();
         }
@@ -55,10 +56,12 @@ Artisan::command('delete-events', function(){
                 $image_directory_path = base_path(). '/storage/app/public/events-images/' . Str::slug($event->name);
                 File::deleteDirectory($image_directory_path);
                 $image->delete();
+                Log::info('Image for:' . $event->name . ' deleted');
                 var_dump('Image for:' . $event->name . ' deleted');
 
             }
             $event->delete();
+            Log::info('Event: ' . $event->name . ' deleted');
             var_dump('Event: ' . $event->name . ' deleted');
         }
     }
@@ -206,6 +209,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                             $user_attendees_notifications_thresholds = $user->attendees_notifications_thresholds;
                             foreach ($user_attendees_notifications_thresholds as $user_attendees_notifications_threshold){
                                 if($event_old_attendees < $user_attendees_notifications_threshold && $event_attendees >= $user_attendees_notifications_threshold){
+                                    Log::info('User: ' . $user->username . ' notified for event: ' . $event_model_instance->name . ' User old attendees: ' . $event_old_attendees . ' User new attendees: ' . $event_attendees . ' User attendees notifications thresholds: ' . $user_attendees_notifications_threshold);
                                     var_dump('User: ' . $user->username . ' notified for event: ' . $event_model_instance->name . ' User old attendees: ' . $event_old_attendees . ' User new attendees: ' . $event_attendees . ' User attendees notifications thresholds: ' . $user_attendees_notifications_threshold);
                                     $message = 'The Event: <a href="' . $event_model_instance->link  .'"target="blank">' . $event_model_instance->name . '</a> has reached ' . $event_attendees . ' attendees!';
                                     $image = $event_model_instance->image?->url;
@@ -239,6 +243,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                                 }
 
                                 if($send_notification){
+                                    Log::info('User: ' . $user->username . ' notified for event: ' . $event_model_instance->name . ' User days until event: ' . $days_until_event . ' User time notifications thresholds: ' . $user_time_notifications_threshold);
                                     var_dump('User: ' . $user->username . ' notified for event: ' . $event_model_instance->name . ' User days until event: ' . $days_until_event . ' User time notifications thresholds: ' . $user_time_notifications_threshold);
 
                                     $message = null;
@@ -295,9 +300,11 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
 
                     if($event_model_instance){
                         $event_model_instance->update(['start_gg_updated_at' => $start_gg_updated_at, 'is_online' => $is_online, 'name' => $name, 'timezone' => $timezone, 'start_date_time' => $start_date, 'end_date_time' => $end_date, 'attendees' => $attendees, 'link' => $link]);
+                        Log::info('Event: ' . $event->name . ' updated');
                         var_dump('Event: ' . $event->name . ' updated');
                     }else{
                         $event_model_instance = Event::create(['start_gg_id' => $start_gg_id, 'game_id'=> $game_id, 'start_gg_updated_at' => $start_gg_updated_at, 'is_online' => $is_online, 'name' => $name, 'timezone' => $timezone, 'start_date_time' => $start_date, 'end_date_time' => $end_date, 'attendees' => $attendees, 'link' => $link]);
+                        Log::info('Event: ' . $event->name . ' created');
                         var_dump('Event: ' . $event->name . ' created');
                     }
                     if(!$event_model_instance->is_online){
@@ -314,8 +321,8 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
 
                         # Handle the Oceania case
                         if(!$country){
-                            var_dump('Country not found : ' . $country_code . ' for event: ' . $event->name .' with start gg id: ' . $start_gg_id);
                             Log::error('Country not found : ' . $country_code . ' for event: ' . $event->name .' with start gg id: ' . $start_gg_id);
+                            var_dump('Country not found : ' . $country_code . ' for event: ' . $event->name .' with start gg id: ' . $start_gg_id);
                             die();
                         }
 
@@ -356,8 +363,8 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
 
                         $image_file = file_get_contents($image->url);
                         if (!$image_file){
-                            var_dump("Event" . $event->name . " : Image ". $image->url . " couldn't be retrieved");
                             Log::error("Event" . $event->name . " : Image ". $image->url . " couldn't be retrieved");
+                            var_dump("Event" . $event->name . " : Image ". $image->url . " couldn't be retrieved");
                             die();
                         }else{
                             $image_md5 = md5($image_file);
@@ -368,10 +375,11 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                             $isImageStored = Storage::put($event_directory_path . '/' . $image_type . '.png', $image_file);
                             if ($isImageStored){
                                 Image::Create(['parentable_type' => Event::class, 'parentable_id' => $event_model_instance->id, 'type' => $image_type,'md5' => $image_md5, 'extension' => 'png']);
+                                Log::info($image_type .' image for:' . $event->name . ' created');
                                 var_dump($image_type .' image for:' . $event->name . ' created');
                             }else{
-                                var_dump("Image ". $image->url . " couldn't be stored stored");
                                 Log::error("Image ". $image->url . " couldn't be stored stored");
+                                var_dump("Image ". $image->url . " couldn't be stored stored");
                                 die();
                             }
                         }
@@ -384,6 +392,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                                 $distance = $address->distanceToKM($user->address);
 
                                 if($distance <= $distance_notifications_radius){
+                                    Log::info('User: ' . $user->username . ' notified for event: ' . $event_model_instance->name . ' User to event distance: ' . round($distance) . ' User distance notifications radius: ' . $distance_notifications_radius);
                                     var_dump('User: ' . $user->username . ' notified for event: ' . $event_model_instance->name . ' User to event distance: ' . round($distance) . ' User distance notifications radius: ' . $distance_notifications_radius);
                                     $message = 'The Event: <a href="' . $event_model_instance->link  .'"target="blank">' . $event_model_instance->name . '</a> is happening near you, it\'s only ' . round($distance) . ' kilometers away!';
 
@@ -429,18 +438,25 @@ Artisan::command('import-500-events {game}', function (string $game){
 });
 
 Artisan::command('import-500-events-all-games', function (){
+    Log::info('Starting the 64 import');
     var_dump('Starting the 64 import');
     Artisan::call('import-500-events', ['game' => '64']);
+    Log::info('Starting the melee import');
     var_dump('Starting the melee import');
     Artisan::call('import-500-events', ['game' => 'melee']);
+    Log::info('Starting the brawl import');
     var_dump('Starting the brawl import');
     Artisan::call('import-500-events', ['game' => 'brawl']);
+    Log::info('Starting the project + import');
     var_dump('Starting the project + import');
     Artisan::call('import-500-events', ['game' => 'project_+']);
+    Log::info('Starting the project m import');
     var_dump('Starting the project m import');
     Artisan::call('import-500-events', ['game' => 'project_m']);
+    Log::info('Starting the smash4 import');
     var_dump('Starting the smash4 import');
     Artisan::call('import-500-events', ['game' => 'smash4']);
+    Log::info('Starting the ultimate import');
     var_dump('Starting the ultimate import');
     Artisan::call('import-500-events', ['game' => 'ultimate']);
 });
