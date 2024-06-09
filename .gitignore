@@ -3,6 +3,7 @@
 /public/build
 /public/hot
 /public/storage
+/public/.htaccess
 /storage/*.key
 /vendor
 .env
@@ -17,8 +18,4 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
-.htaccess
-infomaniak-maintenance.html
-.user.ini
-index.html
 /storage/app/public/characters-images/smash-64/old-icons/
