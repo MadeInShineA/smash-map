@@ -294,7 +294,7 @@ async function saveProfileInformation() {
     opacity: 0;
 }
 
-.validation-errors {
+.validation-errors{
     margin-top: 10px;
     min-height: 1em;
     width: 300px;

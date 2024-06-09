@@ -167,14 +167,13 @@ async function resetPassword() {
 
 .validation-errors {
     min-height: 1em;
-
+    margin-left: 20px;
 }
 
 
 .validation-error{
     font-size: 12px;
     color: red;
-    margin-left: 20px;
 }
 
 #reset-password-button{

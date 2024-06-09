@@ -224,10 +224,10 @@ const forgotValidationErrors = ref({
 
 .validation-errors{
     min-height: 1em;
+    margin-left: 20px;
 }
 
 .validation-error{
-    margin-left: 20px;
     font-size: 12px;
     color: red;
 }
