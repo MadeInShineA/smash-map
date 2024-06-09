@@ -30,7 +30,7 @@ userStore.getProfileInformationByUsername(props.username, props.darkMode).then((
 <template>
     <div v-if="profileInformation" id="profile-information-container">
         <div>
-            <img :src="userStore.user.data.profilePicture.url" id="profile-picture" alt="Profile picture image"/>
+            <img :src="profileInformation.profilePicture.url" id="profile-picture" alt="Profile picture image"/>
         </div>
         <div class="profile-element">
             {{ profileInformation.username }}

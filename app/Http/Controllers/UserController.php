@@ -8,18 +8,12 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\ResetPasswordRequest;
-use App\Http\Requests\SettingsDistanceNotificationsRadiusUpdateRequest;
-use App\Http\Requests\SettingsUpdateRequest;
-use App\Http\Resources\Character\CharacterResource;
-use App\Http\Resources\Game\GameResource;
 use App\Http\Resources\Image\ImageResource;
-use App\Http\Resources\Notification\NotificationResource;
 use App\Http\Resources\User\LocalStorageUserResource;
 use App\Http\Resources\User\ProfileUserResource;
-use App\Http\Resources\User\SettingsUserResource;
+use App\Http\Resources\User\UserProfileUserResource;
 use App\Models\Address;
 use App\Models\Country;
-use App\Models\Event;
 use App\Models\Image;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
@@ -32,7 +26,6 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\Drivers\Gd\Driver;
-use Intervention\Image\Geometry\Factories\CircleFactory;
 use Intervention\Image\ImageManager;
 
 class UserController extends Controller
@@ -60,7 +53,7 @@ class UserController extends Controller
             $user->games()->attach($request->input('games'));
             $user->characters()->attach($request->input('characters'));
 
-            $profile_picture = file_get_contents('https://ui-avatars.com/api/?name=' . $user->username . '&rounded=true&length=1&background=random');
+            $profile_picture = file_get_contents('https://ui-avatars.com/api/?name=' . $user->username . '&rounded=true&length=1&background=random&size=512');
             $user_directory_path = '/users-images/' . $user->uuid;
             Storage::put($user_directory_path . '/' . ImageTypeEnum::USER_PROFILE . '.png', $profile_picture);
             Image::Create(['parentable_type' =>User::class, 'parentable_id' =>$user->id, 'type' =>ImageTypeEnum::USER_PROFILE, 'extension' => 'png']);
@@ -180,7 +173,7 @@ class UserController extends Controller
             if(!$user){
                 return $this->sendError('Profile not found', [], 404);
             }
-            return $this->sendResponse(new ProfileUserResource($user), 'Profile retrieved with success');
+            return $this->sendResponse(new UserProfileUserResource($user), 'Profile retrieved with success');
         }catch (\Error $error) {
             return $this->sendError('An error occurred while retrieving the profile E 019', [$error], 500);
         }
