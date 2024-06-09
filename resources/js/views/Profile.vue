@@ -222,8 +222,8 @@ async function saveProfileInformation() {
 }
 
 #profile-picture {
-    width: 80px;
-    height: 80px;
+    width:200px;
+    height: 200px;
     border-radius: 50%;
     object-fit: cover;
 
@@ -232,8 +232,8 @@ async function saveProfileInformation() {
 #profile-picture-container {
     position: relative;
     cursor: pointer;
-    width: 80px;
-    height: 80px;
+    width: 200px;
+    height: 200px;
 }
 
 #profile-picture-overlay {

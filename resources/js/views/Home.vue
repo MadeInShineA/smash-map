@@ -116,6 +116,12 @@ watch(() => props.darkMode, (newValue) => {
     <template v-if="eventsStore.gamesStatisticsFetched && (!displayMonthsStatistics || eventsStore.monthsStatisticsFetched)">
         <div id="home-container">
             <h1 id="home-title"> Welcome to Smash Map !</h1>
+            <a href="https://x.com/toastlyzone" target="_blank">
+                <figure>
+                    <img id="home-image" src="/resources/images/logo-no-text-no-bg.png" alt="Home Image">
+                    <figcaption>Logo by @toastlyzone</figcaption>
+                </figure>
+            </a>
             <h2>What is Smash Map?</h2>
             <p>
                 Smash Map is an open source website that lists all the events happening in the competitive Super Smash Bros. scene.
@@ -192,6 +198,12 @@ watch(() => props.darkMode, (newValue) => {
 #home-title {
     margin-top: 0;
     margin-bottom: 1rem
+}
+
+#home-image {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
 }
 
 h2{

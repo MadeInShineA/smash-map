@@ -83,8 +83,8 @@ userStore.getProfileInformationByUsername(props.username, props.darkMode).then((
 }
 
 #profile-picture {
-    width: 80px;
-    height: 80px;
+    width: 200px;
+    height: 200px;
     border-radius: 50%;
     object-fit: cover;
 }
