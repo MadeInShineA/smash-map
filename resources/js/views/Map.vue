@@ -297,7 +297,7 @@ onMounted(()=>{
 <style>
 
 .dark .gm-style-iw-d{
-    color: black;
+    color: white;
 }
 
 .gm-style-iw-d{
@@ -408,6 +408,10 @@ onMounted(()=>{
     color: white;
 }
 
+.dark .gm-ui-hover-effect > span{
+    background-color: white;
+}
+
 .event-title>a{
     color: inherit;
     text-decoration: none;
@@ -488,6 +492,8 @@ onMounted(()=>{
 .input{
     display: flex;
 }
+
+
 
 @media(max-width: 480px){
     #circle-info-window {
