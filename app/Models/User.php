@@ -30,6 +30,7 @@ class User extends Authenticatable
         'email',
         'password',
         'address_id',
+        'has_default_profile_picture',
         'discord',
         'x',
         'description',

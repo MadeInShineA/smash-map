@@ -210,8 +210,7 @@ class UserController extends Controller
 
 
 
-                $user->has_default_profile_picture = false;
-                $user->refresh();
+                $user->update(['has_default_profile_picture' => false]);
                 $data['profilePicture'] = new ImageResource($user->getProfilePictureAttribute());
             }
             $user->update([
