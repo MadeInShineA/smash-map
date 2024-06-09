@@ -134,7 +134,7 @@ const forgotValidationErrors = ref({
 </script>
 
 <template>
-    <Dialog id="login-modal" class="user-modal" :visible="showLoginModal" @update:visible="emit('switchShowLoginModal')" :draggable="false" modal :header="showForgetPasswordInputs ? 'Forgot Password' : 'Login'" :style="{ width: '30vw' }" :breakpoints="{ '1200px': '50vw', '575px': '90vw' }">
+    <Dialog id="login-modal" :visible="showLoginModal" @update:visible="emit('switchShowLoginModal')" :draggable="false" modal :header="showForgetPasswordInputs ? 'Forgot Password' : 'Login'" :style="{ minWidth: '300px' }" :breakpoints="{ '1200px': '50vw', '575px': '90vw' }">
         <div v-if="!showForgetPasswordInputs">
             <div class="modal-input-container">
                 <FloatLabel>
@@ -187,20 +187,32 @@ const forgotValidationErrors = ref({
             </div>
         </div>
         <template #footer>
-            <Button :label="showForgetPasswordInputs ? '' : 'Forgot password'" severity="warning" :icon="showForgetPasswordInputs ? 'pi pi-arrow-left' : 'pi pi-exclamation-triangle'" @click="showForgetPasswordInputs = !showForgetPasswordInputs" text plain/>
-            <Button label="Cancel" severity="danger" icon="pi pi-times" @click="emit('switchShowLoginModal')" text plain/>
-            <Button :label="showForgetPasswordInputs ? 'Send reset link' : 'Login'" severity="success" icon="pi pi-check" @click="() => showForgetPasswordInputs ? sendPasswordLink() : login()" text plain/>
+            <div class="modal-footer">
+                <Button :label="showForgetPasswordInputs ? '' : 'Forgot password'" severity="warning" :icon="showForgetPasswordInputs ? 'pi pi-arrow-left' : 'pi pi-exclamation-triangle'" @click="showForgetPasswordInputs = !showForgetPasswordInputs" text plain/>
+                <div>
+                    <Button label="Cancel" severity="danger" icon="pi pi-times" @click="emit('switchShowLoginModal')" text plain/>
+                    <Button :label="showForgetPasswordInputs ? 'Send reset link' : 'Login'" severity="success" icon="pi pi-check" @click="() => showForgetPasswordInputs ? sendPasswordLink() : login()" text plain/>
+                </div>
+            </div>
         </template>
     </Dialog>
 </template>
 
 <style>
-#login-modal .p-dialog-title{
+
+.p-dialog-content{
+    padding: 0;
+}
+
+#login-modal_header{
     margin: auto;
 }
+
 </style>
 
 <style scoped>
+
+
 
 .errors-enter-active,
 .errors-leave-active {
@@ -220,11 +232,6 @@ const forgotValidationErrors = ref({
     color: red;
 }
 
-.user-modal{
-    width: max-content;
-    display: flex;
-    justify-content: center;
-}
 
 .modal-input-container{
     margin: 10px 20px;
@@ -233,6 +240,12 @@ const forgotValidationErrors = ref({
 .modal-input,
 .modal-input :deep(input){
     width: 100%;
+}
+
+.modal-footer{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content:end;
 }
 
 </style>
