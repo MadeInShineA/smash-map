@@ -56,8 +56,8 @@
                 <i class="pi pi-github about-social-icons"></i>GitHub
             </a>
 
-            <a  href="mailto:smash-map@infomaniak.ch" class="about-social">
-                <i class="pi pi-envelope about-social-icons"></i>smash-map@infomaniak.ch
+            <a  href="mailto:contact@smash-map.com " class="about-social">
+                <i class="pi pi-envelope about-social-icons"></i>contact@smash-map.com
             </a>
         </div>
     </div>
