@@ -84,6 +84,10 @@ const login = async function () {
 const showForgetPasswordInputs = ref(false)
 const forgotEmail = ref('')
 
+const forgotValidationErrors = ref({
+    email: []
+})
+
 const sendPasswordLink = async function () {
     forgotValidationErrors.value.email = []
 
@@ -105,7 +109,7 @@ const sendPasswordLink = async function () {
                 })
             })
         } catch (error) {
-            if(error.response.data.errors === undefined && error.response.data.message && error.status === 500){
+            if(error.response.data.errors === undefined && error.response.data.message && error.response.status === 500){
                 emit('switchShowLoginModal')
                 const alertBackground = props.darkMode ? '#1C1B22' : '#FFFFFF'
                 const alertColor = props.darkMode ? '#FFFFFF' : '#1C1B22'
@@ -127,9 +131,7 @@ const sendPasswordLink = async function () {
     })
 }
 
-const forgotValidationErrors = ref({
-    email: []
-})
+
 
 </script>
 
