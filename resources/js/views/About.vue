@@ -9,7 +9,7 @@
         <a href="https://linktr.ee/bluerosetori" target="_blank">
             <figure>
                 <img id="about-image" src="/resources/images/about.jpeg" alt="About Image">
-                <figcaption>Picture by bluerose tori</figcaption>
+                <figcaption>Picture by Tori Hamilton</figcaption>
             </figure>
         </a>
 
@@ -42,7 +42,6 @@
                 <i class="pi pi-envelope about-social-icons"></i>olivier.amacker@netplus.ch
             </a>
         </div>
-
         <p>
             Or directly on the Smash Map socials:
         </p>

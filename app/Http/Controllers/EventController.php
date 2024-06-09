@@ -154,12 +154,14 @@ class EventController extends Controller
                         'hoverBackgroundColor' => []
 
                     ]
+                ],
+                'eventCount' => 0
 
-                ]
             ];
 
             if($statisticsType === 'games'){
                 $events = Event::all();
+                $statistics['eventCount'] = $events->count();
 
                 foreach (GameEnum::ABBREVIATION as $id => $title){
                     $statistics['labels'][] = $title;

@@ -1,7 +1,10 @@
 <script setup>
 import {onMounted, ref, watch} from "vue";
-    import {useEventsStore} from "../stores/EventsStore.js";
-    import Chart from 'primevue/chart';
+import {useEventsStore} from "../stores/EventsStore.js";
+import Chart from 'primevue/chart';
+import { useWindowSize } from '@vueuse/core'
+
+const { width } = useWindowSize()
 
 const props = defineProps({
     darkMode: {
@@ -10,10 +13,26 @@ const props = defineProps({
     }
 })
 
-
 const eventsStore = useEventsStore()
 eventsStore.fetchGameStatistics()
-eventsStore.fetchMonthsStatistics()
+
+
+const displayMonthsStatistics = ref(width.value >= 620)
+
+if (displayMonthsStatistics.value){
+    eventsStore.fetchMonthsStatistics()
+}
+
+watch(width, (newWidth) => {
+    displayMonthsStatistics.value = newWidth >= 620
+    console.log('Display months statistics', displayMonthsStatistics.value)
+}, {immediate: false})
+
+watch(displayMonthsStatistics, (newValue) => {
+    if (newValue){
+        eventsStore.fetchMonthsStatistics()
+    }
+}, {immediate: false})
 
 onMounted(()=>{
     console.log('Home Mounted')
@@ -68,6 +87,7 @@ const barPlotOptions = ref({
             },
         }
     },
+    responsive: true
 })
 
 const gamesStatisticsChart = ref()
@@ -93,7 +113,7 @@ watch(() => props.darkMode, (newValue) => {
 </script>
 
 <template>
-    <template v-if="eventsStore.gamesStatisticsFetched && eventsStore.monthsStatisticsFetched">
+    <template v-if="eventsStore.gamesStatisticsFetched && (!displayMonthsStatistics || eventsStore.monthsStatisticsFetched)">
         <div id="home-container">
             <h1 id="home-title"> Welcome to Smash Map !</h1>
             <h2>What is Smash Map?</h2>
@@ -102,11 +122,9 @@ watch(() => props.darkMode, (newValue) => {
             </p>
             <div>
                 Featuring the following games:
-                <ul>
-                    <li v-for="game in eventsStore.gamesStatistics.data.labels">
-                        {{ game }}
-                    </li>
-                </ul>
+                <p v-for="game in eventsStore.gamesStatistics.data.labels">
+                    {{ game }}
+                </p>
             </div>
             <p>
                 It also provides a platform for players to create their profile and share their information with the community.
@@ -114,7 +132,7 @@ watch(() => props.darkMode, (newValue) => {
 
             <h2>How does Smash Map work?</h2>
             <p>
-                Smash Map fetches the <a href="https://www.start.gg/" target="_blank">start.gg</a> data for the next 500 events in the different games.
+                Every 15 minutes Smash Map fetches the <a href="https://www.start.gg/" target="_blank">start.gg</a> data for the next 500 events in the different games.
             </p>
             <p>
                 Website users can then find events directly on the <router-link to="/map">map page</router-link> or on the <router-link to="/events">events page</router-link>.
@@ -126,29 +144,33 @@ watch(() => props.darkMode, (newValue) => {
             <p>
                 There are 3 types of notifications:
             </p>
-            <h3>Distance notifications</h3>
+            <h3><i class="pi pi-arrows-h notification-icon"/>Distance notifications</h3>
             <p>
                 By accessing their setting page, users can set a distance radius from their location to receive notifications for events appearing on the site in that range.
             </p>
 
-            <h3>Attendees notifications</h3>
+            <h3><i class="pi pi-users notification-icon"/>Attendees notifications</h3>
             <p>
                 Users can set different attendees thresholds to receive notifications when one of their followed events reaches that number of attendees.
             </p>
-            <h3>Time notifications</h3>
+            <h3><i class="pi pi-clock notification-icon"/>Time notifications</h3>
             <p>
                 Users can also set some time thresholds to receive notifications when one of their followed events is happening in less then a certain number of days.
             </p>
 
 
             <h2>Statistics</h2>
-
-
+            <p>
+                Here are some statistics about the events on Smash Map:
+            </p>
             <Chart ref="gamesStatisticsChart" type="doughnut" :data="eventsStore.gamesStatistics.data" id="events-games-chart" :options="doughnutPlotOptions" />
-            <Chart ref="monthsStatisticsChart" type="bar" :data="eventsStore.monthsStatistics.data" id="events-months-chart" :options="barPlotOptions" />
+            <p>This diagram represents the distribution of games among the {{eventsStore.gamesStatistics.data.eventCount}} events referenced on the site </p>
+            <div id="events-month-chart-container" v-if="displayMonthsStatistics">
+                <Chart ref="monthsStatisticsChart" type="bar" :data="eventsStore.monthsStatistics.data" id="events-months-chart" :options="barPlotOptions" />
+                <p>This diagram represents the distribution of events per game over the next 6 months of the year</p>
+            </div>
+
         </div>
-<!--        <Chart ref="gamesStatisticsChart" type="doughnut" :data="eventsStore.gamesStatistics.data" id="events-games-chart" :options="doughnutPlotOptions" />-->
-<!--        <Chart ref="monthsStatisticsChart" type="bar" :data="eventsStore.monthsStatistics.data" id="events-months-chart" :options="barPlotOptions" />-->
     </template>
     <template v-else>
         <LoaderComponent></LoaderComponent>
@@ -189,5 +211,13 @@ a{
     text-decoration: none;
 }
 
+#events-months-chart{
+    height: 300px;
+    width: 600px;
+}
+
+.notification-icon{
+    margin-right: 1rem;
+}
 
 </style>
