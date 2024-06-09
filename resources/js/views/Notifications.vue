@@ -1,6 +1,6 @@
 <script setup>
 import {onMounted, ref, toRefs, watch} from "vue";
-import {useUserStore} from "../stores/userStore";
+import {useUserStore} from "../stores/UserStore.js";
 import {defineProps} from "vue";
 import Divider from 'primevue/divider';
 import {useScroll} from '@vueuse/core'
