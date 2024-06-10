@@ -10,6 +10,7 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -222,5 +223,15 @@ class EventController extends Controller
             return $this->sendError($error, ['An error occurred while unfollowing the event E 017'], 500);
         }
 
+    }
+
+    public function import_500_events(): void
+    {
+        Artisan::call('import-500-events-all-games');
+    }
+
+    public function delete_events(): void
+    {
+        Artisan::call('delete-events');
     }
 }

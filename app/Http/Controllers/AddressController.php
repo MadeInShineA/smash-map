@@ -8,6 +8,7 @@ use App\Models\Address;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Artisan;
 
 class AddressController extends Controller
 {
@@ -145,5 +146,10 @@ class AddressController extends Controller
         }catch (\Error $error){
             return $this->sendError($error, ['An error occurred while retrieving the addresses E 009'], 500);
         }
+    }
+
+    public function delete_addresses(): void
+    {
+        Artisan::call('delete-addresses');
     }
 }
