@@ -491,10 +491,6 @@ Artisan::command('import-countries-images', function (){
 
 });
 
-Artisan::command('test-broadcast', function(){
-    broadcast(new \App\Events\NotificationEvent(\App\Models\User::where('username', 'misa')->first()));
-});
-
 Artisan::command('setup', function(){
    Artisan::call('import-countries-images');
    Artisan::call('import-characters-images');
