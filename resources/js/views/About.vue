@@ -25,7 +25,7 @@
                 I love computer science and learning new things, whatever the field. I'm always looking for new projects to work on and improve my skills!
             </p>
             <p>
-                If you have any questions or feedback, feel free to contact on my socials:
+                If you have any questions or feedback, feel free to contact me on my social medias:
             </p>
         </div>
         <div id="about-socials">
