@@ -1,4 +1,5 @@
 {
+    "id": "dev.smash-map.com",
     "name": "Smash Map",
     "short_name": "Smash Map",
     "start_url": "/",
@@ -6,12 +7,20 @@
     "description": "Smash Map App",
     "display": "fullscreen",
     "theme_color": "#ffffff",
+    "orientation": "portrait",
     "icons": [
         {
             "src": "/images/logo-512.png",
             "sizes": "512x512",
             "type": "image/png",
-            "purpose": "any maskable",
+            "purpose": "any",
+            "background_color": "#ffffff"
+        },
+        {
+            "src": "/images/logo-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable",
             "background_color": "#ffffff"
         }
     ]
