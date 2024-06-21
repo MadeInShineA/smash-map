@@ -11,7 +11,8 @@
             "src": "/images/logo-no-text-white-globe.png",
             "sizes": "512x512",
             "type": "image/png",
-            "purpose": "any maskable"
+            "purpose": "any maskable",
+            "background_color": "#ffffff"
         }
     ]
 }
