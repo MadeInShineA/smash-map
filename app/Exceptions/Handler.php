@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Redirect;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -32,7 +33,7 @@ class Handler extends ExceptionHandler
         });
     }
 
-    public function render($request, Throwable $e): Response | RedirectResponse
+    public function render($request, Throwable $e): Response | RedirectResponse | JsonResponse
     {
         if ($e instanceof NotFoundHttpException) {
             return redirect('/');
