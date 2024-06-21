@@ -2,14 +2,14 @@
 <html>
 <head>
     <title>Smash Map</title>
-    <link rel="icon" type="image/x-icon" href="{{@asset('images/logo-no-text-white-globe.png')}}">
+    <link rel="icon" type="image/x-icon" href="{{@asset('images/transparent-logo.png')}}">
     <link id="theme-link" rel="stylesheet" href="{{@asset('themes/mdc-dark-indigo/theme.css')}}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     @vite('resources/css/app.css')
 
     <!-- PWA  -->
     <meta name="theme-color" content="#ffffff"/>
-    <link rel="apple-touch-icon" href="{{ asset('/images/logo-no-text-white-globe.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('/images/logo.png') }}">
     <link rel="manifest" href="{{ asset('/manifest.json') }}">
 </head>
 <body>
