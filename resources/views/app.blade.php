@@ -8,8 +8,8 @@
     @vite('resources/css/app.css')
 
     <!-- PWA  -->
-    <meta name="theme-color" content="#6777ef"/>
-    <link rel="apple-touch-icon" href="{{ asset('logo.png') }}">
+    <meta name="theme-color" content="#ffffff"/>
+    <link rel="apple-touch-icon" href="{{ asset('/images/logo-no-text-white-globe.png') }}">
     <link rel="manifest" href="{{ asset('/manifest.json') }}">
 </head>
 <body>
