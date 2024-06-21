@@ -61,22 +61,23 @@ watch(distanceNotificationsRadius, (value) => {
 const zoom = ref(4);
 const infoWindows = ref([]);
 const mapRef = ref();
+const openedInfoWindowIndex = ref()
 
-const closeInfoWindows = (i) => {
+const openInfoWindow = (i) => {
+    openedInfoWindowIndex.value = i
     infoWindows.value.forEach(
         (ref, index) => {
             if (index !== i) {
                 ref.infoWindow.close();
-                }
             }
-        );
+        })
     circleInfoWindowRef.value.infoWindow.close()
 };
 
 const circleInfoWindowRef = ref()
 
 function clickCircleEvent (i){
-    closeInfoWindows(i)
+    openInfoWindow(i)
     circleInfoWindowRef.value.infoWindow.open(mapRef.value.map)
     circleInfoWindowRef.value.infoWindow.setPosition(circleCenter.value)
 }
@@ -161,7 +162,7 @@ onMounted(()=>{
 <template>
     <AddressFilterSidebar :sideBarVisible="sideBarVisible" @switchSideBarVisible="switchSideBarVisible"></AddressFilterSidebar>
     <template v-if="addressStore.addressesFetched">
-        <GoogleMap ref="mapRef" :api-key="googleMapApiKey" language="en" :map-type-control-options="{ mapTypeIds: ['roadmap','satellite',]}" style="width: 100%; height: 100%" :center="center" :zoom="zoom" :min-zoom="4" @click="closeInfoWindows" :clickableIcons="false" :fullscreen-control="false">
+        <GoogleMap ref="mapRef" :api-key="googleMapApiKey" language="en" :map-type-control-options="{ mapTypeIds: ['roadmap','satellite',]}" style="width: 100%; height: 100%" :center="center" :zoom="zoom" :min-zoom="4" @click="openedInfoWindowIndex" :clickableIcons="false" :fullscreen-control="false">
             <Circle ref="circleRef" :options="circleParameters" @click="clickCircleEvent"></Circle>
             <InfoWindow ref="circleInfoWindowRef" class="info-window" id="circle-info-window">
                 <h3 class="info-window-title">Distance Notification Radius</h3>
@@ -189,62 +190,66 @@ onMounted(()=>{
                 <Button class="map-button-top" @click="addressFiltersStore.fetchAddressesWithFilters" icon="pi pi-refresh" rounded aria-label="Refresh"/>
             </CustomControl>
             <MarkerCluster>
-                <Marker v-for="(address, i) in addressStore.addresses.data" @click="closeInfoWindows" :options="{position: address.position, icon: {url: address.icon,  scaledSize: { width: 30, height: 30 }}}">
+                <Marker v-for="(address, i) in addressStore.addresses.data" @click="openInfoWindow(i)" :options="{position: address.position, icon: {url: address.icon,  scaledSize: { width: 30, height: 30 }}}">
                     <InfoWindow :ref="(el) => (infoWindows[i] = el)" class="info-window">
-                        <template v-if="address.users.length > 0">
-                            <h3 class="info-window-title">Users</h3>
-                            <template v-for="user in address.users">
-                                <router-link class="user-profile-link" :to="{name: 'user-profile', params: {username: user.username}}">
+                        <div>
+                            <template v-if="openedInfoWindowIndex && openedInfoWindowIndex === i">
+                            <template v-if="address.users.length > 0">
+                                <h3 class="info-window-title">Users</h3>
+                                <template v-for="user in address.users">
+                                    <router-link class="user-profile-link" :to="{name: 'user-profile', params: {username: user.username}}">
 
-                                    <div class = user-image-container>
-                                        <img class="user-image" :src="user.profilePicture.url"  alt="User Image">
-                                    </div>
-                                    <div class="user-username">
-                                        {{ user.username }}
-                                    </div>
-                                </router-link>
-                                <div v-if="user.isModder" class="user-is-modder-container">
-                                    <Tag value="Modder" rounded :style="{background: 'aqua', marginRight: '5px'}"></Tag>
-                                </div>
-                                <div class="user-games-characters">
-                                    <template v-for="game in user.games">
-                                        <div class="user-game-tag">
-                                            <Tag :value="game.name" rounded :style="{background: game.color, marginRight: '5px'}"></Tag>
+                                        <div class = user-image-container>
+                                            <img class="user-image" :src="user.profilePicture.url"  alt="User Image">
                                         </div>
-                                        <template v-for="character in game.characters">
-                                            <img class="user-character-image" :alt="character.name" :src="character.image.url" width="20" />
+                                        <div class="user-username">
+                                            {{ user.username }}
+                                        </div>
+                                    </router-link>
+                                    <div v-if="user.isModder" class="user-is-modder-container">
+                                        <Tag value="Modder" rounded :style="{background: 'aqua', marginRight: '5px'}"></Tag>
+                                    </div>
+                                    <div class="user-games-characters">
+                                        <template v-for="game in user.games">
+                                            <div class="user-game-tag">
+                                                <Tag :value="game.name" rounded :style="{background: game.color, marginRight: '5px'}"></Tag>
+                                            </div>
+                                            <template v-for="character in game.characters">
+                                                <img class="user-character-image" :alt="character.name" :src="character.image.url" width="20" />
+                                            </template>
                                         </template>
-                                    </template>
-                                </div>
+                                    </div>
+                                </template>
+                            </template>
+                            <template v-if="address.events.length > 0">
+                                <h3 class="info-window-title">Events</h3>
+                                <template v-for="event in address.events">
+                                    <div class="event-image-container">
+                                        <img v-if="event.image" :src="event.image.url" alt="Event Image" class="event-image">
+                                        <img v-else src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png" alt="Event Image" class="event-image">
+                                    </div>
+                                    <div class="event-title">
+                                        <a :href="event.link" target="_blank"><i class="pi pi-external-link"/> {{ event.title }}</a>
+                                    </div>
+                                    <div class="event-game-attendees">
+                                        <Tag :value="event.game.name" rounded :style="{background: event.game.color, marginRight: '1rem'}"></Tag>
+                                        <Chip :label="event.attendees || event.attendees === 0 ? event.attendees.toString() : 'Private'" icon="pi pi-users" :style="{marginRight: '1rem'}"></Chip>
+                                        <Button
+                                            v-if='userStore.user.data.id'
+                                            class="event-bell-button"
+                                            @click="eventsStore.handleEventSubscription(event, darkMode)"
+                                            :loading="eventsStore.subscriptionLoading"
+                                            icon="pi pi-bell"
+                                            :class='{ active: event.user_subscribed }'
+                                            rounded
+                                            aria-label="Notification"
+                                        />
+                                    </div>
+                                    <div class="event-datetime"><Chip :label="event.timezone_start_date_time + ' / ' + event.timezone_end_date_time + ' ' + event.timezone" icon="pi pi-clock"></Chip></div>
+                                </template>
                             </template>
                         </template>
-                        <template v-if="address.events.length > 0">
-                            <h3 class="info-window-title">Events</h3>
-                            <template v-for="event in address.events">
-                                <div class="event-image-container">
-                                    <img v-if="event.image" :src="event.image.url" alt="Event Image" class="event-image">
-                                    <img v-else src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png" alt="Event Image" class="event-image">
-                                </div>
-                                <div class="event-title">
-                                    <a :href="event.link" target="_blank"><i class="pi pi-external-link"/> {{ event.title }}</a>
-                                </div>
-                                <div class="event-game-attendees">
-                                    <Tag :value="event.game.name" rounded :style="{background: event.game.color, marginRight: '1rem'}"></Tag>
-                                    <Chip :label="event.attendees || event.attendees === 0 ? event.attendees.toString() : 'Private'" icon="pi pi-users" :style="{marginRight: '1rem'}"></Chip>
-                                    <Button
-                                        v-if='userStore.user.data.id'
-                                        class="event-bell-button"
-                                        @click="eventsStore.handleEventSubscription(event, darkMode)"
-                                        :loading="eventsStore.subscriptionLoading"
-                                        icon="pi pi-bell"
-                                        :class='{ active: event.user_subscribed }'
-                                        rounded
-                                        aria-label="Notification"
-                                    />
-                                </div>
-                                <div class="event-datetime"><Chip :label="event.timezone_start_date_time + ' / ' + event.timezone_end_date_time + ' ' + event.timezone" icon="pi pi-clock"></Chip></div>
-                            </template>
-                        </template>
+                        </div>
                     </InfoWindow>
                 </Marker>
             </MarkerCluster>
