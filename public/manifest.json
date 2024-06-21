@@ -1,0 +1,17 @@
+{
+    "name": "Smash Map",
+    "short_name": "SM",
+    "start_url": "/",
+    "background_color": "#6777ef",
+    "description": "Smash Map App",
+    "display": "fullscreen",
+    "theme_color": "#6777ef",
+    "icons": [
+        {
+            "src": "/images/logo-no-text-white-globe.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}
