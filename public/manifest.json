@@ -1,7 +1,7 @@
 {
     "id": "dev.smash-map.com",
-    "name": "Smash Map",
-    "short_name": "Smash Map",
+    "name": "Smash Map(Dev)",
+    "short_name": "Smash Map(Dev)",
     "start_url": "/",
     "background_color": "#ffffff",
     "description": "Smash Map App",
