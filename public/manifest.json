@@ -5,9 +5,9 @@
     "start_url": "/",
     "background_color": "#ffffff",
     "description": "Smash Map App",
-    "display": "fullscreen",
+    "display": "standalone",
     "theme_color": "#ffffff",
-    "orientation": "portrait",
+    "orientation": "portrait-primary",
     "icons": [
         {
             "src": "/images/logo-512.png",
@@ -23,5 +23,12 @@
             "purpose": "maskable",
             "background_color": "#ffffff"
         }
+    ],
+    "dir": "ltr",
+    "lang": "en",
+    "categories": [
+        "games",
+        "social",
+        "travel"
     ]
 }
