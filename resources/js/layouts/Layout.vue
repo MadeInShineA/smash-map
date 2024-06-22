@@ -13,29 +13,6 @@ import {usePrimeVue} from 'primevue/config';
 import { useRouter } from 'vue-router';
 import { useUserStore } from "../stores/UserStore.js";
 import Toast from "primevue/toast";
-import { useWebNotification } from '@vueuse/core'
-
-
-const {
-    isSupported,
-    notification,
-    show,
-    close,
-    onClick,
-    onShow,
-    onError,
-    onClose,
-} = useWebNotification({
-    title: 'Hello, VueUse world!',
-    dir: 'auto',
-    lang: 'en',
-    renotify: true,
-    tag: 'test',
-})
-
-if (isSupported.value)
-    show()
-
 
 const { width, height } = useWindowSize()
 const responsiveMenuDisplayed = ref(false)
