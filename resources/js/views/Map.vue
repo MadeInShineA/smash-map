@@ -303,10 +303,11 @@ onMounted(()=>{
 
 .dark .gm-style-iw-d{
     color: white;
+    scrollbar-color: #494949 #494949 ;
 }
 
 .gm-style-iw-d{
-    overflow: auto !important
+    overflow: auto !important;
 }
 
 .dark .map-button-top, .dark .map-button-bottom{
