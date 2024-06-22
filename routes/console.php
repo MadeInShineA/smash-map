@@ -11,6 +11,7 @@ use App\Models\Event;
 use App\Models\Image;
 use App\Models\Notification;
 use App\Models\User;
+use App\Notifications\PushNotification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
@@ -495,4 +496,9 @@ Artisan::command('setup', function(){
    Artisan::call('import-countries-images');
    Artisan::call('import-characters-images');
 //   Artisan::call('import-100-events-all-games');
+});
+
+Artisan::command('test-push-notification', function(){
+    $notification = Notification::first();
+    \Illuminate\Support\Facades\Notification::send(User::first(), new PushNotification($notification));
 });

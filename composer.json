@@ -10,6 +10,7 @@
         "beyondcode/laravel-websockets": "^1.14",
         "guzzlehttp/guzzle": "^7.2",
         "intervention/image-laravel": "^1.2",
+        "laravel-notification-channels/pusher-push-notifications": "^4.2",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",

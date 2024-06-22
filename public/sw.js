@@ -1,8 +1,7 @@
+importScripts("https://js.pusher.com/beams/service-worker.js");
+
 // Basic service worker
 const preLoad = function () {
-
-    // Pusher Beams service worker
-    importScripts("https://js.pusher.com/beams/service-worker.js");
     return caches.open("offline").then(function (cache) {
         // caching index and important routes
         return cache.addAll(filesToCache);

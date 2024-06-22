@@ -24,6 +24,11 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+
+    public function routeNotificationForPusherPushNotifications($notification): string
+    {
+        return 'hello';
+    }
     protected $fillable = [
         'uuid',
         'username',
