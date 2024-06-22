@@ -5,6 +5,7 @@
 /public/storage
 /public/.htaccess
 /public/.htpasswd
+/public/.well-known
 /storage/*.key
 /vendor
 .env
