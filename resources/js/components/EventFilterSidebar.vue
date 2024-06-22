@@ -8,6 +8,8 @@ import InputText from "primevue/inputtext";
 import { useEventFiltersStore } from '../stores/EventFiltersStore.js'
 import {useOptionsStore} from "../stores/OptionsStore.js";
 import {useUserStore} from "../stores/UserStore.js";
+import FloatLabel from "primevue/floatlabel";
+
 
 const filtersStore = useEventFiltersStore()
 const optionsStore = useOptionsStore()
@@ -32,30 +34,42 @@ const emit = defineEmits(['switchSideBarVisible'])
         <h2>Filters</h2>
         <div id="event-filters">
             <div class="event-filter">
-                <MultiSelect v-model="filtersStore.selectedEventGames" :options="optionsStore.gameOptions" display="chip" :maxSelectedLabels="2" optionLabel="name" optionValue="id" placeholder="Select Games"/>
+                <FloatLabel>
+                    <MultiSelect id="event-filter-games" v-model="filtersStore.selectedEventGames" :options="optionsStore.gameOptions" :maxSelectedLabels="0" optionLabel="name" optionValue="id" placeholder="Games"/>
+                    <label for="event-filter-games">Games</label>
+                </FloatLabel>
             </div>
             <div class="event-filter">
                 <Dropdown v-model="filtersStore.selectedEventTypes" :options="userStore.user.data.id ? optionsStore.connectedUserEventTypeOptions : optionsStore.eventTypeOptions" optionLabel="name" optionValue="value" placeholder="All event types"/>
             </div>
             <div class="event-filter">
-                <Calendar v-model=filtersStore.selectedEventDates :minDate="new Date()" placeholder="Event date range (UTC)" selectionMode="range" :manualInput="false" showButtonBar dateFormat="dd/mm/yy"></Calendar>
+                <Calendar id="event-filter-dates" v-model=filtersStore.selectedEventDates :minDate="new Date()" selectionMode="range" :manualInput="false" showButtonBar dateFormat="dd/mm/yy" placeholder="Event date range (UTC)"></Calendar>
             </div>
             <div class="event-filter">
-                <MultiSelect v-model="filtersStore.selectedEventContinents" :options="optionsStore.continentOptions" display="chip" :disabled="filtersStore.selectedEventTypes === 'online'" :maxSelectedLabels="2" optionLabel="name" optionValue="code" placeholder="Select Continents"/>
+                <FloatLabel>
+                    <MultiSelect id="event-filter-continents" v-model="filtersStore.selectedEventContinents" :options="optionsStore.continentOptions" :disabled="filtersStore.selectedEventTypes === 'online'" :maxSelectedLabels="0" optionLabel="name" optionValue="code" placeholder="Continents"/>
+                    <label for="event-filter-continents">Continents</label>
+                </FloatLabel>
             </div>
             <div class="event-filter">
                 <!--            TODO Directly add the data to eventCountryOptions-->
-                <MultiSelect :loading="!filtersStore.countriesFetched" v-model="filtersStore.selectedEventCountries" :options="filtersStore.eventCountryOptions.data" filter display="chip" :disabled="filtersStore.selectedEventTypes === 'online' || !filtersStore.countriesFetched" :maxSelectedLabels="2" optionLabel="name" optionValue="code" placeholder="Select Countries">
-                    <template #option="slotProps">
-                        <div class="country-flag">
-                            <img v-if="slotProps.option.image" :alt="slotProps.option.name + '-image'" :src="slotProps.option.image.url" class="country-flag-image" />
-                            <div>{{ slotProps.option.name }}</div>
-                        </div>
-                    </template>
-                </MultiSelect>
+                <FloatLabel>
+                    <MultiSelect id="event-filter-countries" :loading="!filtersStore.countriesFetched" v-model="filtersStore.selectedEventCountries" :options="filtersStore.eventCountryOptions.data" filter :disabled="filtersStore.selectedEventTypes === 'online' || !filtersStore.countriesFetched" :maxSelectedLabels="0" optionLabel="name" optionValue="code" placeholder="Countries">
+                        <template #option="slotProps">
+                            <div class="country-flag">
+                                <img v-if="slotProps.option.image" :alt="slotProps.option.name + '-image'" :src="slotProps.option.image.url" class="country-flag-image" />
+                                <div>{{ slotProps.option.name }}</div>
+                            </div>
+                        </template>
+                    </MultiSelect>
+                    <label for="event-filter-countries">Countries</label>
+                </FloatLabel>
             </div>
             <div class="event-filter">
-                <InputText v-model="filtersStore.selectedEventName" placeholder="Event name"></InputText>
+                <FloatLabel>
+                    <InputText id="event-filter-name" v-model="filtersStore.selectedEventName"></InputText>
+                    <label for="event-filter-name">Event name</label>
+                </FloatLabel>
             </div>
         </div>
     </Sidebar>

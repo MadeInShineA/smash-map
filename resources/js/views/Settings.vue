@@ -302,7 +302,7 @@ function deleteAccount(){
             <!-- TODO Fix the placeholder / empty item bug -->
             <div class="setting-input-container">
                 <FloatLabel>
-                    <MultiSelect id="settings-games" class="setting-input" v-model="settings.games" :options="optionsStore.gameOptions" optionLabel="name" optionValue="id" :maxSelectedLabels="3" placeholder="Games" @click="settingsValidationErrors.games = []"/>
+                    <MultiSelect id="settings-games" class="setting-input" v-model="settings.games" :options="optionsStore.gameOptions" optionLabel="name" optionValue="id" :maxSelectedLabels="0" placeholder="Games" @click="settingsValidationErrors.games = []"/>
                     <label for="settings-games">Games</label>
                 </FloatLabel>
             </div>
@@ -317,7 +317,7 @@ function deleteAccount(){
             <!-- TODO Fix the placeholder / empty item bug -->
             <div class="setting-input-container">
                 <FloatLabel>
-                    <MultiSelect id="settings-characters" class="setting-input" :disabled="settings.games.length === 0 || !charactersFetched" :loading="!charactersFetched" v-model="settings.characters" :maxSelectedLabels="2" :options="characterOptions.data" optionLabel="name" optionValue="id" data-key="id" filter optionGroupLabel="game" optionGroupChildren="characters" placeholder="Characters" showClear @click="settingsValidationErrors.characters = []">
+                    <MultiSelect id="settings-characters" class="setting-input" :disabled="settings.games.length === 0 || !charactersFetched" :loading="!charactersFetched" v-model="settings.characters" :maxSelectedLabels="0" :options="characterOptions.data" optionLabel="name" optionValue="id" data-key="id" filter optionGroupLabel="game" optionGroupChildren="characters" placeholder="Characters" showClear @click="settingsValidationErrors.characters = []">
                         <template #option="slotProps">
                             <div class="character-option">
                                 <img :alt="slotProps.option.name" :src="slotProps.option.image.url" class="character-option-image" width="30" />
@@ -385,7 +385,7 @@ function deleteAccount(){
 
             <div class="setting-input-container">
                 <FloatLabel>
-                    <MultiSelect class="setting-input" id="settings-notifications" :options="optionsStore.notificationOptions" v-model="settings.notifications" optionLabel="name" optionValue="value" :maxSelectedLabels="3" placeholder="Notifications" @click="settingsValidationErrors.notifications = []"/>
+                    <MultiSelect class="setting-input" id="settings-notifications" :options="optionsStore.notificationOptions" v-model="settings.notifications" optionLabel="name" optionValue="value" :maxSelectedLabels="0" placeholder="Notifications" @click="settingsValidationErrors.notifications = []"/>
                     <label for="settings-notifications">Notifications</label>
                 </FloatLabel>
             </div>

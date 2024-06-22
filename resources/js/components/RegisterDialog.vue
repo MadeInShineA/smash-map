@@ -228,7 +228,7 @@ onMounted(function(){
             <!-- TODO Fix the placeholder / empty item bug -->
             <div class="modal-input-container">
                 <FloatLabel>
-                    <MultiSelect id="register-games" class="modal-input" v-model="registerUser.games" :options="optionsStore.gameOptions" optionLabel="name" optionValue="id" :maxSelectedLabels="3" placeholder="Games" @focus="registerValidationErrors.games = []"/>
+                    <MultiSelect id="register-games" class="modal-input" v-model="registerUser.games" :options="optionsStore.gameOptions" optionLabel="name" optionValue="id" :maxSelectedLabels="0" placeholder="Games" @focus="registerValidationErrors.games = []"/>
                     <label for="register-games">Games</label>
                 </FloatLabel>
             </div>
@@ -242,7 +242,7 @@ onMounted(function(){
 
             <div class="modal-input-container">
                 <FloatLabel>
-                    <MultiSelect id="register-characters" class="modal-input" :disabled="registerUser.games.length === 0" :loading="!charactersFetched" v-model="registerUser.characters" :maxSelectedLabels="2" :options="characterOptions.data" optionLabel="name"  optionValue="id" data-key="id" filter optionGroupLabel="game" optionGroupChildren="characters" placeholder="Characters" showClear @focus="registerValidationErrors.characters = []">
+                    <MultiSelect id="register-characters" class="modal-input" :disabled="registerUser.games.length === 0" :loading="!charactersFetched" v-model="registerUser.characters" :maxSelectedLabels="0" :options="characterOptions.data" optionLabel="name"  optionValue="id" data-key="id" filter optionGroupLabel="game" optionGroupChildren="characters" placeholder="Characters" showClear @focus="registerValidationErrors.characters = []">
                         <template #option="slotProps">
                             <div class="character-option">
                                 <img :alt="slotProps.option.name" :src="slotProps.option.image.url" class="character-option-image" width="30" />
