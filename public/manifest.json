@@ -5,7 +5,7 @@
     "start_url": "/",
     "background_color": "#ffffff",
     "description": "Smash Map App",
-    "display": "standalone",
+    "display": "fullscreen",
     "theme_color": "#ffffff",
     "orientation": "portrait-primary",
     "icons": [
