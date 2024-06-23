@@ -164,7 +164,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
     }
 
     curl_close($ch);
-    $events = $response?->data->tournaments->nodes;
+    $events = $response?->data->tournaments?->nodes;
 
     if(!$events){
         Log::info('No events found');

@@ -42,10 +42,10 @@
             instanceId: '{{ env('PUSHER_BEAMS_INSTANCE_ID') }}',
         });
 
-        beamsClient.start()
-            .then(() => beamsClient.addDeviceInterest('hello'))
-            .then(() => console.log('Successfully registered and subscribed!'))
-            .catch(console.error);
+        // beamsClient.start()
+        //     .then(() => beamsClient.addDeviceInterest('hello'))
+        //     .then(() => console.log('Successfully registered and subscribed!'))
+        //     .catch(console.error);
     </script>
 
 
