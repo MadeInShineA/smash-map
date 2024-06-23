@@ -4,7 +4,7 @@ export default { name:'map'}
 
 <script setup>
 import {GoogleMap, CustomControl, Marker, MarkerCluster, InfoWindow ,Circle} from "vue3-google-map";
-import {onMounted, ref, watch} from "vue";
+import {nextTick, onActivated, onMounted, ref, watch} from "vue";
 import AddressFilterSidebar from "@/components/AddressFilterSidebar.vue";
 import Button from "primevue/button";
 import LoaderComponent from "@/components/LoaderComponent.vue";
@@ -155,6 +155,13 @@ onMounted(()=>{
             zoom.value = mapRef.value.map.getZoom()
         }
     }, {immediate: false})
+})
+
+onActivated(() => {
+    center.value = userStore.user.data.settings.address
+    circleCenter.value = userStore.user.data.settings.address
+    distanceNotificationsRadius.value = userStore.user.data.settings.distanceNotificationsRadius
+    isCircleVisible.value = userStore.user.data.settings.hasDistanceNotifications
 })
 
 
