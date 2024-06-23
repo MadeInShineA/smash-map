@@ -39,25 +39,9 @@ const menuItems = ref([
         route: '/map'
     },
     {
-        label: 'Calendar',
-        icon: 'pi pi-fw pi-calendar',
-        route: '/calendar'
-    },
-    {
         label: 'Events',
         icon: 'pi pi-fw pi-sitemap',
-        items: [
-            {
-                label: 'Create',
-                icon: 'pi pi-fw pi-plus',
-                route: '/create-event'
-            },
-            {
-                label: 'Browse',
-                icon: 'pi pi-fw pi-search',
-                route: '/events'
-            },
-        ]
+        route: '/events',
     },
     {
         label: 'About',

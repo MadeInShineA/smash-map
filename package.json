@@ -21,7 +21,6 @@
         "pinia": "^2.1.6",
         "primeicons": "^7.0.0",
         "primevue": "^3.29.1",
-        "qalendar": "^2.5.0",
         "sweetalert2": "^11.7.16",
         "vue": "^3.2.36",
         "vue-loader": "^17.0.1",

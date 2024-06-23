@@ -6,7 +6,6 @@ import App from './App.vue'
 import LoaderComponent from './components/LoaderComponent.vue';
 import {router} from'./router'
 import PrimeVue from 'primevue/config';
-import {Qalendar} from "qalendar";
 import { createPinia } from 'pinia'
 import BadgeDirective from 'primevue/badgedirective';
 import ToastService from 'primevue/toastservice';
@@ -137,8 +136,6 @@ app.use(PrimeVue, {locale: {
         }
     }
 })
-
-app.use(Qalendar)
 
 const pinia = createPinia()
 app.use(pinia)
