@@ -51,7 +51,7 @@ Artisan::command('delete-events', function(){
     $events = Event::all();
     $current_time = Carbon::now('UTC');
     foreach ($events as $event){
-        $end_date_time = Carbon::parse($this->end_date_time, 'UTC');
+        $end_date_time = Carbon::parse($event->end_date_time, 'UTC');
         if ($end_date_time < $current_time){
             $image = $event->image;
             if($image && !$event->notifications()->exists()){
