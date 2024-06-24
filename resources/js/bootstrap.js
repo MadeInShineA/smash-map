@@ -38,7 +38,7 @@ window.Echo = new Echo({
     wsPort: import.meta.env.VITE_PUSHER_PORT,
     cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
     disableStats: true,
-    forceTLS: false, // Critical if you want to use a non-secure WebSocket connection
+    forceTLS: true,
     enabledTransports: ['ws', 'wss'],
     authorizer: (channel, options) => {
         return{
