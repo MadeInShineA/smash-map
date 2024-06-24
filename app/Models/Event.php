@@ -63,19 +63,19 @@ class Event extends Model
     ##TODO Check if the date time from the start gg api are in UTC or in the timezone of the event
     public function getTimezoneStartDateTimeAttribute() :string
     {
-        return Carbon::parse($this->start_date_time, $this->timezone)->timezone($this->address?->country?->timezone)->format('d-m-Y H:i:s');
+        return Carbon::parse($this->start_date_time)->setTimezone($this->timezone)->format('d-m-Y H:i:s');
     }
 
     public function getTimezoneEndDateTimeAttribute(): string
     {
-        $start_date = Carbon::parse($this->start_date_time, $this->timezone)->format('Y-m-d');
+        $start_date = Carbon::parse($this->start_date_time, )->setTimezone($this->timezone);
 
-        $end_date = Carbon::parse($this->end_date_time, $this->timezone)->format('Y-m-d');
+        $end_date = Carbon::parse($this->end_date_time)->setTimezone($this->timezone);
 
-        if($start_date === $end_date){
-            return Carbon::parse($this->end_date_time, $this->timezone)->format('H:i:s');
+        if($start_date->isSameDay($end_date)){
+            return Carbon::parse($this->end_date_time)->setTimezone($this->timezone)->format('H:i:s');
         }
-        return Carbon::parse($this->end_date_time, $this->timezone)->format('d-m-Y H:i:s');
+        return Carbon::parse($this->end_date_time)->setTimezone($this->timezone)->format('d-m-Y H:i:s');
     }
 
     public function getTimezoneLabelAttribute()

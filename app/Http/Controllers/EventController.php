@@ -16,20 +16,8 @@ use Illuminate\Support\Facades\DB;
 
 class EventController extends Controller
 {
-    #TODO Return timezone as well to avoid a double api call
-    # Avoid calling the getTimeZone every fetch ?
     public function index(Request $request): AnonymousResourceCollection | JsonResponse
     {
-
-        #TODO Update the timezone based on the user's IP
-
-//        try {
-//            $timeZone = $this->getVisitorTimezone($request);
-//
-//        }catch (Exception $exception){
-//            $timeZone = 'UTC';
-//        }
-
         try {
             $events = Event::query();
 

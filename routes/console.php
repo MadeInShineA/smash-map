@@ -49,9 +49,10 @@ Artisan::command('delete-addresses', function (){
 // TODO Test correctly
 Artisan::command('delete-events', function(){
     $events = Event::all();
-    $current_time = date('Y-m-d H:i:s');
+    $current_time = Carbon::now('UTC');
     foreach ($events as $event){
-        if ($event->end_date_time < $current_time){
+        $end_date_time = Carbon::parse($this->end_date_time, 'UTC');
+        if ($end_date_time < $current_time){
             $image = $event->image;
             if($image && !$event->notifications()->exists()){
                 $image_directory_path = base_path(). '/storage/app/public/events-images/' . Str::slug($event->name);
