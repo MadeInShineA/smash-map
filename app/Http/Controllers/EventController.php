@@ -26,7 +26,7 @@ class EventController extends Controller
                 $endDate = $request->input('endDate');
 
                 if ($startDate !== 'default' && $endDate !== 'default'){
-                    $events->whereDate('end_date_time', '>=', $startDate)->whereDate('end_date_time', '<=', $endDate);
+                    $events->whereDate('start_date_time', '<=', $startDate)->whereDate('end_date_time', '>=', $endDate);
                 }
             }
 

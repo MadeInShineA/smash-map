@@ -120,7 +120,7 @@ class AddressController extends Controller
 
                 if ($startDate !== 'default' && $endDate !== 'default'){
                     $addresses->whereHas('events', function ($query) use ($startDate, $endDate){
-                        $query->whereDate('start_date_time', '>=', $startDate)->whereDate('end_date_time', '<=', $endDate);
+                        $query->whereDate('start_date_time', '<=', $startDate)->whereDate('end_date_time', '>=', $endDate);
                     });
                 }
             }
