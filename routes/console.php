@@ -293,7 +293,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                     $end_date->format('Y-m-d H:i:s');
                     $end_date->setTimestamp($event->endAt);
 
-                    if ($start_date > $end_date){
+                    if ($start_date > $end_date || $end_date < Carbon::now('UTC')){
                         continue;
                     }
 

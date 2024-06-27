@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Address\MapAddressResource;
 use App\Models\Address;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -118,11 +119,29 @@ class AddressController extends Controller
                 $startDate = $request->input('startDate');
                 $endDate = $request->input('endDate');
 
-                if ($startDate !== 'default' && $endDate !== 'default'){
-                    $addresses->whereHas('events', function ($query) use ($startDate, $endDate){
-                        $query->whereDate('start_date_time', '<=', $startDate)->whereDate('end_date_time', '>=', $endDate);
+                if ($startDate !== 'default' && $endDate !== 'default') {
+                    $startDateUTC = Carbon::parse($startDate)->startOfDay()->toDateTimeString();
+                    $endDateUTC = Carbon::parse($endDate)->endOfDay()->toDateTimeString();
+
+                    $addresses->whereHas('events', function ($query) use ($startDateUTC, $endDateUTC) {
+                        $query->where(function ($subQuery) use ($startDateUTC, $endDateUTC) {
+                            // Events that start and end within the date range
+                            $subQuery->whereBetween('start_date_time', [$startDateUTC, $endDateUTC])
+                                ->orWhereBetween('end_date_time', [$startDateUTC, $endDateUTC])
+                                // Events that start before the date range and end within it
+                                ->orWhere(function ($query) use ($startDateUTC, $endDateUTC) {
+                                    $query->where('start_date_time', '<', $startDateUTC)
+                                        ->where('end_date_time', '>=', $startDateUTC);
+                                })
+                                // Events that start within the date range and end after it
+                                ->orWhere(function ($query) use ($startDateUTC, $endDateUTC) {
+                                    $query->where('start_date_time', '<=', $endDateUTC)
+                                        ->where('end_date_time', '>', $endDateUTC);
+                                });
+                        });
                     });
                 }
+
             }
 
             // TODO Fix when combined with the continents or other filters

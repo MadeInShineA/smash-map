@@ -6,6 +6,7 @@ use App\Enums\GameEnum;
 use App\Http\Resources\Event\EventCalendarResource;
 use App\Http\Resources\Event\EventResource;
 use App\Models\Event;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -25,8 +26,22 @@ class EventController extends Controller
                 $startDate = $request->input('startDate');
                 $endDate = $request->input('endDate');
 
-                if ($startDate !== 'default' && $endDate !== 'default'){
-                    $events->whereDate('start_date_time', '<=', $startDate)->whereDate('end_date_time', '>=', $endDate);
+                if ($startDate !== 'default' && $endDate !== 'default') {
+                    $startDateUTC = Carbon::parse($startDate)->startOfDay()->toDateTimeString();
+                    $endDateUTC = Carbon::parse($endDate)->endOfDay()->toDateTimeString();
+
+                    $events->where(function ($query) use ($startDateUTC, $endDateUTC) {
+                        $query->whereBetween('start_date_time', [$startDateUTC, $endDateUTC])
+                            ->orWhereBetween('end_date_time', [$startDateUTC, $endDateUTC])
+                            ->orWhere(function ($query) use ($startDateUTC, $endDateUTC) {
+                                $query->where('start_date_time', '<', $startDateUTC)
+                                    ->where('end_date_time', '>=', $startDateUTC);
+                            })
+                            ->orWhere(function ($query) use ($startDateUTC, $endDateUTC) {
+                                $query->where('start_date_time', '<=', $endDateUTC)
+                                    ->where('end_date_time', '>', $endDateUTC);
+                            });
+                    });
                 }
             }
 
