@@ -138,7 +138,7 @@ watch(() => props.darkMode, (newValue) => {
 
             <h2>How does Smash Map work?</h2>
             <p>
-                Every 5 minutes Smash Map fetches the <a href="https://www.start.gg/" target="_blank">start.gg</a> data for the next 500 events in the different games.
+                Every 10 minutes Smash Map fetches the <a href="https://www.start.gg/" target="_blank">start.gg</a> data for the next 500 events in the different games.
             </p>
             <p>
                 Website users can then find events directly on the <router-link to="/map">map page</router-link> or on the <router-link to="/events">events page</router-link>.

@@ -229,6 +229,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                         }
 
 
+                        # TODO Testing
                         if ($user->has_time_notifications){
 
                             $user_time_notifications_thresholds = $user->time_notifications_thresholds;
@@ -242,7 +243,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                                     if($days_between_last_notification_data_and_event_date < $user_time_notifications_threshold && $days_until_event >= $user_time_notifications_threshold){
                                         $send_notification = true;
                                     }
-                                }elseif($days_until_event <= $user_time_notifications_threshold){
+                                }elseif($days_until_event == $user_time_notifications_threshold){
                                     $send_notification = true;
                                 }
 
@@ -252,11 +253,11 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
 
                                     $message = null;
                                     if($days_until_event === 0) {
-                                        $message = 'The Event: <a href="' . $event_model_instance->link . '"target="blank">' . $event_model_instance->name . '</a> is happening today!';
+                                        $message = 'The Event: <a href="' . $event_model_instance->link . '"target="blank">' . $event_model_instance->name . '</a> starts today!';
                                     }elseif ($days_until_event === 1){
-                                        $message = 'The Event: <a href="' . $event_model_instance->link  .'"target="blank">' . $event_model_instance->name . '</a> is happening in ' . $days_until_event . ' day!';
+                                        $message = 'The Event: <a href="' . $event_model_instance->link  .'"target="blank">' . $event_model_instance->name . '</a> starts in ' . $days_until_event . ' day!';
                                     }else{
-                                        $message = 'The Event: <a href="' . $event_model_instance->link  .'"target="blank">' . $event_model_instance->name . '</a> is happening in ' . $days_until_event . ' days!';
+                                        $message = 'The Event: <a href="' . $event_model_instance->link  .'"target="blank">' . $event_model_instance->name . '</a> starts in ' . $days_until_event . ' days!';
                                     }
 
                                     $image = $event_model_instance->image?->url;
