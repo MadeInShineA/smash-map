@@ -505,9 +505,9 @@ Artisan::command('setup', function(){
 //   Artisan::call('import-100-events-all-games');
 });
 
-Artisan::command('test-push-notification', function(){
+Artisan::command('test-push-notification {username}', function(string $username){
     $notification = Notification::first();
-    $user = User::first();
+    $user = User::where("username", $username)->first();
 
     $user->notify(new PushNotification($notification));
 });
