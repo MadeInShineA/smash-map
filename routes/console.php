@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Pusher\PushNotifications\PushNotifications;
 
 
 /*
@@ -223,6 +224,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                                     }
                                     $notification = Notification::create(['event_id' => $event_model_instance->id, 'game_id' => $event_model_instance->game_id, 'user_id' => $user->id, 'message' => $message, 'type' => NotificationTypeEnum::ATTENDEES, 'image_url' => $image]);
 //                                    broadcast(new NotificationEvent($notification, $user));
+                                    $user->notify(new PushNotification($notification));
                                     break;
                                 }
                             }
@@ -268,6 +270,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
 
                                     $notification = Notification::create(['event_id' => $event_model_instance->id, 'game_id' => $event_model_instance->game_id, 'user_id' => $user->id, 'message' => $message, 'type' => NotificationTypeEnum::TIME, 'image_url' => $image]);
 //                                    broadcast(new NotificationEvent($notification, $user));
+                                    $user->notify(new PushNotification($notification));
                                     break;
                                 }
                             }
@@ -408,6 +411,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                                         $image = URL::to('/storage/map-icons/' . $event_model_instance->game->name . '.png');
                                     }
                                     $notification = Notification::create(['event_id' => $event_model_instance->id, 'game_id' => $event_model_instance->game_id, 'user_id' => $user->id, 'message' => $message, 'type' => NotificationTypeEnum::DISTANCE, 'image_url' => $image]);
+                                    $user->notify(new PushNotification($notification));
 //                                    broadcast(new NotificationEvent($notification, $user));
                                 }
                             }
@@ -503,5 +507,7 @@ Artisan::command('setup', function(){
 
 Artisan::command('test-push-notification', function(){
     $notification = Notification::first();
-    \Illuminate\Support\Facades\Notification::send(User::first(), new PushNotification($notification));
+    $user = User::first();
+
+    $user->notify(new PushNotification($notification));
 });

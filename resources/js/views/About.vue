@@ -6,13 +6,12 @@
 <template>
     <div id="about-container">
         <h1 id="about-title">About Me</h1>
-        <a href="https://linktr.ee/bluerosetori" target="_blank">
-            <figure>
-                <img id="about-image" src="/resources/images/about.jpeg" alt="About Image">
-                <figcaption>Picture by Tori Hamilton</figcaption>
-            </figure>
-        </a>
-
+        <figure>
+            <img id="about-image" src="/resources/images/about.jpeg" alt="About Image">
+            <figcaption>
+                <a href="https://linktr.ee/bluerosetori" target="_blank">Picture by Tori Hamilton</a>
+            </figcaption>
+        </figure>
         <div>
             <p>
                 Hey! I'm MadeInShineA, a Super Smash Bros. Melee player from Switzerland.

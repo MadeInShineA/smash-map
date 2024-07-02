@@ -38,6 +38,7 @@ Route::middleware(['auth:sanctum'])->group(function (){
     Route::post('/events/{event}/subscribe', [EventController::class, 'event_subscribe']);
     Route::post('/events/{event}/unsubscribe', [EventController::class, 'event_unsubscribe']);
     Route::get('/users/{user}/check-authentication', [UserController::class, 'check_authentication']);
+    Route::get('/beams-auth-endpoint', [UserController::class, 'beams_auth_endpoint']);
     Route::middleware(['check-authentication'])->group(function(){
         Route::delete('/users/{user}', [UserController::class, 'destroy']);
         Route::get('/users/{user}/notifications/count', [NotificationController::class, 'get_notifications_count']);

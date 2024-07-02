@@ -4,10 +4,7 @@ namespace App\Notifications;
 
 use App\Enums\GameEnum;
 use App\Enums\NotificationTypeEnum;
-use http\Url;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use NotificationChannels\PusherPushNotifications\PusherChannel;
 use NotificationChannels\PusherPushNotifications\PusherMessage;

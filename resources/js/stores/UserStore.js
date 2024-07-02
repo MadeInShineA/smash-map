@@ -5,12 +5,17 @@ import {useEventFiltersStore} from "../stores/EventFiltersStore.js";
 import axios from "axios";
 import {router} from "@/router.js";
 import Swal from "sweetalert2";
+import * as PusherPushNotifications from "@pusher/push-notifications-web";
 
 
 export const useUserStore = defineStore('user', function (){
 
     const addressesFilterStore = useAddressFiltersStore()
     const eventsFilterStore = useEventFiltersStore()
+
+    const beamsClient = new PusherPushNotifications.Client({
+        instanceId: import.meta.env.VITE_PUSHER_BEAMS_INSTANCE_ID,
+    });
 
     const initialUserState = {
         id: null,
@@ -62,6 +67,32 @@ export const useUserStore = defineStore('user', function (){
     function unsubscribeToNotifications(){
         Echo.leave(`notifications.` + user.data.id)
     }
+
+    function subscribeToPushNotifications(){
+
+        const beamsTokenProvider = new PusherPushNotifications.TokenProvider({
+            url: import.meta.env.VITE_PUSHER_BEAMS_AUTH_ENDPOINT,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+            },
+        });
+
+        beamsClient
+            .start()
+
+            // App.Models.User.1 is required for the laravel-notification-channels/pusher-push-notifications package
+            .then(() => beamsClient.setUserId("App.Models.User." + user.data.id, beamsTokenProvider))
+            .then(() => { console.log('Beams client has started') })
+            .catch(console.error);
+    }
+
+    function unsubscribeToPushNotifications(){
+        beamsClient.stop().then(() => {
+            console.log('Beams client has stopped')
+        }).catch(console.error)
+    }
     async function login(loginUser) {
 
         const header = {
@@ -76,6 +107,7 @@ export const useUserStore = defineStore('user', function (){
         localStorage.setItem('tokenTime', new Date().toString());
         fetchNotificationsCount()
         subscribeToNotifications()
+        subscribeToPushNotifications()
         if (router.currentRoute.value.path === '/map') {
             addressesFilterStore.fetchAddressesWithFilters()
         } else if (router.currentRoute.value.path === '/events') {
@@ -100,6 +132,7 @@ export const useUserStore = defineStore('user', function (){
         localStorage.setItem('accessToken', response.data.data.token)
         localStorage.setItem('tokenTime', new Date().toString());
         subscribeToNotifications()
+        subscribeToPushNotifications()
         fetchNotificationsCount()
         if(router.currentRoute.value.path === '/map'){
             addressesFilterStore.fetchAddressesWithFilters()
@@ -113,6 +146,7 @@ export const useUserStore = defineStore('user', function (){
     async function logout() {
         const response = await axios.post('/api/logout');
         unsubscribeToNotifications()
+        unsubscribeToPushNotifications()
         localStorage.removeItem('userData');
         user.data = initialUserState
         notificationsCount.value = 0
@@ -343,7 +377,6 @@ export const useUserStore = defineStore('user', function (){
         user,
         notificationsCount,
         notificationsCountFetched,
-        setUser,
         subscribeToNotifications,
         toast,
         login,

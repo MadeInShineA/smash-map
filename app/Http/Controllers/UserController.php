@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\ImageManager;
+use Pusher\PushNotifications\PushNotifications;
 
 class UserController extends Controller
 {
@@ -224,6 +225,28 @@ class UserController extends Controller
 
         }catch (\Error $error) {
             return $this->sendError('An error occurred while updating the profile E 018', [$error], 500);
+        }
+    }
+
+    public function beams_auth_endpoint(Request $request): JsonResponse
+    {
+        $sanctumUserId = $request->user('sanctum')->id;
+        $inputUserId = $request->input('user_id');
+
+        // This is needed due to the laravel-notification-channels/pusher-push-notifications package
+        $sanctumUserId = 'App.Models.User.' . $sanctumUserId;
+
+        if ($sanctumUserId != $inputUserId) {
+            return $this->sendError('Unauthorized E 021', [], 401);
+        }else {
+
+            $beamsClient = new PushNotifications([
+                "instanceId" => env('PUSHER_BEAMS_INSTANCE_ID'),
+                "secretKey" => env('PUSHER_BEAMS_SECRET_KEY'),
+            ]);
+
+            $beamsToken = $beamsClient->generateToken($sanctumUserId);
+            return response()->json($beamsToken);
         }
     }
 }

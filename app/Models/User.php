@@ -25,10 +25,12 @@ class User extends Authenticatable
      * @var array<int, string>
      */
 
-    public function routeNotificationForPusherPushNotifications($notification): string
-    {
-        return 'hello';
-    }
+//    public function routeNotificationForPusherPushNotifications($notification): string
+//    {
+//        return 'hello';
+//    }
+
+    public $pushNotificationType = 'users';
     protected $fillable = [
         'uuid',
         'username',
