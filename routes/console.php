@@ -511,3 +511,9 @@ Artisan::command('test-push-notification {username}', function(string $username)
 
     $user->notify(new PushNotification($notification));
 });
+
+Artisan::command('test-ws-notification {username}', function(string $username){
+    $notification = Notification::first();
+    $user = User::where("username", $username)->first();
+    broadcast(new NotificationEvent($notification, $user));
+});
