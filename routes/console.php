@@ -200,7 +200,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
 
             if($game_event){
 
-                $event_model_instance = Event::where('start_gg_id', $start_gg_id)->where('game_id', $game_id)->first();
+                $event_model_instance = Event::withoutGlobalScope(ShownScope::class)->where('start_gg_id', $start_gg_id)->where('game_id', $game_id)->first();
                 $event_old_attendees = null;
                 if($event_model_instance && $event_model_instance->show){
                     $event_old_attendees = $event_model_instance->attendees;
