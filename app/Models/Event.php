@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\ImageTypeEnum;
+use App\Models\Scopes\ShownScope;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -33,6 +34,7 @@ class Event extends Model
         'attendees',
         'link',
         'timezone',
+        'show',
     ];
 
     public function game():BelongsTo
@@ -110,5 +112,14 @@ class Event extends Model
             $query->whereIn('code', $continents);
         });
     }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+       static::addGlobalScope(new ShownScope());
+    }
+
+
 
 }

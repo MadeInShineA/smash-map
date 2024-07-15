@@ -10,6 +10,7 @@ use App\Models\Country;
 use App\Models\Event;
 use App\Models\Image;
 use App\Models\Notification;
+use App\Models\Scopes\ShownScope;
 use App\Models\User;
 use App\Notifications\PushNotification;
 use Carbon\Carbon;
@@ -36,7 +37,7 @@ use Pusher\PushNotifications\PushNotifications;
 Artisan::command('delete-addresses', function (){
     $addresses = Address::all();
     foreach ($addresses as $address) {
-        $event_count = $address->events->count();
+        $event_count = $address->events()->withoutGlobalScope(ShownScope::class)->count();
         $user_count = $address->users->count();
 
         if ($event_count === 0 && $user_count === 0){
@@ -56,7 +57,8 @@ Artisan::command('delete-events', function(){
         if ($end_date_time < $current_time){
             $image = $event->image;
             if($image && !$event->notifications()->exists()){
-                $image_directory_path = base_path(). '/storage/app/public/events-images/' . Str::slug($event->name);
+                $event_file_slug = Str::slug($event->name)?? Str::slug('id-' . $event->id);
+                $image_directory_path = base_path(). '/storage/app/public/events-images/' . $event_file_slug;
                 File::deleteDirectory($image_directory_path);
                 $image->delete();
                 Log::info('Image for:' . $event->name . ' deleted');
@@ -200,7 +202,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
 
                 $event_model_instance = Event::where('start_gg_id', $start_gg_id)->where('game_id', $game_id)->first();
                 $event_old_attendees = null;
-                if($event_model_instance){
+                if($event_model_instance && $event_model_instance->show){
                     $event_old_attendees = $event_model_instance->attendees;
                     $event_attendees = $game_event->numEntrants;
                     $event_model_instance->attendees = $event_attendees;
@@ -210,6 +212,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                     $days_until_event = $event_date->diffInDays(Carbon::now());
 
                     foreach($event_model_instance->subscribed_users()->get() as $user){
+                        # TODO Fix the notifications
                         if($user->has_attendees_notifications){
                             $user_attendees_notifications_thresholds = $user->attendees_notifications_thresholds;
                             foreach ($user_attendees_notifications_thresholds as $user_attendees_notifications_threshold){
@@ -277,7 +280,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                         }
                     }
                 }
-                if(!$event_model_instance || $event_model_instance->start_gg_updated_at < $start_gg_updated_at){
+                if(!$event_model_instance || ($event_model_instance->start_gg_updated_at < $start_gg_updated_at && $event_model_instance->show)){
                     $is_online = $game_event->isOnline;
                     $name = $event->name;
                     $timezone = $event->timezone;
@@ -345,7 +348,8 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                         }
                     }
 
-                    $event_directory_path = '/events-images/' . Str::slug($event->name);
+                    $event_file_slug = Str::slug($event->name)?? Str::slug('id-' . $event->id);
+                    $event_directory_path = '/events-images/' . $event_file_slug;
 
 //                $event_db_md5s = $event_model_instance->images->pluck('md5')->toArray();
 
@@ -369,12 +373,13 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                     if($image){
                         $image_type = $image->type == 'profile'? ImageTypeEnum::EVENT_PROFILE : ImageTypeEnum::EVENT_BANNER;
 
-                        $image_file = file_get_contents($image->url);
-                        if (!$image_file){
+                        $image_file = null;
+                        try {
+                            $image_file = file_get_contents($image->url);
+                        }catch (Exception $e){
                             Log::error("Event" . $event->name . " : Image ". $image->url . " couldn't be retrieved");
-//                            var_dump("Event" . $event->name . " : Image ". $image->url . " couldn't be retrieved");
-                            die();
-                        }else{
+                        }
+                        if($image_file){
                             $image_md5 = md5($image_file);
                             $event_model_instance_old_image = $event_model_instance->image;
                             if($event_model_instance_old_image && $event_model_instance_old_image->md5 === $image_md5){
