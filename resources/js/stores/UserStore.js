@@ -13,9 +13,17 @@ export const useUserStore = defineStore('user', function (){
     const addressesFilterStore = useAddressFiltersStore()
     const eventsFilterStore = useEventFiltersStore()
 
-    // const beamsClient = new PusherPushNotifications.Client({
-    //     instanceId: import.meta.env.VITE_PUSHER_BEAMS_INSTANCE_ID,
-    // });
+    let beamsClient = null
+
+    try{
+        beamsClient = new PusherPushNotifications.Client({
+            instanceId: import.meta.env.VITE_PUSHER_BEAMS_INSTANCE_ID,
+        });
+    }catch (error){
+        console.log(error)
+    }
+
+
 
     const initialUserState = {
         id: null,
@@ -78,20 +86,23 @@ export const useUserStore = defineStore('user', function (){
                 'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
             },
         });
+        if(beamsClient){
+            beamsClient
+                .start()
 
-        beamsClient
-            .start()
-
-            // App.Models.User.1 is required for the laravel-notification-channels/pusher-push-notifications package
-            .then(() => beamsClient.setUserId("App.Models.User." + user.data.id, beamsTokenProvider))
-            .then(() => { console.log('Beams client has started') })
-            .catch(console.error);
+                // App.Models.User.1 is required for the laravel-notification-channels/pusher-push-notifications package
+                .then(() => beamsClient.setUserId("App.Models.User." + user.data.id, beamsTokenProvider))
+                .then(() => { console.log('Beams client has started') })
+                .catch(console.error);
+        }
     }
 
     function unsubscribeToPushNotifications(){
-        beamsClient.stop().then(() => {
-            console.log('Beams client has stopped')
-        }).catch(console.error)
+        if(beamsClient){
+            beamsClient.stop().then(() => {
+                console.log('Beams client has stopped')
+            }).catch(console.error)
+        }
     }
     async function login(loginUser) {
 
