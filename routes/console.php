@@ -259,7 +259,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                             foreach ($user_time_notifications_thresholds as $user_time_notifications_threshold){
                                 $send_notification = false;
 
-                                if($days_until_event_when_subscribed >= $user_time_notifications_threshold){
+                                if($days_until_event_when_subscribed <= $user_time_notifications_threshold){
                                     continue;
                                 }
 
