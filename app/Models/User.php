@@ -99,7 +99,7 @@ class User extends Authenticatable
 
     public function subscribed_events(): BelongsToMany
     {
-        return  $this->belongsToMany(Event::class, 'relation_event_user', 'user_id', 'event_id')->withPivot('original_attendees');
+        return  $this->belongsToMany(Event::class, 'relation_event_user', 'user_id', 'event_id')->withTimestamps()->withPivot('original_attendees');
     }
 
     public function characters(): BelongsToMany
