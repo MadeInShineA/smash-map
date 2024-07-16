@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('notification', function (Blueprint $table) {
+        Schema::table('notifications', function (Blueprint $table) {
             $table->integer('attendees')->nullable()->after('type');
         });
     }
