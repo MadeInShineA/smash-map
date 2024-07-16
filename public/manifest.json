@@ -14,14 +14,12 @@
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "any",
-            "background_color": "#ffffff"
         },
         {
             "src": "/images/logo-512.png",
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "maskable",
-            "background_color": "#ffffff"
         }
     ],
     "dir": "ltr",
