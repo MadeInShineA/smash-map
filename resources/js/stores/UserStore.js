@@ -13,9 +13,9 @@ export const useUserStore = defineStore('user', function (){
     const addressesFilterStore = useAddressFiltersStore()
     const eventsFilterStore = useEventFiltersStore()
 
-    const beamsClient = new PusherPushNotifications.Client({
-        instanceId: import.meta.env.VITE_PUSHER_BEAMS_INSTANCE_ID,
-    });
+    // const beamsClient = new PusherPushNotifications.Client({
+    //     instanceId: import.meta.env.VITE_PUSHER_BEAMS_INSTANCE_ID,
+    // });
 
     const initialUserState = {
         id: null,
