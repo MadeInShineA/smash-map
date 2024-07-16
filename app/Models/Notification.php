@@ -16,6 +16,7 @@ class Notification extends Model
         'game_id',
         'user_id',
         'type',
+        'attendees',
         'message',
         'image_url',
         'seen'

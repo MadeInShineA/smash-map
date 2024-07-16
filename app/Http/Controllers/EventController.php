@@ -209,7 +209,7 @@ class EventController extends Controller
     {
         try{
             $user =request()->user();
-            $user->subscribed_events()->attach($event);
+            $user->subscribed_events()->attach($event, ['original_attendees' => $event->attendees?? 0]);
             return $this->sendResponse([], 'Event followed with success');
         }catch (\Error $error) {
             return $this->sendError($error, ['An error occurred while following the event E 016'], 500);
