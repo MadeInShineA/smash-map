@@ -26,12 +26,12 @@ const props = defineProps({
 const emit = defineEmits(['switchShowLoginModal', 'setUser'])
 
 const loginUser = ref({
-    username: '',
+    usernameOrEmail: '',
     password: ''
 })
 
 const loginValidationErrors = ref({
-    username: [],
+    usernameOrEmail: [],
     password: [],
     login:[]
 })
@@ -42,7 +42,7 @@ const login = async function () {
     axios.get('/sanctum/csrf-cookie').then(async () => {
         try {
             await userStore.login(loginUser.value).then(async function (response) {
-                loginUser.value.username = ''
+                loginUser.value.usernameOrEmail = ''
                 loginUser.value.password = ''
                 emit('switchShowLoginModal')
                 const alertBackground = props.darkMode ? '#1C1B22' : '#FFFFFF'
@@ -140,14 +140,14 @@ const sendPasswordLink = async function () {
         <div v-if="!showForgetPasswordInputs">
             <div class="modal-input-container">
                 <FloatLabel>
-                    <InputText id="login-username" class="modal-input" v-model="loginUser.username" autofocus @focus="loginValidationErrors.username = []"/>
-                    <label for="login-username">Username</label>
+                    <InputText id="login-login" class="modal-input" v-model="loginUser.usernameOrEmail" autofocus @focus="loginValidationErrors.usernameOrEmail = []"/>
+                    <label for="login-login">Username | Email</label>
                 </FloatLabel>
             </div>
             <div class="validation-errors">
                 <TransitionGroup name="errors">
-                    <template v-for="loginUsernameError in loginValidationErrors.username" :key="loginUsernameError" class="validation-errors">
-                        <div class="validation-error">{{loginUsernameError}}</div>
+                    <template v-for="loginUsernameOrEmailError in loginValidationErrors.usernameOrEmail" :key="loginUsernameOrEmailError" class="validation-errors">
+                        <div class="validation-error">{{loginUsernameOrEmailError}}</div>
                     </template>
                 </TransitionGroup>
             </div>

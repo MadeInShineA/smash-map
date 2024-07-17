@@ -19,10 +19,25 @@ import FloatLabel from "primevue/floatlabel";
 import Slider from "primevue/slider";
 import InputText from "primevue/inputtext";
 import Swal from "sweetalert2";
+import {useRoute} from "vue-router";
 
 const props = defineProps({
-    responsiveMenuDisplayed: Boolean,
-    darkMode: Boolean
+    responsiveMenuDisplayed: {
+        type: Boolean,
+        required: true
+    },
+    darkMode: {
+        type: Boolean,
+        required: true
+    },
+    lat: {
+        type: String,
+        required: false
+    },
+    lng: {
+        type: String,
+        required: false
+    }
 })
 
 const addressStore = useAddressesStore()
@@ -40,6 +55,10 @@ const switchSideBarVisible = function (){
 }
 
 const center = ref(userStore.user.data.settings.address)
+
+
+
+
 const circleCenter = ref(userStore.user.data.settings.address)
 const distanceNotificationsRadius = ref(userStore.user.data.settings.distanceNotificationsRadius)
 const isCircleVisible = ref(userStore.user.data.settings.hasDistanceNotifications)
@@ -62,6 +81,11 @@ const zoom = ref(4);
 const infoWindows = ref([]);
 const mapRef = ref();
 const openedInfoWindowIndex = ref()
+
+if(props.lat && props.lng){
+    center.value = {lat: parseFloat(props.lat), lng: parseFloat(props.lng)}
+    zoom.value = 10
+}
 
 const openInfoWindow = (i) => {
     openedInfoWindowIndex.value = i
@@ -162,7 +186,15 @@ onActivated(() => {
     circleCenter.value = userStore.user.data.settings.address
     distanceNotificationsRadius.value = userStore.user.data.settings.distanceNotificationsRadius
     isCircleVisible.value = userStore.user.data.settings.hasDistanceNotifications
-})
+
+    if(props.lat && props.lng){
+        center.value = {lat: parseFloat(props.lat), lng: parseFloat(props.lng)}
+        zoom.value = 10
+        if(mapRef.value){
+            mapRef.value.map.setCenter(center.value)
+            mapRef.value.map.setZoom(zoom.value)
+        }
+    }})
 
 
 </script>

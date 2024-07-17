@@ -46,9 +46,9 @@ watch(hasScrolledDown, function(isArrived){
     }
 })
 
-Echo.private(`notifications.` + userStore.user.data.id).listen('NotificationEvent', (notification) => {
-    notifications.value.unshift(notification)
-})
+// Echo.private(`notifications.` + userStore.user.data.id).listen('NotificationEvent', (notification) => {
+//     notifications.value.unshift(notification)
+// })
 
 
 onMounted(()=>{

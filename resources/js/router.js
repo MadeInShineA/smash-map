@@ -24,8 +24,12 @@ const routes = [
             },
             {
                 path: 'map',
+                name: 'map',
                 component: Map,
-                name:'map'
+                props: route => ({
+                    lat: route.query.lat,
+                    lng: route.query.lng
+                })
             },
             {
                 path: 'events',

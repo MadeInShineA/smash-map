@@ -67,7 +67,20 @@ class UserController extends Controller
     public function login(LoginRequest $request): JsonResponse
     {
         try {
-            if (!Auth::attempt($request->json()->all())) {
+
+            $usernameOrEmail = $request->input('usernameOrEmail');
+
+            if (filter_var($usernameOrEmail, FILTER_VALIDATE_EMAIL)) {
+                $request->merge(['email' => $usernameOrEmail]);
+                $request->merge(['password' => $request->input('password')]);
+            } else {
+                $request->merge(['username' => $usernameOrEmail]);
+                $request->merge(['password' => $request->input('password')]);
+            }
+
+            $request = $request->except('usernameOrEmail');
+
+            if (!Auth::attempt($request)) {
                 return $this->sendError('Unauthorized  E 002',
                     [
                         'login' => ['Username or password are incorrect']

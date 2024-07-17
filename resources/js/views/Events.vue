@@ -85,7 +85,11 @@ onMounted(()=>{
                                 aria-label="Notification"
                             />
                         </div>
-                        <div v-if="!event.is_online" class="event-location"><Chip :label="event.address.name" icon="pi pi-map-marker"></Chip></div>
+                        <div v-if="!event.is_online" class="event-location">
+                            <router-link :to="{ name: 'map', query: { lat: event.address.latitude, lng: event.address.longitude } }">
+                                <Chip :label="event.address.name" icon="pi pi-map-marker"></Chip>
+                            </router-link>
+                        </div>
                         <div v-else class="event-location"><Chip label="Online" icon="pi pi-globe"></Chip></div>
                         <div class="event-datetime"><Chip :label="event.timezone_start_date_time + ' / ' + event.timezone_end_date_time + ' ' + event.timezone" icon="pi pi-clock"></Chip></div>
                     </template>
