@@ -87,9 +87,9 @@ const header = ref()
 
 const headerHeight = ref()
 
-if (userStore.user.data.id) {
-    userStore.subscribeToNotifications()
-}
+// if (userStore.user.data.id) {
+//     userStore.subscribeToNotifications()
+// }
 
 const showLoginModal = ref(false)
 

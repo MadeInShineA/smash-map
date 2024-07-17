@@ -117,7 +117,7 @@ export const useUserStore = defineStore('user', function (){
         localStorage.setItem('accessToken', response.data.data.token)
         localStorage.setItem('tokenTime', new Date().toString());
         fetchNotificationsCount()
-        subscribeToNotifications()
+        // subscribeToNotifications()
         subscribeToPushNotifications()
         if (router.currentRoute.value.path === '/map') {
             addressesFilterStore.fetchAddressesWithFilters()
@@ -142,7 +142,7 @@ export const useUserStore = defineStore('user', function (){
         setUser(response.data.data.user)
         localStorage.setItem('accessToken', response.data.data.token)
         localStorage.setItem('tokenTime', new Date().toString());
-        subscribeToNotifications()
+        // subscribeToNotifications()
         subscribeToPushNotifications()
         fetchNotificationsCount()
         if(router.currentRoute.value.path === '/map'){
@@ -156,7 +156,7 @@ export const useUserStore = defineStore('user', function (){
 
     async function logout() {
         const response = await axios.post('/api/logout');
-        unsubscribeToNotifications()
+        // unsubscribeToNotifications()
         unsubscribeToPushNotifications()
         localStorage.removeItem('userData');
         user.data = initialUserState
