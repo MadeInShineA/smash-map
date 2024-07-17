@@ -42,7 +42,6 @@ export const useEventsStore = defineStore('events', function (){
                     showConfirmButton: false
                 })
                 subscriptionLoading.value = false
-                console.log(event.user_subscribed)
             })
 
     }

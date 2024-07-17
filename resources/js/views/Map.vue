@@ -89,7 +89,6 @@ if(props.lat && props.lng){
 
 const openInfoWindow = (i) => {
     openedInfoWindowIndex.value = i
-    console.log(openedInfoWindowIndex.value)
     infoWindows.value.forEach(
         (ref, index) => {
             if (index !== i) {
