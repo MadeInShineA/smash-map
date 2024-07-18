@@ -179,14 +179,6 @@ function setCanBeInstalled(){
 
 function promptInstallation(){
     canBeInstalled.value.prompt()
-    // // Wait for the user to respond to the prompt
-    // canBeInstalled.value.userChoice.then((choiceResult) => {
-    //     if (choiceResult.outcome === 'accepted') {
-    //         // Add analyticcs event
-    //         this.$gtag.event('add_to_home_screen')
-    //     }
-    //     this.deferredPrompt = null
-    // })
 }
 
 onMounted(()=>{
@@ -319,10 +311,11 @@ onMounted(()=>{
         </template>
 
         <template v-if="isIOS && canBeInstalled">
-            <Sidebar class="install-sidebar" v-model:visible="displayInstallApp" position="bottom">
-                <h2>iOS</h2>
-                <p>Our app is available on iOS</p>
-                <Button label="Download" icon="pi pi-download" />
+            <Sidebar class="install-sidebar" v-model:visible="displayInstallApp" position="bottom" header=" ">
+                <div id="android-install-sidebar-content">
+                    <p>The Smash Map app is available on IOS</p>
+                    <p>To install the app, click on the share button and click "Add to Home Screen" </p>
+                </div>
             </Sidebar>
         </template>
         <RegisterDialog :darkMode="darkMode" :showRegisterModal="showRegisterModal" @switchShowRegisterModal="switchShowRegisterModal"/>
