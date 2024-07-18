@@ -19,21 +19,8 @@
     <meta name="description" content="Smash Map is an open-source website listing competitive Super Smash Bros. events. Discover events, find players, create profiles, and receive notifications.">
     <meta name="keywords" content="Smash Map, Super Smash Bros, competitive gaming, esports, events, start.gg, game statistics, player profiles, notifications">
     <meta name="author" content="MadeInShineA">
-
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-                new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','GTM-N3ZXHKPL');</script>
-    <!-- End Google Tag Manager -->
 </head>
 <body>
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N3ZXHKPL"
-                      height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
-
     <div id="app"></div>
     @vite('resources/js/app.js')
     <script>
