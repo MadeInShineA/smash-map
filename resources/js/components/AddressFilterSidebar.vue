@@ -38,7 +38,7 @@ onMounted(()=>{
 
 <template>
     <Sidebar :visible="sideBarVisible" @update:visible="emit('switchSideBarVisible')" position="top"
-             id="address-filters-sidebar" style="text-align: center; height: min-content; max-height:100vh">
+             id="address-filters-sidebar" style="text-align: center; height: min-content; max-height:100vh" header=" ">
         <h2>Filters</h2>
         <div id="address-filters">
             <div class="address-filter">

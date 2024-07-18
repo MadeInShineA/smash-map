@@ -30,7 +30,7 @@ const emit = defineEmits(['switchSideBarVisible'])
 </script>
 
 <template>
-    <Sidebar :visible="sideBarVisible" @update:visible="emit('switchSideBarVisible')" position="top" style="text-align: center; height: min-content; max-height:100vh">
+    <Sidebar :visible="sideBarVisible" @update:visible="emit('switchSideBarVisible')" position="top" style="text-align: center; height: min-content; max-height:100vh" header=" ">
         <h2>Filters</h2>
         <div id="event-filters">
             <div class="event-filter">

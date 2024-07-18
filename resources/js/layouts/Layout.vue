@@ -310,14 +310,16 @@ onMounted(()=>{
         </Toast>
         <LoginDialog :darkMode="darkMode" :showLoginModal="showLoginModal" @switchShowLoginModal="switchShowLoginModal"/>
         <template v-if="isAndroid && canBeInstalled">
-            <Sidebar v-model:visible="displayInstallApp" position="bottom">
-                <p>The Smash Map app is available on Android</p>
-                <Button label="Download" icon="pi pi-download" @click="promptInstallation"/>
+            <Sidebar class="install-sidebar" v-model:visible="displayInstallApp" position="bottom" header=" ">
+                <div id="android-install-sidebar-content">
+                    <p>The Smash Map app is available on Android</p>
+                    <Button label="Download" icon="pi pi-download" @click="promptInstallation"/>
+                </div>
             </Sidebar>
         </template>
 
         <template v-if="isIOS && canBeInstalled">
-            <Sidebar v-model:visible="displayInstallApp" position="bottom">
+            <Sidebar class="install-sidebar" v-model:visible="displayInstallApp" position="bottom">
                 <h2>iOS</h2>
                 <p>Our app is available on iOS</p>
                 <Button label="Download" icon="pi pi-download" />
@@ -329,7 +331,6 @@ onMounted(()=>{
             <component :darkMode="darkMode" :is="Component" :responsiveMenuDisplayed="responsiveMenuDisplayed"/>
             </keep-alive>
         </router-view>
-
     </main>
 
 </template>
@@ -426,6 +427,10 @@ main{
 
 .pi-fw {
     margin-right: 0.5rem
+}
+
+#android-install-sidebar-content{
+   text-align:center;
 }
 
 
