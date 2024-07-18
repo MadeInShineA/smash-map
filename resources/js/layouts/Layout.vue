@@ -314,7 +314,7 @@ onMounted(()=>{
             </Sidebar>
         </template>
 
-        <template v-if="isIOS && canBeInstalledAndroid && !isInstalledIOS">
+        <template v-if="isIOS && canBeInstalledIOS && !isInstalledIOS">
             <Sidebar class="install-sidebar" v-model:visible="displayInstallApp" position="bottom" header=" ">
                 <div id="android-install-sidebar-content">
                     <p>The Smash Map app is available on IOS</p>
