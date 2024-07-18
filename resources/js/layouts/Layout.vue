@@ -165,10 +165,20 @@ const profileItems = ref([{
 
 const isAndroid = navigator.userAgent.toLowerCase().indexOf("android") > -1
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
-
 const displayInstallApp = ref(true)
 
+const canBeInstalled = ref(false)
+function setCanBeInstalled(){
+    window.addEventListener('beforeinstallprompt', (e) => {
+        // Prevent Chrome 67 and earlier from automatically showing the prompt
+        e.preventDefault()
+        // Stash the event so it can be triggered later.
+        canBeInstalled.value = e
+    })
+}
+
 onMounted(()=>{
+    setCanBeInstalled()
     console.log('Layout Mounted')
     userStore.toast = toast.value
     nextTick(() => {
@@ -287,16 +297,15 @@ onMounted(()=>{
             </template>
         </Toast>
         <LoginDialog :darkMode="darkMode" :showLoginModal="showLoginModal" @switchShowLoginModal="switchShowLoginModal"/>
-        <template v-if="isAndroid">
-            <Sidebar v-model:visible="displayInstallApp" position="left" style="width: 250px">
-                <h2>Android</h2>
-                <p>Our app is available on Android</p>
+        <template v-if="isAndroid && canBeInstalled">
+            <Sidebar v-model:visible="displayInstallApp" position="bottom">
+                <p>The Smash Map app is available on Android</p>
                 <Button label="Download" icon="pi pi-download" />
             </Sidebar>
         </template>
 
-        <template v-if="isIOS">
-            <Sidebar v-model:visible="displayInstallApp" position="left" style="width: 250px">
+        <template v-if="isIOS && canBeInstalled">
+            <Sidebar v-model:visible="displayInstallApp" position="bottom">
                 <h2>iOS</h2>
                 <p>Our app is available on iOS</p>
                 <Button label="Download" icon="pi pi-download" />
