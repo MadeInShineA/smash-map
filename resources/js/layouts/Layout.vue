@@ -167,15 +167,17 @@ const isAndroid = navigator.userAgent.toLowerCase().indexOf("android") > -1
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
 const displayInstallApp = ref(true)
 
-const canBeInstalled = ref()
-const isAppStandalone = window.matchMedia('(display-mode: standalone)').matches
+const canBeInstalledAndroid = ref()
+
+const canBeInstalledIOS = 'standalone' in window.navigator;
+const isInstalledIOS = window.navigator.standalone === true;
 
 function setCanBeInstalled(){
     window.addEventListener('beforeinstallprompt', (e) => {
         // Prevent Chrome 67 and earlier from automatically showing the prompt
         e.preventDefault()
         // Stash the event so it can be triggered later.
-        canBeInstalled.value = e
+        canBeInstalledAndroid.value = e
     })
 }
 
@@ -184,7 +186,7 @@ function setIsAppStandalone(){
 }
 
 function promptInstallation(){
-    canBeInstalled.value.prompt()
+    canBeInstalledAndroid.value.prompt()
 }
 
 onMounted(()=>{
@@ -307,7 +309,7 @@ onMounted(()=>{
             </template>
         </Toast>
         <LoginDialog :darkMode="darkMode" :showLoginModal="showLoginModal" @switchShowLoginModal="switchShowLoginModal"/>
-        <template v-if="isAndroid && canBeInstalled">
+        <template v-if="isAndroid && canBeInstalledAndroid">
             <Sidebar class="install-sidebar" v-model:visible="displayInstallApp" position="bottom" header=" ">
                 <div id="android-install-sidebar-content">
                     <p>The Smash Map app is available on Android</p>
@@ -316,11 +318,11 @@ onMounted(()=>{
             </Sidebar>
         </template>
 
-        <template v-if="isIOS && !isAppStandalone">
+        <template v-if="isIOS && canBeInstalledAndroid && !isInstalledIOS">
             <Sidebar class="install-sidebar" v-model:visible="displayInstallApp" position="bottom" header=" ">
                 <div id="android-install-sidebar-content">
                     <p>The Smash Map app is available on IOS</p>
-                    <p>To install the app, click on the share button and click "Add to Home Screen" </p>
+                    <p>To install the app, click on the share button and click "Add to Home Screen"</p>
                 </div>
             </Sidebar>
         </template>
