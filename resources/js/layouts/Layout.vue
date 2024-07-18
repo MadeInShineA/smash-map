@@ -181,10 +181,6 @@ function setCanBeInstalled(){
     })
 }
 
-function setIsAppStandalone(){
-
-}
-
 function promptInstallation(){
     canBeInstalledAndroid.value.prompt()
 }
