@@ -13,6 +13,7 @@ import {usePrimeVue} from 'primevue/config';
 import { useRouter } from 'vue-router';
 import { useUserStore } from "../stores/UserStore.js";
 import Toast from "primevue/toast";
+import Sidebar from "primevue/sidebar";
 
 const { width, height } = useWindowSize()
 const responsiveMenuDisplayed = ref(false)
@@ -162,6 +163,11 @@ const profileItems = ref([{
     ]
 }])
 
+const isAndroid = navigator.userAgent.toLowerCase().indexOf("android") > -1
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
+
+const displayInstallApp = ref(true)
+
 onMounted(()=>{
     console.log('Layout Mounted')
     userStore.toast = toast.value
@@ -281,6 +287,21 @@ onMounted(()=>{
             </template>
         </Toast>
         <LoginDialog :darkMode="darkMode" :showLoginModal="showLoginModal" @switchShowLoginModal="switchShowLoginModal"/>
+        <template v-if="isAndroid">
+            <Sidebar v-model:visible="displayInstallApp" position="left" style="width: 250px">
+                <h2>Android</h2>
+                <p>Our app is available on Android</p>
+                <Button label="Download" icon="pi pi-download" />
+            </Sidebar>
+        </template>
+
+        <template v-if="isIOS">
+            <Sidebar v-model:visible="displayInstallApp" position="left" style="width: 250px">
+                <h2>iOS</h2>
+                <p>Our app is available on iOS</p>
+                <Button label="Download" icon="pi pi-download" />
+            </Sidebar>
+        </template>
         <RegisterDialog :darkMode="darkMode" :showRegisterModal="showRegisterModal" @switchShowRegisterModal="switchShowRegisterModal"/>
         <router-view  v-slot="{ Component }">
             <keep-alive :include="['map']">
