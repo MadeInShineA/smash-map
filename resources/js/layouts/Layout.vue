@@ -177,6 +177,18 @@ function setCanBeInstalled(){
     })
 }
 
+function promptInstallation(){
+    canBeInstalled.value.prompt()
+    // // Wait for the user to respond to the prompt
+    // canBeInstalled.value.userChoice.then((choiceResult) => {
+    //     if (choiceResult.outcome === 'accepted') {
+    //         // Add analyticcs event
+    //         this.$gtag.event('add_to_home_screen')
+    //     }
+    //     this.deferredPrompt = null
+    // })
+}
+
 onMounted(()=>{
     setCanBeInstalled()
     console.log('Layout Mounted')
@@ -300,7 +312,7 @@ onMounted(()=>{
         <template v-if="isAndroid && canBeInstalled">
             <Sidebar v-model:visible="displayInstallApp" position="bottom">
                 <p>The Smash Map app is available on Android</p>
-                <Button label="Download" icon="pi pi-download" />
+                <Button label="Download" icon="pi pi-download" @click="promptInstallation"/>
             </Sidebar>
         </template>
 
