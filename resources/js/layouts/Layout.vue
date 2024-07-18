@@ -167,7 +167,9 @@ const isAndroid = navigator.userAgent.toLowerCase().indexOf("android") > -1
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
 const displayInstallApp = ref(true)
 
-const canBeInstalled = ref(false)
+const canBeInstalled = ref()
+const isAppStandalone = window.matchMedia('(display-mode: standalone)').matches
+
 function setCanBeInstalled(){
     window.addEventListener('beforeinstallprompt', (e) => {
         // Prevent Chrome 67 and earlier from automatically showing the prompt
@@ -175,6 +177,10 @@ function setCanBeInstalled(){
         // Stash the event so it can be triggered later.
         canBeInstalled.value = e
     })
+}
+
+function setIsAppStandalone(){
+
 }
 
 function promptInstallation(){
@@ -310,7 +316,7 @@ onMounted(()=>{
             </Sidebar>
         </template>
 
-        <template v-if="isIOS && canBeInstalled">
+        <template v-if="isIOS && !isAppStandalone">
             <Sidebar class="install-sidebar" v-model:visible="displayInstallApp" position="bottom" header=" ">
                 <div id="android-install-sidebar-content">
                     <p>The Smash Map app is available on IOS</p>
