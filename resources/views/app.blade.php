@@ -15,6 +15,10 @@
     <meta name="apple-mobile-web-app-title" content="Smash Map(Dev)">
     <link rel="manifest" href="{{ asset('/manifest.json') }}">
 
+    <meta name="title" content="Smash Map">
+    <meta name="description" content="Smash Map is an open-source website listing competitive Super Smash Bros. events. Discover events, find players, create profiles, and receive notifications.">
+    <meta name="keywords" content="Smash Map, Super Smash Bros, competitive gaming, esports, events, start.gg, game statistics, player profiles, notifications">
+    <meta name="author" content="MadeInShineA">
 </head>
 <body>
     <div id="app"></div>
