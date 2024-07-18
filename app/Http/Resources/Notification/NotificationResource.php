@@ -16,6 +16,7 @@ class NotificationResource extends JsonResource
             'gameTitle'             => GameEnum::GAMES[$this->game_id],
             'message'               => $this->message,
             'imageUrl'              => $this->image_url,
+            'createdAt'             => $this->created_at->format('Y-m-d'),
         ];
     }
 }

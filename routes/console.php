@@ -56,13 +56,23 @@ Artisan::command('delete-events', function(){
         $end_date_time = Carbon::parse($event->end_date_time, 'UTC');
         if ($end_date_time < $current_time){
             $image = $event->image;
-            if($image && !$event->notifications()->exists()){
+            $events_with_same_image = Event::where('start_gg_id', $event->start_gg_id)->get();
+            $image_has_notification = false;
+
+            foreach ($events_with_same_image as $event_with_same_image){
+                if($event_with_same_image->notifications()->exists()){
+                    $image_has_notification = true;
+                    break;
+                }
+            }
+
+            if($image && !$image_has_notification){
                 $event_file_slug = Str::slug($event->name)?? Str::slug('id-' . $event->id);
                 $image_directory_path = base_path(). '/storage/app/public/events-images/' . $event_file_slug;
                 File::deleteDirectory($image_directory_path);
                 $image->delete();
-                Log::info('Image for:' . $event->name . ' deleted');
-//                var_dump('Image for:' . $event->name . ' deleted');
+                Log::info('Image for: ' . $event->name . ' deleted');
+//                var_dump('Image for: ' . $event->name . ' deleted');
 
             }
             $event->delete();
@@ -204,7 +214,6 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                 $event_old_attendees = null;
                 if($event_model_instance && $event_model_instance->show){
                     foreach($event_model_instance->subscribed_users()->get() as $user){
-                        # TODO Fix the notifications
                         if($user->has_attendees_notifications){
                             $event_attendees_when_subscribed = $user->pivot->original_attendees;
                             $event_old_attendees = $event_model_instance->attendees;
@@ -242,11 +251,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                             }
                         }
 
-
-                        # TODO Testing
                         if ($user->has_time_notifications){
-
-
                             $event_date = Carbon::parse($event_model_instance->start_date_time);
                             $days_until_event = $event_date->diffInDays(Carbon::now());
 
