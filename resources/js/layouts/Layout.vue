@@ -168,7 +168,7 @@ const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
 const displayInstallApp = ref(true)
 
 const canBeInstalledAndroid = ref()
-const isStandaloneAndroid = !window.matchMedia('(display-mode: standalone)').matches
+const isStandaloneAndroid = window.matchMedia('(display-mode: standalone)').matches
 
 const canBeInstalledIOS = 'standalone' in window.navigator;
 const isInstalledIOS = window.navigator.standalone === true;
