@@ -307,7 +307,7 @@ onMounted(()=>{
         </Toast>
         <LoginDialog :darkMode="darkMode" :showLoginModal="showLoginModal" @switchShowLoginModal="switchShowLoginModal"/>
         <template v-if="isAndroid && canBeInstalledAndroid">
-            <Sidebar id="install-sidebar" v-model:visible="displayInstallApp" position="bottom" header=" ">
+            <Sidebar id="install-sidebar" v-model:visible="displayInstallApp" position="bottom" header=" " style="height: auto">
                 <div id="install-sidebar-content">
                     <p>The Smash Map app is available on Android</p>
                     <Button label="Download" icon="pi pi-download" @click="promptInstallation"/>
@@ -316,7 +316,7 @@ onMounted(()=>{
         </template>
 
         <template v-else-if="isAndroid && !isStandaloneAndroid">
-            <Sidebar id="install-sidebar" v-model:visible="displayInstallApp" position="bottom" header=" ">
+            <Sidebar id="install-sidebar" v-model:visible="displayInstallApp" position="bottom" header=" " style="height: auto">
                 <div id="install-sidebar-content">
                     <p>The Smash Map app is available on Android</p>
                     <p>To install the app, click on the three dots in the top right corner or the three lines in the bottom right and click "Add to Home Screen"</p>
@@ -325,7 +325,7 @@ onMounted(()=>{
         </template>
 
         <template v-else-if="isIOS && canBeInstalledIOS && !isInstalledIOS">
-            <Sidebar id="install-sidebar" v-model:visible="displayInstallApp" position="bottom" header=" ">
+            <Sidebar id="install-sidebar" v-model:visible="displayInstallApp" position="bottom" header=" " style="height: auto">
                 <div id="install-sidebar-content">
                     <p>The Smash Map app is available on IOS</p>
                     <p>To install the app, click on the share button and click "Add to Home Screen"</p>
@@ -438,12 +438,6 @@ main{
 
 #install-sidebar-content{
    text-align:center;
-    height: min-content;
-    overflow: visible;
-}
-
-#install-sidebar{
-    height: min-content;
 }
 
 
