@@ -179,6 +179,9 @@ function setCanBeInstalled(){
         // Stash the event so it can be triggered later.
         canBeInstalledAndroid.value = e
     })
+    if(!canBeInstalledAndroid.value){
+        canBeInstalledAndroid.value = window.matchMedia('(display-mode: standalone)').matches
+    }
 }
 
 function promptInstallation(){
