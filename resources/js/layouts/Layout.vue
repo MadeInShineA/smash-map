@@ -319,7 +319,7 @@ onMounted(()=>{
             <Sidebar class="install-sidebar" v-model:visible="displayInstallApp" position="bottom" header=" ">
                 <div id="android-install-sidebar-content">
                     <p>The Smash Map app is available on Android</p>
-                    <p>To install the app, click on the three dots in the top right corner and click "Add to Home Screen"</p>
+                    <p>To install the app, click on the three dots in the top right corner or the three lines in the bottom right and click "Add to Home Screen"</p>
                 </div>
             </Sidebar>
         </template>
