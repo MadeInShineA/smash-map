@@ -439,6 +439,7 @@ main{
 #install-sidebar-content{
    text-align:center;
     height: min-content;
+    overflow: visible;
 }
 
 #install-sidebar{
