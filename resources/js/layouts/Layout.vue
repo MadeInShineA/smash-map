@@ -180,7 +180,7 @@ function setCanBeInstalled(){
         canBeInstalledAndroid.value = e
     })
     if(!canBeInstalledAndroid.value){
-        canBeInstalledAndroid.value = window.matchMedia('(display-mode: standalone)').matches
+        canBeInstalledAndroid.value = !window.matchMedia('(display-mode: standalone)').matches
     }
 }
 
