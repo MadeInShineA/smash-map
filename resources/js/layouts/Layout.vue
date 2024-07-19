@@ -307,8 +307,8 @@ onMounted(()=>{
         </Toast>
         <LoginDialog :darkMode="darkMode" :showLoginModal="showLoginModal" @switchShowLoginModal="switchShowLoginModal"/>
         <template v-if="isAndroid && canBeInstalledAndroid">
-            <Sidebar class="install-sidebar" v-model:visible="displayInstallApp" position="bottom" header=" ">
-                <div id="android-install-sidebar-content">
+            <Sidebar id="install-sidebar" v-model:visible="displayInstallApp" position="bottom" header=" ">
+                <div id="install-sidebar-content">
                     <p>The Smash Map app is available on Android</p>
                     <Button label="Download" icon="pi pi-download" @click="promptInstallation"/>
                 </div>
@@ -316,17 +316,17 @@ onMounted(()=>{
         </template>
 
         <template v-else-if="isAndroid && !isStandaloneAndroid">
-            <Sidebar class="install-sidebar" v-model:visible="displayInstallApp" position="bottom" header=" ">
-                <div id="android-install-sidebar-content">
+            <Sidebar id="install-sidebar" v-model:visible="displayInstallApp" position="bottom" header=" ">
+                <div id="install-sidebar-content">
                     <p>The Smash Map app is available on Android</p>
                     <p>To install the app, click on the three dots in the top right corner or the three lines in the bottom right and click "Add to Home Screen"</p>
                 </div>
             </Sidebar>
         </template>
 
-        <template v-if="isIOS && canBeInstalledIOS && !isInstalledIOS">
-            <Sidebar class="install-sidebar" v-model:visible="displayInstallApp" position="bottom" header=" ">
-                <div id="android-install-sidebar-content">
+        <template v-else-if="isIOS && canBeInstalledIOS && !isInstalledIOS">
+            <Sidebar id="install-sidebar" v-model:visible="displayInstallApp" position="bottom" header=" ">
+                <div id="install-sidebar-content">
                     <p>The Smash Map app is available on IOS</p>
                     <p>To install the app, click on the share button and click "Add to Home Screen"</p>
                 </div>
@@ -436,11 +436,12 @@ main{
     margin-right: 0.5rem
 }
 
-#android-install-sidebar-content{
+#install-sidebar-content{
    text-align:center;
+    height: min-content;
 }
 
-.install-sidebar{
+#install-sidebar{
     height: min-content;
 }
 
