@@ -440,5 +440,9 @@ main{
    text-align:center;
 }
 
+.install-sidebar{
+    height: auto;
+}
+
 
 </style>
