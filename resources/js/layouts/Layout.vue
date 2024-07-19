@@ -168,6 +168,7 @@ const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
 const displayInstallApp = ref(true)
 
 const canBeInstalledAndroid = ref()
+const isStandaloneAndroid = !window.matchMedia('(display-mode: standalone)').matches
 
 const canBeInstalledIOS = 'standalone' in window.navigator;
 const isInstalledIOS = window.navigator.standalone === true;
@@ -179,9 +180,6 @@ function setCanBeInstalled(){
         // Stash the event so it can be triggered later.
         canBeInstalledAndroid.value = e
     })
-    if(!canBeInstalledAndroid.value){
-        canBeInstalledAndroid.value = !window.matchMedia('(display-mode: standalone)').matches
-    }
 }
 
 function promptInstallation(){
@@ -313,6 +311,15 @@ onMounted(()=>{
                 <div id="android-install-sidebar-content">
                     <p>The Smash Map app is available on Android</p>
                     <Button label="Download" icon="pi pi-download" @click="promptInstallation"/>
+                </div>
+            </Sidebar>
+        </template>
+
+        <template v-else-if="isAndroid && !isStandaloneAndroid">
+            <Sidebar class="install-sidebar" v-model:visible="displayInstallApp" position="bottom" header=" ">
+                <div id="android-install-sidebar-content">
+                    <p>The Smash Map app is available on Android</p>
+                    <p>To install the app, click on the three dots in the top right corner and click "Add to Home Screen"</p>
                 </div>
             </Sidebar>
         </template>
