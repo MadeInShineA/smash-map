@@ -441,7 +441,7 @@ main{
 }
 
 .install-sidebar{
-    height: auto;
+    height: min-content;
 }
 
 
