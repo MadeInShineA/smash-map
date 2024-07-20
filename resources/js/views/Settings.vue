@@ -157,7 +157,7 @@ async function saveSettings() {
             timeNotificationsThresholds: sentTimeNotificationsThresholds
         }
 
-         userStore.updateSettings(sentSettings).then(function (response){
+         await userStore.updateSettings(sentSettings).then(function (response){
 
             const alertBackground = props.darkMode ? '#1C1B22' : '#FFFFFF'
             const alertColor = props.darkMode ? '#FFFFFF' : '#1C1B22'
@@ -173,7 +173,6 @@ async function saveSettings() {
         })
 
     } catch (error) {
-        console.log(error)
         if (error.response && error.response.data.errors === undefined && error.response.data.message && error.response.status === 500) {
             const alertBackground = props.darkMode ? '#1C1B22' : '#FFFFFF'
             const alertColor = props.darkMode ? '#FFFFFF' : '#1C1B22'
