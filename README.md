@@ -4,14 +4,20 @@ Smash Map is an open source website under development, it's goal is to help smas
 
 ## Smash Map Features
 
-At launch Smash Map will have the following
+### Current Smash Map features
 - **World map** to display events and registered users
-- **Event Calendar** to get a better overview of what is happening around the world
 - **Event Browsing** 
 -  **User's notifications** to let users know when a tournament is happening near them
-- **Manual event creation**
 - **Automatic event creation** The Smash map database will automatically keep track of the next tournaments
-- and more...
+
+### Future features
+- **Event Calendar** to get a better overview of what is happening around the world
+- **Manual event creation**
+
+### In progress features
+- Maintaining the site
+- Bug fixes
+- **In real time notifications** with WebSockets
 
 ## Smash map links
 
@@ -20,4 +26,6 @@ At launch Smash Map will have the following
 [Twitter](https://twitter.com/\_SmashMap\_)
 
 [Discord](https://discord.gg/kNZFk2JYGX)
+
+[Website](https://smash-map.com)
 
