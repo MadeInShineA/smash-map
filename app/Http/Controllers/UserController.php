@@ -83,7 +83,7 @@ class UserController extends Controller
             if (!Auth::attempt($request)) {
                 return $this->sendError('Unauthorized  E 002',
                     [
-                        'login' => ['Username or password are incorrect']
+                        'login' => ['Credentials are incorrect']
                     ],
                     401);
             }
