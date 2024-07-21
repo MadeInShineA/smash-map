@@ -11,13 +11,14 @@ Smash Map is an open source website under development, it's goal is to help smas
 - **Automatic event creation** The Smash map database will automatically keep track of the next tournaments
 
 ### Future features
+- **Add HDR** as a supported game
+- **In real time notifications** with WebSockets
 - **Event Calendar** to get a better overview of what is happening around the world
 - **Manual event creation**
 
 ### In progress features
 - Maintaining the site
 - Bug fixes
-- **In real time notifications** with WebSockets
 
 ## Smash map links
 
