@@ -116,9 +116,15 @@ class User extends Authenticatable
     {
         return $this->hasMany(Notification::class);
     }
-    public function getProfilePictureAttribute(): Image | null
+    public function getProfilePictureAttribute(): Image
     {
         $image = $this->images->where('type', ImageTypeEnum::USER_PROFILE)->first();
+
+        if(!$image){
+            $image = new Image();
+            $image->url = 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png';
+        }
+
         return $image;
     }
 
