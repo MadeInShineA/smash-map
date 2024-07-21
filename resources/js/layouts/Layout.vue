@@ -370,7 +370,7 @@ onMounted(()=>{
 
 main{
     height: calc(100vh - v-bind(headerHeight));
-    overflow-y: auto;
+    overflow-y: scroll;
 }
 
 @keyframes scalein {
