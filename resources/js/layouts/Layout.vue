@@ -376,10 +376,7 @@ body, html {
 main{
     height: calc(100vh - v-bind(headerHeight));
     overflow-y: scroll;
-    padding-bottom: 20px;
 }
-
-
 
 @keyframes scalein {
     0% {
