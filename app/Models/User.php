@@ -116,9 +116,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Notification::class);
     }
-    public function getProfilePictureAttribute(): Image
+    public function getProfilePictureAttribute(): Image | null
     {
-        return $this->images->where('type', ImageTypeEnum::USER_PROFILE)->first();
+        $image = $this->images->where('type', ImageTypeEnum::USER_PROFILE)->first();
+        return $image;
     }
 
     public function getGamesCharactersArrayAttribute(): array
