@@ -42,6 +42,8 @@ class Image extends Model
             $timestamp = '?time=' . $this->updated_at->timestamp;
 //            return URL::to(urlencode($directory_path)) . $timestamp;
             return URL::to($directory_path) . $timestamp;
+        }else{
+            $directory_path = '/storage/default-images/default-image.png';
         }
 //        return URL::to(urlencode($directory_path));
         return URL::to($directory_path);
