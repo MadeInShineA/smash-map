@@ -25,6 +25,12 @@
     @vite('resources/js/app.js')
     <script>
         if ("serviceWorker" in navigator) {
+
+            navigator.serviceWorker.getRegistrations().then((registrations) => {
+                for (let registration of registrations) {
+                    registration.unregister();
+                }
+            });
             // Register a service worker hosted at the root of the
             // site using the default scope.
             navigator.serviceWorker.register("{{ asset('/sw.js') }}").then(
