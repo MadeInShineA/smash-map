@@ -12,8 +12,11 @@ class Character extends Model
     use HasFactory;
 
     protected $fillable = [
+        'created_at',
+        'updated_at',
         'name',
-        'image_link'
+        'image_link',
+        'game_id',
         ];
 
     public function image(): MorphOne
