@@ -39,8 +39,7 @@
                                     window.location.reload();
                                     // Notify user to refresh the page
                                 } else {
-                                    // Content is cached for offline use
-                                    console.log('Content is now available offline!');
+                                    console.log('Service worker updated!');
                                 }
                             }
                         };
