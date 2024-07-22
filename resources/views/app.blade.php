@@ -25,16 +25,26 @@
     @vite('resources/js/app.js')
     <script>
         if ("serviceWorker" in navigator) {
-
-            navigator.serviceWorker.getRegistrations().then((registrations) => {
-                for (let registration of registrations) {
-                    registration.unregister();
-                }
-            });
             // Register a service worker hosted at the root of the
             // site using the default scope.
             navigator.serviceWorker.register("{{ asset('/sw.js') }}").then(
                 (registration) => {
+                    registration.onupdatefound = () => {
+                        const installingWorker = registration.installing;
+                        installingWorker.onstatechange = () => {
+                            if (installingWorker.state === 'installed') {
+                                if (navigator.serviceWorker.controller) {
+                                    // New update available
+                                    console.log('New or updated content is available.');
+                                    window.location.reload();
+                                    // Notify user to refresh the page
+                                } else {
+                                    // Content is cached for offline use
+                                    console.log('Content is now available offline!');
+                                }
+                            }
+                        };
+                    };
                     console.log("Service worker registration succeeded:", registration);
                 },
                 (error) => {

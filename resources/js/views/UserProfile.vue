@@ -22,7 +22,9 @@ const userStore = useUserStore()
 const profileInformation = ref(null)
 
 userStore.getProfileInformationByUsername(props.username, props.darkMode).then((response) => {
-    profileInformation.value = response.data
+    if(response){
+        profileInformation.value = response.data
+    }
 })
 
 </script>
