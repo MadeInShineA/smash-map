@@ -50,10 +50,27 @@ const returnFromCache = function (request) {
 };
 
 self.addEventListener("fetch", function (event) {
-    event.respondWith(checkResponse(event.request).catch(function () {
-        return returnFromCache(event.request);
-    }));
-    if(!event.request.url.startsWith('http')){
-        event.waitUntil(addToCache(event.request));
+    const requestUrl = new URL(event.request.url);
+
+    // Check if the request is an API request
+    if (requestUrl.pathname.startsWith('/api/')) {
+        event.respondWith(
+            fetch(event.request).catch(function () {
+                return new Response(JSON.stringify({ error: "Network error, please try again later." }), {
+                    status: 503,
+                    headers: { 'Content-Type': 'application/json' }
+                });
+            })
+        );
+    } else {
+        event.respondWith(
+            checkResponse(event.request).catch(function () {
+                return returnFromCache(event.request);
+            })
+        );
+
+        if (!event.request.url.startsWith('http')) {
+            event.waitUntil(addToCache(event.request));
+        }
     }
 });
