@@ -305,7 +305,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                         }
                     }
                 }
-                if(!$event_model_instance || $event_model_instance->show){
+                if(!$event_model_instance || ($event_model_instance->show && ($event_model_instance->start_gg_updated_at < $start_gg_updated_at || $event_model_instance->attendees < $game_event->numEntrants))){
                     $is_online = $game_event->isOnline;
                     $name = $event->name;
                     $timezone = $event->timezone;
