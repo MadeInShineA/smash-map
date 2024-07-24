@@ -227,6 +227,10 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                                     continue;
                                 }
 
+                                if($last_notification && $last_notification->attendees >= $user_attendees_notifications_threshold){
+                                    continue;
+                                }
+
                                 $send_notification = false;
                                 if(!$last_notification && $event_attendees >= $user_attendees_notifications_threshold){
                                     $send_notification = true;
@@ -265,6 +269,10 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                                 $send_notification = false;
 
                                 if($days_until_event_when_subscribed <= $user_time_notifications_threshold){
+                                    continue;
+                                }
+
+                                if($last_notification && $last_notification->days_until_event <= $user_time_notifications_threshold){
                                     continue;
                                 }
 
