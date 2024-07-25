@@ -245,7 +245,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                                     $image = $event_model_instance->image?->url;
 
                                     if(!$image){
-                                        $image = URL::to('/storage/map-icons/' . $event_model_instance->game->name . '.png');
+                                        $image = URL::to('/storage/map-icons/' . $event_model_instance->game->slug . '.png');
                                     }
                                     $notification = Notification::create(['event_id' => $event_model_instance->id, 'game_id' => $event_model_instance->game_id, 'user_id' => $user->id, 'message' => $message, 'type' => NotificationTypeEnum::ATTENDEES, 'image_url' => $image, 'attendees' => $event_attendees]);
 //                                    broadcast(new NotificationEvent($notification, $user));
@@ -301,7 +301,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                                     $image = $event_model_instance->image?->url;
 
                                     if(!$image){
-                                        $image = URL::to('/storage/map-icons/' . $event_model_instance->game->name . '.png');
+                                        $image = URL::to('/storage/map-icons/' . $event_model_instance->game->slug . '.png');
                                     }
 
                                     $notification = Notification::create(['event_id' => $event_model_instance->id, 'game_id' => $event_model_instance->game_id, 'user_id' => $user->id, 'message' => $message, 'type' => NotificationTypeEnum::TIME, 'image_url' => $image]);
@@ -446,7 +446,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                                     $event_model_instance->load('image');
                                     $image = $event_model_instance->image?->url;
                                     if(!$image){
-                                        $image = URL::to('/storage/map-icons/' . $event_model_instance->game->name . '.png');
+                                        $image = URL::to('/storage/map-icons/' . $event_model_instance->game->slug . '.png');
                                     }
                                     $notification = Notification::create(['event_id' => $event_model_instance->id, 'game_id' => $event_model_instance->game_id, 'user_id' => $user->id, 'message' => $message, 'type' => NotificationTypeEnum::DISTANCE, 'image_url' => $image]);
                                     $user->notify(new PushNotification($notification));
