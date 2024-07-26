@@ -291,7 +291,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
 
                                     $message = null;
                                     if($days_until_event === 0) {
-                                        $message = 'The Event: <a href="' . $event_model_instance->link . '"target="blank">' . $event_model_instance->name . '</a> starts today!';
+                                        $message = 'The Event: <a href="' . $event_model_instance->link . '"target="blank">' . $event_model_instance->name . '</a> starts in less than 24 hours!';
                                     }elseif ($days_until_event === 1){
                                         $message = 'The Event: <a href="' . $event_model_instance->link  .'"target="blank">' . $event_model_instance->name . '</a> starts in ' . $days_until_event . ' day!';
                                     }else{
