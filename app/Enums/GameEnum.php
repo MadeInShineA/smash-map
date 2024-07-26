@@ -12,7 +12,7 @@ abstract class GameEnum
     const SMASH4 = 3;
     const ULTIMATE = 1386;
 
-    const GAMES_ORDER = [
+    const IDS = [
         self::SMASH64,
         self::MELEE,
         self::BRAWL,
@@ -22,7 +22,7 @@ abstract class GameEnum
         self::ULTIMATE
     ];
 
-    const GAMES = [
+    const NAMES = [
         self::SMASH64 => 'Super Smash Bros.',
         self::MELEE => 'Super Smash Bros. Melee',
         self::BRAWL => 'Super Smash Bros. Brawl',
@@ -32,7 +32,7 @@ abstract class GameEnum
         self::ULTIMATE => 'Super Smash Bros. Ultimate'
     ];
 
-    const ABBREVIATION = [
+    const ABBREVIATIONS = [
         self::SMASH64 => '64',
         self::MELEE => 'Melee',
         self::BRAWL => 'Brawl',

@@ -13,7 +13,7 @@ class NotificationResource extends JsonResource
     {
         return [
             'notificationType'      => NotificationTypeEnum::LABELS[$this->type],
-            'gameTitle'             => GameEnum::GAMES[$this->game_id],
+            'gameTitle'             => GameEnum::NAMES[$this->game_id],
             'message'               => $this->message,
             'imageUrl'              => $this->image_url,
             'createdAt'             => $this->created_at->format('Y-m-d'),

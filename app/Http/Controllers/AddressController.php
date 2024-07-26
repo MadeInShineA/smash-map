@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\GameEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Address\MapAddressResource;
 use App\Models\Address;
@@ -24,23 +25,55 @@ class AddressController extends Controller
                 })->orWhereHas('events');
             });
 
-
-            if($request->has('games')){
+            if ($request->has('games')) {
                 $games = $request->input('games');
-                switch ($games){
+                switch ($games) {
                     case 'default':
                         break;
                     default:
                         $games = explode(',', $games);
-                        $addresses->where(function($query) use ($games){
-                            $query->whereHas('events', function ($query) use ($games){
+                        $addresses->where(function($query) use ($games) {
+                            $query->whereHas('events', function ($query) use ($games) {
                                 $query->whereIn('game_id', $games);
-                            })->orWhereHas('users', function ($query) use ($games){
-                                $query->whereHas('games', function ($query) use ($games){
+                            })->orWhereHas('users', function ($query) use ($games) {
+                                $query->whereHas('games', function ($query) use ($games) {
                                     $query->whereIn('game_id', $games);
                                 });
                             });
                         });
+                }
+            }
+
+            if ($request->has('startDate') && $request->has('endDate')) {
+                $startDate = $request->input('startDate');
+                $endDate = $request->input('endDate');
+
+                if ($startDate !== 'default' && $endDate !== 'default') {
+                    $startDateUTC = Carbon::parse($startDate)->setTimezone('UTC')->startOfDay()->toDateTimeString();
+                    $endDateUTC = Carbon::parse($endDate)->setTimezone('UTC')->endOfDay()->toDateTimeString();
+
+                    $addresses->whereHas('events', function ($query) use ($startDateUTC, $endDateUTC, $request) {
+                        $query->where(function ($query) use ($startDateUTC, $endDateUTC, $request) {
+
+                            if($request->has('games') && $request->input('games') !== 'default'){
+                                $games = explode(',', $request->input('games'));
+                                $query->whereIn('game_id', $games);
+                            };
+
+                            $query->where(function ($query) use ($startDateUTC, $endDateUTC) {
+                                    $query->whereBetween('start_date_time', [$startDateUTC, $endDateUTC])
+                                        ->orWhereBetween('end_date_time', [$startDateUTC, $endDateUTC])
+                                        ->orWhere(function ($query) use ($startDateUTC, $endDateUTC) {
+                                            $query->where('start_date_time', '<', $startDateUTC)
+                                                ->where('end_date_time', '>=', $startDateUTC);
+                                        })
+                                        ->orWhere(function ($query) use ($startDateUTC, $endDateUTC) {
+                                            $query->where('start_date_time', '<=', $endDateUTC)
+                                                ->where('end_date_time', '>', $endDateUTC);
+                                        });
+                                });
+                        });
+                    });
                 }
             }
 
@@ -115,36 +148,6 @@ class AddressController extends Controller
                 }
             }
 
-            if ($request->has('startDate') && $request->has('endDate')){
-                $startDate = $request->input('startDate');
-                $endDate = $request->input('endDate');
-
-                if ($startDate !== 'default' && $endDate !== 'default') {
-                    $startDateUTC = Carbon::parse($startDate)->startOfDay()->toDateTimeString();
-                    $endDateUTC = Carbon::parse($endDate)->endOfDay()->toDateTimeString();
-
-                    $addresses->whereHas('events', function ($query) use ($startDateUTC, $endDateUTC) {
-                        $query->where(function ($subQuery) use ($startDateUTC, $endDateUTC) {
-                            // Events that start and end within the date range
-                            $subQuery->whereBetween('start_date_time', [$startDateUTC, $endDateUTC])
-                                ->orWhereBetween('end_date_time', [$startDateUTC, $endDateUTC])
-                                // Events that start before the date range and end within it
-                                ->orWhere(function ($query) use ($startDateUTC, $endDateUTC) {
-                                    $query->where('start_date_time', '<', $startDateUTC)
-                                        ->where('end_date_time', '>=', $startDateUTC);
-                                })
-                                // Events that start within the date range and end after it
-                                ->orWhere(function ($query) use ($startDateUTC, $endDateUTC) {
-                                    $query->where('start_date_time', '<=', $endDateUTC)
-                                        ->where('end_date_time', '>', $endDateUTC);
-                                });
-                        });
-                    });
-                }
-
-            }
-
-            // TODO Fix when combined with the continents or other filters
             if ($request->has('characters')){
                 $characters = $request->input('characters');
                 switch ($characters){

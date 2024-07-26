@@ -167,7 +167,7 @@ class EventController extends Controller
                 $events = Event::all();
                 $statistics['eventCount'] = $events->count();
 
-                foreach (GameEnum::ABBREVIATION as $id => $title){
+                foreach (GameEnum::ABBREVIATIONS as $id => $title){
                     $statistics['labels'][] = $title;
                     $statistics['datasets'][0]['data'][] = $events->where('game_id', $id)->count();
                     $statistics['datasets'][0]['backgroundColor'][] = GameEnum::COLORS[$id];
@@ -181,7 +181,7 @@ class EventController extends Controller
                 }
 
                 $datasetIndex = 0;
-                foreach (GameEnum::ABBREVIATION as $id => $title){
+                foreach (GameEnum::ABBREVIATIONS as $id => $title){
                     $statistics['datasets'][$datasetIndex]['label'] = $title;
                     $statistics['datasets'][$datasetIndex]['backgroundColor'][] = GameEnum::COLORS[$id];
                     $statistics['datasets'][$datasetIndex]['hoverBackgroundColor'][] = GameEnum::HOVER_COLORS[$id];

@@ -21,7 +21,7 @@ class CharacterController extends Controller
                 $games = null;
                 switch ($games_ids){
                     case "default":
-                        $games = Game::orderByRaw("FIELD(id," . implode(",", GameEnum::GAMES_ORDER). ")")->get();
+                        $games = Game::orderByRaw("FIELD(id," . implode(",", GameEnum::IDS). ")")->get();
                         break;
                     default:
                         $games_ids_array = explode(',', $games_ids);
@@ -39,7 +39,7 @@ class CharacterController extends Controller
             }
 
             // TODO Correct this, it's not smart to do this because it's the same as the query with the default games parameter
-            $games = Game::orderByRaw("FIELD(id," . implode(",", GameEnum::GAMES_ORDER). ")")->get();
+            $games = Game::orderByRaw("FIELD(id," . implode(",", GameEnum::IDS). ")")->get();
             $characters_array = [];
             foreach ($games as $game){
                 $characters = Character::where('game_id', $game->id)->orderBy('name', 'ASC')->get();

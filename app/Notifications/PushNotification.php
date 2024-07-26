@@ -40,7 +40,7 @@ class PushNotification extends Notification
     {
         return PusherMessage::create()
             ->web()
-            ->title(NotificationTypeEnum::LABELS[$this->notification->type] . " for " . GameEnum::GAMES[$this->notification->game_id])
+            ->title(NotificationTypeEnum::LABELS[$this->notification->type] . " for " . GameEnum::NAMES[$this->notification->game_id])
             ->body(strip_tags($this->notification->message))
             ->icon($this->notification->image_url)
             ->link(\Illuminate\Support\Facades\URL::to('/notifications'));
