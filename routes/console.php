@@ -643,7 +643,7 @@ Artisan::command('reload-events-images', function(){
 
                 $image_md5 = md5($image_file);
 
-                Image::updateOrCreate(['parentable_type' => Event::class, 'parentable_id' => $event->id, 'type' => $image_type, 'extension' => 'png', 'md5' => $image_md5], ['origin' => $image->url]);
+                Image::updateOrCreate(['parentable_type' => Event::class, 'parentable_id' => $event->id, 'extension' => 'png', 'md5' => $image_md5], ['origin' => $image->url , 'type' => $image_type]);
             }
         }
     }
