@@ -681,7 +681,7 @@ Artisan::command('refresh-events-preserve-following', function() {
 
     Event::query()->delete();
 
-    Artisan::call('import-100-events', ['game' => 'melee']);
+    Artisan::call('import-500-events-all-games');
 
     foreach ($infos as $user_id => $followed_events_infos){
         $user = User::find($user_id);
