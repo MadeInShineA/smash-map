@@ -16,7 +16,7 @@ return new class extends Migration
             $table->uuid('uuid')->after('id')->nullable();
         });
 
-        $events = \App\Models\Event::withoutGlobalScope(ShownScope::class)->all();
+        $events = \App\Models\Event::withoutGlobalScope(ShownScope::class)->get();
         foreach ($events as $event) {
             $event->uuid = \Illuminate\Support\Str::uuid();
             $event->save();
