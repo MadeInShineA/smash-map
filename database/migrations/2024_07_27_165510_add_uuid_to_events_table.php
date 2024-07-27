@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Scopes\ShownScope;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,7 +16,7 @@ return new class extends Migration
             $table->uuid('uuid')->after('id')->nullable();
         });
 
-        $events = \App\Models\Event::all();
+        $events = \App\Models\Event::withoutGlobalScope(ShownScope::class)->all();
         foreach ($events as $event) {
             $event->uuid = \Illuminate\Support\Str::uuid();
             $event->save();
