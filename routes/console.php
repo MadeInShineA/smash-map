@@ -576,9 +576,13 @@ Artisan::command('move-events-images', function(){
 Artisan::command('reload-events-images', function(){
     $events = Event::all();
     $number_of_events = $events->count();
-    $current_event = 0;
+    $event_counter = 0;
+    $fail_counter = 0;
 
     foreach ($events as $event){
+
+        var_dump("Reloading image for event " . $event_counter . " out of " . $number_of_events);
+
         $start_gg_id = $event->start_gg_id;
         $apiToken = env('START_GG_API_KEY');
         $endpointUrl = 'https://api.start.gg/gql/alpha';
@@ -647,10 +651,13 @@ Artisan::command('reload-events-images', function(){
                 $image_md5 = md5($image_file);
 
                 Image::updateOrCreate(['parentable_type' => Event::class, 'parentable_id' => $event->id, 'extension' => 'png', 'md5' => $image_md5], ['origin' => $image->url , 'type' => $image_type]);
-                var_dump("Image reloaded for event " . $current_event . " out of " . $number_of_events);
-                $current_event += 1;
             }
+        }else{
+            var_dump("Failed to retrieve image");
+            var_dump("Response " . json_encode($response));
         }
+        $event_counter += 1;
+        var_dump("Failed to reload image for event " . $fail_counter . " out of " . $event_counter);
     }
 });
 
