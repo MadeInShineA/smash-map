@@ -615,7 +615,10 @@ Artisan::command('reload-events-images', function(){
         }
 
         curl_close($ch);
-        $images = $response?->data?->tournament?->images;
+
+        $data = $response->data ?? null;
+        $tournament = $data->tournament ?? null;
+        $images = $tournament->images ?? null;
 
         if($images){
             $image = null;
@@ -641,9 +644,6 @@ Artisan::command('reload-events-images', function(){
                 $image_md5 = md5($image_file);
 
                 Image::updateOrCreate(['parentable_type' => Event::class, 'parentable_id' => $event->id, 'type' => $image_type, 'extension' => 'png', 'md5' => $image_md5], ['origin' => $image->url]);
-
-
-
             }
         }
     }
