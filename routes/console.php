@@ -67,7 +67,7 @@ Artisan::command('delete-events', function(){
             }
 
             if($image && !$image_has_notification){
-                $image_directory_path = base_path(). '/storage/app/public/events-images/' . $event->id;
+                $image_directory_path = base_path(). '/storage/app/public/events-images/' . $event->uuid;
                 File::deleteDirectory($image_directory_path);
                 $image->delete();
                 Log::info('Image for: ' . $event->name . ' deleted');
@@ -633,7 +633,7 @@ Artisan::command('reload-events-images', function(){
 
             if ($image){
 
-                $event_directory_path = '/events-images/' . $event->id;
+                $event_directory_path = '/events-images/' . $event->uuid;
 
                 $image_type = $image->type == 'profile'? ImageTypeEnum::EVENT_PROFILE : ImageTypeEnum::EVENT_BANNER;
 
