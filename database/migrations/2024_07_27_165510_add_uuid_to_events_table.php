@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('events', function (Blueprint $table) {
-            $table->uuid('uuid')->after('id')->unique();
+            $table->uuid('uuid')->after('id')->nullable();
         });
 
         $events = \App\Models\Event::all();
@@ -20,6 +20,10 @@ return new class extends Migration
             $event->uuid = \Illuminate\Support\Str::uuid();
             $event->save();
         }
+
+        Schema::table('events', function (Blueprint $table) {
+            $table->uuid('uuid')->nullable(false)->unique()->change();
+        });
     }
 
     /**
