@@ -665,5 +665,35 @@ Artisan::command('reload-events-images', function(){
     }
 });
 
+Artisan::command('refresh-events-preserve-following', function() {
+    $users = User::all();
+    $infos = [];
+    foreach ($users as $user){
+        foreach ($user->subscribed_events()->get() as $event){
+            $infos[$user->id][] = [
+                'created_at' => $event->pivot->created_at,
+                'start_gg_id' => $event->start_gg_id,
+                'game_id' => $event->game_id,
+                'original_attendees' => $event->pivot->original_attendees
+            ];
+        }
+    }
+
+    Event::query()->delete();
+
+    Artisan::call('import-500-events-all-games');
+
+    foreach ($infos as $user_id => $followed_events_infos){
+        $user = User::find($user_id);
+        foreach ($followed_events_infos as $followed_event_infos){
+            $event = Event::where('start_gg_id', $followed_event_infos['start_gg_id'])->where('game_id',$followed_event_infos['game_id'])->first();
+            if(!$event){
+                continue;
+            }
+            $user->subscribed_events()->attach($event, ['original_attendees' => $followed_event_infos['original_attendees'], 'created_at' => $followed_event_infos['created_at']]);
+        }
+    }
+});
+
 
 
