@@ -575,6 +575,9 @@ Artisan::command('move-events-images', function(){
 
 Artisan::command('reload-events-images', function(){
     $events = Event::all();
+    $number_of_events = $events->count();
+    $current_event = 0;
+
     foreach ($events as $event){
         $start_gg_id = $event->start_gg_id;
         $apiToken = env('START_GG_API_KEY');
@@ -644,6 +647,8 @@ Artisan::command('reload-events-images', function(){
                 $image_md5 = md5($image_file);
 
                 Image::updateOrCreate(['parentable_type' => Event::class, 'parentable_id' => $event->id, 'extension' => 'png', 'md5' => $image_md5], ['origin' => $image->url , 'type' => $image_type]);
+                var_dump("Image reloaded for event " . $current_event . " out of " . $number_of_events);
+                $current_event += 1;
             }
         }
     }
