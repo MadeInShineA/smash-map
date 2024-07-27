@@ -346,7 +346,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                         Log::info('Event: ' . $event->name . ' updated');
 //                        var_dump('Event: ' . $event->name . ' updated');
                     }else{
-                        $event_model_instance = Event::create(['start_gg_id' => $start_gg_id, 'game_id'=> $game_id, 'start_gg_updated_at' => $start_gg_updated_at, 'is_online' => $is_online, 'name' => $name, 'timezone' => $timezone, 'start_date_time' => $start_date, 'end_date_time' => $end_date, 'attendees' => $attendees, 'link' => $link]);
+                        $event_model_instance = Event::create(['uuid' => Str::uuid()->toString(),'start_gg_id' => $start_gg_id, 'game_id'=> $game_id, 'start_gg_updated_at' => $start_gg_updated_at, 'is_online' => $is_online, 'name' => $name, 'timezone' => $timezone, 'start_date_time' => $start_date, 'end_date_time' => $end_date, 'attendees' => $attendees, 'link' => $link]);
                         Log::info('Event: ' . $event->name . ' created');
 //                        var_dump('Event: ' . $event->name . ' created');
                     }
@@ -380,7 +380,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                         }
                     }
 
-                    $event_directory_path = '/events-images/' . $event_model_instance->id;
+                    $event_directory_path = '/events-images/' . $event_model_instance->uuid;
 
 //                $event_db_md5s = $event_model_instance->images->pluck('md5')->toArray();
 
@@ -560,7 +560,7 @@ Artisan::command('move-events-images', function(){
 
         $event_file_slug = Str::slug($event->name)?? Str::slug('id-' . $event->id);
         $old_event_directory_path = '/events-images/' . $event_file_slug;
-        $new_event_directory_path = '/events-images/' . $event->id;
+        $new_event_directory_path = '/events-images/' . $event->uuid;
         $image = $event->image;
 
         if($image){
@@ -615,7 +615,7 @@ Artisan::command('reload-events-images', function(){
         }
 
         curl_close($ch);
-        $images = $response->data?->tournament?->images;
+        $images = $response?->data?->tournament?->images;
 
         if($images){
             $image = null;

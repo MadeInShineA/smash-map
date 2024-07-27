@@ -33,7 +33,7 @@ class Image extends Model
 
     public function getUrlAttribute(){
         if($this->parentable_type === Event::class){
-            $directory_path = '/storage/events-images/' . $this->parentable->id . '/' . $this->type . '.' . $this->extension;
+            $directory_path = '/storage/events-images/' . $this->parentable->uuid . '/' . $this->type . '.' . $this->extension;
         }elseif($this->parentable_type === Character::class){
             $directory_path = '/storage/characters-images/' . $this->parentable->game->slug . '/' . Str::slug($this->parentable->name) . '.' . $this->extension;
         }elseif ($this->parentable_type === Country::class){

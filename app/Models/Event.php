@@ -21,6 +21,7 @@ class Event extends Model
     use HasFactory;
 
     protected $fillable = [
+        'uuid',
         'start_gg_id',
         'start_gg_updated_at',
         'game_id',
