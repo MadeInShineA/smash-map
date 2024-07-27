@@ -67,8 +67,7 @@ Artisan::command('delete-events', function(){
             }
 
             if($image && !$image_has_notification){
-                $event_file_slug = Str::slug($event->name)?? Str::slug('id-' . $event->id);
-                $image_directory_path = base_path(). '/storage/app/public/events-images/' . $event_file_slug;
+                $image_directory_path = base_path(). '/storage/app/public/events-images/' . $event->uuid;
                 File::deleteDirectory($image_directory_path);
                 $image->delete();
                 Log::info('Image for: ' . $event->name . ' deleted');
@@ -347,7 +346,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                         Log::info('Event: ' . $event->name . ' updated');
 //                        var_dump('Event: ' . $event->name . ' updated');
                     }else{
-                        $event_model_instance = Event::create(['start_gg_id' => $start_gg_id, 'game_id'=> $game_id, 'start_gg_updated_at' => $start_gg_updated_at, 'is_online' => $is_online, 'name' => $name, 'timezone' => $timezone, 'start_date_time' => $start_date, 'end_date_time' => $end_date, 'attendees' => $attendees, 'link' => $link]);
+                        $event_model_instance = Event::create(['uuid' => Str::uuid()->toString(),'start_gg_id' => $start_gg_id, 'game_id'=> $game_id, 'start_gg_updated_at' => $start_gg_updated_at, 'is_online' => $is_online, 'name' => $name, 'timezone' => $timezone, 'start_date_time' => $start_date, 'end_date_time' => $end_date, 'attendees' => $attendees, 'link' => $link]);
                         Log::info('Event: ' . $event->name . ' created');
 //                        var_dump('Event: ' . $event->name . ' created');
                     }
@@ -381,8 +380,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                         }
                     }
 
-                    $event_file_slug = Str::slug($event->name)?? Str::slug('id-' . $event->id);
-                    $event_directory_path = '/events-images/' . $event_file_slug;
+                    $event_directory_path = '/events-images/' . $event_model_instance->uuid;
 
 //                $event_db_md5s = $event_model_instance->images->pluck('md5')->toArray();
 
@@ -420,7 +418,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                             }
                             $isImageStored = Storage::put($event_directory_path . '/' . $image_type . '.png', $image_file);
                             if ($isImageStored){
-                                Image::Create(['parentable_type' => Event::class, 'parentable_id' => $event_model_instance->id, 'type' => $image_type,'md5' => $image_md5, 'extension' => 'png']);
+                                Image::Create(['parentable_type' => Event::class, 'parentable_id' => $event_model_instance->id, 'type' => $image_type,'md5' => $image_md5, 'extension' => 'png', 'origin' => $image->url]);
                                 Log::info($image_type .' image for:' . $event->name . ' created');
 //                                var_dump($image_type .' image for:' . $event->name . ' created');
                             }else{
@@ -555,3 +553,101 @@ Artisan::command('test-ws-notification {username}', function(string $username){
     $user = User::where("username", $username)->first();
     broadcast(new NotificationEvent($notification, $user));
 });
+
+Artisan::command('move-events-images', function(){
+    $events = Event::all();
+    foreach ($events as $event){
+
+        $event_file_slug = Str::slug($event->name)?? Str::slug('id-' . $event->id);
+        $old_event_directory_path = '/events-images/' . $event_file_slug;
+        $new_event_directory_path = '/events-images/' . $event->uuid;
+        $image = $event->image;
+
+        if($image){
+            $image_old_path = $old_event_directory_path . '/' . $image->type . '.' . $image->extension;
+
+            if(file_exists(base_path(). '/storage/app/public' . $image_old_path)){
+                Storage::move($old_event_directory_path, $new_event_directory_path);
+            }
+        }
+    }
+});
+
+Artisan::command('reload-events-images', function(){
+    $events = Event::all();
+    foreach ($events as $event){
+        $start_gg_id = $event->start_gg_id;
+        $apiToken = env('START_GG_API_KEY');
+        $endpointUrl = 'https://api.start.gg/gql/alpha';
+
+        $query = 'query TournamentQuery($id: ID) {
+            tournament(id: $id) {
+                images {
+                url
+                type
+                }
+            }
+        }';
+
+        $headers = [
+            'Content-Type: application/json',
+            'Authorization: Bearer ' . $apiToken,
+        ];
+
+        $data = [
+            'query' => $query,
+            'variables' => ['id' => $start_gg_id],
+        ];
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_URL, $endpointUrl);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $response = json_decode(curl_exec($ch));
+
+        if (curl_errno($ch)) {
+            echo 'Error: ' . curl_error($ch);
+        }
+
+        curl_close($ch);
+
+        $data = $response->data ?? null;
+        $tournament = $data->tournament ?? null;
+        $images = $tournament->images ?? null;
+
+        if($images){
+            $image = null;
+            foreach ($images as $event_image) {
+                if ($event_image->type === "profile") {
+                    $image = $event_image;
+                    break;
+                } elseif ($event_image->type === "banner") {
+                    $image = $event_image;
+                }
+            }
+
+            if ($image){
+
+                $event_directory_path = '/events-images/' . $event->uuid;
+
+                $image_type = $image->type == 'profile'? ImageTypeEnum::EVENT_PROFILE : ImageTypeEnum::EVENT_BANNER;
+
+                $image_file = file_get_contents($image->url);
+
+                Storage::put($event_directory_path . '/' . $image_type . '.png', $image_file);
+
+                $image_md5 = md5($image_file);
+
+                Image::updateOrCreate(['parentable_type' => Event::class, 'parentable_id' => $event->id, 'extension' => 'png', 'md5' => $image_md5], ['origin' => $image->url , 'type' => $image_type]);
+            }
+        }
+    }
+});
+
+
+
