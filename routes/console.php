@@ -81,7 +81,7 @@ Artisan::command('delete-events', function(){
     }
 });
 
-Artisan::command('import-100-events {game} {page?}', function(string $game, int $page=1){
+Artisan::command('import-100-events {game} {import_all_events?} {page?}', function(string $game, bool $import_all_events=false, int $page=1){
 
     switch ($game){
         case '64':
@@ -312,7 +312,7 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                         }
                     }
                 }
-                if(!$event_model_instance || ($event_model_instance->show && ($event_model_instance->start_gg_updated_at < $start_gg_updated_at || $event_model_instance->attendees < $game_event->numEntrants))){
+                if($import_all_events || !$event_model_instance || ($event_model_instance->show && ($event_model_instance->start_gg_updated_at < $start_gg_updated_at || $event_model_instance->attendees < $game_event->numEntrants))){
                     $is_online = $game_event->isOnline;
                     $name = $event->name;
                     $timezone = $event->timezone;
@@ -413,12 +413,14 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
                         if($image_file){
                             $image_md5 = md5($image_file);
                             $event_model_instance_old_image = $event_model_instance->image;
-                            if($event_model_instance_old_image && $event_model_instance_old_image->md5 === $image_md5){
+
+                            if(!$import_all_events && $event_model_instance_old_image && $event_model_instance_old_image->md5 === $image_md5){
                                 continue;
                             }
+
                             $isImageStored = Storage::put($event_directory_path . '/' . $image_type . '.png', $image_file);
                             if ($isImageStored){
-                                Image::Create(['parentable_type' => Event::class, 'parentable_id' => $event_model_instance->id, 'type' => $image_type,'md5' => $image_md5, 'extension' => 'png', 'origin' => $image->url]);
+                                Image::updateOrCreate(['parentable_type' => Event::class, 'parentable_id' => $event_model_instance->id, 'extension' => 'png'], ['origin' => $image->url , 'type' => $image_type, 'md5' => $image_md5]);
                                 Log::info($image_type .' image for:' . $event->name . ' created');
 //                                var_dump($image_type .' image for:' . $event->name . ' created');
                             }else{
@@ -459,52 +461,54 @@ Artisan::command('import-100-events {game} {page?}', function(string $game, int 
     }
 });
 
-Artisan::command('import-100-events-all-games', function (){
+Artisan::command('import-100-events-all-games {import_all_events?', function (bool $import_all_events=false){
+    Log::info('Starting the 64 import');
 //    var_dump('Starting the 64 import');
-    Artisan::call('import-100-events', ['game' => '64']);
+    Artisan::call('import-100-events', ['game' => '64', 'import_all_events' => $import_all_events]);
 //    var_dump('Starting the melee import');
-    Artisan::call('import-100-events', ['game' => 'melee']);
+    Artisan::call('import-100-events', ['game' => 'melee', 'import_all_events' => $import_all_events]);
 //    var_dump('Starting the melee brawl');
-    Artisan::call('import-100-events', ['game' => 'brawl']);
+    Artisan::call('import-100-events', ['game' => 'brawl', 'import_all_events' => $import_all_events]);
 //    var_dump('Starting the project + import');
-    Artisan::call('import-100-events', ['game' => 'project_+']);
+    Artisan::call('import-100-events', ['game' => 'project_+', 'import_all_events' => $import_all_events]);
 //    var_dump('Starting the project m import');
-    Artisan::call('import-100-events', ['game' => 'project_m']);
+    Artisan::call('import-100-events', ['game' => 'project_m', 'import_all_events' => $import_all_events]);
 //    var_dump('Starting the smash4 import');
-    Artisan::call('import-100-events', ['game' => 'smash4']);
+    Artisan::call('import-100-events', ['game' => 'smash4', 'import_all_events' => $import_all_events]);
 //    var_dump('Starting the ultimate import');
-    Artisan::call('import-100-events', ['game' => 'ultimate']);
+    Artisan::call('import-100-events', ['game' => 'ultimate', 'import_all_events' => $import_all_events]);
 });
 
-Artisan::command('import-500-events {game}', function (string $game){
+Artisan::command('import-500-events {game} {import_all_events?}', function (string $game, bool $import_all_events=false){
     foreach (range(1, 5) as $page){
-            Artisan::call('import-100-events', ['game' => $game, 'page' => $page]);
+            Artisan::call('import-100-events', ['game' => $game, 'import_all_events' =>$import_all_events, 'page' => $page]);
     }
 });
 
-Artisan::command('import-500-events-all-games', function (){
+Artisan::command('import-500-events-all-games {import_all_events?}', function (bool $import_all_events=false){
     Log::info('Starting the 64 import');
 //    var_dump('Starting the 64 import');
-    Artisan::call('import-500-events', ['game' => '64']);
+    Artisan::call('import-500-events', ['game' => '64', 'import_all_events' => $import_all_events]);
     Log::info('Starting the melee import');
 //    var_dump('Starting the melee import');
-    Artisan::call('import-500-events', ['game' => 'melee']);
+    Artisan::call('import-500-events', ['game' => 'melee', 'import_all_events' => $import_all_events]);
     Log::info('Starting the brawl import');
 //    var_dump('Starting the brawl import');
-    Artisan::call('import-500-events', ['game' => 'brawl']);
+    Artisan::call('import-500-events', ['game' => 'brawl', 'import_all_events' => $import_all_events]);
     Log::info('Starting the project + import');
 //    var_dump('Starting the project + import');
-    Artisan::call('import-500-events', ['game' => 'project_+']);
+    Artisan::call('import-500-events', ['game' => 'project_+', 'import_all_events' => $import_all_events]);
     Log::info('Starting the project m import');
 //    var_dump('Starting the project m import');
-    Artisan::call('import-500-events', ['game' => 'project_m']);
+    Artisan::call('import-500-events', ['game' => 'project_m', 'import_all_events' => $import_all_events]);
     Log::info('Starting the smash4 import');
 //    var_dump('Starting the smash4 import');
-    Artisan::call('import-500-events', ['game' => 'smash4']);
+    Artisan::call('import-500-events', ['game' => 'smash4', 'import_all_events' => $import_all_events]);
     Log::info('Starting the ultimate import');
 //    var_dump('Starting the ultimate import');
-    Artisan::call('import-500-events', ['game' => 'ultimate']);
+    Artisan::call('import-500-events', ['game' => 'ultimate', 'import_all_events' => $import_all_events]);
 });
+
 
 Artisan::command('import-characters-images',function(){
     $characters = Character::all();
@@ -575,7 +579,14 @@ Artisan::command('move-events-images', function(){
 
 Artisan::command('reload-events-images', function(){
     $events = Event::all();
+    $number_of_events = $events->count();
+    $event_counter = 0;
+    $fail_counter = 0;
+
     foreach ($events as $event){
+
+        var_dump("Reloading image for event " . $event_counter . " out of " . $number_of_events);
+
         $start_gg_id = $event->start_gg_id;
         $apiToken = env('START_GG_API_KEY');
         $endpointUrl = 'https://api.start.gg/gql/alpha';
@@ -645,7 +656,12 @@ Artisan::command('reload-events-images', function(){
 
                 Image::updateOrCreate(['parentable_type' => Event::class, 'parentable_id' => $event->id, 'extension' => 'png', 'md5' => $image_md5], ['origin' => $image->url , 'type' => $image_type]);
             }
+        }else{
+            var_dump("Failed to retrieve image");
+            var_dump("Response " . json_encode($response));
         }
+        $event_counter += 1;
+        var_dump("Failed to reload image for event " . $fail_counter . " out of " . $event_counter);
     }
 });
 
