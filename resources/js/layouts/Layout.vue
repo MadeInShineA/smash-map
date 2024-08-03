@@ -374,7 +374,7 @@ body, html {
  */
 
 main{
-    height: calc(100vh - v-bind(headerHeight));
+    height: calc(100dvh - v-bind(headerHeight));
     overflow-y: scroll;
 }
 
