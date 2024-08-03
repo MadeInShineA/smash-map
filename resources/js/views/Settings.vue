@@ -400,7 +400,7 @@ function deleteAccount(){
             <template v-if="settings.notifications.includes('hasDistanceNotifications')">
                 <div class="setting-input-container" >
                     <FloatLabel>
-                        <InputNumber id="settings-distance-notifications-radius" class="setting-input" v-model.number="settings.distanceNotificationsRadius" @click="settingsValidationErrors.distanceNotificationsRadius = []" :min="1" :max="2000" suffix=" KM"/>
+                        <InputNumber id="settings-distance-notifications-radius" class="setting-input" v-model.number="settings.distanceNotificationsRadius" @click="settingsValidationErrors.distanceNotificationsRadius = []" :min="1" :max="2000" suffix=" KM" :input-props="{ inputmode: 'numeric' }"/>
                         <Slider class="setting-input" v-model="settings.distanceNotificationsRadius" :min="1" :max="2000" @click="settingsValidationErrors.distanceNotificationsRadius = []"/>
                         <label for="settings-distance-notifications-radius">Distance Notifications Radius (KM)</label>
                     </FloatLabel>

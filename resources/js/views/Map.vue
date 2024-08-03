@@ -206,7 +206,7 @@ onActivated(() => {
                 <h3 class="info-window-title">Distance Notification Radius</h3>
                 <div id="distance-notifications-radius-input-container">
                     <FloatLabel>
-                        <InputNumber id="distance-notifications-radius" class="input" v-model.number="distanceNotificationsRadius" @click="validationErrors.distanceNotificationsRadius = []" :min="1" :max="2000" suffix=" KM"/>
+                        <InputNumber id="distance-notifications-radius" class="input" v-model.number="distanceNotificationsRadius" @click="validationErrors.distanceNotificationsRadius = []" :min="1" :max="2000" suffix=" KM" :input-props="{ inputmode: 'numeric' }"/>
                         <Slider class="input" v-model="distanceNotificationsRadius" :min="1" :max="2000" @click="validationErrors.distanceNotificationsRadius = []"/>
                         <label for="distance-notifications-radius">Distance Notifications Radius (KM)</label>
                     </FloatLabel>
