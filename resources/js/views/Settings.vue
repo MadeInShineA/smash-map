@@ -12,6 +12,7 @@ import Button from "primevue/button";
 import FloatLabel from "primevue/floatlabel";
 import Slider from "primevue/slider";
 import Swal from "sweetalert2";
+import InputNumber from 'primevue/inputnumber';
 
 const props = defineProps({
     darkMode: {
@@ -399,7 +400,7 @@ function deleteAccount(){
             <template v-if="settings.notifications.includes('hasDistanceNotifications')">
                 <div class="setting-input-container" >
                     <FloatLabel>
-                        <InputText id="settings-distance-notifications-radius" class="setting-input" v-model.number="settings.distanceNotificationsRadius" @click="settingsValidationErrors.distanceNotificationsRadius = []"/>
+                        <InputNumber id="settings-distance-notifications-radius" class="setting-input" v-model.number="settings.distanceNotificationsRadius" @click="settingsValidationErrors.distanceNotificationsRadius = []" :min="1" :max="2000" suffix=" KM"/>
                         <Slider class="setting-input" v-model="settings.distanceNotificationsRadius" :min="1" :max="2000" @click="settingsValidationErrors.distanceNotificationsRadius = []"/>
                         <label for="settings-distance-notifications-radius">Distance Notifications Radius (KM)</label>
                     </FloatLabel>

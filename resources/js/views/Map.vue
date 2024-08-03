@@ -17,9 +17,8 @@ import { useEventsStore } from "../stores/EventsStore.js";
 import { useUserStore } from "../stores/UserStore.js";
 import FloatLabel from "primevue/floatlabel";
 import Slider from "primevue/slider";
-import InputText from "primevue/inputtext";
 import Swal from "sweetalert2";
-import {useRoute} from "vue-router";
+import InputNumber from 'primevue/inputnumber';
 
 const props = defineProps({
     responsiveMenuDisplayed: {
@@ -207,7 +206,7 @@ onActivated(() => {
                 <h3 class="info-window-title">Distance Notification Radius</h3>
                 <div id="distance-notifications-radius-input-container">
                     <FloatLabel>
-                        <InputText id="distance-notifications-radius" class="input" v-model.number="distanceNotificationsRadius" @click="validationErrors.distanceNotificationsRadius = []"/>
+                        <InputNumber id="distance-notifications-radius" class="input" v-model.number="distanceNotificationsRadius" @click="validationErrors.distanceNotificationsRadius = []" :min="1" :max="2000" suffix=" KM"/>
                         <Slider class="input" v-model="distanceNotificationsRadius" :min="1" :max="2000" @click="validationErrors.distanceNotificationsRadius = []"/>
                         <label for="distance-notifications-radius">Distance Notifications Radius (KM)</label>
                     </FloatLabel>
