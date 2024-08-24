@@ -81,7 +81,7 @@ Artisan::command('delete-events', function(){
     }
 });
 
-Artisan::command('import-100-events {game} {import_all_events?} {page?}', function(string $game, bool $import_all_events=false, int $page=1){
+Artisan::command('import-50-events {game} {import_all_events?} {page?}', function(string $game, bool $import_all_events=false, int $page=1){
 
     switch ($game){
         case '64':
@@ -116,7 +116,7 @@ Artisan::command('import-100-events {game} {import_all_events?} {page?}', functi
     $query = 'query TournamentsByVideogame($videogameId: ID!, $page: Int!) {
       tournaments(query: {
         sortBy: "startAt asc"
-        perPage: 100
+        perPage: 50
         page: $page
         filter: {
           upcoming: true
@@ -177,12 +177,20 @@ Artisan::command('import-100-events {game} {import_all_events?} {page?}', functi
     }
 
     curl_close($ch);
-    $events = $response?->data?->tournaments?->nodes;
+    $data = $response?->data ?? null;
+    if(!$data){
+        Log::error('No data found');
+        Log::error('Response : ' . json_encode($response));
+        var_dump('No data found');
+        var_dump('Response : ' . json_encode($response));
+        throw new Exception('No data found');
+    }
+
+    $events = $data->tournaments?->nodes;
 
     if(!$events){
         Log::info('No events found');
         Log::info('Response : ' . json_encode($response));
-//        var_dump('No events found');
     }else{
         foreach ($events as $event){
 
@@ -461,27 +469,28 @@ Artisan::command('import-100-events {game} {import_all_events?} {page?}', functi
     }
 });
 
-Artisan::command('import-100-events-all-games {import_all_events?', function (bool $import_all_events=false){
+Artisan::command('import-50-events-all-games {import_all_events?', function (bool $import_all_events=false){
     Log::info('Starting the 64 import');
 //    var_dump('Starting the 64 import');
-    Artisan::call('import-100-events', ['game' => '64', 'import_all_events' => $import_all_events]);
+    Artisan::call('import-50-events', ['game' => '64', 'import_all_events' => $import_all_events]);
 //    var_dump('Starting the melee import');
-    Artisan::call('import-100-events', ['game' => 'melee', 'import_all_events' => $import_all_events]);
+    Artisan::call('import-50-events', ['game' => 'melee', 'import_all_events' => $import_all_events]);
 //    var_dump('Starting the melee brawl');
-    Artisan::call('import-100-events', ['game' => 'brawl', 'import_all_events' => $import_all_events]);
+    Artisan::call('import-50-events', ['game' => 'brawl', 'import_all_events' => $import_all_events]);
 //    var_dump('Starting the project + import');
-    Artisan::call('import-100-events', ['game' => 'project_+', 'import_all_events' => $import_all_events]);
+    Artisan::call('import-50-events', ['game' => 'project_+', 'import_all_events' => $import_all_events]);
 //    var_dump('Starting the project m import');
-    Artisan::call('import-100-events', ['game' => 'project_m', 'import_all_events' => $import_all_events]);
+    Artisan::call('import-50-events', ['game' => 'project_m', 'import_all_events' => $import_all_events]);
 //    var_dump('Starting the smash4 import');
-    Artisan::call('import-100-events', ['game' => 'smash4', 'import_all_events' => $import_all_events]);
+    Artisan::call('import-50-events', ['game' => 'smash4', 'import_all_events' => $import_all_events]);
 //    var_dump('Starting the ultimate import');
-    Artisan::call('import-100-events', ['game' => 'ultimate', 'import_all_events' => $import_all_events]);
+    Artisan::call('import-50-events', ['game' => 'ultimate', 'import_all_events' => $import_all_events]);
 });
 
 Artisan::command('import-500-events {game} {import_all_events?}', function (string $game, bool $import_all_events=false){
-    foreach (range(1, 5) as $page){
-            Artisan::call('import-100-events', ['game' => $game, 'import_all_events' =>$import_all_events, 'page' => $page]);
+    foreach (range(1, 10) as $page){
+        Artisan::call('import-50-events', ['game' => $game, 'import_all_events' =>$import_all_events, 'page' => $page]);
+        sleep(1);
     }
 });
 
@@ -542,7 +551,7 @@ Artisan::command('import-countries-images', function (){
 Artisan::command('setup', function(){
    Artisan::call('import-countries-images');
    Artisan::call('import-characters-images');
-//   Artisan::call('import-100-events-all-games');
+//   Artisan::call('import-50-events-all-games');
 });
 
 Artisan::command('test-push-notification {username}', function(string $username){
