@@ -181,7 +181,8 @@ Artisan::command('import-50-events {game} {import_all_events?} {page?}', functio
     $data = $response?->data ?? null;
     if(!$data){
         Log::error('No data found');
-        Log::error('Response : ' . json_encode($response));
+        Log::error('Response : ' . curl_exec($ch));
+        Log::error('Response in json : ' . json_encode($response));
 //        var_dump('No data found');
 //        var_dump('Response : ' . json_encode($response));
         throw new Exception('No data found');
