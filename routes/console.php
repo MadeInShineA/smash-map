@@ -8,6 +8,7 @@ use App\Models\Address;
 use App\Models\Character;
 use App\Models\Country;
 use App\Models\Event;
+use App\Models\Game;
 use App\Models\Image;
 use App\Models\Notification;
 use App\Models\Scopes\ShownScope;
@@ -470,21 +471,11 @@ Artisan::command('import-50-events {game} {import_all_events?} {page?}', functio
 });
 
 Artisan::command('import-50-events-all-games {import_all_events?', function (bool $import_all_events=false){
-    Log::info('Starting the 64 import');
-//    var_dump('Starting the 64 import');
-    Artisan::call('import-50-events', ['game' => '64', 'import_all_events' => $import_all_events]);
-//    var_dump('Starting the melee import');
-    Artisan::call('import-50-events', ['game' => 'melee', 'import_all_events' => $import_all_events]);
-//    var_dump('Starting the melee brawl');
-    Artisan::call('import-50-events', ['game' => 'brawl', 'import_all_events' => $import_all_events]);
-//    var_dump('Starting the project + import');
-    Artisan::call('import-50-events', ['game' => 'project_+', 'import_all_events' => $import_all_events]);
-//    var_dump('Starting the project m import');
-    Artisan::call('import-50-events', ['game' => 'project_m', 'import_all_events' => $import_all_events]);
-//    var_dump('Starting the smash4 import');
-    Artisan::call('import-50-events', ['game' => 'smash4', 'import_all_events' => $import_all_events]);
-//    var_dump('Starting the ultimate import');
-    Artisan::call('import-50-events', ['game' => 'ultimate', 'import_all_events' => $import_all_events]);
+    foreach (Game::all() as $game){
+        Log::info('Starting the ' . $game->name . ' import');
+//        var_dump('Starting the ' . $game->name . ' import');
+        Artisan::call('import-50-events', ['game' => $game->slug, 'import_all_events' => $import_all_events]);
+    }
 });
 
 Artisan::command('import-500-events {game} {import_all_events?}', function (string $game, bool $import_all_events=false){
@@ -495,27 +486,11 @@ Artisan::command('import-500-events {game} {import_all_events?}', function (stri
 });
 
 Artisan::command('import-500-events-all-games {import_all_events?}', function (bool $import_all_events=false){
-    Log::info('Starting the 64 import');
-//    var_dump('Starting the 64 import');
-    Artisan::call('import-500-events', ['game' => '64', 'import_all_events' => $import_all_events]);
-    Log::info('Starting the melee import');
-//    var_dump('Starting the melee import');
-    Artisan::call('import-500-events', ['game' => 'melee', 'import_all_events' => $import_all_events]);
-    Log::info('Starting the brawl import');
-//    var_dump('Starting the brawl import');
-    Artisan::call('import-500-events', ['game' => 'brawl', 'import_all_events' => $import_all_events]);
-    Log::info('Starting the project + import');
-//    var_dump('Starting the project + import');
-    Artisan::call('import-500-events', ['game' => 'project_+', 'import_all_events' => $import_all_events]);
-    Log::info('Starting the project m import');
-//    var_dump('Starting the project m import');
-    Artisan::call('import-500-events', ['game' => 'project_m', 'import_all_events' => $import_all_events]);
-    Log::info('Starting the smash4 import');
-//    var_dump('Starting the smash4 import');
-    Artisan::call('import-500-events', ['game' => 'smash4', 'import_all_events' => $import_all_events]);
-    Log::info('Starting the ultimate import');
-//    var_dump('Starting the ultimate import');
-    Artisan::call('import-500-events', ['game' => 'ultimate', 'import_all_events' => $import_all_events]);
+    foreach (Game::all() as $game){
+        Log::info('Starting the ' . $game->name . ' import');
+//        var_dump('Starting the ' . $game->name . ' import');
+        Artisan::call('import-500-events', ['game' => $game->slug, 'import_all_events' => $import_all_events]);
+    }
 });
 
 
