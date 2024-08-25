@@ -166,7 +166,7 @@ Artisan::command('import-50-events {game_id} {import_all_events?} {page?}', func
 //            var_dump('Retrying in 1 second');
             sleep(1);
             Artisan::call('import-50-events', ['game_id' => $game_id, 'import_all_events' => $import_all_events, 'page' => $page]);
-            die();
+            return;
         }else{
             throw new Exception('No data found');
 
