@@ -82,34 +82,9 @@ Artisan::command('delete-events', function(){
     }
 });
 
-Artisan::command('import-50-events {game} {import_all_events?} {page?}', function(string $game, bool $import_all_events=false, int $page=1){
+Artisan::command('import-50-events {game_id} {import_all_events?} {page?}', function(string $game_id, bool $import_all_events=false, int $page=1){
 
-    switch ($game){
-        case '64':
-            $game_id = GameEnum::SMASH64;
-            break;
-        case 'melee':
-            $game_id = GameEnum::MELEE;
-            break;
-        case 'brawl':
-            $game_id = GameEnum::BRAWL;
-            break;
-        case 'project_+':
-            $game_id = GameEnum::PROJECT_PLUS;
-            break;
-        case 'project_m':
-            $game_id = GameEnum::PROJECT_M;
-            break;
-        case 'smash4':
-            $game_id = GameEnum::SMASH4;
-            break;
-        case 'ultimate':
-            $game_id = GameEnum::ULTIMATE;
-            break;
-        default:
-//            var_dump('Unknown game');
-            die();
-    }
+
 
     $apiToken = env('START_GG_API_KEY');
 
@@ -186,9 +161,18 @@ Artisan::command('import-50-events {game} {import_all_events?} {page?}', functio
         Log::error('No data found');
         Log::error('Raw response : ' . $raw_response);
         Log::error('Response in json : ' . json_encode($response));
+        if (!$response){
+            Log::info('Retrying in 1 second');
+//            var_dump('Retrying in 1 second');
+            sleep(1);
+            Artisan::call('import-50-events', ['game_id' => $game_id, 'import_all_events' => $import_all_events, 'page' => $page]);
+            die();
+        }else{
+            throw new Exception('No data found');
+
+        }
 //        var_dump('No data found');
 //        var_dump('Response : ' . json_encode($response));
-        throw new Exception('No data found');
     }
 
     $events = $data->tournaments?->nodes;
@@ -478,13 +462,13 @@ Artisan::command('import-50-events-all-games {import_all_events?', function (boo
     foreach (Game::all() as $game){
         Log::info('Starting the ' . $game->name . ' import');
 //        var_dump('Starting the ' . $game->name . ' import');
-        Artisan::call('import-50-events', ['game' => $game->slug, 'import_all_events' => $import_all_events]);
+        Artisan::call('import-50-events', ['game_id' => $game->id, 'import_all_events' => $import_all_events]);
     }
 });
 
-Artisan::command('import-500-events {game} {import_all_events?}', function (string $game, bool $import_all_events=false){
+Artisan::command('import-500-events {game_id} {import_all_events?}', function (string $game_id, bool $import_all_events=false){
     foreach (range(1, 10) as $page){
-        Artisan::call('import-50-events', ['game' => $game, 'import_all_events' =>$import_all_events, 'page' => $page]);
+        Artisan::call('import-50-events', ['game_id' => $game_id, 'import_all_events' =>$import_all_events, 'page' => $page]);
         sleep(1);
     }
 });
@@ -492,8 +476,8 @@ Artisan::command('import-500-events {game} {import_all_events?}', function (stri
 Artisan::command('import-500-events-all-games {import_all_events?}', function (bool $import_all_events=false){
     foreach (Game::all() as $game){
         Log::info('Starting the ' . $game->name . ' import');
-//        var_dump('Starting the ' . $game->name . ' import');
-        Artisan::call('import-500-events', ['game' => $game->slug, 'import_all_events' => $import_all_events]);
+        var_dump('Starting the ' . $game->name . ' import');
+        Artisan::call('import-500-events', ['game_id' => $game->id, 'import_all_events' => $import_all_events]);
     }
 });
 
