@@ -324,6 +324,10 @@ onActivated(() => {
                             <div class="game-name">Ultimate</div>
                         </div>
                         <div class="game-legend">
+                            <div class="color-box" style="background-color: #008600;"></div>
+                            <div class="game-name">HDR</div>
+                        </div>
+                        <div class="game-legend">
                             <div class="color-box" style="background-color: black;"></div>
                             <div class="game-name">Multiple Games</div>
                         </div>

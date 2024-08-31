@@ -10,6 +10,7 @@ export const useOptionsStore = defineStore('option', function (){
         {name: 'Project +', id: 33602},
         {name: '3DS / WiiU', id: 3},
         {name: 'Ultimate', id: 1386},
+        {name: 'HDR', id: 34157}
     ])
 
     const eventTypeOptions = ref([

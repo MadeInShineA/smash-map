@@ -12,6 +12,8 @@ abstract class GameEnum
     const SMASH4 = 3;
     const ULTIMATE = 1386;
 
+    const HDR = 34157;
+
     const IDS = [
         self::SMASH64,
         self::MELEE,
@@ -19,7 +21,8 @@ abstract class GameEnum
         self::PROJECT_M,
         self::PROJECT_PLUS,
         self::SMASH4,
-        self::ULTIMATE
+        self::ULTIMATE,
+        self::HDR
     ];
 
     const NAMES = [
@@ -29,7 +32,8 @@ abstract class GameEnum
         self::PROJECT_M => 'Project M',
         self::PROJECT_PLUS => 'Project+',
         self::SMASH4 => 'Super Smash Bros. for Wii U',
-        self::ULTIMATE => 'Super Smash Bros. Ultimate'
+        self::ULTIMATE => 'Super Smash Bros. Ultimate',
+        self::HDR => 'HDR'
     ];
 
     const ABBREVIATIONS = [
@@ -39,7 +43,8 @@ abstract class GameEnum
         self::PROJECT_M => 'Project M',
         self::PROJECT_PLUS => 'Project +',
         self::SMASH4 => '3DS / WiiU',
-        self::ULTIMATE => 'Ultimate'
+        self::ULTIMATE => 'Ultimate',
+        self::HDR => 'HDR'
     ];
 
     const COLORS = [
@@ -49,7 +54,8 @@ abstract class GameEnum
         self::PROJECT_M => '#3B448B',
         self::PROJECT_PLUS => '#6FD19C',
         self::SMASH4 => '#AFC1EE',
-        self::ULTIMATE => '#F18A41'
+        self::ULTIMATE => '#F18A41',
+        self::HDR => '#015500'
     ];
 
     const HOVER_COLORS = [
@@ -59,7 +65,8 @@ abstract class GameEnum
         self::PROJECT_M => '#2F366F',
         self::PROJECT_PLUS => '#3EC17A',
         self::SMASH4 => '#6A8CDF',
-        self::ULTIMATE => '#E46810'
+        self::ULTIMATE => '#E46810',
+        self::HDR => '#013D00'
     ];
 
 
