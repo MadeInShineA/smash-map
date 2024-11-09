@@ -124,7 +124,7 @@ watch(() => props.darkMode, (newValue) => {
             </figure>
             <h2>What is Smash Map?</h2>
             <p>
-                Smash Map is an open source website that lists all the events happening in the competitive Super Smash Bros. scene.
+                Smash Map is an open-source website that lists events happening in the competitive scenes for Super Smash Bros. and Rivals of Aether 2.
             </p>
             <div>
                 Featuring the following games:
