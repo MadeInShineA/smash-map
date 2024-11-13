@@ -268,7 +268,7 @@ Artisan::command('import-50-events {game_id} {import_all_events?} {page?}', func
                                     continue;
                                 }
 
-                                if($last_notification && $last_notification->days_until_event <= $user_time_notifications_threshold){
+                                if($last_notification && $event_date->diffInDays(Carbon::parse($last_notification->created_at)) <= $user_time_notifications_threshold){
                                     continue;
                                 }
 
