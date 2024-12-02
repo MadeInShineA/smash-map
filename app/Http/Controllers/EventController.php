@@ -187,8 +187,9 @@ class EventController extends Controller
                     $statistics['datasets'][$datasetIndex]['hoverBackgroundColor'][] = GameEnum::HOVER_COLORS[$id];
                     $eventsEachMonth = [];
                     for ($x = $currentMonth; $x < $currentMonth + 6; $x++) {
+                        $month = ($x - 1) % 12 + 1;
                         $events = Event::query();
-                        $eventsEachMonth[] = $events->where('game_id', $id)->whereMonth('start_date_time', $x)->count();
+                        $eventsEachMonth[] = $events->where('game_id', $id)->whereMonth('start_date_time', $month)->count();
                     }
                     $statistics['datasets'][$datasetIndex]['data'] = $eventsEachMonth;
                     $datasetIndex += 1;
