@@ -21,3 +21,4 @@ yarn-error.log
 /.idea
 /.vscode
 /storage/app/public/characters-images/smash-64/old-icons/
+.direnv
