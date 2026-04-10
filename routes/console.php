@@ -1059,13 +1059,11 @@ Artisan::command("refresh-events-preserve-following", function () {
             if (!$event) {
                 continue;
             }
-            $user
-                ->subscribed_events()
-                ->attach($event, [
-                    "original_attendees" =>
-                        $followed_event_infos["original_attendees"],
-                    "created_at" => $followed_event_infos["created_at"],
-                ]);
+            $user->subscribed_events()->attach($event, [
+                "original_attendees" =>
+                    $followed_event_infos["original_attendees"],
+                "created_at" => $followed_event_infos["created_at"],
+            ]);
         }
     }
 });
