@@ -139,12 +139,12 @@ class Event extends Model
         float $lng,
         float $radius,
     ) {
-        $haversine = "6371 * acos(
-                GREATEST(-1, LEAST(1,
-                    cos(radians(?)) * cos(radians(addresses.latitude))
-                    * cos(radians(addresses.longitude) - radians(?))
-                    + sin(radians(?)) * sin(radians(addresses.latitude))
-                ))
+        $distance = "6371 * acos(
+                    sin(radians(addresses.latitude)) * sin(radians(?))
+                    +
+                    cos(radians(addresses.latitude)) *
+                    cos(radians(?)) *
+                    cos(radians(?) - radians(addresses.longitude))
             )";
 
         return $query
@@ -152,12 +152,12 @@ class Event extends Model
             ->join("addresses", "events.address_id", "=", "addresses.id")
 
             // Apply the Haversine filter
-            ->whereRaw("{$haversine} <= ?", [$lat, $lng, $lat, $radius])
+            ->whereRaw("{$distance} <= ?", [$lat, $lat, $lng, $radius])
 
             // Select only events.* to avoid column conflicts
             ->select("events.*")
 
-            ->selectRaw("{$haversine} AS distance", [$lat, $lng, $lat])
+            ->selectRaw("{$distance} AS distance", [$lat, $lng, $lat])
             ->orderByRaw("distance ASC");
     }
 
