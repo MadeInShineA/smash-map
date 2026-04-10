@@ -18,22 +18,29 @@ use Illuminate\Support\Facades\Route;
 
 #TODO Ask Quentin if it is faster to query items in a store with the home made api or to redirect to the page with the items inside index (si index a été chargé 1x et query api si non).
 
-Route::get('/crons/import-500-events', [EventController::class, 'import_500_events']);
-Route::get('/crons/delete-events', [EventController::class, 'delete_events']);
-Route::get('/crons/delete-addresses', [AddressController::class, 'delete_addresses']);
+Route::get("/crons/import-500-events", [
+    EventController::class,
+    "import_500_events",
+]);
+Route::get("/crons/delete-events", [EventController::class, "delete_events"]);
+Route::get("/crons/delete-addresses", [
+    AddressController::class,
+    "delete_addresses",
+]);
 
-Route::get('', function () {
-    return view('app');
+Route::get("", function () {
+    return view("app");
 });
 
-Route::get('/{page}', function () {
-    return view('app');
+Route::get("/{page}", function () {
+    return view("app");
 });
 
-Route::get('/{page}/{token}', function () {
-    return view('app');
-})->name('password.reset');
+Route::get("/{page}/{token}", function () {
+    return view("app");
+})->name("password.reset");
 
 // This route is used to reset the password (needed for PasswordBroker)
-Route::get('/reset-password/{token}', function (string $token) {})->name('password.reset');
-
+Route::get("/reset-password/{token}", function (string $token) {})->name(
+    "password.reset",
+);

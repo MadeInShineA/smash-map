@@ -13,18 +13,17 @@ class Country extends Model
 {
     use HasFactory;
 
-    protected $fillable =[
-        'continent_id',
-        'name',
-        'code',
-        'timezone',
-        'has_image'
-
+    protected $fillable = [
+        "continent_id",
+        "name",
+        "code",
+        "timezone",
+        "has_image",
     ];
 
     public function image(): MorphOne
     {
-        return $this->morphOne(Image::class,'parentable');
+        return $this->morphOne(Image::class, "parentable");
     }
 
     public function addresses(): HasMany
@@ -39,8 +38,10 @@ class Country extends Model
 
     public function scopeContinents($query, array $continents)
     {
-        return $query->whereHas('continent', function ($query) use ($continents) {
-            $query->whereIn('code', $continents);
+        return $query->whereHas("continent", function ($query) use (
+            $continents,
+        ) {
+            $query->whereIn("code", $continents);
         });
     }
 }

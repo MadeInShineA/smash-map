@@ -15,15 +15,15 @@ class Address extends Model
 {
     use HasFactory;
 
-    protected $fillable =[
-        'name',
-        'latitude',
-        'longitude',
-        'country_id',
-        'continent_id'
+    protected $fillable = [
+        "name",
+        "latitude",
+        "longitude",
+        "country_id",
+        "continent_id",
     ];
 
-    public function events():HasMany
+    public function events(): HasMany
     {
         return $this->hasMany(Event::class);
     }
@@ -35,7 +35,7 @@ class Address extends Model
 
     public function map_users(): HasMany
     {
-        return $this->users()->where('is_on_map', true);
+        return $this->users()->where("is_on_map", true);
     }
 
     public function country(): BelongsTo
@@ -46,29 +46,34 @@ class Address extends Model
     //TODO Fix the icon size (invisible border)
     public function getIconAttribute(): string
     {
-        $users = $this->users()->where('is_on_map', true)->get();
-        $event_games = $this->events->pluck('game.slug')->unique()->toArray();
+        $users = $this->users()->where("is_on_map", true)->get();
+        $event_games = $this->events->pluck("game.slug")->unique()->toArray();
 
-
-        if(sizeof($users) === 0 ){
-            if (sizeof($event_games) == 1){
-                return URL::to('/storage/map-icons/' . $event_games[0] . '.png');
-            }else{
-                return URL::to('/storage/map-icons/events.png');
+        if (sizeof($users) === 0) {
+            if (sizeof($event_games) == 1) {
+                return URL::to(
+                    "/storage/map-icons/" . $event_games[0] . ".png",
+                );
+            } else {
+                return URL::to("/storage/map-icons/events.png");
             }
-        }elseif (sizeof($event_games) === 0 && sizeof($users) === 1){
+        } elseif (sizeof($event_games) === 0 && sizeof($users) === 1) {
             $user = $users[0];
             return $user->profile_picture->url;
-        }elseif(sizeof($event_games) === 0){
-            return URL::to('/storage/map-icons/users.svg');
-        }elseif (sizeof($users) === 1 && sizeof($event_games) === 1){
-            return URL::to('/storage/map-icons/' . $event_games[0] . '-user.png');
-        }elseif (sizeof($users) === 1 && sizeof($event_games) > 1){
-            return URL::to('/storage/map-icons/events-user.png');
-        }elseif (sizeof($users) > 1 && sizeof($event_games) === 1){
-            return URL::to('/storage/map-icons/' .$event_games[0] .'-users.png');
-        }else{
-            return URL::to('/storage/map-icons/events-users.png');
+        } elseif (sizeof($event_games) === 0) {
+            return URL::to("/storage/map-icons/users.svg");
+        } elseif (sizeof($users) === 1 && sizeof($event_games) === 1) {
+            return URL::to(
+                "/storage/map-icons/" . $event_games[0] . "-user.png",
+            );
+        } elseif (sizeof($users) === 1 && sizeof($event_games) > 1) {
+            return URL::to("/storage/map-icons/events-user.png");
+        } elseif (sizeof($users) > 1 && sizeof($event_games) === 1) {
+            return URL::to(
+                "/storage/map-icons/" . $event_games[0] . "-users.png",
+            );
+        } else {
+            return URL::to("/storage/map-icons/events-users.png");
         }
     }
 
@@ -85,7 +90,13 @@ class Address extends Model
         $latitude2 = deg2rad($latitude2);
         $longitude2 = deg2rad($longitude2);
 
-        $distance = acos(sin($latitude1) * sin($latitude2) + cos($latitude1) * cos($latitude2) * cos($longitude2 - $longitude1)) * $earth_radius;
+        $distance =
+            acos(
+                sin($latitude1) * sin($latitude2) +
+                    cos($latitude1) *
+                        cos($latitude2) *
+                        cos($longitude2 - $longitude1),
+            ) * $earth_radius;
 
         return $distance;
     }

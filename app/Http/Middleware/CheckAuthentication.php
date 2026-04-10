@@ -16,26 +16,31 @@ class CheckAuthentication
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
 
-    public function sendError($message, array $errorMessages = [], int $code = 404): JsonResponse
-    {
+    public function sendError(
+        $message,
+        array $errorMessages = [],
+        int $code = 404,
+    ): JsonResponse {
         $response = [
-            'success' => false,
-            'message' => $message,
-            'statusCode' => $code,
+            "success" => false,
+            "message" => $message,
+            "statusCode" => $code,
         ];
 
-        if(! empty($errorMessages)){
-            $response['errors'] = $errorMessages;
+        if (!empty($errorMessages)) {
+            $response["errors"] = $errorMessages;
         }
 
         return response()->json($response, $code);
     }
 
-    public function handle(Request $request, Closure $next): JsonResponse | Response
-    {
-        $user = $request->route('user');
-        if ($user->id != $request->user('sanctum')->id) {
-            return $this->sendError('You are not authorized', [], 401);
+    public function handle(
+        Request $request,
+        Closure $next,
+    ): JsonResponse|Response {
+        $user = $request->route("user");
+        if ($user->id != $request->user("sanctum")->id) {
+            return $this->sendError("You are not authorized", [], 401);
         }
         return $next($request);
     }

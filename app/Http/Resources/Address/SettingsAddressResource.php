@@ -10,10 +10,10 @@ class SettingsAddressResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'countryCode'   => $this->country->code,
-            'name'          => $this->name,
-            'latitude'      => $this->latitude,
-            'longitude'     => $this->longitude
+            "countryCode" => $this->country->code,
+            "name" => $this->name,
+            "latitude" => $this->latitude,
+            "longitude" => $this->longitude,
         ];
     }
 }

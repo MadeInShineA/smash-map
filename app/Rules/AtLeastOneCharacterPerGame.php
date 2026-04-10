@@ -14,15 +14,20 @@ class AtLeastOneCharacterPerGame implements ValidationRule
      *
      * @param  \Closure(string): \Illuminate\Translation\PotentiallyTranslatedString  $fail
      */
-    public function validate(string $attribute, mixed $value, Closure $fail): void
-    {
-        $games_ids = request()->input('games');
+    public function validate(
+        string $attribute,
+        mixed $value,
+        Closure $fail,
+    ): void {
+        $games_ids = request()->input("games");
 
-        $characters_id = request()->input('characters');
-        $characters_game_ids = Character::whereIn('id', $characters_id)->pluck('game_id')->toArray();
+        $characters_id = request()->input("characters");
+        $characters_game_ids = Character::whereIn("id", $characters_id)
+            ->pluck("game_id")
+            ->toArray();
 
-        if(!empty(array_diff($games_ids, $characters_game_ids)))
-            $fail('At least one character per game is required');
-
+        if (!empty(array_diff($games_ids, $characters_game_ids))) {
+            $fail("At least one character per game is required");
+        }
     }
 }

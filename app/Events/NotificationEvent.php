@@ -22,12 +22,10 @@ class NotificationEvent implements ShouldBroadcast
     private Notification $notification;
     private User $user;
 
-
     public function __construct(Notification $notification, User $user)
     {
         $this->notification = $notification;
         $this->user = $user;
-
     }
 
     public function broadcastWith()
@@ -43,8 +41,6 @@ class NotificationEvent implements ShouldBroadcast
      */
     public function broadcastOn(): array
     {
-        return [
-            new PrivateChannel('notifications.' . $this->user->id),
-        ];
+        return [new PrivateChannel("notifications." . $this->user->id)];
     }
 }

@@ -11,13 +11,12 @@ class EventCalendarResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'title'             => $this->name,
-            'start'             => $this->start_date_time,
-            'end'               => $this->end_date_time,
-            'colorScheme'       => $this->color_scheme,
-            'location'      => $this->address?->name,
-            'description'       =>'',
+            "title" => $this->name,
+            "start" => $this->start_date_time,
+            "end" => $this->end_date_time,
+            "colorScheme" => $this->color_scheme,
+            "location" => $this->address?->name,
+            "description" => "",
         ];
     }
-
 }

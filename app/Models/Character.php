@@ -12,16 +12,16 @@ class Character extends Model
     use HasFactory;
 
     protected $fillable = [
-        'created_at',
-        'updated_at',
-        'name',
-        'image_link',
-        'game_id',
-        ];
+        "created_at",
+        "updated_at",
+        "name",
+        "image_link",
+        "game_id",
+    ];
 
     public function image(): MorphOne
     {
-        return $this->morphOne(Image::class,'parentable');
+        return $this->morphOne(Image::class, "parentable");
     }
 
     public function game(): BelongsTo

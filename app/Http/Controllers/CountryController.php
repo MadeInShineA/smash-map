@@ -12,21 +12,26 @@ use PHPUnit\Framework\Constraint\Count;
 
 class CountryController extends Controller
 {
-    public function countries_filter (Request $request):JsonResponse
+    public function countries_filter(Request $request): JsonResponse
     {
         $countries = Country::query();
 
-        if ($request->has('continents')){
-            $continents = $request->input('continents');
-            switch ($continents){
-                case 'default':
+        if ($request->has("continents")) {
+            $continents = $request->input("continents");
+            switch ($continents) {
+                case "default":
                     break;
                 default:
-                    $continents = explode(',', $continents);
+                    $continents = explode(",", $continents);
                     $countries->continents($continents);
             }
         }
 
-        return $this->sendResponse(CountryFilterResource::collection($countries->orderBy('name', 'ASC')->get()), 'Countries retrieved with success');
+        return $this->sendResponse(
+            CountryFilterResource::collection(
+                $countries->orderBy("name", "ASC")->get(),
+            ),
+            "Countries retrieved with success",
+        );
     }
 }

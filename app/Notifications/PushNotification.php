@@ -40,10 +40,14 @@ class PushNotification extends Notification
     {
         return PusherMessage::create()
             ->web()
-            ->title(NotificationTypeEnum::LABELS[$this->notification->type] . " for " . GameEnum::NAMES[$this->notification->game_id])
+            ->title(
+                NotificationTypeEnum::LABELS[$this->notification->type] .
+                    " for " .
+                    GameEnum::NAMES[$this->notification->game_id],
+            )
             ->body(strip_tags($this->notification->message))
             ->icon($this->notification->image_url)
-            ->link(\Illuminate\Support\Facades\URL::to('/notifications'));
+            ->link(\Illuminate\Support\Facades\URL::to("/notifications"));
     }
 
     /**
@@ -54,7 +58,7 @@ class PushNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            //
-        ];
+                //
+            ];
     }
 }

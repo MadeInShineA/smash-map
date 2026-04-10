@@ -22,17 +22,17 @@ class ResetPasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'token'                 => ['required', 'string'],
-            'email'                 => ['required', 'email', 'exists:users,email'],
-            'password'              => ['required', 'string'],
-            'passwordConfirmation'  => ['required' ,'string', 'same:password']
+            "token" => ["required", "string"],
+            "email" => ["required", "email", "exists:users,email"],
+            "password" => ["required", "string"],
+            "passwordConfirmation" => ["required", "string", "same:password"],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'email.exists' => 'There is no account with this email address.'
+            "email.exists" => "There is no account with this email address.",
         ];
     }
 }

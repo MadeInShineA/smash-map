@@ -10,9 +10,8 @@ class GameResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'name'  => $this->name,
-            'color' => $this->color,
+            "name" => $this->name,
+            "color" => $this->color,
         ];
     }
-
 }

@@ -9,8 +9,8 @@ class CountryResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'name'      => $this->name,
-            'timezone'  => $this->timezone
+            "name" => $this->name,
+            "timezone" => $this->timezone,
         ];
     }
 }

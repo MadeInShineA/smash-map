@@ -11,10 +11,9 @@ class CountryFilterResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'name'  => $this->name,
-            'code' => $this->code,
-            'image' => new ImageResource($this->image)
+            "name" => $this->name,
+            "code" => $this->code,
+            "image" => new ImageResource($this->image),
         ];
     }
-
 }

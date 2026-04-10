@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory} from 'vue-router'
+import { createRouter, createWebHistory } from "vue-router";
 
 import Home from "./views/Home.vue";
 import Map from "./views/Map.vue";
@@ -14,78 +14,75 @@ import About from "./views/About.vue";
 
 const routes = [
     {
-        path: '/',
+        path: "/",
         component: DefaultLayout,
         children: [
             {
-                path:'',
-                component:Home,
-                name:'home'
+                path: "",
+                component: Home,
+                name: "home",
             },
             {
-                path: 'map',
-                name: 'map',
+                path: "map",
+                name: "map",
                 component: Map,
-                props: route => ({
+                props: (route) => ({
                     lat: route.query.lat,
-                    lng: route.query.lng
-                })
+                    lng: route.query.lng,
+                }),
             },
             {
-                path: 'events',
+                path: "events",
                 component: Events,
-                name:'events'
+                name: "events",
             },
             {
-                path: 'about',
+                path: "about",
                 component: About,
-                name:'about'
-
+                name: "about",
             },
             {
-                path: 'login',
+                path: "login",
                 component: Login,
-                name:'login'
+                name: "login",
             },
             {
-                path: 'settings',
+                path: "settings",
                 component: Settings,
-                name:'settings',
+                name: "settings",
             },
             {
-                path: 'notifications',
+                path: "notifications",
                 component: Notifications,
-                name:'notifications'
+                name: "notifications",
             },
             {
-                path: 'profile',
+                path: "profile",
                 component: Profile,
-                name:'profile'
+                name: "profile",
             },
             {
-                path:'profile/:username',
+                path: "profile/:username",
                 component: UserProfile,
-                name:'user-profile',
-                props: true
+                name: "user-profile",
+                props: true,
             },
             {
-                path: 'reset-password/:token',
+                path: "reset-password/:token",
                 component: ResetPassword,
-                name:'reset-password',
-                props: true
+                name: "reset-password",
+                props: true,
             },
 
             {
-                path: ':catchAll(.*)',
-                redirect: '/'
-            }
-
-        ]
-
+                path: ":catchAll(.*)",
+                redirect: "/",
+            },
+        ],
     },
-]
+];
 
 export const router = createRouter({
-    history: createWebHistory(''),
+    history: createWebHistory(""),
     routes,
-})
+});

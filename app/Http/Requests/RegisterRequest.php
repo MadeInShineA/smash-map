@@ -27,34 +27,60 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'username'              => ['required', 'max:20', 'unique:' .User::class . ',username', 'alpha_dash:ascii'],
-            'email'                 => ['required', 'email:rfc,dns', 'max:255', 'unique:' . User::class . ',email'],
-            'password'              => ['required', 'string'],
-            'passwordConfirmation'  => ['required', 'string', 'same:password'],
-            'games'                 => ['required', 'exists:' . Game::class . ',id'],
-            'characters'            => ['required', 'exists:' .Character::class . ',id', new AtLeastOneCharacterPerGame],
-            'addressName'           => ['required'],
-            'latitude'              => ['required', 'regex:/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?)$/'],
-            'longitude'             => ['required', 'regex:/^[-]?((((1[0-7][0-9])|([0-9]?[0-9]))\.(\d+))|180(\.0+)?)$/'],
-            'countryCode'           => ['required'],
-            'isModder'              => ['required', 'boolean'],
-            'isOnMap'               => ['required', 'boolean'],
+            "username" => [
+                "required",
+                "max:20",
+                "unique:" . User::class . ",username",
+                "alpha_dash:ascii",
+            ],
+            "email" => [
+                "required",
+                "email:rfc,dns",
+                "max:255",
+                "unique:" . User::class . ",email",
+            ],
+            "password" => ["required", "string"],
+            "passwordConfirmation" => ["required", "string", "same:password"],
+            "games" => ["required", "exists:" . Game::class . ",id"],
+            "characters" => [
+                "required",
+                "exists:" . Character::class . ",id",
+                new AtLeastOneCharacterPerGame(),
+            ],
+            "addressName" => ["required"],
+            "latitude" => [
+                "required",
+                'regex:/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?)$/',
+            ],
+            "longitude" => [
+                "required",
+                'regex:/^[-]?((((1[0-7][0-9])|([0-9]?[0-9]))\.(\d+))|180(\.0+)?)$/',
+            ],
+            "countryCode" => ["required"],
+            "isModder" => ["required", "boolean"],
+            "isOnMap" => ["required", "boolean"],
         ];
     }
 
     public function withValidator(Validator $validator)
     {
         $validator->after(function ($validator) {
-            $addressNameError = $validator->errors()->get('addressName');
-            $latitudeError = $validator->errors()->get('latitude');
-            $longitudeError = $validator->errors()->get('longitude');
-            $countryCodeError = $validator->errors()->get('countryCode');
-
+            $addressNameError = $validator->errors()->get("addressName");
+            $latitudeError = $validator->errors()->get("latitude");
+            $longitudeError = $validator->errors()->get("longitude");
+            $countryCodeError = $validator->errors()->get("countryCode");
 
             // Check if there's an error for 'latitude' or 'longitude'
-            if (empty($addressNameError) && (!empty($latitudeError) || !empty($longitudeError) || !empty($countryCodeError))) {
-                    $validator->errors()->add('addressName', 'Please use the Google Autocomplete');
-                }
+            if (
+                empty($addressNameError) &&
+                (!empty($latitudeError) ||
+                    !empty($longitudeError) ||
+                    !empty($countryCodeError))
+            ) {
+                $validator
+                    ->errors()
+                    ->add("addressName", "Please use the Google Autocomplete");
+            }
         });
     }
 }

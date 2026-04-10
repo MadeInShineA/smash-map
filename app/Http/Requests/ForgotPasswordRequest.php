@@ -22,14 +22,14 @@ class ForgotPasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required','email','exists:users','email']
+            "email" => ["required", "email", "exists:users", "email"],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'email.exists' => 'There is no account with this email address.'
+            "email.exists" => "There is no account with this email address.",
         ];
     }
 }

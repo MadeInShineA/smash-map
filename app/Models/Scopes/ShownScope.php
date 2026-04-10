@@ -13,6 +13,6 @@ class ShownScope implements Scope
      */
     public function apply(Builder $builder, Model $model): Builder
     {
-        return $builder->where('show', true);
+        return $builder->where("show", true);
     }
 }

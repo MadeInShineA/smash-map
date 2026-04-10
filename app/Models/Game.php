@@ -10,12 +10,7 @@ class Game extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'id',
-        'name',
-        'color',
-        'slug'
-    ];
+    protected $fillable = ["id", "name", "color", "slug"];
 
     public function characters(): HasMany
     {

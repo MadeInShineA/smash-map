@@ -1,57 +1,74 @@
 <script setup>
-
-import {ref} from "vue";
-import {defineProps} from "vue";
-import {useUserStore} from "../stores/UserStore.js";
+import { ref } from "vue";
+import { defineProps } from "vue";
+import { useUserStore } from "../stores/UserStore.js";
 import Tag from "primevue/tag";
 import LoaderComponent from "../components/LoaderComponent.vue";
 
 const props = defineProps({
     username: {
         type: String,
-        required: true
+        required: true,
     },
     darkMode: {
         type: Boolean,
-        required: true
-    }
-})
+        required: true,
+    },
+});
 
-const userStore = useUserStore()
+const userStore = useUserStore();
 
-const profileInformation = ref(null)
+const profileInformation = ref(null);
 
-userStore.getProfileInformationByUsername(props.username, props.darkMode).then((response) => {
-    if(response){
-        profileInformation.value = response.data
-    }
-})
-
+userStore
+    .getProfileInformationByUsername(props.username, props.darkMode)
+    .then((response) => {
+        if (response) {
+            profileInformation.value = response.data;
+        }
+    });
 </script>
 
 <template>
     <div v-if="profileInformation" id="profile-information-container">
         <div>
-            <img :src="profileInformation.profilePicture.url" id="profile-picture" alt="Profile picture image"/>
+            <img
+                :src="profileInformation.profilePicture.url"
+                id="profile-picture"
+                alt="Profile picture image"
+            />
         </div>
         <div class="profile-element">
             {{ profileInformation.username }}
         </div>
         <div v-if="profileInformation.isModder" class="tag">
-            <Tag value="Modder" rounded :style="{background: 'aqua'}"></Tag>
+            <Tag value="Modder" rounded :style="{ background: 'aqua' }"></Tag>
         </div>
         <template v-for="game in profileInformation.games">
             <div class="tag">
-                <Tag :value="game.name" rounded :style="{background: game.color}"></Tag>
+                <Tag
+                    :value="game.name"
+                    rounded
+                    :style="{ background: game.color }"
+                ></Tag>
             </div>
             <div class="characters-container">
                 <template v-for="character in game.characters">
-                    <img class="character-image" :alt="character.name" :src="character.image.url" width="20"/>
+                    <img
+                        class="character-image"
+                        :alt="character.name"
+                        :src="character.image.url"
+                        width="20"
+                    />
                 </template>
             </div>
         </template>
 
-        <div v-if="profileInformation.description" class="profile-element" id="profile-description">
+        <div
+            v-if="profileInformation.description"
+            class="profile-element"
+            id="profile-description"
+        >
             {{ profileInformation.description }}
         </div>
 
@@ -62,19 +79,18 @@ userStore.getProfileInformationByUsername(props.username, props.darkMode).then((
 
         <div v-if="profileInformation.x" class="profile-element">
             <i class="pi pi-twitter"></i>
-           {{ profileInformation.x}}
+            {{ profileInformation.x }}
         </div>
 
         <div v-if="profileInformation.connectCode" class="profile-element">
             <i class="pi pi-globe"></i>
-           {{ profileInformation.connectCode}}
+            {{ profileInformation.connectCode }}
         </div>
     </div>
     <loader-component v-else></loader-component>
 </template>
 
 <style scoped>
-
 #profile-information-container {
     display: flex;
     flex-direction: column;
@@ -108,12 +124,10 @@ userStore.getProfileInformationByUsername(props.username, props.darkMode).then((
     margin: 10px;
     width: 300px;
     word-break: break-all;
-
 }
 
 #profile-description {
     white-space: break-spaces;
     word-break: break-word;
 }
-
 </style>

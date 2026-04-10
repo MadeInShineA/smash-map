@@ -6,17 +6,22 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\URL;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::table('notifications', function (Blueprint $table) {
-            $notifications = Notification::where('image_url', 'like', '%/storage/map-icons/%')->get();
+        Schema::table("notifications", function (Blueprint $table) {
+            $notifications = Notification::where(
+                "image_url",
+                "like",
+                "%/storage/map-icons/%",
+            )->get();
             foreach ($notifications as $notification) {
-                $notification->image_url =  URL::to('/storage/map-icons/' . $notification->game->slug . '.png');
+                $notification->image_url = URL::to(
+                    "/storage/map-icons/" . $notification->game->slug . ".png",
+                );
                 $notification->save();
             }
         });
@@ -27,10 +32,16 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('notifications', function (Blueprint $table) {
-            $notifications = Notification::where('image_url', 'like', '%/storage/map-icons/%')->get();
+        Schema::table("notifications", function (Blueprint $table) {
+            $notifications = Notification::where(
+                "image_url",
+                "like",
+                "%/storage/map-icons/%",
+            )->get();
             foreach ($notifications as $notification) {
-                $notification->image_url =  URL::to('/storage/map-icons/' . $notification->game->name . '.png');
+                $notification->image_url = URL::to(
+                    "/storage/map-icons/" . $notification->game->name . ".png",
+                );
                 $notification->save();
             }
         });

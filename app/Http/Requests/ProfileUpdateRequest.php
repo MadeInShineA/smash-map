@@ -22,12 +22,16 @@ class ProfileUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'profilePicture'    => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
-            'description'       => ['nullable', 'string', 'max:255'],
-            'discord'           => ['nullable', 'string', 'max:32'],
-            'x'                 => ['nullable', 'string', 'max:15'],
-            'connectCode'       => ['nullable', 'string', 'max:8', 'regex:/#\d+/'],
+            "profilePicture" => [
+                "nullable",
+                "image",
+                "mimes:jpeg,png,jpg",
+                "max:2048",
+            ],
+            "description" => ["nullable", "string", "max:255"],
+            "discord" => ["nullable", "string", "max:32"],
+            "x" => ["nullable", "string", "max:15"],
+            "connectCode" => ["nullable", "string", "max:8", "regex:/#\d+/"],
         ];
     }
-
 }

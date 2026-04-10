@@ -28,32 +28,59 @@ class SettingsDistanceNotificationsRadiusUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'distanceNotificationsRadius' => ['required', 'numeric', 'min:1', 'max:2000']
+            "distanceNotificationsRadius" => [
+                "required",
+                "numeric",
+                "min:1",
+                "max:2000",
+            ],
         ];
     }
 
     public function withValidator(Validator $validator)
     {
         $validator->after(function ($validator) {
-            $addressNameError = $validator->errors()->get('address.name');
-            $latitudeError = $validator->errors()->get('address.latitude');
-            $longitudeError = $validator->errors()->get('address.longitude');
-            $countryCodeError = $validator->errors()->get('address.countryCode');
-
+            $addressNameError = $validator->errors()->get("address.name");
+            $latitudeError = $validator->errors()->get("address.latitude");
+            $longitudeError = $validator->errors()->get("address.longitude");
+            $countryCodeError = $validator
+                ->errors()
+                ->get("address.countryCode");
 
             // Check if there's an error for 'latitude' or 'longitude'
-            if (empty($addressNameError) && (!empty($latitudeError) || !empty($longitudeError) || !empty($countryCodeError))) {
-                $validator->errors()->add('address', 'Please use the Google Autocomplete');
+            if (
+                empty($addressNameError) &&
+                (!empty($latitudeError) ||
+                    !empty($longitudeError) ||
+                    !empty($countryCodeError))
+            ) {
+                $validator
+                    ->errors()
+                    ->add("address", "Please use the Google Autocomplete");
             }
 
-            $attendeesNotificationsThresholdsError = $validator->errors()->get('attendeesNotificationsThresholds.*');
-            $timeNotificationsThresholdsError = $validator->errors()->get('timeNotificationsThresholds.*');
+            $attendeesNotificationsThresholdsError = $validator
+                ->errors()
+                ->get("attendeesNotificationsThresholds.*");
+            $timeNotificationsThresholdsError = $validator
+                ->errors()
+                ->get("timeNotificationsThresholds.*");
 
-            if($attendeesNotificationsThresholdsError){
-                $validator->errors()->add('attendeesNotificationsThresholds', 'Please provide valid numbers for thresholds');
+            if ($attendeesNotificationsThresholdsError) {
+                $validator
+                    ->errors()
+                    ->add(
+                        "attendeesNotificationsThresholds",
+                        "Please provide valid numbers for thresholds",
+                    );
             }
-            if($timeNotificationsThresholdsError){
-                $validator->errors()->add('timeNotificationsThresholds', 'Please provide valid numbers for thresholds');
+            if ($timeNotificationsThresholdsError) {
+                $validator
+                    ->errors()
+                    ->add(
+                        "timeNotificationsThresholds",
+                        "Please provide valid numbers for thresholds",
+                    );
             }
         });
     }

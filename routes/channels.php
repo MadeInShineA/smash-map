@@ -14,6 +14,9 @@ use App\Models\User;
 |
 */
 
-Broadcast::channel('notifications.{user_id}', function (User $user, int $user_id) {
+Broadcast::channel("notifications.{user_id}", function (
+    User $user,
+    int $user_id,
+) {
     return (int) $user->id === (int) $user_id;
 });

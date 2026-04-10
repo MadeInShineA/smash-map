@@ -13,14 +13,14 @@ class Notification extends Model
     use HasFactory;
 
     protected $fillable = [
-        'event_id',
-        'game_id',
-        'user_id',
-        'type',
-        'attendees',
-        'message',
-        'image_url',
-        'seen'
+        "event_id",
+        "game_id",
+        "user_id",
+        "type",
+        "attendees",
+        "message",
+        "image_url",
+        "seen",
     ];
 
     public function game(): BelongsTo
@@ -41,13 +41,12 @@ class Notification extends Model
     public function getImageUrlLabelAttribute(): string
     {
         $url = $this->image_url;
-        $url = strstr($url, '/storage');
+        $url = strstr($url, "/storage");
 
-        if(file_exists(public_path($url))){
+        if (file_exists(public_path($url))) {
             return $this->image_url;
         }
 
-        return URL::to('/storage/map-icons/' . $this->game->slug . '.png');
-
-        }
+        return URL::to("/storage/map-icons/" . $this->game->slug . ".png");
+    }
 }

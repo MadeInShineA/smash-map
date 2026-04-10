@@ -5,25 +5,26 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::table('events', function (Blueprint $table) {
-            $table->uuid('uuid')->after('id')->nullable();
+        Schema::table("events", function (Blueprint $table) {
+            $table->uuid("uuid")->after("id")->nullable();
         });
 
-        $events = \App\Models\Event::withoutGlobalScope(ShownScope::class)->get();
+        $events = \App\Models\Event::withoutGlobalScope(
+            ShownScope::class,
+        )->get();
         foreach ($events as $event) {
             $event->uuid = \Illuminate\Support\Str::uuid();
             $event->save();
         }
 
-        Schema::table('events', function (Blueprint $table) {
-            $table->uuid('uuid')->nullable(false)->unique()->change();
+        Schema::table("events", function (Blueprint $table) {
+            $table->uuid("uuid")->nullable(false)->unique()->change();
         });
     }
 
@@ -32,8 +33,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('events', function (Blueprint $table) {
-            $table->dropColumn('uuid');
+        Schema::table("events", function (Blueprint $table) {
+            $table->dropColumn("uuid");
         });
     }
 };

@@ -12,13 +12,13 @@ class ProfileUserResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'username'          => $this->username,
-            'games'             => $this->games_characters_array,
-            'isModder'          => $this->is_modder,
-            'description'       => $this->description,
-            'connectCode'       => $this->connect_code,
-            'discord'           => $this->discord,
-            'x'                 => $this->x,
+            "username" => $this->username,
+            "games" => $this->games_characters_array,
+            "isModder" => $this->is_modder,
+            "description" => $this->description,
+            "connectCode" => $this->connect_code,
+            "discord" => $this->discord,
+            "x" => $this->x,
         ];
     }
 }

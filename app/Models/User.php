@@ -25,39 +25,39 @@ class User extends Authenticatable
      * @var array<int, string>
      */
 
-//    public function routeNotificationForPusherPushNotifications($notification): string
-//    {
-//        return 'hello';
-//    }
+    //    public function routeNotificationForPusherPushNotifications($notification): string
+    //    {
+    //        return 'hello';
+    //    }
 
-    public $pushNotificationType = 'users';
+    public $pushNotificationType = "users";
     protected $fillable = [
-        'uuid',
-        'username',
-        'email',
-        'password',
-        'address_id',
-        'has_default_profile_picture',
-        'discord',
-        'x',
-        'description',
-        'connect_code',
-        'color',
-        'has_distance_notifications',
-        'distance_notifications_radius',
-        'has_attendees_notifications',
-        'attendees_notifications_thresholds',
-        'has_time_notifications',
-        'time_notifications_thresholds',
-        'is_modder',
-        'is_on_map',
-        'is_admin',
-        'is_subscribed'
+        "uuid",
+        "username",
+        "email",
+        "password",
+        "address_id",
+        "has_default_profile_picture",
+        "discord",
+        "x",
+        "description",
+        "connect_code",
+        "color",
+        "has_distance_notifications",
+        "distance_notifications_radius",
+        "has_attendees_notifications",
+        "attendees_notifications_thresholds",
+        "has_time_notifications",
+        "time_notifications_thresholds",
+        "is_modder",
+        "is_on_map",
+        "is_admin",
+        "is_subscribed",
     ];
 
     protected $attributes = [
-        'attendees_notifications_thresholds' => '[50, 100, 200, 500, 1000]',
-        'time_notifications_thresholds' => '[7, 3, 1, 0]',
+        "attendees_notifications_thresholds" => "[50, 100, 200, 500, 1000]",
+        "time_notifications_thresholds" => "[7, 3, 1, 0]",
     ];
 
     /**
@@ -65,15 +65,10 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    protected $hidden = ["password", "remember_token"];
 
     //TODO Add the profile picture url inside the data returned by login / register
-    protected $appends = [
-        'profile_picture'
-    ];
+    protected $appends = ["profile_picture"];
 
     /**
      * The attributes that should be cast.
@@ -81,35 +76,52 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-        'attendees_notifications_thresholds' => 'array',
-        'time_notifications_thresholds' => 'array',
+        "email_verified_at" => "datetime",
+        "password" => "hashed",
+        "attendees_notifications_thresholds" => "array",
+        "time_notifications_thresholds" => "array",
     ];
 
-    public function address():BelongsTo
+    public function address(): BelongsTo
     {
         return $this->BelongsTo(Address::class);
     }
 
     public function images(): MorphMany
     {
-        return $this->morphMany(Image::class, 'parentable');
+        return $this->morphMany(Image::class, "parentable");
     }
 
     public function subscribed_events(): BelongsToMany
     {
-        return  $this->belongsToMany(Event::class, 'relation_event_user', 'user_id', 'event_id')->withTimestamps()->withPivot('original_attendees');
+        return $this->belongsToMany(
+            Event::class,
+            "relation_event_user",
+            "user_id",
+            "event_id",
+        )
+            ->withTimestamps()
+            ->withPivot("original_attendees");
     }
 
     public function characters(): BelongsToMany
     {
-        return  $this->belongsToMany(Character::class, 'relation_user_character', 'user_id', 'character_id');
+        return $this->belongsToMany(
+            Character::class,
+            "relation_user_character",
+            "user_id",
+            "character_id",
+        );
     }
 
     public function games(): BelongsToMany
     {
-        return  $this->belongsToMany(Game::class, 'relation_user_game', 'user_id', 'game_id');
+        return $this->belongsToMany(
+            Game::class,
+            "relation_user_game",
+            "user_id",
+            "game_id",
+        );
     }
 
     public function notifications(): HasMany
@@ -118,9 +130,11 @@ class User extends Authenticatable
     }
     public function getProfilePictureAttribute(): Image
     {
-        $image = $this->images->where('type', ImageTypeEnum::USER_PROFILE)->first();
+        $image = $this->images
+            ->where("type", ImageTypeEnum::USER_PROFILE)
+            ->first();
 
-        if(!$image){
+        if (!$image) {
             $image = new Image();
         }
 
@@ -133,11 +147,12 @@ class User extends Authenticatable
         $event_games_array = [];
         foreach ($games as $game) {
             $event_games_array[$game->name] = [
-                'name' => $game->name,
-                'color' => $game->color,
-                'characters' => CharacterResource::collection($this->characters()->where('game_id', $game->id)->get())
+                "name" => $game->name,
+                "color" => $game->color,
+                "characters" => CharacterResource::collection(
+                    $this->characters()->where("game_id", $game->id)->get(),
+                ),
             ];
-
         }
         return $event_games_array;
     }
@@ -145,16 +160,16 @@ class User extends Authenticatable
     public function notification_settings(): array
     {
         $res = [];
-        if($this->has_distance_notifications){
-            $res[] = 'hasDistanceNotifications';
+        if ($this->has_distance_notifications) {
+            $res[] = "hasDistanceNotifications";
         }
 
-        if($this->has_attendees_notifications){
-            $res[] = 'hasAttendeesNotifications';
+        if ($this->has_attendees_notifications) {
+            $res[] = "hasAttendeesNotifications";
         }
 
-        if($this->has_time_notifications){
-            $res[] = 'hasTimeNotifications';
+        if ($this->has_time_notifications) {
+            $res[] = "hasTimeNotifications";
         }
 
         return $res;

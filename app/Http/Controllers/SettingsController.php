@@ -19,121 +19,204 @@ class SettingsController extends Controller
 {
     public function get_settings(Request $request, User $user): JsonResponse
     {
-        try{
-            if ($user->id != $request->user('sanctum')->id){
-                return $this->sendError('You are not authorized to access this page', [], 401);
+        try {
+            if ($user->id != $request->user("sanctum")->id) {
+                return $this->sendError(
+                    "You are not authorized to access this page",
+                    [],
+                    401,
+                );
             }
 
             $settings = new SettingsUserResource($user);
 
-            return $this->sendResponse($settings, 'User retrieved with success');
-        }catch (\Error $error){
-            return $this->sendError('An error occurred while retrieving the user E 011', [$error], 500);
+            return $this->sendResponse(
+                $settings,
+                "User retrieved with success",
+            );
+        } catch (\Error $error) {
+            return $this->sendError(
+                "An error occurred while retrieving the user E 011",
+                [$error],
+                500,
+            );
         }
     }
 
-    public function update_settings(SettingsUpdateRequest $request, User $user):JsonResponse
-    {
+    public function update_settings(
+        SettingsUpdateRequest $request,
+        User $user,
+    ): JsonResponse {
         try {
-
-            $country = Country::where('code', $request->input('address.countryCode'))->first();
-            $address = Address::firstOrCreate([
-                'latitude' => $request->input('address.latitude'),
-                'longitude' => $request->input('address.longitude')],
-                ['name' => $request->input('address.name'),
-                    'country_id' => $country->id
-                ]);
+            $country = Country::where(
+                "code",
+                $request->input("address.countryCode"),
+            )->first();
+            $address = Address::firstOrCreate(
+                [
+                    "latitude" => $request->input("address.latitude"),
+                    "longitude" => $request->input("address.longitude"),
+                ],
+                [
+                    "name" => $request->input("address.name"),
+                    "country_id" => $country->id,
+                ],
+            );
             $old_address = $user->address;
-            if ($old_address->id != $address->id && $old_address->users->count() == 1 && $old_address->events->count() == 0) {
-                $user->update(['address_id' => $address->id]);
+            if (
+                $old_address->id != $address->id &&
+                $old_address->users->count() == 1 &&
+                $old_address->events->count() == 0
+            ) {
+                $user->update(["address_id" => $address->id]);
                 $old_address->delete();
             }
 
-            $distance_notifications_radius = $request->input('distanceNotificationsRadius');
+            $distance_notifications_radius = $request->input(
+                "distanceNotificationsRadius",
+            );
             if (!$distance_notifications_radius) {
-                $distance_notifications_radius = $user->distance_notifications_radius;
+                $distance_notifications_radius =
+                    $user->distance_notifications_radius;
             }
 
-            $attendees_notifications_thresholds = $request->input('attendeesNotificationsThresholds');
+            $attendees_notifications_thresholds = $request->input(
+                "attendeesNotificationsThresholds",
+            );
             if (!$attendees_notifications_thresholds) {
-                $attendees_notifications_thresholds = $user->attendees_notifications_thresholds;
-            }else{
+                $attendees_notifications_thresholds =
+                    $user->attendees_notifications_thresholds;
+            } else {
                 sort($attendees_notifications_thresholds);
             }
 
-
-            $time_notifications_thresholds = $request->input('timeNotificationsThresholds');
+            $time_notifications_thresholds = $request->input(
+                "timeNotificationsThresholds",
+            );
             if (!$time_notifications_thresholds) {
-                $time_notifications_thresholds = $user->time_notifications_thresholds;
-            }else{
+                $time_notifications_thresholds =
+                    $user->time_notifications_thresholds;
+            } else {
                 sort($time_notifications_thresholds);
-                $time_notifications_thresholds = array_reverse($time_notifications_thresholds);
+                $time_notifications_thresholds = array_reverse(
+                    $time_notifications_thresholds,
+                );
             }
 
             $old_username = $user->username;
 
-            if ($request->input('password') != null) {
+            if ($request->input("password") != null) {
                 $user->update([
-                    'username' => $request->input('username'),
-                    'email' => $request->input('email'),
-                    'password' => Hash::make($request->input('password')),
-                    'address_id' => $address->id,
-                    'is_modder' => $request->input('isModder'),
-                    'is_on_map' => $request->input('isOnMap'),
-                    'has_distance_notifications' => in_array('hasDistanceNotifications', $request->input('notifications')),
-                    'distance_notifications_radius' => $distance_notifications_radius,
-                    'has_attendees_notifications' => in_array('hasAttendeesNotifications', $request->input('notifications')),
-                    'attendees_notifications_thresholds' => $attendees_notifications_thresholds,
-                    'has_time_notifications' => in_array('hasTimeNotifications', $request->input('notifications')),
-                    'time_notifications_thresholds' => $time_notifications_thresholds,
+                    "username" => $request->input("username"),
+                    "email" => $request->input("email"),
+                    "password" => Hash::make($request->input("password")),
+                    "address_id" => $address->id,
+                    "is_modder" => $request->input("isModder"),
+                    "is_on_map" => $request->input("isOnMap"),
+                    "has_distance_notifications" => in_array(
+                        "hasDistanceNotifications",
+                        $request->input("notifications"),
+                    ),
+                    "distance_notifications_radius" => $distance_notifications_radius,
+                    "has_attendees_notifications" => in_array(
+                        "hasAttendeesNotifications",
+                        $request->input("notifications"),
+                    ),
+                    "attendees_notifications_thresholds" => $attendees_notifications_thresholds,
+                    "has_time_notifications" => in_array(
+                        "hasTimeNotifications",
+                        $request->input("notifications"),
+                    ),
+                    "time_notifications_thresholds" => $time_notifications_thresholds,
                 ]);
             } else {
                 $user->update([
-                    'username' => $request->input('username'),
-                    'email' => $request->input('email'),
-                    'address_id' => $address->id,
-                    'is_modder' => $request->input('isModder'),
-                    'is_on_map' => $request->input('isOnMap'),
-                    'has_distance_notifications' => in_array('hasDistanceNotifications', $request->input('notifications')),
-                    'distance_notifications_radius' => $distance_notifications_radius,
-                    'has_attendees_notifications' => in_array('hasAttendeesNotifications', $request->input('notifications')),
-                    'attendees_notifications_thresholds' => $attendees_notifications_thresholds,
-                    'has_time_notifications' => in_array('hasTimeNotifications', $request->input('notifications')),
-                    'time_notifications_thresholds' => $time_notifications_thresholds,
+                    "username" => $request->input("username"),
+                    "email" => $request->input("email"),
+                    "address_id" => $address->id,
+                    "is_modder" => $request->input("isModder"),
+                    "is_on_map" => $request->input("isOnMap"),
+                    "has_distance_notifications" => in_array(
+                        "hasDistanceNotifications",
+                        $request->input("notifications"),
+                    ),
+                    "distance_notifications_radius" => $distance_notifications_radius,
+                    "has_attendees_notifications" => in_array(
+                        "hasAttendeesNotifications",
+                        $request->input("notifications"),
+                    ),
+                    "attendees_notifications_thresholds" => $attendees_notifications_thresholds,
+                    "has_time_notifications" => in_array(
+                        "hasTimeNotifications",
+                        $request->input("notifications"),
+                    ),
+                    "time_notifications_thresholds" => $time_notifications_thresholds,
                 ]);
             }
 
-            $user->games()->sync($request->input('games'));
-            $user->characters()->sync($request->input('characters'));
+            $user->games()->sync($request->input("games"));
+            $user->characters()->sync($request->input("characters"));
 
             $data = [];
 
-            if ($user->has_default_profile_picture && $old_username[0] != $user->username[0]) {
-                $profile_picture = file_get_contents('https://ui-avatars.com/api/?name=' . $user->username . '&rounded=true&length=1&background=random&size=512');
-                $user_directory_path = '/users-images/' . $user->uuid;
-                Storage::put($user_directory_path . '/' . ImageTypeEnum::USER_PROFILE . '.png', $profile_picture);
-                $image = $user->images()->where('type', ImageTypeEnum::USER_PROFILE)->first();
+            if (
+                $user->has_default_profile_picture &&
+                $old_username[0] != $user->username[0]
+            ) {
+                $profile_picture = file_get_contents(
+                    "https://ui-avatars.com/api/?name=" .
+                        $user->username .
+                        "&rounded=true&length=1&background=random&size=512",
+                );
+                $user_directory_path = "/users-images/" . $user->uuid;
+                Storage::put(
+                    $user_directory_path .
+                        "/" .
+                        ImageTypeEnum::USER_PROFILE .
+                        ".png",
+                    $profile_picture,
+                );
+                $image = $user
+                    ->images()
+                    ->where("type", ImageTypeEnum::USER_PROFILE)
+                    ->first();
                 $image->touch();
-                $data['profilePicture'] = new ImageResource($user->getProfilePictureAttribute());
+                $data["profilePicture"] = new ImageResource(
+                    $user->getProfilePictureAttribute(),
+                );
             }
 
-            return $this->sendResponse($data, 'Settings updated with success');
-
+            return $this->sendResponse($data, "Settings updated with success");
         } catch (\Error $error) {
-            return $this->sendError('An error occurred updating the settings E 012', [$error], 500);
+            return $this->sendError(
+                "An error occurred updating the settings E 012",
+                [$error],
+                500,
+            );
         }
     }
 
-    public function update_distance_notifications_radius(SettingsDistanceNotificationsRadiusUpdateRequest $request, User $user): JsonResponse
-    {
+    public function update_distance_notifications_radius(
+        SettingsDistanceNotificationsRadiusUpdateRequest $request,
+        User $user,
+    ): JsonResponse {
         try {
+            $user->update([
+                "distance_notifications_radius" => $request->input(
+                    "distanceNotificationsRadius",
+                ),
+            ]);
 
-            $user->update(['distance_notifications_radius' => $request->input('distanceNotificationsRadius')]);
-
-            return $this->sendResponse([], 'Distance notifications radius updated with success');
-
+            return $this->sendResponse(
+                [],
+                "Distance notifications radius updated with success",
+            );
         } catch (\Error $error) {
-            return $this->sendError('An error occurred while updating the distance notifications radius E 013', [$error], 500);
+            return $this->sendError(
+                "An error occurred while updating the distance notifications radius E 013",
+                [$error],
+                500,
+            );
         }
     }
 }
