@@ -133,6 +133,34 @@ class Event extends Model
         });
     }
 
+    public function scopeWithinRadius(
+        $query,
+        float $lat,
+        float $lng,
+        float $radius,
+    ) {
+        $haversine = "6371 * acos(
+                GREATEST(-1, LEAST(1,
+                    cos(radians(?)) * cos(radians(addresses.latitude))
+                    * cos(radians(addresses.longitude) - radians(?))
+                    + sin(radians(?)) * sin(radians(addresses.latitude))
+                ))
+            )";
+
+        return $query
+            // Join the addresses
+            ->join("addresses", "events.address_id", "=", "addresses.id")
+
+            // Apply the Haversine filter
+            ->whereRaw("{$haversine} <= ?", [$lat, $lng, $lat, $radius])
+
+            // Select only events.* to avoid column conflicts
+            ->select("events.*")
+
+            ->selectRaw("{$haversine} AS distance", [$lat, $lng, $lat])
+            ->orderByRaw("distance ASC");
+    }
+
     protected static function boot()
     {
         parent::boot();

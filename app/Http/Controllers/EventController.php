@@ -168,7 +168,25 @@ class EventController extends Controller
                 }
             }
 
+            if (
+                $request->has("lat") &&
+                $request->has("lng") &&
+                $request->has("radius")
+            ) {
+                $events->withinRadius(
+                    $request->input("lat"),
+                    $request->input("lng"),
+                    $request->input("radius"),
+                );
+            }
+
+            $paginate = $request->input("paginate");
+
+            if ($paginate == "false") {
+                return EventResource::collection($events->get());
+            }
             $events = $events->paginate(12);
+
             return EventResource::collection($events);
         } catch (\Error $error) {
             return $this->sendError(
@@ -281,11 +299,9 @@ class EventController extends Controller
     ): JsonResponse {
         try {
             $user = request()->user();
-            $user
-                ->subscribed_events()
-                ->attach($event, [
-                    "original_attendees" => $event->attendees ?? 0,
-                ]);
+            $user->subscribed_events()->attach($event, [
+                "original_attendees" => $event->attendees ?? 0,
+            ]);
             return $this->sendResponse([], "Event followed with success");
         } catch (\Error $error) {
             return $this->sendError(
