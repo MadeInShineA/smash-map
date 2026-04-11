@@ -21,122 +21,122 @@ paths:
           in: query
           name: startDate
           description: 'Filter events starting from this date (Y-m-d format).'
-          example: '2024-01-01'
+          example: null
           required: false
           schema:
             type: string
             description: 'Filter events starting from this date (Y-m-d format).'
-            example: '2024-01-01'
+            example: null
         -
           in: query
           name: endDate
           description: 'Filter events ending before this date (Y-m-d format).'
-          example: '2024-12-31'
+          example: null
           required: false
           schema:
             type: string
             description: 'Filter events ending before this date (Y-m-d format).'
-            example: '2024-12-31'
+            example: null
         -
           in: query
           name: games
-          description: 'Comma-separated game IDs to filter by. Use "default" for no filter.'
-          example: '1,2,1386'
+          description: "Comma-separated game IDs to filter by. Use \"default\" for no filter.\n\n<i></i>"
+          example: '1, 1386'
           required: false
           schema:
             type: string
-            description: 'Comma-separated game IDs to filter by. Use "default" for no filter.'
-            example: '1,2,1386'
+            description: "Comma-separated game IDs to filter by. Use \"default\" for no filter.\n\n<i></i>"
+            example: '1, 1386'
         -
           in: query
           name: name
-          description: 'Search events by name (case-insensitive partial match).'
-          example: Genesis
+          description: "Search events by name (case-insensitive partial match). \n\n<i></i>"
+          example: Smash
           required: false
           schema:
             type: string
-            description: 'Search events by name (case-insensitive partial match).'
-            example: Genesis
+            description: "Search events by name (case-insensitive partial match). \n\n<i></i>"
+            example: Smash
         -
           in: query
           name: type
-          description: 'Event type filter. Options: "default" (all), "online" (online-only), "offline" (in-person), "followed" (subscribed by authenticated user).'
+          description: "Event type filter.\n    - \"default\": All events (no filter)\n    - \"online\": Online-only events\n    - \"offline\": In-person events\n    - \"followed\": Events subscribed by the authenticated user \n\n<i></i>"
           example: offline
           required: false
           schema:
             type: string
-            description: 'Event type filter. Options: "default" (all), "online" (online-only), "offline" (in-person), "followed" (subscribed by authenticated user).'
+            description: "Event type filter.\n    - \"default\": All events (no filter)\n    - \"online\": Online-only events\n    - \"offline\": In-person events\n    - \"followed\": Events subscribed by the authenticated user \n\n<i></i>"
             example: offline
         -
           in: query
           name: continents
-          description: 'Comma-separated continent codes to filter by. Use "default" for no filter.'
+          description: "Comma-separated continent codes to filter by. Use \"default\" for no filter.\n\n<i></i>"
           example: 'NA,EU'
           required: false
           schema:
             type: string
-            description: 'Comma-separated continent codes to filter by. Use "default" for no filter.'
+            description: "Comma-separated continent codes to filter by. Use \"default\" for no filter.\n\n<i></i>"
             example: 'NA,EU'
         -
           in: query
           name: countries
-          description: 'Comma-separated country codes to filter by. Use "default" for no filter.'
-          example: 'US,CA,JP'
+          description: "Comma-separated country codes to filter by. Use \"default\" for no filter.\n\n<i></i>"
+          example: 'US,CA'
           required: false
           schema:
             type: string
-            description: 'Comma-separated country codes to filter by. Use "default" for no filter.'
-            example: 'US,CA,JP'
+            description: "Comma-separated country codes to filter by. Use \"default\" for no filter.\n\n<i></i>"
+            example: 'US,CA'
         -
           in: query
           name: orderBy
-          description: 'Sort order for events. Options: "default", "attendeesASC", "attendeesDESC", "dateASC", "dateDESC".'
-          example: dateDESC
+          description: "Sort order for events.\n    - \"default\": Sort by start date (ascending)\n    - \"attendeesASC\": Sort by attendee count (ascending)\n    - \"attendeesDESC\": Sort by attendee count (descending)\n    - \"dateASC\": Sort by start date (ascending)\n    - \"dateDESC\": Sort by start date (descending) \n<i></i>"
+          example: attendeesASC
           required: false
           schema:
             type: string
-            description: 'Sort order for events. Options: "default", "attendeesASC", "attendeesDESC", "dateASC", "dateDESC".'
-            example: dateDESC
+            description: "Sort order for events.\n    - \"default\": Sort by start date (ascending)\n    - \"attendeesASC\": Sort by attendee count (ascending)\n    - \"attendeesDESC\": Sort by attendee count (descending)\n    - \"dateASC\": Sort by start date (ascending)\n    - \"dateDESC\": Sort by start date (descending) \n<i></i>"
+            example: attendeesASC
         -
           in: query
           name: lat
-          description: 'Latitude for location-based filtering. Requires lng and radius.'
-          example: 37.7749
+          description: 'Latitude for location filtering. Must be used with lng and radius.'
+          example: null
           required: false
           schema:
             type: number
-            description: 'Latitude for location-based filtering. Requires lng and radius.'
-            example: 37.7749
+            description: 'Latitude for location filtering. Must be used with lng and radius.'
+            example: null
         -
           in: query
           name: lng
-          description: 'Longitude for location-based filtering. Requires lat and radius.'
-          example: -122.4194
+          description: 'Longitude for location filtering. Must be used with lat and radius.'
+          example: null
           required: false
           schema:
             type: number
-            description: 'Longitude for location-based filtering. Requires lat and radius.'
-            example: -122.4194
+            description: 'Longitude for location filtering. Must be used with lat and radius.'
+            example: null
         -
           in: query
           name: radius
-          description: 'Search radius in kilometers from the provided coordinates. Requires lat and lng.'
-          example: 100
+          description: 'Search radius in kilometers. Must be used with lat and lng.'
+          example: null
           required: false
           schema:
             type: integer
-            description: 'Search radius in kilometers from the provided coordinates. Requires lat and lng.'
-            example: 100
+            description: 'Search radius in kilometers. Must be used with lat and lng.'
+            example: null
         -
           in: query
           name: paginate
           description: 'Set to "false" to return all events without pagination. Defaults to true (12 per page).'
-          example: 'false'
+          example: null
           required: false
           schema:
             type: string
             description: 'Set to "false" to return all events without pagination. Defaults to true (12 per page).'
-            example: 'false'
+            example: null
       responses:
         200:
           description: ''
@@ -337,12 +337,12 @@ paths:
         -
           in: query
           name: type
-          description: 'The type of statistics to retrieve. Options: "games" (event count by game), "months" (event count by month for the next 6 months, broken down by game).'
+          description: "The type of statistics to retrieve.\n    - \"games\": Event count by game\n    - \"months\": Event count by month for the next 6 months, broken down by game \n\n <i></i>"
           example: games
           required: false
           schema:
             type: string
-            description: 'The type of statistics to retrieve. Options: "games" (event count by game), "months" (event count by month for the next 6 months, broken down by game).'
+            description: "The type of statistics to retrieve.\n    - \"games\": Event count by game\n    - \"months\": Event count by month for the next 6 months, broken down by game \n\n <i></i>"
             example: games
       responses:
         200:

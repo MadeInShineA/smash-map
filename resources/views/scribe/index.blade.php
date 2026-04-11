@@ -23,6 +23,7 @@
         /* starts out as display none and is replaced with js later  */
                     body .content .bash-example code { display: none; }
                     body .content .javascript-example code { display: none; }
+                    body .content .python-example code { display: none; }
             </style>
 
     <script>
@@ -36,7 +37,7 @@
 
 </head>
 
-<body data-languages="[&quot;bash&quot;,&quot;javascript&quot;]">
+<body data-languages="[&quot;bash&quot;,&quot;javascript&quot;,&quot;python&quot;]">
 
 <a href="#" id="nav-button">
     <span>
@@ -50,6 +51,7 @@
             <div class="lang-selector">
                                             <button type="button" class="lang-button" data-language-name="bash">bash</button>
                                             <button type="button" class="lang-button" data-language-name="javascript">javascript</button>
+                                            <button type="button" class="lang-button" data-language-name="python">python</button>
                     </div>
     
     <div class="search">
@@ -101,10 +103,56 @@
 <aside>
     <strong>Base URL</strong>: <code>http://127.0.0.1:8000</code>
 </aside>
-<pre><code>This documentation aims to provide all the information you need to work with our API.
-
-&lt;aside&gt;As you scroll, you'll see code examples for working with the API in different programming languages in the dark area to the right (or as part of the content on mobile).
-You can switch the language used with the tabs at the top right (or from the nav menu at the top left on mobile).&lt;/aside&gt;</code></pre>
+<p>This documentation aims to provide all the information you need to work with our API.</p>
+<p><strong>Game IDs</strong></p>
+<table>
+<thead>
+<tr>
+<th>Game</th>
+<th>ID</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>64</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Melee</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Brawl</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Project M</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Project +</td>
+<td>33602</td>
+</tr>
+<tr>
+<td>3DS / WiiU</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Ultimate</td>
+<td>1386</td>
+</tr>
+<tr>
+<td>HDR</td>
+<td>34157</td>
+</tr>
+<tr>
+<td>Rivals 2</td>
+<td>53945</td>
+</tr>
+</tbody>
+</table>
+<aside>As you scroll, you'll see code examples for working with the API in different programming languages in the dark area to the right (or as part of the content on mobile).
+You can switch the language used with the tabs at the top right (or from the nav menu at the top left on mobile).</aside>
 
         <h1 id="authenticating-requests">Authenticating requests</h1>
 <p>This API is not authenticated.</p>
@@ -126,7 +174,7 @@ You can switch the language used with the tabs at the top right (or from the nav
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/events?startDate=2024-01-01&amp;endDate=2024-12-31&amp;games=1%2C2%2C1386&amp;name=Genesis&amp;type=offline&amp;continents=NA%2CEU&amp;countries=US%2CCA%2CJP&amp;orderBy=dateDESC&amp;lat=37.7749&amp;lng=-122.4194&amp;radius=100&amp;paginate=false" \
+    --get "http://127.0.0.1:8000/api/events?games=1%2C+1386&amp;name=Smash&amp;type=offline&amp;continents=NA%2CEU&amp;countries=US%2CCA&amp;orderBy=attendeesASC" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
@@ -137,18 +185,12 @@ You can switch the language used with the tabs at the top right (or from the nav
 );
 
 const params = {
-    "startDate": "2024-01-01",
-    "endDate": "2024-12-31",
-    "games": "1,2,1386",
-    "name": "Genesis",
+    "games": "1, 1386",
+    "name": "Smash",
     "type": "offline",
     "continents": "NA,EU",
-    "countries": "US,CA,JP",
-    "orderBy": "dateDESC",
-    "lat": "37.7749",
-    "lng": "-122.4194",
-    "radius": "100",
-    "paginate": "false",
+    "countries": "US,CA",
+    "orderBy": "attendeesASC",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -163,6 +205,28 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="python-example">
+    <pre><code class="language-python">import requests
+import json
+
+url = 'http://127.0.0.1:8000/api/events'
+params = {
+  'games': '1, 1386',
+  'name': 'Smash',
+  'type': 'offline',
+  'continents': 'NA,EU',
+  'countries': 'US,CA',
+  'orderBy': 'attendeesASC',
+}
+headers = {
+  'Content-Type': 'application/json',
+  'Accept': 'application/json'
+}
+
+response = requests.request('GET', url, headers=headers, params=params)
+response.json()</code></pre></div>
 
 </span>
 
@@ -308,10 +372,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="startDate"                data-endpoint="GETapi-events"
-               value="2024-01-01"
+               value=""
                data-component="query">
     <br>
-<p>Filter events starting from this date (Y-m-d format). Example: <code>2024-01-01</code></p>
+<p>Filter events starting from this date (Y-m-d format).</p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>endDate</code></b>&nbsp;&nbsp;
@@ -320,10 +384,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="endDate"                data-endpoint="GETapi-events"
-               value="2024-12-31"
+               value=""
                data-component="query">
     <br>
-<p>Filter events ending before this date (Y-m-d format). Example: <code>2024-12-31</code></p>
+<p>Filter events ending before this date (Y-m-d format).</p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>games</code></b>&nbsp;&nbsp;
@@ -332,10 +396,11 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="games"                data-endpoint="GETapi-events"
-               value="1,2,1386"
+               value="1, 1386"
                data-component="query">
     <br>
-<p>Comma-separated game IDs to filter by. Use "default" for no filter. Example: <code>1,2,1386</code></p>
+<p>Comma-separated game IDs to filter by. Use "default" for no filter.</p>
+<p><i></i> Example: <code>1, 1386</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>name</code></b>&nbsp;&nbsp;
@@ -344,10 +409,11 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="name"                data-endpoint="GETapi-events"
-               value="Genesis"
+               value="Smash"
                data-component="query">
     <br>
-<p>Search events by name (case-insensitive partial match). Example: <code>Genesis</code></p>
+<p>Search events by name (case-insensitive partial match). </p>
+<p><i></i> Example: <code>Smash</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>type</code></b>&nbsp;&nbsp;
@@ -359,7 +425,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value="offline"
                data-component="query">
     <br>
-<p>Event type filter. Options: "default" (all), "online" (online-only), "offline" (in-person), "followed" (subscribed by authenticated user). Example: <code>offline</code></p>
+<p>Event type filter.</p>
+<ul>
+<li>"default": All events (no filter)</li>
+<li>"online": Online-only events</li>
+<li>"offline": In-person events</li>
+<li>"followed": Events subscribed by the authenticated user </li>
+</ul>
+<p><i></i> Example: <code>offline</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>continents</code></b>&nbsp;&nbsp;
@@ -371,7 +444,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value="NA,EU"
                data-component="query">
     <br>
-<p>Comma-separated continent codes to filter by. Use "default" for no filter. Example: <code>NA,EU</code></p>
+<p>Comma-separated continent codes to filter by. Use "default" for no filter.</p>
+<p><i></i> Example: <code>NA,EU</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>countries</code></b>&nbsp;&nbsp;
@@ -380,10 +454,11 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="countries"                data-endpoint="GETapi-events"
-               value="US,CA,JP"
+               value="US,CA"
                data-component="query">
     <br>
-<p>Comma-separated country codes to filter by. Use "default" for no filter. Example: <code>US,CA,JP</code></p>
+<p>Comma-separated country codes to filter by. Use "default" for no filter.</p>
+<p><i></i> Example: <code>US,CA</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>orderBy</code></b>&nbsp;&nbsp;
@@ -392,10 +467,18 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="orderBy"                data-endpoint="GETapi-events"
-               value="dateDESC"
+               value="attendeesASC"
                data-component="query">
     <br>
-<p>Sort order for events. Options: "default", "attendeesASC", "attendeesDESC", "dateASC", "dateDESC". Example: <code>dateDESC</code></p>
+<p>Sort order for events.</p>
+<ul>
+<li>"default": Sort by start date (ascending)</li>
+<li>"attendeesASC": Sort by attendee count (ascending)</li>
+<li>"attendeesDESC": Sort by attendee count (descending)</li>
+<li>"dateASC": Sort by start date (ascending)</li>
+<li>"dateDESC": Sort by start date (descending) 
+<i></i> Example: <code>attendeesASC</code></li>
+</ul>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>lat</code></b>&nbsp;&nbsp;
@@ -404,10 +487,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="lat"                data-endpoint="GETapi-events"
-               value="37.7749"
+               value=""
                data-component="query">
     <br>
-<p>Latitude for location-based filtering. Requires lng and radius. Example: <code>37.7749</code></p>
+<p>Latitude for location filtering. Must be used with lng and radius.</p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>lng</code></b>&nbsp;&nbsp;
@@ -416,10 +499,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="lng"                data-endpoint="GETapi-events"
-               value="-122.4194"
+               value=""
                data-component="query">
     <br>
-<p>Longitude for location-based filtering. Requires lat and radius. Example: <code>-122.4194</code></p>
+<p>Longitude for location filtering. Must be used with lat and radius.</p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>radius</code></b>&nbsp;&nbsp;
@@ -428,10 +511,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="radius"                data-endpoint="GETapi-events"
-               value="100"
+               value=""
                data-component="query">
     <br>
-<p>Search radius in kilometers from the provided coordinates. Requires lat and lng. Example: <code>100</code></p>
+<p>Search radius in kilometers. Must be used with lat and lng.</p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>paginate</code></b>&nbsp;&nbsp;
@@ -440,10 +523,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="paginate"                data-endpoint="GETapi-events"
-               value="false"
+               value=""
                data-component="query">
     <br>
-<p>Set to "false" to return all events without pagination. Defaults to true (12 per page). Example: <code>false</code></p>
+<p>Set to "false" to return all events without pagination. Defaults to true (12 per page).</p>
             </div>
                 </form>
 
@@ -486,6 +569,23 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="python-example">
+    <pre><code class="language-python">import requests
+import json
+
+url = 'http://127.0.0.1:8000/api/events/statistics'
+params = {
+  'type': 'games',
+}
+headers = {
+  'Content-Type': 'application/json',
+  'Accept': 'application/json'
+}
+
+response = requests.request('GET', url, headers=headers, params=params)
+response.json()</code></pre></div>
 
 </span>
 
@@ -712,7 +812,12 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value="games"
                data-component="query">
     <br>
-<p>The type of statistics to retrieve. Options: "games" (event count by game), "months" (event count by month for the next 6 months, broken down by game). Example: <code>games</code></p>
+<p>The type of statistics to retrieve.</p>
+<ul>
+<li>"games": Event count by game</li>
+<li>"months": Event count by month for the next 6 months, broken down by game </li>
+</ul>
+<p><i></i> Example: <code>games</code></p>
             </div>
                 </form>
 
@@ -724,6 +829,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                     <div class="lang-selector">
                                                         <button type="button" class="lang-button" data-language-name="bash">bash</button>
                                                         <button type="button" class="lang-button" data-language-name="javascript">javascript</button>
+                                                        <button type="button" class="lang-button" data-language-name="python">python</button>
                             </div>
             </div>
 </div>

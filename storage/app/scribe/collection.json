@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Smash-Map API Documentation",
-        "_postman_id": "817160b5-0518-4e87-a06d-20bcb5bca882",
+        "_postman_id": "f25d5b9e-add9-4f49-a474-8f7b1394cba5",
         "description": "API documentation for the Smash Map website",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -28,78 +28,78 @@
                             "query": [
                                 {
                                     "key": "startDate",
-                                    "value": "2024-01-01",
+                                    "value": "",
                                     "description": "Filter events starting from this date (Y-m-d format).",
-                                    "disabled": false
+                                    "disabled": true
                                 },
                                 {
                                     "key": "endDate",
-                                    "value": "2024-12-31",
+                                    "value": "",
                                     "description": "Filter events ending before this date (Y-m-d format).",
-                                    "disabled": false
+                                    "disabled": true
                                 },
                                 {
                                     "key": "games",
-                                    "value": "1%2C2%2C1386",
-                                    "description": "Comma-separated game IDs to filter by. Use \"default\" for no filter.",
+                                    "value": "1%2C+1386",
+                                    "description": "Comma-separated game IDs to filter by. Use \"default\" for no filter.\n\n",
                                     "disabled": false
                                 },
                                 {
                                     "key": "name",
-                                    "value": "Genesis",
-                                    "description": "Search events by name (case-insensitive partial match).",
+                                    "value": "Smash",
+                                    "description": "Search events by name (case-insensitive partial match). \n\n",
                                     "disabled": false
                                 },
                                 {
                                     "key": "type",
                                     "value": "offline",
-                                    "description": "Event type filter. Options: \"default\" (all), \"online\" (online-only), \"offline\" (in-person), \"followed\" (subscribed by authenticated user).",
+                                    "description": "Event type filter.\n    - \"default\": All events (no filter)\n    - \"online\": Online-only events\n    - \"offline\": In-person events\n    - \"followed\": Events subscribed by the authenticated user \n\n",
                                     "disabled": false
                                 },
                                 {
                                     "key": "continents",
                                     "value": "NA%2CEU",
-                                    "description": "Comma-separated continent codes to filter by. Use \"default\" for no filter.",
+                                    "description": "Comma-separated continent codes to filter by. Use \"default\" for no filter.\n\n",
                                     "disabled": false
                                 },
                                 {
                                     "key": "countries",
-                                    "value": "US%2CCA%2CJP",
-                                    "description": "Comma-separated country codes to filter by. Use \"default\" for no filter.",
+                                    "value": "US%2CCA",
+                                    "description": "Comma-separated country codes to filter by. Use \"default\" for no filter.\n\n",
                                     "disabled": false
                                 },
                                 {
                                     "key": "orderBy",
-                                    "value": "dateDESC",
-                                    "description": "Sort order for events. Options: \"default\", \"attendeesASC\", \"attendeesDESC\", \"dateASC\", \"dateDESC\".",
+                                    "value": "attendeesASC",
+                                    "description": "Sort order for events.\n    - \"default\": Sort by start date (ascending)\n    - \"attendeesASC\": Sort by attendee count (ascending)\n    - \"attendeesDESC\": Sort by attendee count (descending)\n    - \"dateASC\": Sort by start date (ascending)\n    - \"dateDESC\": Sort by start date (descending) \n",
                                     "disabled": false
                                 },
                                 {
                                     "key": "lat",
-                                    "value": "37.7749",
-                                    "description": "Latitude for location-based filtering. Requires lng and radius.",
-                                    "disabled": false
+                                    "value": "",
+                                    "description": "Latitude for location filtering. Must be used with lng and radius.",
+                                    "disabled": true
                                 },
                                 {
                                     "key": "lng",
-                                    "value": "-122.4194",
-                                    "description": "Longitude for location-based filtering. Requires lat and radius.",
-                                    "disabled": false
+                                    "value": "",
+                                    "description": "Longitude for location filtering. Must be used with lat and radius.",
+                                    "disabled": true
                                 },
                                 {
                                     "key": "radius",
-                                    "value": "100",
-                                    "description": "Search radius in kilometers from the provided coordinates. Requires lat and lng.",
-                                    "disabled": false
+                                    "value": "",
+                                    "description": "Search radius in kilometers. Must be used with lat and lng.",
+                                    "disabled": true
                                 },
                                 {
                                     "key": "paginate",
-                                    "value": "false",
+                                    "value": "",
                                     "description": "Set to \"false\" to return all events without pagination. Defaults to true (12 per page).",
-                                    "disabled": false
+                                    "disabled": true
                                 }
                             ],
-                            "raw": "{{baseUrl}}\/api\/events?startDate=2024-01-01&endDate=2024-12-31&games=1%2C2%2C1386&name=Genesis&type=offline&continents=NA%2CEU&countries=US%2CCA%2CJP&orderBy=dateDESC&lat=37.7749&lng=-122.4194&radius=100&paginate=false"
+                            "raw": "{{baseUrl}}\/api\/events?startDate=&endDate=&games=1%2C+1386&name=Smash&type=offline&continents=NA%2CEU&countries=US%2CCA&orderBy=attendeesASC&lat=&lng=&radius=&paginate="
                         },
                         "method": "GET",
                         "header": [
@@ -143,7 +143,7 @@
                                 {
                                     "key": "type",
                                     "value": "games",
-                                    "description": "The type of statistics to retrieve. Options: \"games\" (event count by game), \"months\" (event count by month for the next 6 months, broken down by game).",
+                                    "description": "The type of statistics to retrieve.\n    - \"games\": Event count by game\n    - \"months\": Event count by month for the next 6 months, broken down by game \n\n ",
                                     "disabled": false
                                 }
                             ],

@@ -22,18 +22,38 @@ class EventController extends Controller
      *
      * @group Events
      *
-     * @queryParam startDate string Filter events starting from this date (Y-m-d format). Example: 2024-01-01
-     * @queryParam endDate string Filter events ending before this date (Y-m-d format). Example: 2024-12-31
-     * @queryParam games string Comma-separated game IDs to filter by. Use "default" for no filter. Example: 1,2,1386
-     * @queryParam name string Search events by name (case-insensitive partial match). Example: Genesis
-     * @queryParam type string Event type filter. Options: "default" (all), "online" (online-only), "offline" (in-person), "followed" (subscribed by authenticated user). Example: offline
-     * @queryParam continents string Comma-separated continent codes to filter by. Use "default" for no filter. Example: NA,EU
-     * @queryParam countries string Comma-separated country codes to filter by. Use "default" for no filter. Example: US,CA,JP
-     * @queryParam orderBy string Sort order for events. Options: "default", "attendeesASC", "attendeesDESC", "dateASC", "dateDESC". Example: dateDESC
-     * @queryParam lat float Latitude for location-based filtering. Requires lng and radius. Example: 37.7749
-     * @queryParam lng float Longitude for location-based filtering. Requires lat and radius. Example: -122.4194
-     * @queryParam radius int Search radius in kilometers from the provided coordinates. Requires lat and lng. Example: 100
-     * @queryParam paginate string Set to "false" to return all events without pagination. Defaults to true (12 per page). Example: false
+     * @queryParam startDate string Filter events starting from this date (Y-m-d format). No-example
+     * @queryParam endDate string Filter events ending before this date (Y-m-d format). No-example
+     * @queryParam games string Comma-separated game IDs to filter by. Use "default" for no filter.
+     *
+     * <i></i>Example: 1, 1386
+     * @queryParam name string Search events by name (case-insensitive partial match). No-example
+     *
+     * <i></i>Example: Smash
+     * @queryParam type string Event type filter.
+     *     - "default": All events (no filter)
+     *     - "online": Online-only events
+     *     - "offline": In-person events
+     *     - "followed": Events subscribed by the authenticated user No-example
+     *
+     * <i></i>Example: offline
+     * @queryParam continents string Comma-separated continent codes to filter by. Use "default" for no filter.
+     *
+     * <i></i>Example: NA,EU
+     * @queryParam countries string Comma-separated country codes to filter by. Use "default" for no filter.
+     *
+     * <i></i>Example: US,CA
+     * @queryParam orderBy string Sort order for events.
+     *     - "default": Sort by start date (ascending)
+     *     - "attendeesASC": Sort by attendee count (ascending)
+     *     - "attendeesDESC": Sort by attendee count (descending)
+     *     - "dateASC": Sort by start date (ascending)
+     *     - "dateDESC": Sort by start date (descending) No-example
+     * <i></i> Example: attendeesASC
+     * @queryParam lat float Latitude for location filtering. Must be used with lng and radius. No-example
+     * @queryParam lng float Longitude for location filtering. Must be used with lat and radius. No-example
+     * @queryParam radius int Search radius in kilometers. Must be used with lat and lng. No-example
+     * @queryParam paginate string Set to "false" to return all events without pagination. Defaults to true (12 per page). No-example
      *
      * @response 200 {
      *   "data": [
@@ -288,7 +308,11 @@ class EventController extends Controller
      *
      * @group Events
      *
-     * @queryParam type string The type of statistics to retrieve. Options: "games" (event count by game), "months" (event count by month for the next 6 months, broken down by game). Example: games
+     * @queryParam type string The type of statistics to retrieve.
+     *     - "games": Event count by game
+     *     - "months": Event count by month for the next 6 months, broken down by game No-example
+     *
+     *  <i></i>Example: games
      *
      * @response 200 {
      *   "data": {
