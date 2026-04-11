@@ -50,6 +50,8 @@ cp .env.example .env
 
 Fill in the `.env` file with your database credentials and other required values.
 
+> **Note:** Keep `DB_USERNAME` as `root` for development if you plan to use the provided Docker Compose.
+
 ### 3. Generate application key
 
 ```bash
@@ -64,7 +66,7 @@ php artisan ide-helper:models --nowrite  # model properties
 php artisan ide-helper:meta          # meta file
 ```
 
-### 5. Generate API documentation
+### 5. Generate API documentation (optional)
 
 ```bash
 php artisan scribe:generate
@@ -72,11 +74,13 @@ php artisan scribe:generate
 
 The documentation will be available at `/docs` once the development server is running.
 
-### 6. Start the database Docker service
+### 6. Start the database Docker services
 
 ```bash
 docker compose up -d
 ```
+
+phpMyAdmin will be available at `http://localhost:8080`.
 
 ### 7. Set up database
 
