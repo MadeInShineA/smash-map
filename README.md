@@ -64,13 +64,21 @@ php artisan ide-helper:models --nowrite  # model properties
 php artisan ide-helper:meta          # meta file
 ```
 
-### 5. Start the database Docker service
+### 5. Generate API documentation
+
+```bash
+php artisan scribe:generate
+```
+
+The documentation will be available at `/docs` once the development server is running.
+
+### 6. Start the database Docker service
 
 ```bash
 docker compose up -d
 ```
 
-### 6. Set up database
+### 7. Set up database
 
 > **Note:** The first migration is expected to fail. This is because some character migrations depend on game data that is only created by the seeder.
 
@@ -81,14 +89,14 @@ php artisan migrate        # Completes successfully
 php artisan storage:link
 ```
 
-### 7. Populate the database
+### 8. Populate the database
 
 ```bash
 php artisan setup
 php artisan import-50-events-all-games
 ```
 
-### 8. Run the development servers
+### 9. Run the development servers
 
 ```bash
 npm run dev
