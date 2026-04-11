@@ -1,5 +1,9 @@
 # What's Smash Map ?
 
+[![Laravel](https://img.shields.io/badge/Laravel-%23FF2D20.svg?logo=laravel&logoColor=white)](https://laravel.com/) [![Vue.js](https://img.shields.io/badge/Vue.js-4FC08D?logo=vuedotjs&logoColor=fff)](https://vuejs.org/) ![GitHub commit activity](https://img.shields.io/github/commit-activity/t/MadeInShineA/smash-map?style=flat) ![GitHub last commit](https://img.shields.io/github/last-commit/MadeInShineA/smash-map) [![Website](https://img.shields.io/website?url=https%3A%2F%2Fsmash-map.com)](https://smash-map.com)
+
+
+
 Smash Map is an open source website under development, it's goal is to help smash players to find tournaments and other players around the world 
 
 ## Smash Map Features
