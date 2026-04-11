@@ -22,3 +22,6 @@ yarn-error.log
 /.vscode
 /storage/app/public/characters-images/smash-64/old-icons/
 .direnv
+.phpstorm.meta.php
+_ide_helper.php
+_ide_helper_models.php

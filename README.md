@@ -56,15 +56,23 @@ Fill in the `.env` file with your database credentials and other required values
 php artisan key:generate
 ```
 
-### 4. Start the database Docker service
+### 4. Setup Laravel IDE autocompletion (optional)
+
+```bash
+php artisan ide-helper:generate      # facade completions
+php artisan ide-helper:models --nowrite  # model properties
+php artisan ide-helper:meta          # meta file
+```
+
+### 5. Start the database Docker service
 
 ```bash
 docker compose up -d
 ```
 
-### 5. Set up database
+### 6. Set up database
 
-> **Note:** The first migration is expected to fail. This is because character migrations (Mewtwo/Roy for Project+) depend on game data (Project+) that is only created by the seeder.
+> **Note:** The first migration is expected to fail. This is because some character migrations depend on game data that is only created by the seeder.
 
 ```bash
 php artisan migrate        # Fails - missing tables from seeder
@@ -73,14 +81,14 @@ php artisan migrate        # Completes successfully
 php artisan storage:link
 ```
 
-### 6. Populate the database
+### 7. Populate the database
 
 ```bash
 php artisan setup
 php artisan import-50-events-all-games
 ```
 
-### 7. Run the development servers
+### 8. Run the development servers
 
 ```bash
 npm run dev
