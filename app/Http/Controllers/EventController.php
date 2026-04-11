@@ -17,6 +17,74 @@ use Illuminate\Support\Facades\DB;
 
 class EventController extends Controller
 {
+    /**
+     * List events with filtering, sorting, and pagination support.
+     *
+     * @group Events
+     *
+     * @queryParam startDate string Filter events starting from this date (Y-m-d format). Example: 2024-01-01
+     * @queryParam endDate string Filter events ending before this date (Y-m-d format). Example: 2024-12-31
+     * @queryParam games string Comma-separated game IDs to filter by. Use "default" for no filter. Example: 1,2,1386
+     * @queryParam name string Search events by name (case-insensitive partial match). Example: Genesis
+     * @queryParam type string Event type filter. Options: "default" (all), "online" (online-only), "offline" (in-person), "followed" (subscribed by authenticated user). Example: offline
+     * @queryParam continents string Comma-separated continent codes to filter by. Use "default" for no filter. Example: NA,EU
+     * @queryParam countries string Comma-separated country codes to filter by. Use "default" for no filter. Example: US,CA,JP
+     * @queryParam orderBy string Sort order for events. Options: "default", "attendeesASC", "attendeesDESC", "dateASC", "dateDESC". Example: dateDESC
+     * @queryParam lat float Latitude for location-based filtering. Requires lng and radius. Example: 37.7749
+     * @queryParam lng float Longitude for location-based filtering. Requires lat and radius. Example: -122.4194
+     * @queryParam radius int Search radius in kilometers from the provided coordinates. Requires lat and lng. Example: 100
+     * @queryParam paginate string Set to "false" to return all events without pagination. Defaults to true (12 per page). Example: false
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "game": {
+     *         "name": "Super Smash Bros. Melee",
+     *         "color": "#A30010"
+     *       },
+     *       "address": {
+     *         "country": {
+     *           "name": "United States",
+     *           "timezone": "America/Los_Angeles"
+     *         },
+     *         "name": "Anaheim Convention Center",
+     *         "latitude": 33.8003,
+     *         "longitude": -117.9211
+     *       },
+     *       "image": {
+     *         "url": "https://smashmap.example.com/storage/images/events/1.png"
+     *       },
+     *       "is_online": false,
+     *       "name": "Genesis 10",
+     *       "timezone_start_date_time": "2024-01-05T10:00:00-08:00",
+     *       "timezone_end_date_time": "2024-01-07T20:00:00-08:00",
+     *       "timezone": "America/Los_Angeles (PST)",
+     *       "attendees": 5000,
+     *       "link": "https://start.gg/tournament/genesis-10",
+     *       "user_subscribed": false
+     *     }
+     *   ],
+     *   "links": {
+     *     "first": "https://smashmap.example.com/api/events?page=1",
+     *     "last": "https://smashmap.example.com/api/events?page=10",
+     *     "prev": null,
+     *     "next": "https://smashmap.example.com/api/events?page=2"
+     *   },
+     *   "meta": {
+     *     "current_page": 1,
+     *     "from": 1,
+     *     "last_page": 10,
+     *     "per_page": 12,
+     *     "to": 12,
+     *     "total": 120
+     *   }
+     * }
+     * @response 500 {
+     *   "message": "An error occurred while retrieving the events E 006",
+     *   "error": "Error message details"
+     * }
+     */
     public function index(
         Request $request,
     ): AnonymousResourceCollection|JsonResponse {
@@ -97,7 +165,7 @@ class EventController extends Controller
                     case "default":
                         break;
                     default:
-                        $events->whereRaw("UPPER(name) LIKE ?", [
+                        $events->whereRaw("UPPER(events.name) LIKE ?", [
                             "%" . strtoupper($name) . "%",
                         ]);
                 }
@@ -215,6 +283,95 @@ class EventController extends Controller
         }
     }
 
+    /**
+     * Get event statistics in a format suitable for charts.
+     *
+     * @group Events
+     *
+     * @queryParam type string The type of statistics to retrieve. Options: "games" (event count by game), "months" (event count by month for the next 6 months, broken down by game). Example: games
+     *
+     * @response 200 {
+     *   "data": {
+     *     "labels": ["64", "Melee", "Brawl", "Project M", "Project +", "3DS / WiiU", "Ultimate", "HDR", "Rivals 2"],
+     *     "datasets": [
+     *       {
+     *         "data": [12, 450, 80, 95, 150, 60, 800, 30, 120],
+     *         "backgroundColor": ["#FAC41A", "#A30010", "#660d02", "#3B448B", "#6FD19C", "#AFC1EE", "#F18A41", "#015500", "#B19EEF"],
+     *         "hoverBackgroundColor": ["#D8A504", "#82000C", "#510A01", "#2F366F", "#3EC17A", "#6A8CDF", "#E46810", "#013D00", "#9A85D1"]
+     *       }
+     *     ],
+     *     "eventCount": 1797
+     *   },
+     *   "message": "Statistics retrieved with success"
+     * }
+     * @response 200 (type=months) {
+     *   "data": {
+     *     "labels": ["January", "February", "March", "April", "May", "June"],
+     *     "datasets": [
+     *       {
+     *         "label": "64",
+     *         "backgroundColor": ["#FAC41A"],
+     *         "hoverBackgroundColor": ["#D8A504"],
+     *         "data": [2, 3, 4, 2, 1, 0]
+     *       },
+     *       {
+     *         "label": "Melee",
+     *         "backgroundColor": ["#A30010"],
+     *         "hoverBackgroundColor": ["#82000C"],
+     *         "data": [80, 95, 120, 85, 70, 0]
+     *       },
+     *       {
+     *         "label": "Brawl",
+     *         "backgroundColor": ["#660d02"],
+     *         "hoverBackgroundColor": ["#510A01"],
+     *         "data": [10, 15, 20, 18, 17, 0]
+     *       },
+     *       {
+     *         "label": "Project M",
+     *         "backgroundColor": ["#3B448B"],
+     *         "hoverBackgroundColor": ["#2F366F"],
+     *         "data": [20, 25, 30, 20, 0, 0]
+     *       },
+     *       {
+     *         "label": "Project +",
+     *         "backgroundColor": ["#6FD19C"],
+     *         "hoverBackgroundColor": ["#3EC17A"],
+     *         "data": [30, 40, 50, 30, 0, 0]
+     *       },
+     *       {
+     *         "label": "3DS / WiiU",
+     *         "backgroundColor": ["#AFC1EE"],
+     *         "hoverBackgroundColor": ["#6A8CDF"],
+     *         "data": [5, 8, 10, 7, 30, 0]
+     *       },
+     *       {
+     *         "label": "Ultimate",
+     *         "backgroundColor": ["#F18A41"],
+     *         "hoverBackgroundColor": ["#E46810"],
+     *         "data": [150, 200, 250, 150, 50, 0]
+     *       },
+     *       {
+     *         "label": "HDR",
+     *         "backgroundColor": ["#015500"],
+     *         "hoverBackgroundColor": ["#013D00"],
+     *         "data": [5, 8, 9, 8, 0, 0]
+     *       },
+     *       {
+     *         "label": "Rivals 2",
+     *         "backgroundColor": ["#B19EEF"],
+     *         "hoverBackgroundColor": ["#9A85D1"],
+     *         "data": [25, 35, 40, 20, 0, 0]
+     *       }
+     *     ],
+     *     "eventCount": 0
+     *   },
+     *   "message": "Statistics retrieved with success"
+     * }
+     * @response 500 {
+     *   "message": "An error occurred while retrieving the events statistics E 010",
+     *   "error": "Error message details"
+     * }
+     */
     public function get_statistics(Request $request): JsonResponse
     {
         try {

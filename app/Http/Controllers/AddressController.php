@@ -149,18 +149,20 @@ class AddressController extends Controller
                                 ->whereHas("events", function ($query) use (
                                     $name,
                                 ) {
-                                    $query->whereRaw("UPPER(name) LIKE ?", [
-                                        "%" . strtoupper($name) . "%",
-                                    ]);
+                                    $query->whereRaw(
+                                        "UPPER(addresses.name) LIKE ?",
+                                        ["%" . strtoupper($name) . "%"],
+                                    );
                                 })
                                 ->orWhereHas("users", function ($query) use (
                                     $name,
                                 ) {
-                                    $query->whereRaw("UPPER(username) LIKE ?", [
-                                        "%" . strtoupper($name) . "%",
-                                    ]);
+                                    $query->whereRaw(
+                                        "UPPER(users.username) LIKE ?",
+                                        ["%" . strtoupper($name) . "%"],
+                                    );
                                     $query->orWhereRaw(
-                                        "UPPER(connect_code) LIKE ?",
+                                        "UPPER(users.connect_code) LIKE ?",
                                         ["%" . strtoupper($name) . "%"],
                                     );
                                 });

@@ -1,0 +1,196 @@
+{
+    "variable": [
+        {
+            "id": "baseUrl",
+            "key": "baseUrl",
+            "type": "string",
+            "name": "string",
+            "value": "http:\/\/127.0.0.1:8000"
+        }
+    ],
+    "info": {
+        "name": "Smash-Map API Documentation",
+        "_postman_id": "817160b5-0518-4e87-a06d-20bcb5bca882",
+        "description": "API documentation for the Smash Map website",
+        "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
+    },
+    "item": [
+        {
+            "name": "Events",
+            "description": "",
+            "item": [
+                {
+                    "name": "List events with filtering, sorting, and pagination support.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/events",
+                            "query": [
+                                {
+                                    "key": "startDate",
+                                    "value": "2024-01-01",
+                                    "description": "Filter events starting from this date (Y-m-d format).",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "endDate",
+                                    "value": "2024-12-31",
+                                    "description": "Filter events ending before this date (Y-m-d format).",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "games",
+                                    "value": "1%2C2%2C1386",
+                                    "description": "Comma-separated game IDs to filter by. Use \"default\" for no filter.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "name",
+                                    "value": "Genesis",
+                                    "description": "Search events by name (case-insensitive partial match).",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "type",
+                                    "value": "offline",
+                                    "description": "Event type filter. Options: \"default\" (all), \"online\" (online-only), \"offline\" (in-person), \"followed\" (subscribed by authenticated user).",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "continents",
+                                    "value": "NA%2CEU",
+                                    "description": "Comma-separated continent codes to filter by. Use \"default\" for no filter.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "countries",
+                                    "value": "US%2CCA%2CJP",
+                                    "description": "Comma-separated country codes to filter by. Use \"default\" for no filter.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "orderBy",
+                                    "value": "dateDESC",
+                                    "description": "Sort order for events. Options: \"default\", \"attendeesASC\", \"attendeesDESC\", \"dateASC\", \"dateDESC\".",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "lat",
+                                    "value": "37.7749",
+                                    "description": "Latitude for location-based filtering. Requires lng and radius.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "lng",
+                                    "value": "-122.4194",
+                                    "description": "Longitude for location-based filtering. Requires lat and radius.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "radius",
+                                    "value": "100",
+                                    "description": "Search radius in kilometers from the provided coordinates. Requires lat and lng.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "paginate",
+                                    "value": "false",
+                                    "description": "Set to \"false\" to return all events without pagination. Defaults to true (12 per page).",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/events?startDate=2024-01-01&endDate=2024-12-31&games=1%2C2%2C1386&name=Genesis&type=offline&continents=NA%2CEU&countries=US%2CCA%2CJP&orderBy=dateDESC&lat=37.7749&lng=-122.4194&radius=100&paginate=false"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"data\": [\n    {\n      \"id\": 1,\n      \"game\": {\n        \"name\": \"Super Smash Bros. Melee\",\n        \"color\": \"#A30010\"\n      },\n      \"address\": {\n        \"country\": {\n          \"name\": \"United States\",\n          \"timezone\": \"America\/Los_Angeles\"\n        },\n        \"name\": \"Anaheim Convention Center\",\n        \"latitude\": 33.8003,\n        \"longitude\": -117.9211\n      },\n      \"image\": {\n        \"url\": \"https:\/\/smashmap.example.com\/storage\/images\/events\/1.png\"\n      },\n      \"is_online\": false,\n      \"name\": \"Genesis 10\",\n      \"timezone_start_date_time\": \"2024-01-05T10:00:00-08:00\",\n      \"timezone_end_date_time\": \"2024-01-07T20:00:00-08:00\",\n      \"timezone\": \"America\/Los_Angeles (PST)\",\n      \"attendees\": 5000,\n      \"link\": \"https:\/\/start.gg\/tournament\/genesis-10\",\n      \"user_subscribed\": false\n    }\n  ],\n  \"links\": {\n    \"first\": \"https:\/\/smashmap.example.com\/api\/events?page=1\",\n    \"last\": \"https:\/\/smashmap.example.com\/api\/events?page=10\",\n    \"prev\": null,\n    \"next\": \"https:\/\/smashmap.example.com\/api\/events?page=2\"\n  },\n  \"meta\": {\n    \"current_page\": 1,\n    \"from\": 1,\n    \"last_page\": 10,\n    \"per_page\": 12,\n    \"to\": 12,\n    \"total\": 120\n  }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 500,
+                            "body": "{\n  \"message\": \"An error occurred while retrieving the events E 006\",\n  \"error\": \"Error message details\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Get event statistics in a format suitable for charts.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/events\/statistics",
+                            "query": [
+                                {
+                                    "key": "type",
+                                    "value": "games",
+                                    "description": "The type of statistics to retrieve. Options: \"games\" (event count by game), \"months\" (event count by month for the next 6 months, broken down by game).",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/events\/statistics?type=games"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"data\": {\n    \"labels\": [\"64\", \"Melee\", \"Brawl\", \"Project M\", \"Project +\", \"3DS \/ WiiU\", \"Ultimate\", \"HDR\", \"Rivals 2\"],\n    \"datasets\": [\n      {\n        \"data\": [12, 450, 80, 95, 150, 60, 800, 30, 120],\n        \"backgroundColor\": [\"#FAC41A\", \"#A30010\", \"#660d02\", \"#3B448B\", \"#6FD19C\", \"#AFC1EE\", \"#F18A41\", \"#015500\", \"#B19EEF\"],\n        \"hoverBackgroundColor\": [\"#D8A504\", \"#82000C\", \"#510A01\", \"#2F366F\", \"#3EC17A\", \"#6A8CDF\", \"#E46810\", \"#013D00\", \"#9A85D1\"]\n      }\n    ],\n    \"eventCount\": 1797\n  },\n  \"message\": \"Statistics retrieved with success\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "(type=months) {\n  \"data\": {\n    \"labels\": [\"January\", \"February\", \"March\", \"April\", \"May\", \"June\"],\n    \"datasets\": [\n      {\n        \"label\": \"64\",\n        \"backgroundColor\": [\"#FAC41A\"],\n        \"hoverBackgroundColor\": [\"#D8A504\"],\n        \"data\": [2, 3, 4, 2, 1, 0]\n      },\n      {\n        \"label\": \"Melee\",\n        \"backgroundColor\": [\"#A30010\"],\n        \"hoverBackgroundColor\": [\"#82000C\"],\n        \"data\": [80, 95, 120, 85, 70, 0]\n      },\n      {\n        \"label\": \"Brawl\",\n        \"backgroundColor\": [\"#660d02\"],\n        \"hoverBackgroundColor\": [\"#510A01\"],\n        \"data\": [10, 15, 20, 18, 17, 0]\n      },\n      {\n        \"label\": \"Project M\",\n        \"backgroundColor\": [\"#3B448B\"],\n        \"hoverBackgroundColor\": [\"#2F366F\"],\n        \"data\": [20, 25, 30, 20, 0, 0]\n      },\n      {\n        \"label\": \"Project +\",\n        \"backgroundColor\": [\"#6FD19C\"],\n        \"hoverBackgroundColor\": [\"#3EC17A\"],\n        \"data\": [30, 40, 50, 30, 0, 0]\n      },\n      {\n        \"label\": \"3DS \/ WiiU\",\n        \"backgroundColor\": [\"#AFC1EE\"],\n        \"hoverBackgroundColor\": [\"#6A8CDF\"],\n        \"data\": [5, 8, 10, 7, 30, 0]\n      },\n      {\n        \"label\": \"Ultimate\",\n        \"backgroundColor\": [\"#F18A41\"],\n        \"hoverBackgroundColor\": [\"#E46810\"],\n        \"data\": [150, 200, 250, 150, 50, 0]\n      },\n      {\n        \"label\": \"HDR\",\n        \"backgroundColor\": [\"#015500\"],\n        \"hoverBackgroundColor\": [\"#013D00\"],\n        \"data\": [5, 8, 9, 8, 0, 0]\n      },\n      {\n        \"label\": \"Rivals 2\",\n        \"backgroundColor\": [\"#B19EEF\"],\n        \"hoverBackgroundColor\": [\"#9A85D1\"],\n        \"data\": [25, 35, 40, 20, 0, 0]\n      }\n    ],\n    \"eventCount\": 0\n  },\n  \"message\": \"Statistics retrieved with success\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 500,
+                            "body": "{\n  \"message\": \"An error occurred while retrieving the events statistics E 010\",\n  \"error\": \"Error message details\"\n}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "auth": {
+        "type": "noauth"
+    }
+}

@@ -1,0 +1,521 @@
+openapi: 3.0.3
+info:
+  title: 'Smash-Map API Documentation'
+  description: 'API documentation for the Smash Map website'
+  version: 1.0.0
+servers:
+  -
+    url: 'http://127.0.0.1:8000'
+tags:
+  -
+    name: Events
+    description: ''
+paths:
+  /api/events:
+    get:
+      summary: 'List events with filtering, sorting, and pagination support.'
+      operationId: listEventsWithFilteringSortingAndPaginationSupport
+      description: ''
+      parameters:
+        -
+          in: query
+          name: startDate
+          description: 'Filter events starting from this date (Y-m-d format).'
+          example: '2024-01-01'
+          required: false
+          schema:
+            type: string
+            description: 'Filter events starting from this date (Y-m-d format).'
+            example: '2024-01-01'
+        -
+          in: query
+          name: endDate
+          description: 'Filter events ending before this date (Y-m-d format).'
+          example: '2024-12-31'
+          required: false
+          schema:
+            type: string
+            description: 'Filter events ending before this date (Y-m-d format).'
+            example: '2024-12-31'
+        -
+          in: query
+          name: games
+          description: 'Comma-separated game IDs to filter by. Use "default" for no filter.'
+          example: '1,2,1386'
+          required: false
+          schema:
+            type: string
+            description: 'Comma-separated game IDs to filter by. Use "default" for no filter.'
+            example: '1,2,1386'
+        -
+          in: query
+          name: name
+          description: 'Search events by name (case-insensitive partial match).'
+          example: Genesis
+          required: false
+          schema:
+            type: string
+            description: 'Search events by name (case-insensitive partial match).'
+            example: Genesis
+        -
+          in: query
+          name: type
+          description: 'Event type filter. Options: "default" (all), "online" (online-only), "offline" (in-person), "followed" (subscribed by authenticated user).'
+          example: offline
+          required: false
+          schema:
+            type: string
+            description: 'Event type filter. Options: "default" (all), "online" (online-only), "offline" (in-person), "followed" (subscribed by authenticated user).'
+            example: offline
+        -
+          in: query
+          name: continents
+          description: 'Comma-separated continent codes to filter by. Use "default" for no filter.'
+          example: 'NA,EU'
+          required: false
+          schema:
+            type: string
+            description: 'Comma-separated continent codes to filter by. Use "default" for no filter.'
+            example: 'NA,EU'
+        -
+          in: query
+          name: countries
+          description: 'Comma-separated country codes to filter by. Use "default" for no filter.'
+          example: 'US,CA,JP'
+          required: false
+          schema:
+            type: string
+            description: 'Comma-separated country codes to filter by. Use "default" for no filter.'
+            example: 'US,CA,JP'
+        -
+          in: query
+          name: orderBy
+          description: 'Sort order for events. Options: "default", "attendeesASC", "attendeesDESC", "dateASC", "dateDESC".'
+          example: dateDESC
+          required: false
+          schema:
+            type: string
+            description: 'Sort order for events. Options: "default", "attendeesASC", "attendeesDESC", "dateASC", "dateDESC".'
+            example: dateDESC
+        -
+          in: query
+          name: lat
+          description: 'Latitude for location-based filtering. Requires lng and radius.'
+          example: 37.7749
+          required: false
+          schema:
+            type: number
+            description: 'Latitude for location-based filtering. Requires lng and radius.'
+            example: 37.7749
+        -
+          in: query
+          name: lng
+          description: 'Longitude for location-based filtering. Requires lat and radius.'
+          example: -122.4194
+          required: false
+          schema:
+            type: number
+            description: 'Longitude for location-based filtering. Requires lat and radius.'
+            example: -122.4194
+        -
+          in: query
+          name: radius
+          description: 'Search radius in kilometers from the provided coordinates. Requires lat and lng.'
+          example: 100
+          required: false
+          schema:
+            type: integer
+            description: 'Search radius in kilometers from the provided coordinates. Requires lat and lng.'
+            example: 100
+        -
+          in: query
+          name: paginate
+          description: 'Set to "false" to return all events without pagination. Defaults to true (12 per page).'
+          example: 'false'
+          required: false
+          schema:
+            type: string
+            description: 'Set to "false" to return all events without pagination. Defaults to true (12 per page).'
+            example: 'false'
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    -
+                      id: 1
+                      game:
+                        name: 'Super Smash Bros. Melee'
+                        color: '#A30010'
+                      address:
+                        country:
+                          name: 'United States'
+                          timezone: America/Los_Angeles
+                        name: 'Anaheim Convention Center'
+                        latitude: 33.8003
+                        longitude: -117.9211
+                      image:
+                        url: 'https://smashmap.example.com/storage/images/events/1.png'
+                      is_online: false
+                      name: 'Genesis 10'
+                      timezone_start_date_time: '2024-01-05T10:00:00-08:00'
+                      timezone_end_date_time: '2024-01-07T20:00:00-08:00'
+                      timezone: 'America/Los_Angeles (PST)'
+                      attendees: 5000
+                      link: 'https://start.gg/tournament/genesis-10'
+                      user_subscribed: false
+                  links:
+                    first: 'https://smashmap.example.com/api/events?page=1'
+                    last: 'https://smashmap.example.com/api/events?page=10'
+                    prev: null
+                    next: 'https://smashmap.example.com/api/events?page=2'
+                  meta:
+                    current_page: 1
+                    from: 1
+                    last_page: 10
+                    per_page: 12
+                    to: 12
+                    total: 120
+                properties:
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        game:
+                          name: 'Super Smash Bros. Melee'
+                          color: '#A30010'
+                        address:
+                          country:
+                            name: 'United States'
+                            timezone: America/Los_Angeles
+                          name: 'Anaheim Convention Center'
+                          latitude: 33.8003
+                          longitude: -117.9211
+                        image:
+                          url: 'https://smashmap.example.com/storage/images/events/1.png'
+                        is_online: false
+                        name: 'Genesis 10'
+                        timezone_start_date_time: '2024-01-05T10:00:00-08:00'
+                        timezone_end_date_time: '2024-01-07T20:00:00-08:00'
+                        timezone: 'America/Los_Angeles (PST)'
+                        attendees: 5000
+                        link: 'https://start.gg/tournament/genesis-10'
+                        user_subscribed: false
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        game:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              example: 'Super Smash Bros. Melee'
+                            color:
+                              type: string
+                              example: '#A30010'
+                        address:
+                          type: object
+                          properties:
+                            country:
+                              type: object
+                              properties:
+                                name:
+                                  type: string
+                                  example: 'United States'
+                                timezone:
+                                  type: string
+                                  example: America/Los_Angeles
+                            name:
+                              type: string
+                              example: 'Anaheim Convention Center'
+                            latitude:
+                              type: number
+                              example: 33.8003
+                            longitude:
+                              type: number
+                              example: -117.9211
+                        image:
+                          type: object
+                          properties:
+                            url:
+                              type: string
+                              example: 'https://smashmap.example.com/storage/images/events/1.png'
+                        is_online:
+                          type: boolean
+                          example: false
+                        name:
+                          type: string
+                          example: 'Genesis 10'
+                        timezone_start_date_time:
+                          type: string
+                          example: '2024-01-05T10:00:00-08:00'
+                        timezone_end_date_time:
+                          type: string
+                          example: '2024-01-07T20:00:00-08:00'
+                        timezone:
+                          type: string
+                          example: 'America/Los_Angeles (PST)'
+                        attendees:
+                          type: integer
+                          example: 5000
+                        link:
+                          type: string
+                          example: 'https://start.gg/tournament/genesis-10'
+                        user_subscribed:
+                          type: boolean
+                          example: false
+                  links:
+                    type: object
+                    properties:
+                      first:
+                        type: string
+                        example: 'https://smashmap.example.com/api/events?page=1'
+                      last:
+                        type: string
+                        example: 'https://smashmap.example.com/api/events?page=10'
+                      prev:
+                        type: string
+                        example: null
+                        nullable: true
+                      next:
+                        type: string
+                        example: 'https://smashmap.example.com/api/events?page=2'
+                  meta:
+                    type: object
+                    properties:
+                      current_page:
+                        type: integer
+                        example: 1
+                      from:
+                        type: integer
+                        example: 1
+                      last_page:
+                        type: integer
+                        example: 10
+                      per_page:
+                        type: integer
+                        example: 12
+                      to:
+                        type: integer
+                        example: 12
+                      total:
+                        type: integer
+                        example: 120
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'An error occurred while retrieving the events E 006'
+                  error: 'Error message details'
+                properties:
+                  message:
+                    type: string
+                    example: 'An error occurred while retrieving the events E 006'
+                  error:
+                    type: string
+                    example: 'Error message details'
+      tags:
+        - Events
+      security: []
+  /api/events/statistics:
+    get:
+      summary: 'Get event statistics in a format suitable for charts.'
+      operationId: getEventStatisticsInAFormatSuitableForCharts
+      description: ''
+      parameters:
+        -
+          in: query
+          name: type
+          description: 'The type of statistics to retrieve. Options: "games" (event count by game), "months" (event count by month for the next 6 months, broken down by game).'
+          example: games
+          required: false
+          schema:
+            type: string
+            description: 'The type of statistics to retrieve. Options: "games" (event count by game), "months" (event count by month for the next 6 months, broken down by game).'
+            example: games
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    labels:
+                      - '64'
+                      - Melee
+                      - Brawl
+                      - 'Project M'
+                      - 'Project +'
+                      - '3DS / WiiU'
+                      - Ultimate
+                      - HDR
+                      - 'Rivals 2'
+                    datasets:
+                      -
+                        data:
+                          - 12
+                          - 450
+                          - 80
+                          - 95
+                          - 150
+                          - 60
+                          - 800
+                          - 30
+                          - 120
+                        backgroundColor:
+                          - '#FAC41A'
+                          - '#A30010'
+                          - '#660d02'
+                          - '#3B448B'
+                          - '#6FD19C'
+                          - '#AFC1EE'
+                          - '#F18A41'
+                          - '#015500'
+                          - '#B19EEF'
+                        hoverBackgroundColor:
+                          - '#D8A504'
+                          - '#82000C'
+                          - '#510A01'
+                          - '#2F366F'
+                          - '#3EC17A'
+                          - '#6A8CDF'
+                          - '#E46810'
+                          - '#013D00'
+                          - '#9A85D1'
+                    eventCount: 1797
+                  message: 'Statistics retrieved with success'
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      labels:
+                        type: array
+                        example:
+                          - '64'
+                          - Melee
+                          - Brawl
+                          - 'Project M'
+                          - 'Project +'
+                          - '3DS / WiiU'
+                          - Ultimate
+                          - HDR
+                          - 'Rivals 2'
+                        items:
+                          type: string
+                      datasets:
+                        type: array
+                        example:
+                          -
+                            data:
+                              - 12
+                              - 450
+                              - 80
+                              - 95
+                              - 150
+                              - 60
+                              - 800
+                              - 30
+                              - 120
+                            backgroundColor:
+                              - '#FAC41A'
+                              - '#A30010'
+                              - '#660d02'
+                              - '#3B448B'
+                              - '#6FD19C'
+                              - '#AFC1EE'
+                              - '#F18A41'
+                              - '#015500'
+                              - '#B19EEF'
+                            hoverBackgroundColor:
+                              - '#D8A504'
+                              - '#82000C'
+                              - '#510A01'
+                              - '#2F366F'
+                              - '#3EC17A'
+                              - '#6A8CDF'
+                              - '#E46810'
+                              - '#013D00'
+                              - '#9A85D1'
+                        items:
+                          type: object
+                          properties:
+                            data:
+                              type: array
+                              example:
+                                - 12
+                                - 450
+                                - 80
+                                - 95
+                                - 150
+                                - 60
+                                - 800
+                                - 30
+                                - 120
+                              items:
+                                type: integer
+                            backgroundColor:
+                              type: array
+                              example:
+                                - '#FAC41A'
+                                - '#A30010'
+                                - '#660d02'
+                                - '#3B448B'
+                                - '#6FD19C'
+                                - '#AFC1EE'
+                                - '#F18A41'
+                                - '#015500'
+                                - '#B19EEF'
+                              items:
+                                type: string
+                            hoverBackgroundColor:
+                              type: array
+                              example:
+                                - '#D8A504'
+                                - '#82000C'
+                                - '#510A01'
+                                - '#2F366F'
+                                - '#3EC17A'
+                                - '#6A8CDF'
+                                - '#E46810'
+                                - '#013D00'
+                                - '#9A85D1'
+                              items:
+                                type: string
+                      eventCount:
+                        type: integer
+                        example: 1797
+                  message:
+                    type: string
+                    example: 'Statistics retrieved with success'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'An error occurred while retrieving the events statistics E 010'
+                  error: 'Error message details'
+                properties:
+                  message:
+                    type: string
+                    example: 'An error occurred while retrieving the events statistics E 010'
+                  error:
+                    type: string
+                    example: 'Error message details'
+      tags:
+        - Events
+      security: []
