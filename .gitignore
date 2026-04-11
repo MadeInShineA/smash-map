@@ -26,3 +26,6 @@ yarn-error.log
 _ide_helper.php
 _ide_helper_models.php
 .scribe
+public/vendor/scribe
+resources/views/scribe/
+storage/app/scribe/
