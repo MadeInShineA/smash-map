@@ -44,6 +44,11 @@ const props = defineProps({
         type: String,
         required: false,
     },
+
+    zoom: {
+        type: String,
+        required: false,
+    },
 });
 
 const addressStore = useAddressesStore();
@@ -97,10 +102,26 @@ const infoWindows = ref([]);
 const mapRef = ref();
 const openedInfoWindowIndex = ref();
 
-if (props.lat && props.lng) {
-    center.value = { lat: parseFloat(props.lat), lng: parseFloat(props.lng) };
-    zoom.value = 10;
-}
+const setCenterFromProps = () => {
+    const lat = parseFloat(props.lat);
+    const lng = parseFloat(props.lng);
+    let zoomLevel = parseInt(props.zoom);
+
+    let haveValuesChanged = false;
+
+    if (Number.isFinite(zoomLevel)) {
+        zoom.value = zoomLevel;
+        haveValuesChanged = true;
+    }
+
+    if (Number.isFinite(lat) && Number.isFinite(lng)) {
+        center.value = { lat, lng };
+        haveValuesChanged = true;
+    }
+    return haveValuesChanged;
+};
+
+setCenterFromProps();
 
 const openInfoWindow = (i) => {
     openedInfoWindowIndex.value = i;
@@ -186,7 +207,7 @@ async function updateDistanceNotificationsRadius() {
 
 onMounted(() => {
     console.log("Map Mounted");
-    if (navigator.geolocation) {
+    if (navigator.geolocation && !setCenterFromProps()) {
         navigator.geolocation.getCurrentPosition(function (position) {
             center.value = {
                 lat: position.coords.latitude,
@@ -209,23 +230,16 @@ onMounted(() => {
 });
 
 onActivated(() => {
-    center.value = userStore.user.data.settings.address;
+    // center.value = userStore.user.data.settings.address;
     circleCenter.value = userStore.user.data.settings.address;
     distanceNotificationsRadius.value =
         userStore.user.data.settings.distanceNotificationsRadius;
     isCircleVisible.value =
         userStore.user.data.settings.hasDistanceNotifications;
 
-    if (props.lat && props.lng) {
-        center.value = {
-            lat: parseFloat(props.lat),
-            lng: parseFloat(props.lng),
-        };
-        zoom.value = 10;
-        if (mapRef.value) {
-            mapRef.value.map.setCenter(center.value);
-            mapRef.value.map.setZoom(zoom.value);
-        }
+    if (setCenterFromProps() && mapRef.value) {
+        mapRef.value.map.setCenter(center.value);
+        mapRef.value.map.setZoom(zoom.value);
     }
 });
 </script>

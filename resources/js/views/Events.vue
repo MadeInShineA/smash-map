@@ -165,6 +165,7 @@ onMounted(() => {
                                     query: {
                                         lat: event.address.latitude,
                                         lng: event.address.longitude,
+                                        zoom: 10,
                                     },
                                 }"
                             >

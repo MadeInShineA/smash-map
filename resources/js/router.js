@@ -29,6 +29,7 @@ const routes = [
                 props: (route) => ({
                     lat: route.query.lat,
                     lng: route.query.lng,
+                    zoom: route.query.zoom,
                 }),
             },
             {
