@@ -2,13 +2,12 @@ version: "3.8"
 
 services:
   mysql:
-    image: mysql:8.0
+    image: mysql
     container_name: laravel_mysql
     ports:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_DATABASE: ${DB_DATABASE}
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
