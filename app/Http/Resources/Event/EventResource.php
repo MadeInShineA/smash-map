@@ -19,6 +19,8 @@ class EventResource extends JsonResource
             "image" => $this->image ? new ImageResource($this->image) : null,
             "is_online" => $this->is_online,
             "name" => $this->name,
+            "iso_start_date_time" => $this->iso_start_date_time,
+            "iso_end_date_time" => $this->iso_end_date_time,
             "timezone_start_date_time" => $this->timezone_start_date_time,
             "timezone_end_date_time" => $this->timezone_end_date_time,
             "timezone" => $this->timezone_label,

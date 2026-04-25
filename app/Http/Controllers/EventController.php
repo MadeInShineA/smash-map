@@ -77,9 +77,11 @@ class EventController extends Controller
      *       },
      *       "is_online": false,
      *       "name": "Genesis 10",
-     *       "timezone_start_date_time": "2024-01-05T10:00:00-08:00",
-     *       "timezone_end_date_time": "2024-01-07T20:00:00-08:00",
-     *       "timezone": "America/Los_Angeles (PST)",
+     *       "iso_start_date_time": "2025-10-11T15:30:00-04:00", # Start date-time in ISO format
+     *       "iso_end_date_time": "2025-10-11T23:00:00-04:00", # End date-time in ISO format
+     *       "timezone_start_date_time": "11-10-2025 15:30:00", # How the front-end directly displays the start date-time
+     *       "timezone_end_date_time": "23:00:00", # How the front-end directly displays the end date-time
+     *       "timezone": "UTC -04:00",
      *       "attendees": 5000,
      *       "link": "https://start.gg/tournament/genesis-10",
      *       "user_subscribed": false

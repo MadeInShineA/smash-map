@@ -105,6 +105,21 @@ class Event extends Model
         }
     }
 
+    public function getIsoStartDateTimeAttribute(): string
+    {
+        return Carbon::parse($this->start_date_time)
+              ->setTimezone($this->timezone)
+              ->toIso8601String();
+    }
+
+    public function getIsoEndDateTimeAttribute(): string
+    {
+        return Carbon::parse($this->end_date_time)
+            ->setTimezone($this->timezone)
+            ->toIso8601String();
+    }
+
+
     #FIXME Find a way to access the logged in user inside this funciton
     public function user_subscribed(Request $request): bool
     {
