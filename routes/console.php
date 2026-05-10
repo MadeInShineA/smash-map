@@ -90,7 +90,7 @@ Artisan::command("delete-events", function () {
 });
 
 Artisan::command(
-    "import-50-events {game_id} {import_all_events?} {page?}",
+    "import-25-events {game_id} {import_all_events?} {page?}",
     function (string $game_id, bool $import_all_events = false, int $page = 1) {
         $apiToken = env("START_GG_API_KEY");
 
@@ -98,7 +98,7 @@ Artisan::command(
         $query = 'query TournamentsByVideogame($videogameId: ID!, $page: Int!) {
       tournaments(query: {
         sortBy: "startAt asc"
-        perPage: 50
+        perPage: 25
         page: $page
         filter: {
           upcoming: true
@@ -170,7 +170,7 @@ Artisan::command(
                 Log::info("Retrying in 1 second");
                 //            var_dump('Retrying in 1 second');
                 sleep(1);
-                Artisan::call("import-50-events", [
+                Artisan::call("import-25-events", [
                     "game_id" => $game_id,
                     "import_all_events" => $import_all_events,
                     "page" => $page,
@@ -788,13 +788,13 @@ Artisan::command(
     },
 );
 
-Artisan::command("import-50-events-all-games {import_all_events?", function (
+Artisan::command("import-25-events-all-games {import_all_events?", function (
     bool $import_all_events = false,
 ) {
     foreach (Game::all() as $game) {
         Log::info("Starting the " . $game->name . " import");
         //        var_dump('Starting the ' . $game->name . ' import');
-        Artisan::call("import-50-events", [
+        Artisan::call("import-25-events", [
             "game_id" => $game->id,
             "import_all_events" => $import_all_events,
         ]);
@@ -805,8 +805,8 @@ Artisan::command("import-500-events {game_id} {import_all_events?}", function (
     string $game_id,
     bool $import_all_events = false,
 ) {
-    foreach (range(1, 10) as $page) {
-        Artisan::call("import-50-events", [
+    foreach (range(1, 20) as $page) {
+        Artisan::call("import-25-events", [
             "game_id" => $game_id,
             "import_all_events" => $import_all_events,
             "page" => $page,
@@ -868,7 +868,7 @@ Artisan::command("import-countries-images", function () {
 Artisan::command("setup", function () {
     Artisan::call("import-countries-images");
     Artisan::call("import-characters-images");
-    //   Artisan::call('import-50-events-all-games');
+    //   Artisan::call('import-25-events-all-games');
 });
 
 Artisan::command("test-push-notification {username}", function (
