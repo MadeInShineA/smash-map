@@ -34,6 +34,34 @@ use Pusher\PushNotifications\PushNotifications;
 |
 */
 
+Artisan::command("import-25-events-parry-gg", function () {
+    $apiToken = env("PARRY_GG_API_KEY");
+
+    $endpointUrl =
+        "https://grpcweb.parry.gg/parrygg.services.TournamentService/GetTournaments";
+
+    $payload = json_encode([
+        "paginationRequest" => ["pageSize" => 25],
+    ]);
+
+    $headers = ["Content-Type: application/json", "X-API-KEY: $apiToken"];
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_URL, $endpointUrl);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $raw_response = curl_exec($ch);
+
+    $response = json_decode($raw_response);
+
+    var_dump($response);
+});
+
 Artisan::command("delete-addresses", function () {
     $addresses = Address::all();
     foreach ($addresses as $address) {
