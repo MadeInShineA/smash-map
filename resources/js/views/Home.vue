@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useEventsStore } from "../stores/EventsStore.js";
 import Chart from "primevue/chart";
 import { useWindowSize } from "@vueuse/core";
@@ -60,6 +60,32 @@ const doughnutPlotOptions = ref({
     },
 });
 
+const startGGChartData = computed(() => {
+    const gamesData = eventsStore.gamesStatistics.data;
+    if (!gamesData || !gamesData.datasets || !gamesData.datasets[0]) return null;
+    return {
+        labels: gamesData.labels,
+        datasets: [{
+            data: gamesData.datasets[0].data,
+            backgroundColor: gamesData.datasets[0].backgroundColor,
+            hoverBackgroundColor: gamesData.datasets[0].hoverBackgroundColor,
+        }],
+    };
+});
+
+const parryGGChartData = computed(() => {
+    const gamesData = eventsStore.gamesStatistics.data;
+    if (!gamesData || !gamesData.datasets || !gamesData.datasets[1]) return null;
+    return {
+        labels: gamesData.labels,
+        datasets: [{
+            data: gamesData.datasets[1].data,
+            backgroundColor: gamesData.datasets[1].backgroundColor,
+            hoverBackgroundColor: gamesData.datasets[1].hoverBackgroundColor,
+        }],
+    };
+});
+
 const barPlotOptions = ref({
     indexAxis: "y",
     scales: {
@@ -97,7 +123,8 @@ const barPlotOptions = ref({
     responsive: true,
 });
 
-const gamesStatisticsChart = ref();
+const startGGChart = ref();
+const parryGGChart = ref();
 const monthsStatisticsChart = ref();
 
 watch(
@@ -105,7 +132,8 @@ watch(
     (newValue) => {
         const color = newValue ? "white" : "black";
         doughnutPlotOptions.value.plugins.legend.labels.color = color;
-        gamesStatisticsChart.value.chart.update();
+        if (startGGChart.value?.chart) startGGChart.value.chart.update();
+        if (parryGGChart.value?.chart) parryGGChart.value.chart.update();
 
         barPlotOptions.value.plugins.legend.labels.color = color;
 
@@ -114,7 +142,7 @@ watch(
 
         barPlotOptions.value.scales.y.ticks.color = color;
         barPlotOptions.value.scales.y.border.color = color;
-        monthsStatisticsChart.value.chart.update();
+        if (monthsStatisticsChart.value?.chart) monthsStatisticsChart.value.chart.update();
     },
 );
 </script>
@@ -161,7 +189,9 @@ watch(
             <p>
                 Every 10 minutes Smash Map fetches the
                 <a href="https://www.start.gg/" target="_blank">start.gg</a>
-                data for the next 500 events in the different games.
+                and
+                <a href="https://parry.gg/" target="_blank">parry.gg</a>
+                data for upcoming events in the different games.
             </p>
             <p>
                 Website users can then find events directly on the
@@ -205,17 +235,32 @@ watch(
 
             <h2>Statistics</h2>
             <p>Here are some statistics about the events on Smash Map:</p>
-            <Chart
-                ref="gamesStatisticsChart"
-                type="doughnut"
-                :data="eventsStore.gamesStatistics.data"
-                id="events-games-chart"
-                :options="doughnutPlotOptions"
-            />
+            <div id="charts-row">
+                <div class="chart-container">
+                    <h3>start.gg</h3>
+                    <Chart
+                        ref="startGGChart"
+                        type="doughnut"
+                        :data="startGGChartData"
+                        id="events-startgg-chart"
+                        :options="doughnutPlotOptions"
+                    />
+                </div>
+                <div class="chart-container">
+                    <h3>parry.gg</h3>
+                    <Chart
+                        ref="parryGGChart"
+                        type="doughnut"
+                        :data="parryGGChartData"
+                        id="events-parrygg-chart"
+                        :options="doughnutPlotOptions"
+                    />
+                </div>
+            </div>
             <p>
-                This diagram represents the distribution of games among the
+                These diagrams represent the distribution of games among the
                 {{ eventsStore.gamesStatistics.data.eventCount }} events
-                referenced on the site
+                referenced on the site (start.gg and parry.gg)
             </p>
             <div
                 id="events-month-chart-container"
@@ -280,6 +325,23 @@ a {
 #events-months-chart {
     height: 300px;
     width: 600px;
+}
+
+#charts-row {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.chart-container {
+    max-width: 400px;
+    flex: 1 1 300px;
+}
+
+.chart-container h3 {
+    text-align: center;
+    margin-bottom: 0.5rem;
 }
 
 .notification-icon {

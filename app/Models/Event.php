@@ -22,6 +22,8 @@ class Event extends Model
         "uuid",
         "start_gg_id",
         "start_gg_updated_at",
+        "parry_gg_id",
+        "parry_gg_updated_at",
         "game_id",
         "address_id",
         "image_id",

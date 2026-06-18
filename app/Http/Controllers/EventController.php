@@ -419,15 +419,29 @@ class EventController extends Controller
                 $events = Event::all();
                 $statistics["eventCount"] = $events->count();
 
+                $statistics["datasets"][0]["label"] = "start.gg";
+                $statistics["datasets"][1]["label"] = "parry.gg";
+                $statistics["datasets"][1]["data"] = [];
+                $statistics["datasets"][1]["backgroundColor"] = [];
+                $statistics["datasets"][1]["hoverBackgroundColor"] = [];
+
                 foreach (GameEnum::ABBREVIATIONS as $id => $title) {
                     $statistics["labels"][] = $title;
-                    $statistics["datasets"][0]["data"][] = $events
-                        ->where("game_id", $id)
+                    $gameEvents = $events->where("game_id", $id);
+                    $statistics["datasets"][0]["data"][] = $gameEvents
+                        ->whereNotNull("start_gg_id")
                         ->count();
                     $statistics["datasets"][0]["backgroundColor"][] =
                         GameEnum::COLORS[$id];
                     $statistics["datasets"][0]["hoverBackgroundColor"][] =
                         GameEnum::HOVER_COLORS[$id];
+                    $statistics["datasets"][1]["data"][] = $gameEvents
+                        ->whereNotNull("parry_gg_id")
+                        ->count();
+                    $statistics["datasets"][1]["backgroundColor"][] =
+                        $this->lightenColor(GameEnum::COLORS[$id], 50);
+                    $statistics["datasets"][1]["hoverBackgroundColor"][] =
+                        $this->lightenColor(GameEnum::HOVER_COLORS[$id], 50);
                 }
             } elseif ($statisticsType === "months") {
                 $currentMonth = (int) date("m");
@@ -520,5 +534,14 @@ class EventController extends Controller
     public function delete_events(): void
     {
         Artisan::call("delete-events");
+    }
+
+    private function lightenColor(string $color, int $amount = 40): string
+    {
+        $hex = ltrim($color, "#");
+        $r = min(255, hexdec(substr($hex, 0, 2)) + $amount);
+        $g = min(255, hexdec(substr($hex, 2, 2)) + $amount);
+        $b = min(255, hexdec(substr($hex, 4, 2)) + $amount);
+        return sprintf("#%02x%02x%02x", $r, $g, $b);
     }
 }
