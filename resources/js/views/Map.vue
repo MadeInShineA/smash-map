@@ -1,6 +1,3 @@
-<script>
-export default { name: "map" };
-</script>
 
 <script setup>
 import {
@@ -22,6 +19,7 @@ import { useAddressFiltersStore } from "../stores/AddressFiltersStore.js";
 import { useAddressesStore } from "../stores/AddressesStore.js";
 import { useEventsStore } from "../stores/EventsStore.js";
 import { useUserStore } from "../stores/UserStore.js";
+import { useOptionsStore } from "../stores/OptionsStore.js";
 import FloatLabel from "primevue/floatlabel";
 import Slider from "primevue/slider";
 import Swal from "sweetalert2";
@@ -49,6 +47,11 @@ const props = defineProps({
         type: String,
         required: false,
     },
+
+    games: {
+        type: String,
+        required: false,
+    },
 });
 
 const addressStore = useAddressesStore();
@@ -58,6 +61,8 @@ const eventsStore = useEventsStore();
 const userStore = useUserStore();
 
 const addressFiltersStore = useAddressFiltersStore();
+
+const optionsStore = useOptionsStore();
 
 const sideBarVisible = ref(false);
 
@@ -121,7 +126,35 @@ const setCenterFromProps = () => {
     return haveValuesChanged;
 };
 
+const setGamesFromProps = () => {
+    if (props.games && props.games !== "default") {
+        const validIds = new Set(optionsStore.gameOptions.map(g => g.id));
+        const parsedIds = props.games
+            .split(",")
+            .map(Number)
+            .filter(Number.isFinite);
+        const invalidIds = parsedIds.filter(id => !validIds.has(id));
+        if (invalidIds.length > 0) {
+            const alertBackground = props.darkMode ? "#1C1B22" : "#FFFFFF";
+            const alertColor = props.darkMode ? "#FFFFFF" : "#1C1B22";
+            Swal.fire({
+                title: "Error",
+                text: `The following game IDs do not exist: ${invalidIds.join(", ")}`,
+                icon: "error",
+                background: alertBackground,
+                color: alertColor,
+                timer: 2000,
+                showConfirmButton: false,
+            });
+        }
+        addressFiltersStore.selectedAddressGames = parsedIds.filter(id => validIds.has(id));
+    } else {
+        addressFiltersStore.selectedAddressGames = [];
+    }
+};
+
 setCenterFromProps();
+setGamesFromProps();
 
 const openInfoWindow = (i) => {
     openedInfoWindowIndex.value = i;
@@ -241,6 +274,7 @@ onActivated(() => {
         mapRef.value.map.setCenter(center.value);
         mapRef.value.map.setZoom(zoom.value);
     }
+    setGamesFromProps();
 });
 </script>
 
