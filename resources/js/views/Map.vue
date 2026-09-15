@@ -52,6 +52,34 @@ const props = defineProps({
         type: String,
         required: false,
     },
+    type: {
+        type: String,
+        required: false,
+    },
+    startDate: {
+        type: String,
+        required: false,
+    },
+    endDate: {
+        type: String,
+        required: false,
+    },
+    continents: {
+        type: String,
+        required: false,
+    },
+    countries: {
+        type: String,
+        required: false,
+    },
+    characters: {
+        type: String,
+        required: false,
+    },
+    name: {
+        type: String,
+        required: false,
+    },
 });
 
 const addressStore = useAddressesStore();
@@ -153,8 +181,151 @@ const setGamesFromProps = () => {
     }
 };
 
+const setTypeFromProps = () => {
+    if (props.type && props.type !== "default") {
+        const validTypes = new Set(["events", "users", "modders", "followedEvents"]);
+        if (!validTypes.has(props.type)) {
+            const alertBackground = props.darkMode ? "#1C1B22" : "#FFFFFF";
+            const alertColor = props.darkMode ? "#FFFFFF" : "#1C1B22";
+            Swal.fire({
+                title: "Error",
+                text: `Invalid marker type: ${props.type}`,
+                icon: "error",
+                background: alertBackground,
+                color: alertColor,
+                timer: 2000,
+                showConfirmButton: false,
+            });
+            addressFiltersStore.selectedAddressTypes = "default";
+            return;
+        }
+        addressFiltersStore.selectedAddressTypes = props.type;
+    } else {
+        addressFiltersStore.selectedAddressTypes = "default";
+    }
+};
+
+const setDatesFromProps = () => {
+    if (props.startDate) {
+        if (props.type === "users" || props.type === "modders") {
+            const alertBackground = props.darkMode ? "#1C1B22" : "#FFFFFF";
+            const alertColor = props.darkMode ? "#FFFFFF" : "#1C1B22";
+            Swal.fire({
+                title: "Error",
+                text: "Date filters cannot be applied when marker type is Users or Modders",
+                icon: "error",
+                background: alertBackground,
+                color: alertColor,
+                timer: 3000,
+                showConfirmButton: false,
+            });
+            addressFiltersStore.selectedAddressDates = [];
+            return;
+        }
+        if (props.characters) {
+            const alertBackground = props.darkMode ? "#1C1B22" : "#FFFFFF";
+            const alertColor = props.darkMode ? "#FFFFFF" : "#1C1B22";
+            Swal.fire({
+                title: "Error",
+                text: "Date filters and character filters cannot be combined",
+                icon: "error",
+                background: alertBackground,
+                color: alertColor,
+                timer: 3000,
+                showConfirmButton: false,
+            });
+            addressFiltersStore.selectedAddressDates = [];
+            return;
+        }
+        const start = new Date(props.startDate);
+        if (!isNaN(start.getTime())) {
+            const end = props.endDate ? new Date(props.endDate) : null;
+            if (end && !isNaN(end.getTime())) {
+                addressFiltersStore.selectedAddressDates = [start, end];
+            } else {
+                addressFiltersStore.selectedAddressDates = [start];
+            }
+        }
+    } else {
+        addressFiltersStore.selectedAddressDates = [];
+    }
+};
+
+const setContinentsFromProps = () => {
+    if (props.continents && props.continents !== "default") {
+        const validCodes = new Set(optionsStore.continentOptions.map(c => c.code));
+        const codes = props.continents.split(",");
+        const invalidCodes = codes.filter(code => !validCodes.has(code));
+        if (invalidCodes.length > 0) {
+            const alertBackground = props.darkMode ? "#1C1B22" : "#FFFFFF";
+            const alertColor = props.darkMode ? "#FFFFFF" : "#1C1B22";
+            Swal.fire({
+                title: "Error",
+                text: `The following continent codes do not exist: ${invalidCodes.join(", ")}`,
+                icon: "error",
+                background: alertBackground,
+                color: alertColor,
+                timer: 2000,
+                showConfirmButton: false,
+            });
+        }
+        addressFiltersStore.selectedAddressContinents = codes.filter(code => validCodes.has(code));
+    } else {
+        addressFiltersStore.selectedAddressContinents = [];
+    }
+};
+
+const setCountriesFromProps = () => {
+    if (props.countries && props.countries !== "default") {
+        addressFiltersStore.selectedAddressCountries = props.countries.split(",");
+    } else {
+        addressFiltersStore.selectedAddressCountries = [];
+    }
+};
+
+const setCharactersFromProps = () => {
+    if (props.characters && props.characters !== "default") {
+        if (props.startDate) {
+            const alertBackground = props.darkMode ? "#1C1B22" : "#FFFFFF";
+            const alertColor = props.darkMode ? "#FFFFFF" : "#1C1B22";
+            Swal.fire({
+                title: "Error",
+                text: "Character filters and date filters cannot be combined",
+                icon: "error",
+                background: alertBackground,
+                color: alertColor,
+                timer: 3000,
+                showConfirmButton: false,
+            });
+            addressFiltersStore.selectedAddressCharacters = [];
+            return;
+        }
+        const ids = props.characters
+            .split(",")
+            .map(Number)
+            .filter(Number.isFinite);
+        addressFiltersStore.selectedAddressCharacters = ids;
+    } else {
+        addressFiltersStore.selectedAddressCharacters = [];
+    }
+};
+
+const setNameFromProps = () => {
+    if (props.name && props.name !== "default") {
+        addressFiltersStore.selectedAddressName = props.name;
+    } else {
+        addressFiltersStore.selectedAddressName = "";
+    }
+};
+
 setCenterFromProps();
 setGamesFromProps();
+setTypeFromProps();
+setDatesFromProps();
+setContinentsFromProps();
+setCountriesFromProps();
+setCharactersFromProps();
+setNameFromProps();
 
 const openInfoWindow = (i) => {
     openedInfoWindowIndex.value = i;
@@ -275,6 +446,12 @@ onActivated(() => {
         mapRef.value.map.setZoom(zoom.value);
     }
     setGamesFromProps();
+    setTypeFromProps();
+    setDatesFromProps();
+    setContinentsFromProps();
+    setCountriesFromProps();
+    setCharactersFromProps();
+    setNameFromProps();
 });
 </script>
 
