@@ -158,7 +158,10 @@ onMounted(() => {
                                 aria-label="Notification"
                             />
                         </div>
-                        <div v-if="!event.is_online" class="event-location">
+                        <div
+                            v-if="!event.is_online && event.address"
+                            class="event-location"
+                        >
                             <router-link
                                 :to="{
                                     name: 'map',
@@ -174,6 +177,12 @@ onMounted(() => {
                                     icon="pi pi-map-marker"
                                 ></Chip>
                             </router-link>
+                        </div>
+                        <div v-else-if="!event.is_online" class="event-location">
+                            <Chip
+                                label="Location TBA"
+                                icon="pi pi-map-marker"
+                            ></Chip>
                         </div>
                         <div v-else class="event-location">
                             <Chip label="Online" icon="pi pi-globe"></Chip>
