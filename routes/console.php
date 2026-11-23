@@ -1492,29 +1492,15 @@ Artisan::command("delete-events", function () {
     foreach ($events as $event) {
         $end_date_time = Carbon::parse($event->end_date_time, "UTC");
         if ($end_date_time < $current_time) {
-            $image = $event->image;
-            $events_with_same_image = Event::where(
-                "start_gg_id",
-                $event->start_gg_id,
-            )->get();
-            $image_has_notification = false;
-
-            foreach ($events_with_same_image as $event_with_same_image) {
-                if ($event_with_same_image->notifications()->exists()) {
-                    $image_has_notification = true;
-                    break;
-                }
-            }
-
-            if ($image && !$image_has_notification) {
-                $image_directory_path =
-                    base_path() .
-                    "/storage/app/public/events-images/" .
-                    $event->uuid;
-                File::deleteDirectory($image_directory_path);
-                $image->delete();
+            // The image belongs to the event: delete it with the event.
+            // Notifications pointing to it fall back to the game icon
+            // (see Notification::getImageUrlLabelAttribute).
+            File::deleteDirectory(
+                base_path() . "/storage/app/public/events-images/" . $event->uuid,
+            );
+            if ($event->image) {
+                $event->image->delete();
                 Log::info("Image for: " . $event->name . " deleted");
-                //                var_dump('Image for: ' . $event->name . ' deleted');
             }
             $event->delete();
             Log::info("Event: " . $event->name . " deleted");

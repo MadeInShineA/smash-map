@@ -38,7 +38,7 @@ Route::get("/{page}", function () {
 
 Route::get("/{page}/{token}", function () {
     return view("app");
-})->name("password.reset");
+});
 
 // This route is used to reset the password (needed for PasswordBroker)
 Route::get("/reset-password/{token}", function (string $token) {})->name(
