@@ -6,6 +6,7 @@ use App\Enums\GameEnum;
 use App\Http\Resources\Event\EventCalendarResource;
 use App\Http\Resources\Event\EventResource;
 use App\Models\Event;
+use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -328,7 +329,9 @@ class EventController extends Controller
      * @group Events
      *
      * @queryParam type string The type of statistics to retrieve.
-     *     - "games": Event count by game
+     *     - "games": Event count by game. Also returns "summary" (total, start.gg, parry.gg, country,
+     *       next 30 days and registered player counts)
+     *       and "games" (per game: id, name, color, startGG, parryGG, total, players)
      *     - "months": Event count by month for the next 6 months, broken down by game No-example
      *
      *  <i></i>Example: games
@@ -436,35 +439,54 @@ class EventController extends Controller
                 $events = Event::all();
                 $statistics["eventCount"] = $events->count();
 
-                $statistics["datasets"][0]["label"] = "start.gg";
-                $statistics["datasets"][1]["label"] = "parry.gg";
-                $statistics["datasets"][1]["data"] = [];
-                $statistics["datasets"][1]["backgroundColor"] = [];
-                $statistics["datasets"][1]["hoverBackgroundColor"] = [];
+                $statistics["summary"] = [
+                    "eventCount" => $events->count(),
+                    "startGGCount" => $events->whereNotNull("start_gg_id")->count(),
+                    "parryGGCount" => $events->whereNotNull("parry_gg_id")->count(),
+                    "countryCount" => Event::query()
+                        ->join("addresses", "addresses.id", "=", "events.address_id")
+                        ->whereNotNull("addresses.country_id")
+                        ->distinct()
+                        ->count("addresses.country_id"),
+                    "next30DaysCount" => Event::query()
+                        ->whereBetween("start_date_time", [
+                            Carbon::now("UTC")->toDateTimeString(),
+                            Carbon::now("UTC")->addDays(30)->toDateTimeString(),
+                        ])
+                        ->count(),
+                ];
+                $statistics["summary"]["playerCount"] = User::count();
+                $playersPerGame = DB::table("relation_user_game")
+                    ->select("game_id", DB::raw("COUNT(DISTINCT user_id) as players"))
+                    ->groupBy("game_id")
+                    ->pluck("players", "game_id");
+                $statistics["games"] = [];
 
                 foreach (GameEnum::ABBREVIATIONS as $id => $title) {
                     $statistics["labels"][] = $title;
                     $gameEvents = $events->where("game_id", $id);
-                    $statistics["datasets"][0]["data"][] = $gameEvents
-                        ->whereNotNull("start_gg_id")
-                        ->count();
+                    $statistics["games"][] = [
+                        "id" => $id,
+                        "name" => $title,
+                        "color" => GameEnum::COLORS[$id],
+                        "startGG" => $gameEvents->whereNotNull("start_gg_id")->count(),
+                        "parryGG" => $gameEvents->whereNotNull("parry_gg_id")->count(),
+                        "total" => $gameEvents->count(),
+                        "players" => (int) ($playersPerGame[$id] ?? 0),
+                    ];
+                    $statistics["datasets"][0]["data"][] = $gameEvents->count();
                     $statistics["datasets"][0]["backgroundColor"][] =
                         GameEnum::COLORS[$id];
                     $statistics["datasets"][0]["hoverBackgroundColor"][] =
                         GameEnum::HOVER_COLORS[$id];
-                    $statistics["datasets"][1]["data"][] = $gameEvents
-                        ->whereNotNull("parry_gg_id")
-                        ->count();
-                    $statistics["datasets"][1]["backgroundColor"][] =
-                        $this->lightenColor(GameEnum::COLORS[$id], 50);
-                    $statistics["datasets"][1]["hoverBackgroundColor"][] =
-                        $this->lightenColor(GameEnum::HOVER_COLORS[$id], 50);
                 }
             } elseif ($statisticsType === "months") {
-                $currentMonth = (int) date("m");
-
-                for ($x = $currentMonth; $x < $currentMonth + 6; $x++) {
-                    $statistics["labels"][] = date("F", mktime(0, 0, 0, $x, 1));
+                // The next 6 months, including the year (December -> January)
+                $months = [];
+                for ($x = 0; $x < 6; $x++) {
+                    $month = Carbon::now("UTC")->startOfMonth()->addMonths($x);
+                    $months[] = [$month, $month->copy()->endOfMonth()];
+                    $statistics["labels"][] = $month->format("F");
                 }
 
                 $datasetIndex = 0;
@@ -477,12 +499,13 @@ class EventController extends Controller
                         "hoverBackgroundColor"
                     ][] = GameEnum::HOVER_COLORS[$id];
                     $eventsEachMonth = [];
-                    for ($x = $currentMonth; $x < $currentMonth + 6; $x++) {
-                        $month = (($x - 1) % 12) + 1;
-                        $events = Event::query();
-                        $eventsEachMonth[] = $events
+                    foreach ($months as [$monthStart, $monthEnd]) {
+                        $eventsEachMonth[] = Event::query()
                             ->where("game_id", $id)
-                            ->whereMonth("start_date_time", $month)
+                            ->whereBetween("start_date_time", [
+                                $monthStart->toDateTimeString(),
+                                $monthEnd->toDateTimeString(),
+                            ])
                             ->count();
                     }
                     $statistics["datasets"][$datasetIndex][
@@ -560,14 +583,5 @@ class EventController extends Controller
     public function delete_events(): void
     {
         Artisan::call("delete-events");
-    }
-
-    private function lightenColor(string $color, int $amount = 40): string
-    {
-        $hex = ltrim($color, "#");
-        $r = min(255, hexdec(substr($hex, 0, 2)) + $amount);
-        $g = min(255, hexdec(substr($hex, 2, 2)) + $amount);
-        $b = min(255, hexdec(substr($hex, 4, 2)) + $amount);
-        return sprintf("#%02x%02x%02x", $r, $g, $b);
     }
 }
