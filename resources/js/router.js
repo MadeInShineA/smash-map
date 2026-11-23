@@ -30,6 +30,7 @@ const routes = [
                     lat: route.query.lat,
                     lng: route.query.lng,
                     zoom: route.query.zoom,
+                    games: route.query.games,
                 }),
             },
             {
