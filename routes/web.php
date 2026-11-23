@@ -22,11 +22,6 @@ Route::get("/crons/import-500-start-gg-events", [
     EventController::class,
     "import_500_start_gg_events",
 ]);
-// Old URL, kept until the external cron uses the one above
-Route::get("/crons/import-500-events", [
-    EventController::class,
-    "import_500_start_gg_events",
-]);
 Route::get("/crons/import-parry-gg-events", [
     EventController::class,
     "import_parry_gg_events",
