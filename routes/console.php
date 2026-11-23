@@ -53,7 +53,8 @@ Artisan::command("delete-addresses", function () {
 
 // TODO Test correctly
 Artisan::command("delete-events", function () {
-    $events = Event::all();
+    // Hidden events too (duplicates, test tournaments), or they stay forever
+    $events = Event::withoutGlobalScope(ShownScope::class)->get();
     $current_time = Carbon::now("UTC");
     foreach ($events as $event) {
         $end_date_time = Carbon::parse($event->end_date_time, "UTC");
