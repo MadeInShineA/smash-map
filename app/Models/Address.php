@@ -58,7 +58,6 @@ class Address extends Model
         float $latitude,
         float $longitude,
         float $meters = self::SAME_PLACE_METERS,
-        ?int $exceptId = null,
     ): ?self {
         // Bounding box first (1° of latitude ≈ 111 km), then exact distance
         $latitudeDelta = $meters / 111_000;
@@ -76,7 +75,6 @@ class Address extends Model
                 $longitude - $longitudeDelta,
                 $longitude + $longitudeDelta,
             ])
-            ->when($exceptId, fn($query) => $query->where("id", "!=", $exceptId))
             ->orderBy("id")
             ->get()
             ->filter(fn(self $address) => $address->distanceToKM($point) * 1000 <= $meters)
@@ -151,14 +149,15 @@ class Address extends Model
         $latitude2 = deg2rad($latitude2);
         $longitude2 = deg2rad($longitude2);
 
-        $distance =
-            acos(
-                sin($latitude1) * sin($latitude2) +
-                    cos($latitude1) *
-                        cos($latitude2) *
-                        cos($longitude2 - $longitude1),
-            ) * $earth_radius;
+        // Haversine: stable for small distances, while acos() of the
+        // spherical law of cosines returns NaN when rounding pushes its
+        // argument above 1 (identical or very close points)
+        $a =
+            sin(($latitude2 - $latitude1) / 2) ** 2 +
+            cos($latitude1) *
+                cos($latitude2) *
+                sin(($longitude2 - $longitude1) / 2) ** 2;
 
-        return $distance;
+        return 2 * $earth_radius * asin(min(1, sqrt($a)));
     }
 }
