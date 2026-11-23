@@ -17,428 +17,122 @@ export const useEventFiltersStore = defineStore("eventFilters", function () {
     const selectedOrderBy = ref("default");
     const selectedEventGames = ref([]);
     const selectedEventTypes = ref("default");
+    const selectedEventSource = ref("default");
     const selectedEventDates = ref([]);
     const selectedEventContinents = ref([]);
     const selectedEventCountries = ref([]);
     const selectedEventName = ref("");
 
+    const joinOrDefault = (values) =>
+        values && values.length > 0 ? values.join(",") : "default";
+
+    function formatDate(date) {
+        return useDateFormat(date, "YYYY-MM-DD").value;
+    }
+
+    /** Query parameters for /api/events built from the current filters */
+    function buildParams(page) {
+        let startDate = "default";
+        let endDate = "default";
+        const dates = selectedEventDates.value;
+        if (dates && dates[0]) {
+            startDate = formatDate(dates[0]);
+            endDate = dates[1] ? formatDate(dates[1]) : startDate;
+        }
+
+        const type = selectedEventTypes.value;
+        // Location filters don't apply to online events
+        const isOnline = type === "online";
+
+        return {
+            page,
+            games: joinOrDefault(selectedEventGames.value),
+            type,
+            source: selectedEventSource.value,
+            orderBy: selectedOrderBy.value,
+            continents: isOnline
+                ? "default"
+                : joinOrDefault(selectedEventContinents.value),
+            countries: isOnline
+                ? "default"
+                : joinOrDefault(selectedEventCountries.value),
+            name:
+                selectedEventName.value.trim() !== ""
+                    ? selectedEventName.value.trim()
+                    : "default",
+            startDate,
+            endDate,
+        };
+    }
+
+    function fetchPage(page) {
+        // A newer request aborts the previous one, ignore those rejections
+        return eventsStore
+            .fetchEvents({ params: buildParams(page) })
+            .catch(() => {});
+    }
+
     const { pause: pauseCurrentPageWatch, resume: resumeCurrentPageWatch } =
-        watchPausable(
-            [currentPage],
-            function ([page]) {
-                let startDate;
-                let endDate;
+        watchPausable(currentPage, (page) => fetchPage(page), {
+            immediate: false,
+        });
 
-                if (selectedEventDates.value) {
-                    startDate = selectedEventDates.value[0];
-                    if (startDate) {
-                        startDate = useDateFormat(startDate, "YYYY-MM-DD");
-                        startDate = startDate.value;
-                    } else {
-                        startDate = "default";
-                    }
-
-                    endDate = selectedEventDates.value[1];
-                    if (endDate) {
-                        endDate = useDateFormat(endDate, "YYYY-MM-DD");
-                        endDate = endDate.value;
-                    } else {
-                        endDate = startDate;
-                    }
-                } else {
-                    startDate = "default";
-                    endDate = "default";
-                }
-
-                const games =
-                    selectedEventGames.value.length > 0
-                        ? selectedEventGames.value.join(",")
-                        : "default";
-                const type = selectedEventTypes.value;
-                const orderBy = selectedOrderBy.value;
-                let continents = "default";
-                let countries = "default";
-                if (type !== "online") {
-                    continents =
-                        selectedEventContinents.value.length > 0
-                            ? selectedEventContinents.value.join(",")
-                            : "default";
-                    countries =
-                        selectedEventCountries.value.length > 0
-                            ? selectedEventCountries.value.join(",")
-                            : "default";
-                }
-                const name =
-                    selectedEventName.value !== ""
-                        ? selectedEventName.value
-                        : "default";
-
-                eventsStore.fetchEvents({
-                    params: {
-                        page,
-                        games,
-                        type,
-                        orderBy,
-                        continents,
-                        countries,
-                        name,
-                        startDate,
-                        endDate,
-                    },
-                });
-            },
-            { immediate: false },
-        );
-
-    const countriesWatch = watchPausable(
-        [selectedEventCountries],
-        function ([countries]) {
-            countries = countries.length > 0 ? countries.join(",") : "default";
-
-            let startDate;
-            let endDate;
-            if (selectedEventDates.value) {
-                startDate = selectedEventDates.value[0];
-                if (startDate) {
-                    startDate = useDateFormat(startDate, "YYYY-MM-DD");
-                    startDate = startDate.value;
-                } else {
-                    startDate = "default";
-                }
-
-                endDate = selectedEventDates.value[1];
-                if (endDate) {
-                    endDate = useDateFormat(endDate, "YYYY-MM-DD");
-                    endDate = endDate.value;
-                } else {
-                    endDate = startDate;
-                }
-            } else {
-                startDate = "default";
-                endDate = "default";
-            }
-
-            pauseCurrentPageWatch();
-            currentPage.value = 1;
-            resumeCurrentPageWatch();
-
-            const games =
-                selectedEventGames.value.length > 0
-                    ? selectedEventGames.value.join(",")
-                    : "default";
-            const type = selectedEventTypes.value;
-            const orderBy = selectedOrderBy.value;
-            const continents =
-                selectedEventContinents.value.length > 0
-                    ? selectedEventContinents.value.join(",")
-                    : "default";
-            const name =
-                selectedEventName.value !== ""
-                    ? selectedEventName.value
-                    : "default";
-
-            eventsStore.fetchEvents({
-                params: {
-                    page: 1,
-                    games,
-                    type,
-                    orderBy,
-                    continents,
-                    countries,
-                    name,
-                    startDate,
-                    endDate,
-                },
-            });
-        },
-        { immediate: false },
-    );
-
-    watch(
-        [selectedEventContinents],
-        function ([continents]) {
-            continents =
-                continents.length > 0 ? continents.join(",") : "default";
-
-            countriesWatch.pause();
-            fetchCountries({ params: { continents } }).then(() => {
-                countriesWatch.resume();
-            });
-
-            let startDate;
-            let endDate;
-            if (selectedEventDates.value) {
-                startDate = selectedEventDates.value[0];
-                if (startDate) {
-                    startDate = useDateFormat(startDate, "YYYY-MM-DD");
-                    startDate = startDate.value;
-                } else {
-                    startDate = "default";
-                }
-
-                endDate = selectedEventDates.value[1];
-                if (endDate) {
-                    endDate = useDateFormat(endDate, "YYYY-MM-DD");
-                    endDate = endDate.value;
-                } else {
-                    endDate = startDate;
-                }
-            } else {
-                startDate = "default";
-                endDate = "default";
-            }
-
-            pauseCurrentPageWatch();
-            currentPage.value = 1;
-            resumeCurrentPageWatch();
-            const games =
-                selectedEventGames.value.length > 0
-                    ? selectedEventGames.value.join(",")
-                    : "default";
-            const type = selectedEventTypes.value;
-            const orderBy = selectedOrderBy.value;
-            const countries =
-                selectedEventCountries.value.length > 0
-                    ? selectedEventCountries.value.join(",")
-                    : "default";
-            const name =
-                selectedEventName.value !== ""
-                    ? selectedEventName.value
-                    : "default";
-
-            eventsStore.fetchEvents({
-                params: {
-                    page: 1,
-                    games,
-                    type,
-                    orderBy,
-                    continents,
-                    countries,
-                    name,
-                    startDate,
-                    endDate,
-                },
-            });
-        },
-        { immediate: false },
-    );
+    /** Any filter change goes back to the first page */
+    function fetchFirstPage() {
+        pauseCurrentPageWatch();
+        currentPage.value = 1;
+        resumeCurrentPageWatch();
+        return fetchPage(1);
+    }
 
     watch(
         [
             selectedOrderBy,
             selectedEventGames,
             selectedEventTypes,
+            selectedEventSource,
             selectedEventDates,
+            selectedEventCountries,
         ],
-        function ([orderBy, games, type, dates]) {
-            let startDate;
-            let endDate;
-            if (selectedEventDates.value) {
-                startDate = dates[0];
-                if (startDate) {
-                    startDate = useDateFormat(startDate, "YYYY-MM-DD");
-                    startDate = startDate.value;
-                } else {
-                    startDate = "default";
-                }
-
-                endDate = dates[1];
-                if (endDate) {
-                    endDate = useDateFormat(endDate, "YYYY-MM-DD");
-                    endDate = endDate.value;
-                } else {
-                    endDate = startDate;
-                }
-            } else {
-                startDate = "default";
-                endDate = "default";
-            }
-
-            pauseCurrentPageWatch();
-            currentPage.value = 1;
-            resumeCurrentPageWatch();
-
-            games = games.length > 0 ? games.join(",") : "default";
-            let continents = "default";
-            let countries = "default";
-            if (type !== "online") {
-                continents =
-                    selectedEventContinents.value.length > 0
-                        ? selectedEventContinents.value.join(",")
-                        : "default";
-                countries =
-                    selectedEventCountries.value.length > 0
-                        ? selectedEventCountries.value.join(",")
-                        : "default";
-            }
-            const name =
-                selectedEventName.value !== ""
-                    ? selectedEventName.value
-                    : "default";
-
-            eventsStore.fetchEvents({
-                params: {
-                    page: 1,
-                    games,
-                    type,
-                    orderBy,
-                    continents,
-                    countries,
-                    name,
-                    startDate,
-                    endDate,
-                },
-            });
-        },
-        { immediate: false },
+        fetchFirstPage,
     );
 
-    watch(
-        eventCountryOptions,
-        function (availableCountries, oldValue) {
-            if (oldValue && availableCountries.length !== 0) {
-                const availableCountryCodes = availableCountries.data.map(
-                    (country) => country.code,
-                );
-                selectedEventCountries.value =
-                    selectedEventCountries.value.filter((code) =>
-                        availableCountryCodes.includes(code),
-                    );
-            }
-        },
-        { immediate: false },
-    );
+    watch(selectedEventContinents, function (continents) {
+        fetchCountries({
+            params: { continents: joinOrDefault(continents) },
+        }).catch(() => {});
+        fetchFirstPage();
+    });
 
-    watchDebounced(
-        [selectedEventName],
-        function ([name]) {
-            name = name !== "" ? name : "default";
-
-            let startDate;
-            let endDate;
-            if (selectedEventDates.value) {
-                startDate = selectedEventDates.value[0];
-                if (startDate) {
-                    startDate = useDateFormat(startDate, "YYYY-MM-DD");
-                    startDate = startDate.value;
-                } else {
-                    startDate = "default";
-                }
-
-                endDate = selectedEventDates.value[1];
-                if (endDate) {
-                    endDate = useDateFormat(endDate, "YYYY-MM-DD");
-                    endDate = endDate.value;
-                } else {
-                    endDate = startDate;
-                }
-            } else {
-                startDate = "default";
-                endDate = "default";
-            }
-
-            const page = currentPage.value;
-            const games =
-                selectedEventGames.value.length > 0
-                    ? selectedEventGames.value.join(",")
-                    : "default";
-            const type = selectedEventTypes.value;
-            const orderBy = selectedOrderBy.value;
-            const continents =
-                selectedEventContinents.value.length > 0
-                    ? selectedEventContinents.value.join(",")
-                    : "default";
-            const countries =
-                selectedEventCountries.value.length > 0
-                    ? selectedEventCountries.value.join(",")
-                    : "default";
-            eventsStore.fetchEvents({
-                params: {
-                    page,
-                    games,
-                    type,
-                    orderBy,
-                    continents,
-                    countries,
-                    name,
-                    startDate,
-                    endDate,
-                },
-            });
-        },
-        { immediate: false, debounce: 600, maxWait: 2000 },
-    );
-
-    // TODO Use this function in the different watch functions
-    function fetchEventsWithFilters() {
-        countriesWatch.pause();
-        let startDate;
-        let endDate;
-        if (selectedEventDates.value) {
-            startDate = selectedEventDates.value[0];
-            if (startDate) {
-                startDate = useDateFormat(startDate, "YYYY-MM-DD");
-                startDate = startDate.value;
-            } else {
-                startDate = "default";
-            }
-
-            endDate = selectedEventDates.value[1];
-            if (endDate) {
-                endDate = useDateFormat(endDate, "YYYY-MM-DD");
-                endDate = endDate.value;
-            } else {
-                endDate = startDate;
-            }
-        } else {
-            startDate = "default";
-            endDate = "default";
+    // Drop selected countries that are not in the selected continents anymore
+    watch(eventCountryOptions, function (availableCountries) {
+        if (!availableCountries?.data) {
+            return;
         }
+        const availableCodes = availableCountries.data.map(
+            (country) => country.code,
+        );
+        const kept = selectedEventCountries.value.filter((code) =>
+            availableCodes.includes(code),
+        );
+        if (kept.length !== selectedEventCountries.value.length) {
+            selectedEventCountries.value = kept;
+        }
+    });
 
-        const page = currentPage.value;
-        const games =
-            selectedEventGames.value.length > 0
-                ? selectedEventGames.value.join(",")
-                : "default";
-        const type = selectedEventTypes.value;
-        const orderBy = selectedOrderBy.value;
-        const continents =
-            selectedEventContinents.value.length > 0
-                ? selectedEventContinents.value.join(",")
-                : "default";
-        const countries =
-            selectedEventCountries.value.length > 0
-                ? selectedEventCountries.value.join(",")
-                : "default";
-        const name =
-            selectedEventName.value !== ""
-                ? selectedEventName.value
-                : "default";
+    watchDebounced(selectedEventName, fetchFirstPage, {
+        debounce: 600,
+        maxWait: 2000,
+    });
 
-        eventsStore
-            .fetchEvents({
-                params: {
-                    page,
-                    games,
-                    type,
-                    orderBy,
-                    continents,
-                    countries,
-                    name,
-                    startDate,
-                    endDate,
-                },
-            })
-            .then(() => {
-                if (eventsStore.eventsFetched) {
-                    countriesWatch.resume();
-                }
-            });
+    function fetchEventsWithFilters() {
+        return fetchPage(currentPage.value);
     }
 
     function clearFilters() {
         selectedEventGames.value = [];
         selectedEventTypes.value = "default";
+        selectedEventSource.value = "default";
         selectedEventDates.value = [];
         selectedEventContinents.value = [];
         selectedEventCountries.value = [];
@@ -454,6 +148,7 @@ export const useEventFiltersStore = defineStore("eventFilters", function () {
         selectedOrderBy,
         selectedEventGames,
         selectedEventTypes,
+        selectedEventSource,
         selectedEventDates,
         selectedEventContinents,
         selectedEventCountries,

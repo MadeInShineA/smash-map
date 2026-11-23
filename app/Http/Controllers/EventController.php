@@ -37,6 +37,12 @@ class EventController extends Controller
      *     - "followed": Events subscribed by the authenticated user No-example
      *
      * <i></i>Example: offline
+     * @queryParam source string Event source filter.
+     *     - "default": All sources (no filter)
+     *     - "start_gg": Events imported from start.gg
+     *     - "parry_gg": Events imported from parry.gg
+     *
+     * <i></i>Example: parry_gg
      * @queryParam continents string Comma-separated continent codes to filter by. Use "default" for no filter.
      *
      * <i></i>Example: NA,EU
@@ -213,6 +219,17 @@ class EventController extends Controller
                                 $request->user("sanctum")->id,
                             );
                         });
+                }
+            }
+
+            if ($request->has("source")) {
+                switch ($request->input("source")) {
+                    case "start_gg":
+                        $events->whereNotNull("start_gg_id");
+                        break;
+                    case "parry_gg":
+                        $events->whereNotNull("parry_gg_id");
+                        break;
                 }
             }
 

@@ -71,6 +71,15 @@ const emit = defineEmits(["switchSideBarVisible"]);
                 />
             </div>
             <div class="event-filter">
+                <Dropdown
+                    v-model="filtersStore.selectedEventSource"
+                    :options="optionsStore.eventSourceOptions"
+                    optionLabel="name"
+                    optionValue="value"
+                    placeholder="All sources"
+                />
+            </div>
+            <div class="event-filter">
                 <Calendar
                     id="event-filter-dates"
                     v-model="filtersStore.selectedEventDates"

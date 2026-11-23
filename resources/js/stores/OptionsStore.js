@@ -27,6 +27,12 @@ export const useOptionsStore = defineStore("option", function () {
         { name: "Followed", value: "followed" },
     ]);
 
+    const eventSourceOptions = ref([
+        { name: "All sources", value: "default" },
+        { name: "start.gg", value: "start_gg" },
+        { name: "parry.gg", value: "parry_gg" },
+    ]);
+
     const eventOrderByOptions = ref([
         { name: "Sort by default", value: "default" },
         { name: "Attendees ascending", value: "attendeesASC" },
@@ -70,6 +76,7 @@ export const useOptionsStore = defineStore("option", function () {
         gameOptions,
         eventTypeOptions,
         connectedUserEventTypeOptions,
+        eventSourceOptions,
         eventOrderByOptions,
         addressTypeOptions,
         connectedUserAddressTypeOptions,
