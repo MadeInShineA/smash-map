@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   mysql:
-    image: mysql
+    image: docker.io/library/mysql
     container_name: laravel_mysql
     ports:
       - "3306:3306"
@@ -28,7 +28,7 @@ services:
       start_period: 30s
 
   phpmyadmin:
-    image: phpmyadmin/phpmyadmin
+    image: docker.io/phpmyadmin/phpmyadmin
     container_name: laravel_phpmyadmin
     ports:
       - "8080:80"
