@@ -2014,12 +2014,9 @@ Artisan::command(
                             $address = $event_model_instance->address;
 
                             if (!$address) {
-                                //FIXME Doesn't work if we add the latitude and longitude => php float vs SQL float ?
-                                $address = Address::firstOrCreate(
-                                    [
-                                        "latitude" => $latitude,
-                                        "longitude" => $longitude,
-                                    ],
+                                $address = Address::findOrCreateNear(
+                                    $latitude,
+                                    $longitude,
                                     [
                                         "name" => $address_name,
                                         "country_id" => $country?->id,

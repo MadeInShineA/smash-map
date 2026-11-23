@@ -38,11 +38,9 @@ class UserController extends Controller
                 "code",
                 $request->input("countryCode"),
             )->first();
-            $address = Address::firstOrCreate(
-                [
-                    "latitude" => $request->input("latitude"),
-                    "longitude" => $request->input("longitude"),
-                ],
+            $address = Address::findOrCreateNear(
+                (float) $request->input("latitude"),
+                (float) $request->input("longitude"),
                 [
                     "name" => $request->input("addressName"),
                     "country_id" => $country->id,

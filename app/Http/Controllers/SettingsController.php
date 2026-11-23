@@ -52,11 +52,9 @@ class SettingsController extends Controller
                 "code",
                 $request->input("address.countryCode"),
             )->first();
-            $address = Address::firstOrCreate(
-                [
-                    "latitude" => $request->input("address.latitude"),
-                    "longitude" => $request->input("address.longitude"),
-                ],
+            $address = Address::findOrCreateNear(
+                (float) $request->input("address.latitude"),
+                (float) $request->input("address.longitude"),
                 [
                     "name" => $request->input("address.name"),
                     "country_id" => $country->id,
