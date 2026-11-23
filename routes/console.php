@@ -771,7 +771,7 @@ Artisan::command(
     },
 );
 
-Artisan::command("import-25-events-all-games {import_all_events?", function (
+Artisan::command("import-25-events-all-games {import_all_events?}", function (
     bool $import_all_events = false,
 ) {
     foreach (Game::all() as $game) {
