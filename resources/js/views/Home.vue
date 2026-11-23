@@ -307,20 +307,6 @@ const monthsChartOptions = computed(() => ({
     },
 }));
 
-const busiestMonth = computed(() => {
-    const labels = monthsChartData.value.labels;
-    if (!labels.length) {
-        return null;
-    }
-    const totals = labels.map((_, index) =>
-        monthsChartData.value.datasets.reduce(
-            (sum, dataset) => sum + dataset.data[index],
-            0,
-        ),
-    );
-    const max = Math.max(...totals);
-    return max > 0 ? { month: labels[totals.indexOf(max)], total: max } : null;
-});
 </script>
 
 <template>
@@ -508,7 +494,7 @@ const busiestMonth = computed(() => {
                         <h3 class="chart-title">Players per game</h3>
                         <p class="chart-subtitle">
                             Registered players by the games on their profile and
-                            share of all players; a player can pick several games
+                            share of all players (a player can pick several games)
                         </p>
                     </div>
                     <ul class="player-grid">
@@ -539,12 +525,6 @@ const busiestMonth = computed(() => {
                         <h3 class="chart-title">Events in the next 6 months</h3>
                         <p class="chart-subtitle">
                             By start month, stacked by game
-                            <span v-if="busiestMonth" class="subtitle-extra">
-                                <span class="meta-separator">·</span>
-                                Busiest: {{ busiestMonth.month }} ({{
-                                    formatNumber(busiestMonth.total)
-                                }})
-                            </span>
                         </p>
                     </div>
                     <div
@@ -854,15 +834,6 @@ a {
 
     #events-months-canvas {
         height: 400px;
-    }
-
-
-    .subtitle-extra {
-        display: block;
-    }
-
-    .subtitle-extra .meta-separator {
-        display: none;
     }
 }
 </style>
