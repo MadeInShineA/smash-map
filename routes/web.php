@@ -22,6 +22,10 @@ Route::get("/crons/import-500-events", [
     EventController::class,
     "import_500_events",
 ]);
+Route::get("/crons/import-parry-gg-events", [
+    EventController::class,
+    "import_parry_gg_events",
+]);
 Route::get("/crons/delete-events", [EventController::class, "delete_events"]);
 Route::get("/crons/delete-addresses", [
     AddressController::class,

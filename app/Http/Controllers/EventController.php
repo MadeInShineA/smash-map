@@ -531,6 +531,15 @@ class EventController extends Controller
         Artisan::call("import-500-events-all-games");
     }
 
+    public function import_parry_gg_events(): void
+    {
+        // Pinged by an external cron: the import takes about a minute, let it
+        // finish even past max_execution_time or if the caller disconnects
+        set_time_limit(0);
+        ignore_user_abort(true);
+        Artisan::call("import-parry-gg-events");
+    }
+
     public function delete_events(): void
     {
         Artisan::call("delete-events");

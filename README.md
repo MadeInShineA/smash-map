@@ -101,6 +101,7 @@ php artisan storage:link
 ```bash
 php artisan setup
 php artisan import-50-events-all-games
+php artisan import-parry-gg-events   # needs PARRY_GG_API_KEY, add -v for skip stats
 ```
 
 ### 9. Run the development servers
