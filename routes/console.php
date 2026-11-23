@@ -784,7 +784,7 @@ Artisan::command("import-25-events-all-games {import_all_events?}", function (
     }
 });
 
-Artisan::command("import-500-events {game_id} {import_all_events?}", function (
+Artisan::command("import-500-start-gg-events {game_id} {import_all_events?}", function (
     string $game_id,
     bool $import_all_events = false,
 ) {
@@ -798,13 +798,13 @@ Artisan::command("import-500-events {game_id} {import_all_events?}", function (
     }
 });
 
-Artisan::command("import-500-events-all-games {import_all_events?}", function (
+Artisan::command("import-500-start-gg-events-all-games {import_all_events?}", function (
     bool $import_all_events = false,
 ) {
     foreach (Game::all() as $game) {
         Log::info("Starting the " . $game->name . " import");
         var_dump("Starting the " . $game->name . " import");
-        Artisan::call("import-500-events", [
+        Artisan::call("import-500-start-gg-events", [
             "game_id" => $game->id,
             "import_all_events" => $import_all_events,
         ]);
@@ -1029,7 +1029,7 @@ Artisan::command("refresh-events-preserve-following", function () {
 
     Event::query()->delete();
 
-    Artisan::call("import-500-events-all-games");
+    Artisan::call("import-500-start-gg-events-all-games");
     Artisan::call("import-parry-gg-events");
 
     foreach ($infos as $user_id => $followed_events_infos) {

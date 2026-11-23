@@ -566,9 +566,9 @@ class EventController extends Controller
         }
     }
 
-    public function import_500_events(): void
+    public function import_500_start_gg_events(): void
     {
-        Artisan::call("import-500-events-all-games");
+        Artisan::call("import-500-start-gg-events-all-games");
     }
 
     public function import_parry_gg_events(): void

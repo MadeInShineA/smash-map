@@ -18,9 +18,14 @@ use Illuminate\Support\Facades\Route;
 
 #TODO Ask Quentin if it is faster to query items in a store with the home made api or to redirect to the page with the items inside index (si index a été chargé 1x et query api si non).
 
+Route::get("/crons/import-500-start-gg-events", [
+    EventController::class,
+    "import_500_start_gg_events",
+]);
+// Old URL, kept until the external cron uses the one above
 Route::get("/crons/import-500-events", [
     EventController::class,
-    "import_500_events",
+    "import_500_start_gg_events",
 ]);
 Route::get("/crons/import-parry-gg-events", [
     EventController::class,
